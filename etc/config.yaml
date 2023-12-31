@@ -1,0 +1,26 @@
+Name: cloudmind.core-api
+ListenOn: 0.0.0.0:8888
+Mode: dev
+Log:
+  Encoding: json
+  Level: debug
+  Stat: false
+Telemetry:
+  Endpoint: http://localhost:14268/api/traces
+Auth:
+  SecretKey: |
+    -----BEGIN EC PRIVATE KEY-----
+    MHcCAQEEIO9SNUMVvJneiKqtx1CAyJHS0QqedDx+MLvPV0nVX7DqoAoGCCqGSM49
+    AwEHoUQDQgAElgqbThwLQHPWjZCGdBSl52tDXUyd2oOD67oAnTozMzuUYqKNQHtd
+    d1qtvS+xrNVJyCWwm4tbiwiRDvjnBCJSyg==
+    -----END EC PRIVATE KEY-----
+  PublicKey: |
+    -----BEGIN PUBLIC KEY-----
+    MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAElgqbThwLQHPWjZCGdBSl52tDXUyd
+    2oOD67oAnTozMzuUYqKNQHtdd1qtvS+xrNVJyCWwm4tbiwiRDvjnBCJSyg==
+    -----END PUBLIC KEY-----
+  AccessExpire: 3600
+
+EtcdConf:
+  Hosts:
+        - localhost:2379
