@@ -3,7 +3,6 @@ package service
 import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_user"
 	"github.com/google/wire"
 )
 
@@ -12,9 +11,8 @@ type IContentService interface {
 }
 
 type ContentService struct {
-	Config        *config.Config
-	CloudMindUser cloudmind_user.ICloudMindUser
-	CloudMindSts  cloudmind_sts.ICloudMindSts
+	Config       *config.Config
+	CloudMindSts cloudmind_sts.ICloudMindSts
 }
 
 var ContentServiceSet = wire.NewSet(

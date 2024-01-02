@@ -3,8 +3,9 @@
 package core_api
 
 import (
-	core_api "github.com/CloudStriver/cloudmind-core-api/biz/adaptor/controller/core_api"
 	"github.com/cloudwego/hertz/pkg/app/server"
+
+	core_api "github.com/CloudStriver/cloudmind-core-api/biz/adaptor/controller/core_api"
 )
 
 /*
@@ -19,8 +20,20 @@ func Register(r *server.Hertz) {
 	root := r.Group("/", rootMw()...)
 	{
 		_auth := root.Group("/auth", _authMw()...)
-		_auth.POST("/login", append(_loginMw(), core_api.Login)...)
+		_auth.GET("/captcha", append(_getcaptchaMw(), core_api.GetCaptcha)...)
 		_auth.POST("/refresh", append(_refreshtokenMw(), core_api.RefreshToken)...)
 		_auth.POST("/register", append(_registerMw(), core_api.Register)...)
+		_auth.POST("/send", append(_sendemailMw(), core_api.SendEmail)...)
+		{
+			_login := _auth.Group("/login", _loginMw()...)
+			_login.POST("/email", append(_emailloginMw(), core_api.EmailLogin)...)
+			_login.GET("/gitee", append(_giteeloginMw(), core_api.GiteeLogin)...)
+			_login.GET("/github", append(_githubloginMw(), core_api.GithubLogin)...)
+		}
+		{
+			_reset := _auth.Group("/reset", _resetMw()...)
+			_reset.POST("/email", append(_setpasswordbyemailMw(), core_api.SetPasswordByEmail)...)
+			_reset.POST("/password", append(_setpasswordbypasswordMw(), core_api.SetPasswordByPassword)...)
+		}
 	}
 }

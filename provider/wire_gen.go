@@ -10,8 +10,8 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/service"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/etcd"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_user"
 )
 
 // Injectors from wire.go:
@@ -22,23 +22,22 @@ func NewProvider() (*Provider, error) {
 		return nil, err
 	}
 	resolver := etcd.NewEtcd(configConfig)
-	client := cloudmind_user.NewCloudMindUser(resolver)
-	cloudMindUser := &cloudmind_user.CloudMindUser{
+	client := cloudmind_sts.NewCloudMindSts(resolver, configConfig)
+	cloudMindSts := &cloudmind_sts.CloudMindSts{
 		Client: client,
 	}
-	stsserviceClient := cloudmind_sts.NewCloudMindSts(resolver)
-	cloudMindSts := &cloudmind_sts.CloudMindSts{
-		Client: stsserviceClient,
-	}
 	contentService := &service.ContentService{
-		Config:        configConfig,
-		CloudMindUser: cloudMindUser,
-		CloudMindSts:  cloudMindSts,
+		Config:       configConfig,
+		CloudMindSts: cloudMindSts,
+	}
+	contentserviceClient := cloudmind_content.NewCloudMindContent(resolver, configConfig)
+	cloudMindContent := &cloudmind_content.CloudMindContent{
+		Client: contentserviceClient,
 	}
 	authService := &service.AuthService{
-		Config:        configConfig,
-		CloudMindUser: cloudMindUser,
-		CloudMindSts:  cloudMindSts,
+		Config:           configConfig,
+		CloudMindContent: cloudMindContent,
+		CloudMindSts:     cloudMindSts,
 	}
 	providerProvider := &Provider{
 		Config:         configConfig,

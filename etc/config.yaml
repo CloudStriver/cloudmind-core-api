@@ -1,4 +1,4 @@
-Name: cloudmind.core-api
+Name: cloudmind-core-api
 ListenOn: 0.0.0.0:8888
 Mode: dev
 Log:
@@ -6,7 +6,10 @@ Log:
   Level: debug
   Stat: false
 Telemetry:
+  Name: cloudmind-core-api
   Endpoint: http://localhost:14268/api/traces
+  Sampler: 1.0
+  Batcher: jaeger
 Auth:
   SecretKey: |
     -----BEGIN EC PRIVATE KEY-----
@@ -23,4 +26,10 @@ Auth:
 
 EtcdConf:
   Hosts:
-        - localhost:2379
+    - localhost:2379
+GithubConf:
+     ClientID: 2b3644ed24902ef9eb6f
+     Secret: f866829b5b770728fab98586c3b657f299f08bf9
+GiteeConf:
+  ClientID: 10dfe502136745d1f135474390c4cb6cd50fce3a5bf7a167891d3b0ec184d2eb
+  Secret: c45b3a87cab0339f138ef35a51114c1186602b3efeef5f7da05ef69b4562bca2
