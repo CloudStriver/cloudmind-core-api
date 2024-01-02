@@ -28,7 +28,6 @@ func Init() {
 func main() {
 	Init()
 	c := provider.Get().Config
-
 	tracer, cfg := tracing.NewServerTracer()
 	h := server.New(
 		server.WithHostPorts(c.ListenOn),

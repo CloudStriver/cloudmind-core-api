@@ -2,8 +2,8 @@ package provider
 
 import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/etcd"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_user"
 	"github.com/cloudwego/kitex/pkg/discovery"
 	"github.com/google/wire"
 
@@ -34,7 +34,7 @@ func Get() *Provider {
 }
 
 var RPCSet = wire.NewSet(
-	cloudmind_user.CloudMindUserSet,
+	cloudmind_content.CloudMindContentSet,
 	cloudmind_sts.CloudMindStsSet,
 )
 

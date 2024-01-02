@@ -16,14 +16,21 @@ type Auth struct {
 	AccessExpire int64
 }
 
+type OauthConf struct {
+	ClientId string
+	Secret   string
+}
+
 type EtcdConf struct {
 	Hosts []string
 }
 type Config struct {
 	service.ServiceConf
-	ListenOn string
-	Auth     Auth
-	EtcdConf EtcdConf
+	ListenOn   string
+	Auth       Auth
+	EtcdConf   EtcdConf
+	GithubConf OauthConf
+	GiteeConf  OauthConf
 }
 
 func NewConfig() (*Config, error) {

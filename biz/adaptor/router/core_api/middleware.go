@@ -35,3 +35,40 @@ func _refreshtokenMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _getcaptchaMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _sendemailMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _resetMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _setpasswordbyemailMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _setpasswordbypasswordMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+func _emailloginMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+func _githubloginMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+func _giteeloginMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}

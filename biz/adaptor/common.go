@@ -3,18 +3,17 @@ package adaptor
 import (
 	"context"
 	"errors"
-	"net/http"
-
 	bizerrors "github.com/CloudStriver/go-pkg/utils/errors"
+	"github.com/CloudStriver/go-pkg/utils/util/log"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol"
 	hertz "github.com/cloudwego/hertz/pkg/protocol/consts"
 	"go.opentelemetry.io/contrib/propagators/b3"
 	"go.opentelemetry.io/otel/propagation"
-	"google.golang.org/grpc/status"
+	"net/http"
+	"strings"
 
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
-	"github.com/CloudStriver/go-pkg/utils/util/log"
 )
 
 var _ propagation.TextMapCarrier = &headerProvider{}
@@ -56,14 +55,16 @@ func PostProcess(ctx context.Context, c *app.RequestContext, req, resp any, err 
 	case errors.Is(err, consts.ErrForbidden):
 		c.JSON(hertz.StatusForbidden, err.Error())
 	default:
-		if s, ok := status.FromError(err); ok {
-			c.JSON(http.StatusBadRequest, &bizerrors.BizError{
-				Msg: s.Message(),
-			})
-		} else {
+		startIndex := strings.Index(err.Error(), "desc =")
+		if startIndex == -1 {
 			log.CtxError(ctx, "internal error, err=%s", err.Error())
 			code := hertz.StatusInternalServerError
 			c.String(code, hertz.StatusMessage(code))
+		} else {
+			startIndex += len("desc = ")
+			c.JSON(http.StatusBadRequest, &bizerrors.BizError{
+				Msg: err.Error()[startIndex:],
+			})
 		}
 	}
 }
