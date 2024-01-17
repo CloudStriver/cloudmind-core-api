@@ -11,6 +11,7 @@ import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
+	sync "sync"
 )
 
 const (
@@ -20,6 +21,570 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type CreateRelationReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Relation *RelationInfo `protobuf:"bytes,1,opt,name=relation,proto3" json:"relation" form:"relation" query:"relation"`
+}
+
+func (x *CreateRelationReq) Reset() {
+	*x = CreateRelationReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_relation_proto_msgTypes[0]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CreateRelationReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateRelationReq) ProtoMessage() {}
+
+func (x *CreateRelationReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_relation_proto_msgTypes[0]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateRelationReq.ProtoReflect.Descriptor instead.
+func (*CreateRelationReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_relation_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *CreateRelationReq) GetRelation() *RelationInfo {
+	if x != nil {
+		return x.Relation
+	}
+	return nil
+}
+
+type CreateRelationResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *CreateRelationResp) Reset() {
+	*x = CreateRelationResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_relation_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CreateRelationResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateRelationResp) ProtoMessage() {}
+
+func (x *CreateRelationResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_relation_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateRelationResp.ProtoReflect.Descriptor instead.
+func (*CreateRelationResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_relation_proto_rawDescGZIP(), []int{1}
+}
+
+type GetFromRelationsReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	FromId       string     `protobuf:"bytes,1,opt,name=fromId,proto3" json:"fromId" form:"fromId" query:"fromId"`
+	FromType     int64      `protobuf:"varint,2,opt,name=fromType,proto3" json:"fromType" form:"fromType" query:"fromType"`
+	ToType       TargetType `protobuf:"varint,3,opt,name=toType,proto3,enum=cloudmind.core_api.TargetType" json:"toType" form:"toType" query:"toType"`
+	RelationType int64      `protobuf:"varint,4,opt,name=relationType,proto3" json:"relationType" form:"relationType" query:"relationType"`
+	Limit        *int64     `protobuf:"varint,5,opt,name=limit,proto3,oneof" json:"limit" form:"limit" query:"limit"`
+	Offset       *int64     `protobuf:"varint,6,opt,name=offset,proto3,oneof" json:"offset" form:"offset" query:"offset"`
+}
+
+func (x *GetFromRelationsReq) Reset() {
+	*x = GetFromRelationsReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_relation_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetFromRelationsReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetFromRelationsReq) ProtoMessage() {}
+
+func (x *GetFromRelationsReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_relation_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetFromRelationsReq.ProtoReflect.Descriptor instead.
+func (*GetFromRelationsReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_relation_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *GetFromRelationsReq) GetFromId() string {
+	if x != nil {
+		return x.FromId
+	}
+	return ""
+}
+
+func (x *GetFromRelationsReq) GetFromType() int64 {
+	if x != nil {
+		return x.FromType
+	}
+	return 0
+}
+
+func (x *GetFromRelationsReq) GetToType() TargetType {
+	if x != nil {
+		return x.ToType
+	}
+	return TargetType_UnKnowTargetType
+}
+
+func (x *GetFromRelationsReq) GetRelationType() int64 {
+	if x != nil {
+		return x.RelationType
+	}
+	return 0
+}
+
+func (x *GetFromRelationsReq) GetLimit() int64 {
+	if x != nil && x.Limit != nil {
+		return *x.Limit
+	}
+	return 0
+}
+
+func (x *GetFromRelationsReq) GetOffset() int64 {
+	if x != nil && x.Offset != nil {
+		return *x.Offset
+	}
+	return 0
+}
+
+type GetFromRelationsResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Users []*User `protobuf:"bytes,1,rep,name=users,proto3" json:"users" form:"users" query:"users"`
+}
+
+func (x *GetFromRelationsResp) Reset() {
+	*x = GetFromRelationsResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_relation_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetFromRelationsResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetFromRelationsResp) ProtoMessage() {}
+
+func (x *GetFromRelationsResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_relation_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetFromRelationsResp.ProtoReflect.Descriptor instead.
+func (*GetFromRelationsResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_relation_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *GetFromRelationsResp) GetUsers() []*User {
+	if x != nil {
+		return x.Users
+	}
+	return nil
+}
+
+type GetToRelationsReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ToType       int64      `protobuf:"varint,1,opt,name=toType,proto3" json:"toType" form:"toType" query:"toType"`
+	ToId         string     `protobuf:"bytes,2,opt,name=toId,proto3" json:"toId" form:"toId" query:"toId"`
+	FromType     TargetType `protobuf:"varint,3,opt,name=fromType,proto3,enum=cloudmind.core_api.TargetType" json:"fromType" form:"fromType" query:"fromType"`
+	RelationType int64      `protobuf:"varint,4,opt,name=relationType,proto3" json:"relationType" form:"relationType" query:"relationType"`
+	Limit        *int64     `protobuf:"varint,5,opt,name=limit,proto3,oneof" json:"limit" form:"limit" query:"limit"`
+	Offset       *int64     `protobuf:"varint,6,opt,name=offset,proto3,oneof" json:"offset" form:"offset" query:"offset"`
+}
+
+func (x *GetToRelationsReq) Reset() {
+	*x = GetToRelationsReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_relation_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetToRelationsReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetToRelationsReq) ProtoMessage() {}
+
+func (x *GetToRelationsReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_relation_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetToRelationsReq.ProtoReflect.Descriptor instead.
+func (*GetToRelationsReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_relation_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *GetToRelationsReq) GetToType() int64 {
+	if x != nil {
+		return x.ToType
+	}
+	return 0
+}
+
+func (x *GetToRelationsReq) GetToId() string {
+	if x != nil {
+		return x.ToId
+	}
+	return ""
+}
+
+func (x *GetToRelationsReq) GetFromType() TargetType {
+	if x != nil {
+		return x.FromType
+	}
+	return TargetType_UnKnowTargetType
+}
+
+func (x *GetToRelationsReq) GetRelationType() int64 {
+	if x != nil {
+		return x.RelationType
+	}
+	return 0
+}
+
+func (x *GetToRelationsReq) GetLimit() int64 {
+	if x != nil && x.Limit != nil {
+		return *x.Limit
+	}
+	return 0
+}
+
+func (x *GetToRelationsReq) GetOffset() int64 {
+	if x != nil && x.Offset != nil {
+		return *x.Offset
+	}
+	return 0
+}
+
+type GetToRelationsResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Users []*User `protobuf:"bytes,1,rep,name=users,proto3" json:"users" form:"users" query:"users"`
+}
+
+func (x *GetToRelationsResp) Reset() {
+	*x = GetToRelationsResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_relation_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetToRelationsResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetToRelationsResp) ProtoMessage() {}
+
+func (x *GetToRelationsResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_relation_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetToRelationsResp.ProtoReflect.Descriptor instead.
+func (*GetToRelationsResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_relation_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *GetToRelationsResp) GetUsers() []*User {
+	if x != nil {
+		return x.Users
+	}
+	return nil
+}
+
+type GetRelationReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	FromId       string `protobuf:"bytes,1,opt,name=FromId,proto3" json:"FromId" form:"FromId" query:"FromId"`
+	FromType     int64  `protobuf:"varint,2,opt,name=FromType,proto3" json:"FromType" form:"FromType" query:"FromType"`
+	ToId         string `protobuf:"bytes,3,opt,name=ToId,proto3" json:"ToId" form:"ToId" query:"ToId"`
+	ToType       int64  `protobuf:"varint,4,opt,name=ToType,proto3" json:"ToType" form:"ToType" query:"ToType"`
+	RelationType int64  `protobuf:"varint,5,opt,name=RelationType,proto3" json:"RelationType" form:"RelationType" query:"RelationType"`
+}
+
+func (x *GetRelationReq) Reset() {
+	*x = GetRelationReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_relation_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetRelationReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetRelationReq) ProtoMessage() {}
+
+func (x *GetRelationReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_relation_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetRelationReq.ProtoReflect.Descriptor instead.
+func (*GetRelationReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_relation_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *GetRelationReq) GetFromId() string {
+	if x != nil {
+		return x.FromId
+	}
+	return ""
+}
+
+func (x *GetRelationReq) GetFromType() int64 {
+	if x != nil {
+		return x.FromType
+	}
+	return 0
+}
+
+func (x *GetRelationReq) GetToId() string {
+	if x != nil {
+		return x.ToId
+	}
+	return ""
+}
+
+func (x *GetRelationReq) GetToType() int64 {
+	if x != nil {
+		return x.ToType
+	}
+	return 0
+}
+
+func (x *GetRelationReq) GetRelationType() int64 {
+	if x != nil {
+		return x.RelationType
+	}
+	return 0
+}
+
+type GetRelationResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Ok bool `protobuf:"varint,1,opt,name=ok,proto3" json:"ok" form:"ok" query:"ok"`
+}
+
+func (x *GetRelationResp) Reset() {
+	*x = GetRelationResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_relation_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetRelationResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetRelationResp) ProtoMessage() {}
+
+func (x *GetRelationResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_relation_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetRelationResp.ProtoReflect.Descriptor instead.
+func (*GetRelationResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_relation_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *GetRelationResp) GetOk() bool {
+	if x != nil {
+		return x.Ok
+	}
+	return false
+}
+
+type DeleteRelationReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	RelationInfo *RelationInfo `protobuf:"bytes,1,opt,name=relationInfo,proto3" json:"relationInfo" form:"relationInfo" query:"relationInfo"`
+}
+
+func (x *DeleteRelationReq) Reset() {
+	*x = DeleteRelationReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_relation_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteRelationReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteRelationReq) ProtoMessage() {}
+
+func (x *DeleteRelationReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_relation_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteRelationReq.ProtoReflect.Descriptor instead.
+func (*DeleteRelationReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_relation_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *DeleteRelationReq) GetRelationInfo() *RelationInfo {
+	if x != nil {
+		return x.RelationInfo
+	}
+	return nil
+}
+
+type DeleteRelationResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *DeleteRelationResp) Reset() {
+	*x = DeleteRelationResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_relation_proto_msgTypes[9]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteRelationResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteRelationResp) ProtoMessage() {}
+
+func (x *DeleteRelationResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_relation_proto_msgTypes[9]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteRelationResp.ProtoReflect.Descriptor instead.
+func (*DeleteRelationResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_relation_proto_rawDescGZIP(), []int{9}
+}
+
 var File_cloudmind_core_api_relation_proto protoreflect.FileDescriptor
 
 var file_cloudmind_core_api_relation_proto_rawDesc = []byte{
@@ -27,22 +592,122 @@ var file_cloudmind_core_api_relation_proto_rawDesc = []byte{
 	0x5f, 0x61, 0x70, 0x69, 0x2f, 0x72, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x70, 0x72,
 	0x6f, 0x74, 0x6f, 0x12, 0x12, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2e, 0x63,
 	0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x1a, 0x16, 0x62, 0x61, 0x73, 0x69, 0x63, 0x2f, 0x70,
-	0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x42,
-	0x53, 0x5a, 0x51, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x43, 0x6c,
-	0x6f, 0x75, 0x64, 0x53, 0x74, 0x72, 0x69, 0x76, 0x65, 0x72, 0x2f, 0x63, 0x6c, 0x6f, 0x75, 0x64,
-	0x6d, 0x69, 0x6e, 0x64, 0x2d, 0x63, 0x6f, 0x72, 0x65, 0x2d, 0x61, 0x70, 0x69, 0x2f, 0x62, 0x69,
-	0x7a, 0x2f, 0x61, 0x70, 0x70, 0x6c, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2f, 0x64, 0x74,
-	0x6f, 0x2f, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2f, 0x63, 0x6f, 0x72, 0x65,
-	0x5f, 0x61, 0x70, 0x69, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a,
+	0x1f, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x5f,
+	0x61, 0x70, 0x69, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x22, 0x51, 0x0a, 0x11, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x52, 0x65, 0x6c, 0x61, 0x74, 0x69,
+	0x6f, 0x6e, 0x52, 0x65, 0x71, 0x12, 0x3c, 0x0a, 0x08, 0x72, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x20, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d,
+	0x69, 0x6e, 0x64, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x52, 0x65, 0x6c,
+	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x08, 0x72, 0x65, 0x6c, 0x61, 0x74,
+	0x69, 0x6f, 0x6e, 0x22, 0x14, 0x0a, 0x12, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x52, 0x65, 0x6c,
+	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x22, 0xf2, 0x01, 0x0a, 0x13, 0x47, 0x65,
+	0x74, 0x46, 0x72, 0x6f, 0x6d, 0x52, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65,
+	0x71, 0x12, 0x16, 0x0a, 0x06, 0x66, 0x72, 0x6f, 0x6d, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x06, 0x66, 0x72, 0x6f, 0x6d, 0x49, 0x64, 0x12, 0x1a, 0x0a, 0x08, 0x66, 0x72, 0x6f,
+	0x6d, 0x54, 0x79, 0x70, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x08, 0x66, 0x72, 0x6f,
+	0x6d, 0x54, 0x79, 0x70, 0x65, 0x12, 0x36, 0x0a, 0x06, 0x74, 0x6f, 0x54, 0x79, 0x70, 0x65, 0x18,
+	0x03, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x1e, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e,
+	0x64, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x54, 0x61, 0x72, 0x67, 0x65,
+	0x74, 0x54, 0x79, 0x70, 0x65, 0x52, 0x06, 0x74, 0x6f, 0x54, 0x79, 0x70, 0x65, 0x12, 0x22, 0x0a,
+	0x0c, 0x72, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x54, 0x79, 0x70, 0x65, 0x18, 0x04, 0x20,
+	0x01, 0x28, 0x03, 0x52, 0x0c, 0x72, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x54, 0x79, 0x70,
+	0x65, 0x12, 0x19, 0x0a, 0x05, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x18, 0x05, 0x20, 0x01, 0x28, 0x03,
+	0x48, 0x00, 0x52, 0x05, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x88, 0x01, 0x01, 0x12, 0x1b, 0x0a, 0x06,
+	0x6f, 0x66, 0x66, 0x73, 0x65, 0x74, 0x18, 0x06, 0x20, 0x01, 0x28, 0x03, 0x48, 0x01, 0x52, 0x06,
+	0x6f, 0x66, 0x66, 0x73, 0x65, 0x74, 0x88, 0x01, 0x01, 0x42, 0x08, 0x0a, 0x06, 0x5f, 0x6c, 0x69,
+	0x6d, 0x69, 0x74, 0x42, 0x09, 0x0a, 0x07, 0x5f, 0x6f, 0x66, 0x66, 0x73, 0x65, 0x74, 0x22, 0x46,
+	0x0a, 0x14, 0x47, 0x65, 0x74, 0x46, 0x72, 0x6f, 0x6d, 0x52, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x73, 0x52, 0x65, 0x73, 0x70, 0x12, 0x2e, 0x0a, 0x05, 0x75, 0x73, 0x65, 0x72, 0x73, 0x18,
+	0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e,
+	0x64, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x52,
+	0x05, 0x75, 0x73, 0x65, 0x72, 0x73, 0x22, 0xec, 0x01, 0x0a, 0x11, 0x47, 0x65, 0x74, 0x54, 0x6f,
+	0x52, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65, 0x71, 0x12, 0x16, 0x0a, 0x06,
+	0x74, 0x6f, 0x54, 0x79, 0x70, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x74, 0x6f,
+	0x54, 0x79, 0x70, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x6f, 0x49, 0x64, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x04, 0x74, 0x6f, 0x49, 0x64, 0x12, 0x3a, 0x0a, 0x08, 0x66, 0x72, 0x6f, 0x6d,
+	0x54, 0x79, 0x70, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x1e, 0x2e, 0x63, 0x6c, 0x6f,
+	0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e,
+	0x54, 0x61, 0x72, 0x67, 0x65, 0x74, 0x54, 0x79, 0x70, 0x65, 0x52, 0x08, 0x66, 0x72, 0x6f, 0x6d,
+	0x54, 0x79, 0x70, 0x65, 0x12, 0x22, 0x0a, 0x0c, 0x72, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e,
+	0x54, 0x79, 0x70, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0c, 0x72, 0x65, 0x6c, 0x61,
+	0x74, 0x69, 0x6f, 0x6e, 0x54, 0x79, 0x70, 0x65, 0x12, 0x19, 0x0a, 0x05, 0x6c, 0x69, 0x6d, 0x69,
+	0x74, 0x18, 0x05, 0x20, 0x01, 0x28, 0x03, 0x48, 0x00, 0x52, 0x05, 0x6c, 0x69, 0x6d, 0x69, 0x74,
+	0x88, 0x01, 0x01, 0x12, 0x1b, 0x0a, 0x06, 0x6f, 0x66, 0x66, 0x73, 0x65, 0x74, 0x18, 0x06, 0x20,
+	0x01, 0x28, 0x03, 0x48, 0x01, 0x52, 0x06, 0x6f, 0x66, 0x66, 0x73, 0x65, 0x74, 0x88, 0x01, 0x01,
+	0x42, 0x08, 0x0a, 0x06, 0x5f, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x42, 0x09, 0x0a, 0x07, 0x5f, 0x6f,
+	0x66, 0x66, 0x73, 0x65, 0x74, 0x22, 0x44, 0x0a, 0x12, 0x47, 0x65, 0x74, 0x54, 0x6f, 0x52, 0x65,
+	0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65, 0x73, 0x70, 0x12, 0x2e, 0x0a, 0x05, 0x75,
+	0x73, 0x65, 0x72, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x63, 0x6c, 0x6f,
+	0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e,
+	0x55, 0x73, 0x65, 0x72, 0x52, 0x05, 0x75, 0x73, 0x65, 0x72, 0x73, 0x22, 0x94, 0x01, 0x0a, 0x0e,
+	0x47, 0x65, 0x74, 0x52, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x12, 0x16,
+	0x0a, 0x06, 0x46, 0x72, 0x6f, 0x6d, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06,
+	0x46, 0x72, 0x6f, 0x6d, 0x49, 0x64, 0x12, 0x1a, 0x0a, 0x08, 0x46, 0x72, 0x6f, 0x6d, 0x54, 0x79,
+	0x70, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x08, 0x46, 0x72, 0x6f, 0x6d, 0x54, 0x79,
+	0x70, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x54, 0x6f, 0x49, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x04, 0x54, 0x6f, 0x49, 0x64, 0x12, 0x16, 0x0a, 0x06, 0x54, 0x6f, 0x54, 0x79, 0x70, 0x65,
+	0x18, 0x04, 0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x54, 0x6f, 0x54, 0x79, 0x70, 0x65, 0x12, 0x22,
+	0x0a, 0x0c, 0x52, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x54, 0x79, 0x70, 0x65, 0x18, 0x05,
+	0x20, 0x01, 0x28, 0x03, 0x52, 0x0c, 0x52, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x54, 0x79,
+	0x70, 0x65, 0x22, 0x21, 0x0a, 0x0f, 0x47, 0x65, 0x74, 0x52, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x52, 0x65, 0x73, 0x70, 0x12, 0x0e, 0x0a, 0x02, 0x6f, 0x6b, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x08, 0x52, 0x02, 0x6f, 0x6b, 0x22, 0x59, 0x0a, 0x11, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x52,
+	0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x12, 0x44, 0x0a, 0x0c, 0x72, 0x65,
+	0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x6e, 0x66, 0x6f, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x20, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2e, 0x63, 0x6f, 0x72,
+	0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x52, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x6e,
+	0x66, 0x6f, 0x52, 0x0c, 0x72, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x6e, 0x66, 0x6f,
+	0x22, 0x14, 0x0a, 0x12, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x52, 0x65, 0x6c, 0x61, 0x74, 0x69,
+	0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x42, 0x53, 0x5a, 0x51, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62,
+	0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x43, 0x6c, 0x6f, 0x75, 0x64, 0x53, 0x74, 0x72, 0x69, 0x76, 0x65,
+	0x72, 0x2f, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2d, 0x63, 0x6f, 0x72, 0x65,
+	0x2d, 0x61, 0x70, 0x69, 0x2f, 0x62, 0x69, 0x7a, 0x2f, 0x61, 0x70, 0x70, 0x6c, 0x69, 0x63, 0x61,
+	0x74, 0x69, 0x6f, 0x6e, 0x2f, 0x64, 0x74, 0x6f, 0x2f, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69,
+	0x6e, 0x64, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x62, 0x06, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x33,
 }
 
-var file_cloudmind_core_api_relation_proto_goTypes = []interface{}{}
+var (
+	file_cloudmind_core_api_relation_proto_rawDescOnce sync.Once
+	file_cloudmind_core_api_relation_proto_rawDescData = file_cloudmind_core_api_relation_proto_rawDesc
+)
+
+func file_cloudmind_core_api_relation_proto_rawDescGZIP() []byte {
+	file_cloudmind_core_api_relation_proto_rawDescOnce.Do(func() {
+		file_cloudmind_core_api_relation_proto_rawDescData = protoimpl.X.CompressGZIP(file_cloudmind_core_api_relation_proto_rawDescData)
+	})
+	return file_cloudmind_core_api_relation_proto_rawDescData
+}
+
+var file_cloudmind_core_api_relation_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_cloudmind_core_api_relation_proto_goTypes = []interface{}{
+	(*CreateRelationReq)(nil),    // 0: cloudmind.core_api.CreateRelationReq
+	(*CreateRelationResp)(nil),   // 1: cloudmind.core_api.CreateRelationResp
+	(*GetFromRelationsReq)(nil),  // 2: cloudmind.core_api.GetFromRelationsReq
+	(*GetFromRelationsResp)(nil), // 3: cloudmind.core_api.GetFromRelationsResp
+	(*GetToRelationsReq)(nil),    // 4: cloudmind.core_api.GetToRelationsReq
+	(*GetToRelationsResp)(nil),   // 5: cloudmind.core_api.GetToRelationsResp
+	(*GetRelationReq)(nil),       // 6: cloudmind.core_api.GetRelationReq
+	(*GetRelationResp)(nil),      // 7: cloudmind.core_api.GetRelationResp
+	(*DeleteRelationReq)(nil),    // 8: cloudmind.core_api.DeleteRelationReq
+	(*DeleteRelationResp)(nil),   // 9: cloudmind.core_api.DeleteRelationResp
+	(*RelationInfo)(nil),         // 10: cloudmind.core_api.RelationInfo
+	(TargetType)(0),              // 11: cloudmind.core_api.TargetType
+	(*User)(nil),                 // 12: cloudmind.core_api.User
+}
 var file_cloudmind_core_api_relation_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	10, // 0: cloudmind.core_api.CreateRelationReq.relation:type_name -> cloudmind.core_api.RelationInfo
+	11, // 1: cloudmind.core_api.GetFromRelationsReq.toType:type_name -> cloudmind.core_api.TargetType
+	12, // 2: cloudmind.core_api.GetFromRelationsResp.users:type_name -> cloudmind.core_api.User
+	11, // 3: cloudmind.core_api.GetToRelationsReq.fromType:type_name -> cloudmind.core_api.TargetType
+	12, // 4: cloudmind.core_api.GetToRelationsResp.users:type_name -> cloudmind.core_api.User
+	10, // 5: cloudmind.core_api.DeleteRelationReq.relationInfo:type_name -> cloudmind.core_api.RelationInfo
+	6,  // [6:6] is the sub-list for method output_type
+	6,  // [6:6] is the sub-list for method input_type
+	6,  // [6:6] is the sub-list for extension type_name
+	6,  // [6:6] is the sub-list for extension extendee
+	0,  // [0:6] is the sub-list for field type_name
 }
 
 
@@ -50,18 +715,144 @@ func file_cloudmind_core_api_relation_proto_init() {
 	if File_cloudmind_core_api_relation_proto != nil {
 		return
 	}
+	file_cloudmind_core_api_common_proto_init()
+	if !protoimpl.UnsafeEnabled {
+		file_cloudmind_core_api_relation_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreateRelationReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_relation_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreateRelationResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_relation_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetFromRelationsReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_relation_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetFromRelationsResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_relation_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetToRelationsReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_relation_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetToRelationsResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_relation_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetRelationReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_relation_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetRelationResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_relation_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DeleteRelationReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_relation_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DeleteRelationResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+	}
+	file_cloudmind_core_api_relation_proto_msgTypes[2].OneofWrappers = []interface{}{}
+	file_cloudmind_core_api_relation_proto_msgTypes[4].OneofWrappers = []interface{}{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_cloudmind_core_api_relation_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   0,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_cloudmind_core_api_relation_proto_goTypes,
 		DependencyIndexes: file_cloudmind_core_api_relation_proto_depIdxs,
+		MessageInfos:      file_cloudmind_core_api_relation_proto_msgTypes,
 	}.Build()
 	File_cloudmind_core_api_relation_proto = out.File
 	file_cloudmind_core_api_relation_proto_rawDesc = nil

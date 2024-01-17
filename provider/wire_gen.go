@@ -9,9 +9,9 @@ package provider
 import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/service"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/etcd"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
 )
 
 // Injectors from wire.go:
@@ -21,29 +21,37 @@ func NewProvider() (*Provider, error) {
 	if err != nil {
 		return nil, err
 	}
-	resolver := etcd.NewEtcd(configConfig)
-	client := cloudmind_sts.NewCloudMindSts(resolver, configConfig)
-	cloudMindSts := &cloudmind_sts.CloudMindSts{
+	client := cloudmind_content.NewCloudMindContent(configConfig)
+	cloudMindContent := &cloudmind_content.CloudMindContent{
 		Client: client,
 	}
 	contentService := &service.ContentService{
-		Config:       configConfig,
-		CloudMindSts: cloudMindSts,
+		Config:           configConfig,
+		CloudMindContent: cloudMindContent,
 	}
-	contentserviceClient := cloudmind_content.NewCloudMindContent(resolver, configConfig)
-	cloudMindContent := &cloudmind_content.CloudMindContent{
-		Client: contentserviceClient,
+	stsserviceClient := cloudmind_sts.NewCloudMindSts(configConfig)
+	cloudMindSts := &cloudmind_sts.CloudMindSts{
+		Client: stsserviceClient,
 	}
 	authService := &service.AuthService{
 		Config:           configConfig,
 		CloudMindContent: cloudMindContent,
 		CloudMindSts:     cloudMindSts,
 	}
+	relationserviceClient := platform_relation.NewPlatFormRelation(configConfig)
+	platFormRelation := &platform_relation.PlatFormRelation{
+		Client: relationserviceClient,
+	}
+	relationService := &service.RelationService{
+		Config:           configConfig,
+		PlatFormRelation: platFormRelation,
+		CloudMindContent: cloudMindContent,
+	}
 	providerProvider := &Provider{
-		Config:         configConfig,
-		Etcd:           resolver,
-		ContentService: contentService,
-		AuthService:    authService,
+		Config:          configConfig,
+		ContentService:  contentService,
+		AuthService:     authService,
+		RelationService: relationService,
 	}
 	return providerProvider, nil
 }

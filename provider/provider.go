@@ -1,14 +1,12 @@
 package provider
 
 import (
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/etcd"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
-	"github.com/cloudwego/kitex/pkg/discovery"
-	"github.com/google/wire"
-
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/service"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
+	"github.com/google/wire"
 )
 
 var provider *Provider
@@ -23,10 +21,10 @@ func Init() {
 
 // Provider 提供controller依赖的对象
 type Provider struct {
-	Config         *config.Config
-	Etcd           discovery.Resolver
-	ContentService service.IContentService
-	AuthService    service.IAuthService
+	Config          *config.Config
+	ContentService  service.IContentService
+	AuthService     service.IAuthService
+	RelationService service.IRelationService
 }
 
 func Get() *Provider {
@@ -36,21 +34,13 @@ func Get() *Provider {
 var RPCSet = wire.NewSet(
 	cloudmind_content.CloudMindContentSet,
 	cloudmind_sts.CloudMindStsSet,
+	platform_relation.PlatFormRelationSet,
 )
 
 var ApplicationSet = wire.NewSet(
 	service.ContentServiceSet,
-	//service.CollectionServiceSet,
+	service.RelationServiceSet,
 	service.AuthServiceSet,
-	//service.CommentServiceSet,
-	//service.UserServiceSet,
-	//service.MomentServiceSet,
-	//service.LikeServiceSet,
-	//service.PostServiceSet,
-	//service.SystemServiceSet,
-	//service.StsServiceSet,
-	//service.PlanServiceSet,
-	//service.IncentiveServiceSet,
 )
 
 var DomainSet = wire.NewSet(
@@ -63,7 +53,6 @@ var DomainSet = wire.NewSet(
 
 var InfrastructureSet = wire.NewSet(
 	config.NewConfig,
-	etcd.NewEtcd,
 	RPCSet,
 )
 

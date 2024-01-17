@@ -3,9 +3,8 @@
 package core_api
 
 import (
-	"github.com/cloudwego/hertz/pkg/app/server"
-
 	core_api "github.com/CloudStriver/cloudmind-core-api/biz/adaptor/controller/core_api"
+	"github.com/cloudwego/hertz/pkg/app/server"
 )
 
 /*
@@ -18,9 +17,11 @@ import (
 func Register(r *server.Hertz) {
 
 	root := r.Group("/", rootMw()...)
+	root.GET("/relation", append(_getrelationMw(), core_api.GetRelation)...)
+	_relation := root.Group("/relation", _relationMw()...)
+	_relation.POST("/delete", append(_deleterelationMw(), core_api.DeleteRelation)...)
 	{
 		_auth := root.Group("/auth", _authMw()...)
-		_auth.GET("/captcha", append(_getcaptchaMw(), core_api.GetCaptcha)...)
 		_auth.POST("/refresh", append(_refreshtokenMw(), core_api.RefreshToken)...)
 		_auth.POST("/register", append(_registerMw(), core_api.Register)...)
 		_auth.POST("/send", append(_sendemailMw(), core_api.SendEmail)...)
@@ -35,5 +36,22 @@ func Register(r *server.Hertz) {
 			_reset.POST("/email", append(_setpasswordbyemailMw(), core_api.SetPasswordByEmail)...)
 			_reset.POST("/password", append(_setpasswordbypasswordMw(), core_api.SetPasswordByPassword)...)
 		}
+	}
+	{
+		_content := root.Group("/content", _contentMw()...)
+		{
+			_user := _content.Group("/user", _userMw()...)
+			_user.GET("/search", append(_searchuserMw(), core_api.SearchUser)...)
+			_user.POST("/update", append(_updateuserMw(), core_api.UpdateUser)...)
+		}
+	}
+	{
+		_relation0 := root.Group("/relation", _relation0Mw()...)
+		_relation0.POST("/create", append(_createrelationMw(), core_api.CreateRelation)...)
+	}
+	{
+		_relations := root.Group("/relations", _relationsMw()...)
+		_relations.GET("/from", append(_getfromrelationsMw(), core_api.GetFromRelations)...)
+		_relations.GET("/to", append(_gettorelationsMw(), core_api.GetToRelations)...)
 	}
 }

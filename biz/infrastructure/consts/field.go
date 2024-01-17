@@ -6,3 +6,5 @@ import (
 
 var PageSize int64 = 10
 var NotContent = codes.Code(204)
+
+const FromTypeUser = 1

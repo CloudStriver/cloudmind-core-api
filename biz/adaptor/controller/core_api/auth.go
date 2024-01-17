@@ -21,9 +21,9 @@ func Register(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-
+	resp := new(core_api.RegisterResp)
 	p := provider.Get()
-	resp, err := p.AuthService.Register(ctx, &req)
+	resp, err = p.AuthService.Register(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
@@ -38,8 +38,9 @@ func EmailLogin(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
+	resp := new(core_api.EmailLoginResp)
 	p := provider.Get()
-	resp, err := p.AuthService.EmailLogin(ctx, &req)
+	resp, err = p.AuthService.EmailLogin(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
@@ -54,8 +55,9 @@ func GithubLogin(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
+	resp := new(core_api.GithubLoginResp)
 	p := provider.Get()
-	resp, err := p.AuthService.GithubLogin(ctx, &req)
+	resp, err = p.AuthService.GithubLogin(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
@@ -70,8 +72,9 @@ func RefreshToken(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
+	resp := new(core_api.RefreshTokenResp)
 	p := provider.Get()
-	resp, err := p.AuthService.RefreshToken(ctx, &req)
+	resp, err = p.AuthService.RefreshToken(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
@@ -85,25 +88,9 @@ func SendEmail(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-
+	resp := new(core_api.SendEmailResp)
 	p := provider.Get()
-	resp, err := p.AuthService.SendEmail(ctx, &req)
-	adaptor.PostProcess(ctx, c, &req, resp, err)
-}
-
-// GetCaptcha .
-// @router /auth/captcha [GET]
-func GetCaptcha(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.GetCaptchaReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	p := provider.Get()
-	resp, err := p.AuthService.GetCaptcha(ctx, &req)
+	resp, err = p.AuthService.SendEmail(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
@@ -117,9 +104,9 @@ func SetPasswordByEmail(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-
+	resp := new(core_api.SetPasswordByEmailResp)
 	p := provider.Get()
-	resp, err := p.AuthService.SetPasswordByEmail(ctx, &req)
+	resp, err = p.AuthService.SetPasswordByEmail(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
@@ -133,9 +120,9 @@ func SetPasswordByPassword(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-
+	resp := new(core_api.SetPasswordByPasswordResp)
 	p := provider.Get()
-	resp, err := p.AuthService.SetPasswordByPassword(ctx, &req)
+	resp, err = p.AuthService.SetPasswordByPassword(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
@@ -149,8 +136,8 @@ func GiteeLogin(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-
+	resp := new(core_api.GiteeLoginResp)
 	p := provider.Get()
-	resp, err := p.AuthService.GiteeLogin(ctx, &req)
+	resp, err = p.AuthService.GiteeLogin(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }

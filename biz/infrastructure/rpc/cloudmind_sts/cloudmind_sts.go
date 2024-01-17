@@ -3,8 +3,8 @@ package cloudmind_sts
 import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
 	"github.com/CloudStriver/go-pkg/utils/kitex/client"
+	//"github.com/CloudStriver/go-pkg/utils/kitex/client"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/sts/stsservice"
-	"github.com/cloudwego/kitex/pkg/discovery"
 	"github.com/google/wire"
 )
 
@@ -22,6 +22,6 @@ var CloudMindStsSet = wire.NewSet(
 	wire.Bind(new(ICloudMindSts), new(*CloudMindSts)),
 )
 
-func NewCloudMindSts(etcd discovery.Resolver, c *config.Config) stsservice.Client {
-	return client.NewClient(c.Name, "cloudmind-sts", etcd, stsservice.NewClient)
+func NewCloudMindSts(config *config.Config) stsservice.Client {
+	return client.NewClient(config.Name, "cloudmind-sts", stsservice.NewClient)
 }

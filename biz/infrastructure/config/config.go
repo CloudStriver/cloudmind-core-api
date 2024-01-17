@@ -20,15 +20,10 @@ type OauthConf struct {
 	ClientId string
 	Secret   string
 }
-
-type EtcdConf struct {
-	Hosts []string
-}
 type Config struct {
 	service.ServiceConf
 	ListenOn   string
 	Auth       Auth
-	EtcdConf   EtcdConf
 	GithubConf OauthConf
 	GiteeConf  OauthConf
 }
