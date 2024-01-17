@@ -8,8 +8,7 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/util/oauth"
-	"github.com/CloudStriver/go-pkg/utils/util/log"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/utils/oauth"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/sts"
 	"github.com/golang-jwt/jwt/v4"
@@ -25,7 +24,6 @@ type IAuthService interface {
 	SendEmail(ctx context.Context, req *core_api.SendEmailReq) (resp *core_api.SendEmailResp, err error)
 	SetPasswordByEmail(ctx context.Context, req *core_api.SetPasswordByEmailReq) (resp *core_api.SetPasswordByEmailResp, err error)
 	SetPasswordByPassword(ctx context.Context, req *core_api.SetPasswordByPasswordReq) (resp *core_api.SetPasswordByPasswordResp, err error)
-	GetCaptcha(ctx context.Context, req *core_api.GetCaptchaReq) (resp *core_api.GetCaptchaResp, err error)
 	EmailLogin(ctx context.Context, req *core_api.EmailLoginReq) (resp *core_api.EmailLoginResp, err error)
 	GithubLogin(ctx context.Context, req *core_api.GithubLoginReq) (resp *core_api.GithubLoginResp, err error)
 	GiteeLogin(ctx context.Context, req *core_api.GiteeLoginReq) (resp *core_api.GiteeLoginResp, err error)
@@ -55,16 +53,12 @@ func (s *AuthService) EmailLogin(ctx context.Context, req *core_api.EmailLoginRe
 	loginResp, err := s.CloudMindSts.Login(ctx, &sts.LoginReq{
 		Auth:     &sts.AuthInfo{AuthType: sts.AuthType_email, AppId: req.Email},
 		Password: req.Password,
-		Captcha: &sts.Captcha{
-			Point: &sts.Point{X: req.Point.X, Y: req.Point.Y},
-			Key:   req.Key,
-		},
 	})
 	if err != nil {
 		return resp, err
 	}
 
-	resp.ShortToken, resp.LongToken, err = generateShortLongToken(ctx, s.Config.Auth.SecretKey, loginResp.UserId, s.Config.Auth.AccessExpire)
+	resp.ShortToken, resp.LongToken, err = generateShortLongToken(s.Config.Auth.SecretKey, loginResp.UserId, s.Config.Auth.AccessExpire)
 	if err != nil {
 		return resp, consts.ErrAuthentication
 	}
@@ -116,7 +110,7 @@ func (s *AuthService) ThirdLogin(ctx context.Context, code string, authType sts.
 			UserInfo: &content.UserInfo{
 				UserId: createAuthResp.UserId,
 				Name:   data.Name,
-				Sex:    content.Sex_unKnownSex,
+				Sex:    1,
 			},
 		}); err != nil {
 			return "", "", "", err
@@ -126,22 +120,20 @@ func (s *AuthService) ThirdLogin(ctx context.Context, code string, authType sts.
 	} else {
 		userId = loginResp.UserId
 	}
-	shortToken, longToken, err = generateShortLongToken(ctx, s.Config.Auth.SecretKey, userId, s.Config.Auth.AccessExpire)
+	shortToken, longToken, err = generateShortLongToken(s.Config.Auth.SecretKey, userId, s.Config.Auth.AccessExpire)
 	if err != nil {
-		log.CtxError(ctx, "生成长短token异常[%v]\n", err)
 		return "", "", "", consts.ErrAuthentication
 	}
 	return shortToken, longToken, userId, nil
 }
 
-func (s *AuthService) RefreshToken(ctx context.Context, req *core_api.RefreshTokenReq) (resp *core_api.RefreshTokenResp, err error) {
+func (s *AuthService) RefreshToken(_ context.Context, req *core_api.RefreshTokenReq) (resp *core_api.RefreshTokenResp, err error) {
 	resp = new(core_api.RefreshTokenResp)
 	claims := make(jwt.MapClaims)
 	token, err := jwt.ParseWithClaims(req.LongToken, claims, func(_ *jwt.Token) (interface{}, error) {
 		return jwt.ParseECPublicKeyFromPEM([]byte(s.Config.Auth.PublicKey))
 	})
 	if err != nil {
-		log.CtxError(ctx, "解析token异常[%v]\n", err)
 		return resp, consts.ErrParseToken
 	}
 	if !token.Valid {
@@ -155,7 +147,7 @@ func (s *AuthService) RefreshToken(ctx context.Context, req *core_api.RefreshTok
 		return resp, consts.ErrNotLongToken
 	}
 
-	resp.ShortToken, resp.LongToken, err = generateShortLongToken(ctx, s.Config.Auth.SecretKey, userId, s.Config.Auth.AccessExpire)
+	resp.ShortToken, resp.LongToken, err = generateShortLongToken(s.Config.Auth.SecretKey, userId, s.Config.Auth.AccessExpire)
 	if err != nil {
 		return resp, consts.ErrAuthentication
 	}
@@ -173,9 +165,8 @@ func (s *AuthService) Register(ctx context.Context, req *core_api.RegisterReq) (
 			Role:     sts.Role_user,
 			Password: lo.ToPtr(req.Password),
 		},
-		Code: req.Code,
+		Code: lo.ToPtr(req.Code),
 	})
-
 	if err != nil {
 		return resp, err
 	}
@@ -184,13 +175,13 @@ func (s *AuthService) Register(ctx context.Context, req *core_api.RegisterReq) (
 		UserInfo: &content.UserInfo{
 			UserId: createAuthResp.UserId,
 			Name:   req.Name,
-			Sex:    content.Sex(req.Sex),
+			Sex:    req.Sex,
 		},
 	}); err != nil {
 		return resp, err
 	}
 
-	resp.ShortToken, resp.LongToken, err = generateShortLongToken(ctx, s.Config.Auth.SecretKey, createAuthResp.UserId, s.Config.Auth.AccessExpire)
+	resp.ShortToken, resp.LongToken, err = generateShortLongToken(s.Config.Auth.SecretKey, createAuthResp.UserId, s.Config.Auth.AccessExpire)
 	if err != nil {
 		return resp, consts.ErrAuthentication
 	}
@@ -198,15 +189,13 @@ func (s *AuthService) Register(ctx context.Context, req *core_api.RegisterReq) (
 	return resp, nil
 }
 
-func generateShortLongToken(ctx context.Context, secretKey, userId string, accessExpire int64) (shortToken, longToken string, err error) {
+func generateShortLongToken(secretKey, userId string, accessExpire int64) (shortToken, longToken string, err error) {
 	shortToken, _, err = generateJwtToken(userId, secretKey, accessExpire)
 	if err != nil {
-		log.CtxError(ctx, "生成短token异常[%v]\n", err)
 		return "", "", err
 	}
 	longToken, _, err = generateJwtToken(userId, secretKey, 24*30*accessExpire)
 	if err != nil {
-		log.CtxError(ctx, "生成长token异常[%v]\n", err)
 		return "", "", err
 	}
 	return shortToken, longToken, nil
@@ -247,10 +236,7 @@ func (s *AuthService) SetPasswordByEmail(ctx context.Context, req *core_api.SetP
 	resp = new(core_api.SetPasswordByEmailResp)
 	if _, err = s.CloudMindSts.SetPassword(ctx, &sts.SetPasswordReq{
 		Key: &sts.SetPasswordReq_EmailOptions{
-			EmailOptions: &sts.EmailOptions{
-				Email: req.Email,
-				Code:  req.Code,
-			},
+			EmailOptions: &sts.EmailOptions{Email: req.Email, Code: req.Code},
 		},
 		Password: req.Password,
 	}); err != nil {
@@ -276,18 +262,5 @@ func (s *AuthService) SetPasswordByPassword(ctx context.Context, req *core_api.S
 	}); err != nil {
 		return resp, err
 	}
-	return resp, nil
-}
-
-func (s *AuthService) GetCaptcha(ctx context.Context, req *core_api.GetCaptchaReq) (resp *core_api.GetCaptchaResp, err error) {
-	resp = new(core_api.GetCaptchaResp)
-	createCaptchaResp, err := s.CloudMindSts.CreateCaptcha(ctx, &sts.CreateCaptchaReq{})
-	if err != nil {
-		return resp, err
-	}
-
-	resp.Key = createCaptchaResp.Key
-	resp.JigsawImageBase64 = createCaptchaResp.JigsawImageBase64
-	resp.OriginalImageBase64 = createCaptchaResp.OriginalImageBase64
 	return resp, nil
 }

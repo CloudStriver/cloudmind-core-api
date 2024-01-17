@@ -72,3 +72,51 @@ func _giteeloginMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+func _userMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+func _searchuserMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+func _updateuserMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+func _relationMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+func _createrelationMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+func _getrelationMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+func _relationsMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+func _getrelationsMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+func _deleterelationMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+func _relation0Mw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+func _getfromrelationsMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+func _gettorelationsMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}

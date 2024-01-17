@@ -59,7 +59,6 @@ func OauthLogin(conf config.OauthConf, authType sts.AuthType, code string) (*Use
 	if err = json.NewDecoder(res.Body).Decode(&userInfo); err != nil {
 		return nil, err
 	}
-	fmt.Println(res.StatusCode, userInfo)
 	return userInfo, nil
 }
 
