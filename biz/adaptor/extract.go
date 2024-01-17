@@ -12,7 +12,9 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
-const hertzContext string = "hertzContext"
+type CommonString string
+
+const hertzContext CommonString = "hertzContext"
 
 func InjectContext(ctx context.Context, c *app.RequestContext) context.Context {
 	return context.WithValue(ctx, hertzContext, c)
