@@ -17,9 +17,7 @@ import (
 func Register(r *server.Hertz) {
 
 	root := r.Group("/", rootMw()...)
-	root.GET("/relation", append(_getrelationMw(), core_api.GetRelation)...)
-	_relation := root.Group("/relation", _relationMw()...)
-	_relation.POST("/delete", append(_deleterelationMw(), core_api.DeleteRelation)...)
+	root.POST("/sts", append(_applysignedurlMw(), core_api.ApplySignedUrl)...)
 	{
 		_auth := root.Group("/auth", _authMw()...)
 		_auth.POST("/refresh", append(_refreshtokenMw(), core_api.RefreshToken)...)
@@ -45,6 +43,9 @@ func Register(r *server.Hertz) {
 			_user.POST("/update", append(_updateuserMw(), core_api.UpdateUser)...)
 		}
 	}
+	root.GET("/relation", append(_getrelationMw(), core_api.GetRelation)...)
+	_relation := root.Group("/relation", _relationMw()...)
+	_relation.POST("/delete", append(_deleterelationMw(), core_api.DeleteRelation)...)
 	{
 		_relation0 := root.Group("/relation", _relation0Mw()...)
 		_relation0.POST("/create", append(_createrelationMw(), core_api.CreateRelation)...)

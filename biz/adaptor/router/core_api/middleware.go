@@ -120,3 +120,8 @@ func _gettorelationsMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _applysignedurlMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
