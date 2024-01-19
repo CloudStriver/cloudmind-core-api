@@ -25,6 +25,7 @@ type Provider struct {
 	ContentService  service.IContentService
 	AuthService     service.IAuthService
 	RelationService service.IRelationService
+	StsService      service.IStsService
 }
 
 func Get() *Provider {
@@ -41,14 +42,15 @@ var ApplicationSet = wire.NewSet(
 	service.ContentServiceSet,
 	service.RelationServiceSet,
 	service.AuthServiceSet,
+	service.StsServiceSet,
 )
 
 var DomainSet = wire.NewSet(
-//domainservice.UserDomainServiceSet,
-//domainservice.CommentDomainServiceSet,
-//domainservice.MomentDomainServiceSet,
-//domainservice.PostDomainServiceSet,
-//domainservice.CatImageDomainServiceSet,
+	//domainservice.UserDomainServiceSet,
+	//domainservice.CommentDomainServiceSet,
+	//domainservice.MomentDomainServiceSet,
+	//domainservice.PostDomainServiceSet,
+	//domainservice.CatImageDomainServiceSet,
 )
 
 var InfrastructureSet = wire.NewSet(
