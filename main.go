@@ -46,7 +46,6 @@ func main() {
 		AllowOriginFunc: func(origin string) bool {
 			return true
 		}, MaxAge: 24 * time.Hour,
-		AllowAllOrigins: true,
 	}), tracing.ServerMiddleware(cfg), middleware.EnvironmentMiddleware, recovery.Recovery(), func(ctx context.Context, c *app.RequestContext) {
 		ctx = adaptor.InjectContext(ctx, c)
 		c.Next(ctx)
