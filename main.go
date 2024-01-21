@@ -9,7 +9,6 @@ import (
 	"github.com/CloudStriver/go-pkg/utils/hertz/middleware"
 	"github.com/CloudStriver/go-pkg/utils/util/log"
 	"github.com/hertz-contrib/cors"
-	"github.com/hertz-contrib/obs-opentelemetry/tracing"
 	"time"
 
 	"github.com/cloudwego/hertz/pkg/app"
@@ -17,6 +16,7 @@ import (
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 	prometheus "github.com/hertz-contrib/monitor-prometheus"
+	"github.com/hertz-contrib/obs-opentelemetry/tracing"
 	"go.opentelemetry.io/contrib/propagators/b3"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/propagation"
@@ -46,7 +46,6 @@ func main() {
 		AllowOriginFunc: func(origin string) bool {
 			return true
 		}, MaxAge: 24 * time.Hour,
-		AllowAllOrigins: true,
 	}), tracing.ServerMiddleware(cfg), middleware.EnvironmentMiddleware, recovery.Recovery(), func(ctx context.Context, c *app.RequestContext) {
 		ctx = adaptor.InjectContext(ctx, c)
 		c.Next(ctx)
