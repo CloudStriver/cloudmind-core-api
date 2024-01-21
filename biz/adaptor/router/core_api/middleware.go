@@ -120,3 +120,203 @@ func _gettorelationsMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _applysignedurlMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _fileMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _addfiletopublicspaceMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getfilecountMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _deletefileMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getfileisexistMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getfileMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getfilelistMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _movefileMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _recoverrecyclebinfileMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _savefiletoprivatespaceMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _updatefileMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _folderMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _createfolderMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getfoldersizeMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _labelMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _createlabelMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _deletelabelMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getlabelMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _updatelabelMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _postMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _createpostMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _deletepostMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getpostMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getpostsMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _updatepostMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _sharecodeMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _createsharecodeMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _deletesharecodeMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getfilebysharingcodeMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _parsingsharecodeMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _updatesharecodeMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _sharefileMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _deletesharefileMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getsharelistMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _createuserMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _deleteuserMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getuserdetailMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getuserMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _stsMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}

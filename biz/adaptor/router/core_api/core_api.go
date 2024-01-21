@@ -17,41 +17,66 @@ import (
 func Register(r *server.Hertz) {
 
 	root := r.Group("/", rootMw()...)
-	root.GET("/relation", append(_getrelationMw(), core_api.GetRelation)...)
-	_relation := root.Group("/relation", _relationMw()...)
-	_relation.POST("/delete", append(_deleterelationMw(), core_api.DeleteRelation)...)
 	{
 		_auth := root.Group("/auth", _authMw()...)
-		_auth.POST("/refresh", append(_refreshtokenMw(), core_api.RefreshToken)...)
+		_auth.POST("/emailLogin", append(_emailloginMw(), core_api.EmailLogin)...)
+		_auth.GET("/giteeLogin", append(_giteeloginMw(), core_api.GiteeLogin)...)
+		_auth.GET("/githubLogin", append(_githubloginMw(), core_api.GithubLogin)...)
+		_auth.POST("/refreshToken", append(_refreshtokenMw(), core_api.RefreshToken)...)
 		_auth.POST("/register", append(_registerMw(), core_api.Register)...)
-		_auth.POST("/send", append(_sendemailMw(), core_api.SendEmail)...)
-		{
-			_login := _auth.Group("/login", _loginMw()...)
-			_login.POST("/email", append(_emailloginMw(), core_api.EmailLogin)...)
-			_login.GET("/gitee", append(_giteeloginMw(), core_api.GiteeLogin)...)
-			_login.GET("/github", append(_githubloginMw(), core_api.GithubLogin)...)
-		}
-		{
-			_reset := _auth.Group("/reset", _resetMw()...)
-			_reset.POST("/email", append(_setpasswordbyemailMw(), core_api.SetPasswordByEmail)...)
-			_reset.POST("/password", append(_setpasswordbypasswordMw(), core_api.SetPasswordByPassword)...)
-		}
+		_auth.POST("/sendEmail", append(_sendemailMw(), core_api.SendEmail)...)
+		_auth.POST("/setPasswordByEmail", append(_setpasswordbyemailMw(), core_api.SetPasswordByEmail)...)
+		_auth.POST("/setPasswordByPassword", append(_setpasswordbypasswordMw(), core_api.SetPasswordByPassword)...)
 	}
 	{
 		_content := root.Group("/content", _contentMw()...)
-		{
-			_user := _content.Group("/user", _userMw()...)
-			_user.GET("/search", append(_searchuserMw(), core_api.SearchUser)...)
-			_user.POST("/update", append(_updateuserMw(), core_api.UpdateUser)...)
-		}
+		_content.POST("/addFileToPublicSpace", append(_addfiletopublicspaceMw(), core_api.AddFileToPublicSpace)...)
+		_content.POST("/createFolder", append(_createfolderMw(), core_api.CreateFolder)...)
+		_content.POST("/createLabel", append(_createlabelMw(), core_api.CreateLabel)...)
+		_content.POST("/createPost", append(_createpostMw(), core_api.CreatePost)...)
+		_content.POST("/createShareCode", append(_createsharecodeMw(), core_api.CreateShareCode)...)
+		_content.POST("/createUser", append(_createuserMw(), core_api.CreateUser)...)
+		_content.POST("/deleteFile", append(_deletefileMw(), core_api.DeleteFile)...)
+		_content.POST("/deleteLabel", append(_deletelabelMw(), core_api.DeleteLabel)...)
+		_content.POST("/deletePost", append(_deletepostMw(), core_api.DeletePost)...)
+		_content.POST("/deleteShareCode", append(_deletesharecodeMw(), core_api.DeleteShareCode)...)
+		_content.POST("/deleteShareFile", append(_deletesharefileMw(), core_api.DeleteShareFile)...)
+		_content.POST("/deleteUser", append(_deleteuserMw(), core_api.DeleteUser)...)
+		_content.GET("/getFile", append(_getfileMw(), core_api.GetFile)...)
+		_content.GET("/getFileBySharingCode", append(_getfilebysharingcodeMw(), core_api.GetFileBySharingCode)...)
+		_content.GET("/getFileIsExist", append(_getfileisexistMw(), core_api.GetFileIsExist)...)
+		_content.GET("/getFileList", append(_getfilelistMw(), core_api.GetFileList)...)
+		_content.GET("/getFolderSize", append(_getfoldersizeMw(), core_api.GetFolderSize)...)
+		_content.GET("/getLabel", append(_getlabelMw(), core_api.GetLabel)...)
+		_content.GET("/getPost", append(_getpostMw(), core_api.GetPost)...)
+		_content.GET("/getPosts", append(_getpostsMw(), core_api.GetPosts)...)
+		_content.GET("/getShareList", append(_getsharelistMw(), core_api.GetShareList)...)
+		_content.GET("/getUser", append(_getuserMw(), core_api.GetUser)...)
+		_content.GET("/getUserDetail", append(_getuserdetailMw(), core_api.GetUserDetail)...)
+		_content.POST("/moveFile", append(_movefileMw(), core_api.MoveFile)...)
+		_content.GET("/parsingShareCode", append(_parsingsharecodeMw(), core_api.ParsingShareCode)...)
+		_content.POST("/recoverRecycleBinFile", append(_recoverrecyclebinfileMw(), core_api.RecoverRecycleBinFile)...)
+		_content.POST("/saveFileToPrivateSpace", append(_savefiletoprivatespaceMw(), core_api.SaveFileToPrivateSpace)...)
+		_content.GET("/searchUser", append(_searchuserMw(), core_api.SearchUser)...)
+		_content.POST("/updateFile", append(_updatefileMw(), core_api.UpdateFile)...)
+		_content.POST("/updateLabel", append(_updatelabelMw(), core_api.UpdateLabel)...)
+		_content.POST("/updatePost", append(_updatepostMw(), core_api.UpdatePost)...)
+		_content.POST("/updateShareCode", append(_updatesharecodeMw(), core_api.UpdateShareCode)...)
+		_content.POST("/updateUser", append(_updateuserMw(), core_api.UpdateUser)...)
 	}
 	{
-		_relation0 := root.Group("/relation", _relation0Mw()...)
-		_relation0.POST("/create", append(_createrelationMw(), core_api.CreateRelation)...)
+		_relation := root.Group("/relation", _relationMw()...)
+		_relation.POST("/createRelation", append(_createrelationMw(), core_api.CreateRelation)...)
+		_relation.POST("/deleteRelation", append(_deleterelationMw(), core_api.DeleteRelation)...)
+		_relation.GET("/getRelation", append(_getrelationMw(), core_api.GetRelation)...)
 	}
 	{
 		_relations := root.Group("/relations", _relationsMw()...)
-		_relations.GET("/from", append(_getfromrelationsMw(), core_api.GetFromRelations)...)
-		_relations.GET("/to", append(_gettorelationsMw(), core_api.GetToRelations)...)
+		_relations.GET("/getFromRelations", append(_getfromrelationsMw(), core_api.GetFromRelations)...)
+		_relations.GET("/getToRelations", append(_gettorelationsMw(), core_api.GetToRelations)...)
+	}
+	{
+		_sts := root.Group("/sts", _stsMw()...)
+		_sts.POST("/applySignedUrl", append(_applysignedurlMw(), core_api.ApplySignedUrl)...)
 	}
 }

@@ -22,7 +22,7 @@ func CreateRelation(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	var resp *core_api.CreateRelationResp
+	resp := new(core_api.CreateRelationResp)
 	p := provider.Get()
 	resp, err = p.RelationService.CreateRelation(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
@@ -39,7 +39,7 @@ func GetRelation(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	var resp *core_api.GetRelationResp
+	resp := new(core_api.GetRelationResp)
 	p := provider.Get()
 	resp, err = p.RelationService.GetRelation(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
@@ -57,7 +57,7 @@ func GetFromRelations(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	var resp *core_api.GetFromRelationsResp
+	resp := new(core_api.GetFromRelationsResp)
 	p := provider.Get()
 	resp, err = p.RelationService.GetFromRelations(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
@@ -75,7 +75,7 @@ func GetToRelations(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	var resp *core_api.GetToRelationsResp
+	resp := new(core_api.GetToRelationsResp)
 	p := provider.Get()
 	resp, err = p.RelationService.GetToRelations(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
@@ -93,7 +93,7 @@ func DeleteRelation(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	var resp *core_api.DeleteRelationResp
+	resp := new(core_api.DeleteRelationResp)
 	p := provider.Get()
 	resp, err = p.RelationService.DeleteRelation(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
