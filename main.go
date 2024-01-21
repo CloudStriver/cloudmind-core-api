@@ -9,6 +9,7 @@ import (
 	"github.com/CloudStriver/go-pkg/utils/hertz/middleware"
 	"github.com/CloudStriver/go-pkg/utils/util/log"
 	"github.com/hertz-contrib/cors"
+	"time"
 
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/app/middlewares/server/recovery"
@@ -37,7 +38,14 @@ func main() {
 		tracer,
 	)
 	h.Use(cors.New(cors.Config{
-		AllowAllOrigins: true,
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"*"},
+		AllowHeaders:     []string{"*"},
+		ExposeHeaders:    []string{"*"},
+		AllowCredentials: true,
+		AllowOriginFunc: func(origin string) bool {
+			return true
+		}, MaxAge: 24 * time.Hour,
 	}), tracing.ServerMiddleware(cfg), middleware.EnvironmentMiddleware, recovery.Recovery(), func(ctx context.Context, c *app.RequestContext) {
 		ctx = adaptor.InjectContext(ctx, c)
 		c.Next(ctx)
