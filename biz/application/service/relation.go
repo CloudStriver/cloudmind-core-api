@@ -2,8 +2,10 @@ package service
 
 import (
 	"context"
+	"github.com/CloudStriver/cloudmind-core-api/biz/adaptor"
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/convertor"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
@@ -124,6 +126,10 @@ func (s *RelationService) GetToRelations(ctx context.Context, req *core_api.GetT
 
 func (s *RelationService) DeleteRelation(ctx context.Context, req *core_api.DeleteRelationReq) (resp *core_api.DeleteRelationResp, err error) {
 	resp = new(core_api.DeleteRelationResp)
+	user := adaptor.ExtractUserMeta(ctx)
+	if user.GetUserId() != req.RelationInfo.FromId {
+		return resp, consts.ErrNotPermission
+	}
 	if _, err = s.PlatFormRelation.DeleteRelation(ctx, &relation.DeleteRelationReq{
 		RelationInfo: convertor.CoreApiRelationInfoToRelationInfo(req.RelationInfo),
 	}); err != nil {
@@ -152,6 +158,11 @@ func (s *RelationService) GetRelation(ctx context.Context, req *core_api.GetRela
 
 func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.CreateRelationReq) (resp *core_api.CreateRelationResp, err error) {
 	resp = new(core_api.CreateRelationResp)
+	user := adaptor.ExtractUserMeta(ctx)
+	if user.GetUserId() != req.Relation.FromId {
+		return resp, consts.ErrNotPermission
+	}
+
 	if _, err = s.PlatFormRelation.CreateRelation(ctx, &relation.CreateRelationReq{
 		RelationInfo: convertor.CoreApiRelationInfoToRelationInfo(req.Relation),
 	}); err != nil {
