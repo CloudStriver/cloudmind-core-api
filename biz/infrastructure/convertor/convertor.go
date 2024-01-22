@@ -8,8 +8,8 @@ import (
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/relation"
 )
 
-func UserToUserDetailInfo(req *core_api.UserDetail) *content.UserDetailInfo {
-	return &content.UserDetailInfo{
+func UserToUserDetailInfo(req *core_api.UserDetail) *content.User {
+	return &content.User{
 		Name:        req.Name,
 		Sex:         req.Sex,
 		FullName:    req.FullName,
@@ -67,7 +67,7 @@ func CoreLabelToLabel(req *core_api.Label) *content.Label {
 	}
 }
 
-func PostInfoToCorePostInfo(req *content.PostInfo) *core_api.PostInfo {
+func PostInfoToCorePostInfo(req *content.Post) *core_api.PostInfo {
 	return &core_api.PostInfo{
 		PostId: req.PostId,
 		UserId: req.UserId,
@@ -79,8 +79,8 @@ func PostInfoToCorePostInfo(req *content.PostInfo) *core_api.PostInfo {
 	}
 }
 
-func CorePostInfoToPostInfo(req *core_api.PostInfo) *content.PostInfo {
-	return &content.PostInfo{
+func CorePostInfoToPostInfo(req *core_api.PostInfo) *content.Post {
+	return &content.Post{
 		PostId: req.PostId,
 		UserId: req.UserId,
 		Title:  req.Title,
@@ -93,18 +93,21 @@ func CorePostInfoToPostInfo(req *core_api.PostInfo) *content.PostInfo {
 
 func PostToCorePost(req *content.Post) *core_api.Post {
 	return &core_api.Post{
-		PostId: req.PostId,
-		UserId: req.UserId,
-		Title:  req.Title,
-		Text:   req.Text,
-		Tags:   req.Tags,
-		Status: req.Status,
-		Url:    req.Url,
+		PostId:       req.PostId,
+		Title:        req.Title,
+		Text:         req.Text,
+		Tags:         req.Tags,
+		Status:       req.Status,
+		Url:          req.Url,
+		PostCount:    &core_api.PostCount{},
+		PostRelation: &core_api.PostRelation{},
+		CreateTime:   req.CreateTime,
+		UpdateTime:   req.UpdateTime,
 	}
 }
 
-func CorePostToPost(req *core_api.PostInfo) *content.PostInfo {
-	return &content.PostInfo{
+func CorePostToPost(req *core_api.PostInfo) *content.Post {
+	return &content.Post{
 		PostId: req.PostId,
 		UserId: req.UserId,
 		Title:  req.Title,
@@ -132,8 +135,8 @@ func PaginationOptionsToPaginationOptions(req *dto_basic.PaginationOptions) *bas
 	}
 }
 
-func CoreApiRelationInfoToRelationInfo(req *core_api.RelationInfo) *relation.RelationInfo {
-	return &relation.RelationInfo{
+func CoreApiRelationInfoToRelationInfo(req *core_api.RelationInfo) *relation.Relation {
+	return &relation.Relation{
 		FromType:     req.FromType,
 		FromId:       req.FromId,
 		ToType:       req.ToType,
@@ -147,15 +150,15 @@ func FilterOptionsToFilterOptions(opts *core_api.FileFilterOptions) (filter *con
 		filter = &content.FileFilterOptions{}
 	} else {
 		filter = &content.FileFilterOptions{
-			OnlyUserId:      opts.OnlyUserId,
-			OnlyFileId:      opts.OnlyFileId,
-			OnlyFatherId:    opts.OnlyFatherId,
-			OnlyFileType:    opts.OnlyFileType,
-			OnlyTags:        opts.OnlyTags,
-			IsDel:           opts.IsDel,
-			DocumentType:    opts.DocumentType,
-			OnlyMd5:         opts.OnlyMd5,
-			OnlySetRelation: opts.OnlySetRelation,
+			OnlyUserId:       opts.OnlyUserId,
+			OnlyFileId:       opts.OnlyFileId,
+			OnlyFatherId:     opts.OnlyFatherId,
+			OnlyFileType:     opts.OnlyFileType,
+			OnlyTags:         opts.OnlyTags,
+			OnlyIsDel:        opts.OnlyIsDel,
+			OnlyDocumentType: opts.OnlyDocumentType,
+			OnlyMd5:          opts.OnlyMd5,
+			OnlySetRelation:  opts.OnlySetRelation,
 		}
 	}
 	return filter
@@ -218,13 +221,47 @@ func SearchOptionsToFileSearchOptions(opts *core_api.SearchOptions) (filter *con
 			filter = &content.SearchOptions{Type: &content.SearchOptions_AllFieldsKey{AllFieldsKey: o.AllFieldsKey}}
 		case *core_api.SearchOptions_MultiFieldsKey:
 			filter = &content.SearchOptions{Type: &content.SearchOptions_MultiFieldsKey{MultiFieldsKey: &content.SearchField{
-				Name:  o.MultiFieldsKey.Name,
-				Id:    o.MultiFieldsKey.Id,
-				Tag:   o.MultiFieldsKey.Tag,
-				Text:  o.MultiFieldsKey.Text,
-				Title: o.MultiFieldsKey.Title,
+				Name:        o.MultiFieldsKey.Name,
+				Id:          o.MultiFieldsKey.Id,
+				Tag:         o.MultiFieldsKey.Tag,
+				Text:        o.MultiFieldsKey.Text,
+				Title:       o.MultiFieldsKey.Title,
+				Description: o.MultiFieldsKey.Description,
+				ProductName: o.MultiFieldsKey.ProductName,
 			}}}
 		}
 	}
 	return filter
+}
+
+func PostFilterOptionsToPostFilterOptions(in *core_api.PostFilterOptions) *content.PostFilterOptions {
+	if in == nil {
+		return &content.PostFilterOptions{}
+	} else {
+		return &content.PostFilterOptions{
+			OnlyUserId:      in.OnlyUserId,
+			OnlyTags:        in.OnlyTags,
+			OnlySetRelation: in.OnlySetRelation,
+			OnlyStatus:      in.OnlyStatus,
+		}
+	}
+}
+
+func CoreUserInfoToUser(req *core_api.UserInfo) *content.User {
+	return &content.User{
+		UserId: req.UserId,
+		Name:   req.Name,
+		Sex:    req.Sex,
+	}
+}
+
+func CoreUserDetailToUser(req *core_api.UserDetail) *content.User {
+	return &content.User{
+		Name:        req.Name,
+		Sex:         req.Sex,
+		FullName:    req.FullName,
+		IdCard:      req.IdCard,
+		Description: req.Description,
+		Url:         req.Url,
+	}
 }

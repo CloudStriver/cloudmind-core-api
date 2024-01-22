@@ -7,7 +7,8 @@
 package provider
 
 import (
-	"github.com/CloudStriver/cloudmind-core-api/biz/application/service"
+	service2 "github.com/CloudStriver/cloudmind-core-api/biz/application/service"
+	"github.com/CloudStriver/cloudmind-core-api/biz/domain/service"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
@@ -25,33 +26,54 @@ func NewProvider() (*Provider, error) {
 	cloudMindContent := &cloudmind_content.CloudMindContent{
 		Client: client,
 	}
-	contentService := &service.ContentService{
-		Config:           configConfig,
-		CloudMindContent: cloudMindContent,
+	relationserviceClient := platform_relation.NewPlatFormRelation(configConfig)
+	platFormRelation := &platform_relation.PlatFormRelation{
+		Client: relationserviceClient,
+	}
+	postDomainService := &service.PostDomainService{
+		CloudMindUser:    cloudMindContent,
+		PlatformRelation: platFormRelation,
+	}
+	fileService := &service2.FileService{
+		Config:            configConfig,
+		CloudMindContent:  cloudMindContent,
+		PostDomainService: postDomainService,
+	}
+	postService := &service2.PostService{
+		Config:            configConfig,
+		CloudMindContent:  cloudMindContent,
+		PostDomainService: postDomainService,
 	}
 	stsserviceClient := cloudmind_sts.NewCloudMindSts(configConfig)
 	cloudMindSts := &cloudmind_sts.CloudMindSts{
 		Client: stsserviceClient,
 	}
-	authService := &service.AuthService{
+	authService := &service2.AuthService{
 		Config:           configConfig,
 		CloudMindContent: cloudMindContent,
 		CloudMindSts:     cloudMindSts,
 	}
-	relationserviceClient := platform_relation.NewPlatFormRelation(configConfig)
-	platFormRelation := &platform_relation.PlatFormRelation{
-		Client: relationserviceClient,
-	}
-	relationService := &service.RelationService{
+	relationService := &service2.RelationService{
 		Config:           configConfig,
 		PlatFormRelation: platFormRelation,
 		CloudMindContent: cloudMindContent,
 	}
+	userService := &service2.UserService{
+		Config:           configConfig,
+		CloudMindContent: cloudMindContent,
+	}
+	labelService := &service2.LabelService{
+		Config:           configConfig,
+		CloudMindContent: cloudMindContent,
+	}
 	providerProvider := &Provider{
 		Config:          configConfig,
-		ContentService:  contentService,
+		ContentService:  fileService,
+		PostService:     postService,
 		AuthService:     authService,
 		RelationService: relationService,
+		UserService:     userService,
+		LabelService:    labelService,
 	}
 	return providerProvider, nil
 }

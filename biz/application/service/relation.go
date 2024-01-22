@@ -125,7 +125,7 @@ func (s *RelationService) GetToRelations(ctx context.Context, req *core_api.GetT
 func (s *RelationService) DeleteRelation(ctx context.Context, req *core_api.DeleteRelationReq) (resp *core_api.DeleteRelationResp, err error) {
 	resp = new(core_api.DeleteRelationResp)
 	if _, err = s.PlatFormRelation.DeleteRelation(ctx, &relation.DeleteRelationReq{
-		RelationInfo: convertor.CoreApiRelationInfoToRelationInfo(req.RelationInfo),
+		Relation: convertor.CoreApiRelationInfoToRelationInfo(req.RelationInfo),
 	}); err != nil {
 		return resp, err
 	}
@@ -135,7 +135,7 @@ func (s *RelationService) DeleteRelation(ctx context.Context, req *core_api.Dele
 func (s *RelationService) GetRelation(ctx context.Context, req *core_api.GetRelationReq) (resp *core_api.GetRelationResp, err error) {
 	resp = new(core_api.GetRelationResp)
 	getRelationResp, err := s.PlatFormRelation.GetRelation(ctx, &relation.GetRelationReq{
-		RelationInfo: &relation.RelationInfo{
+		Relation: &relation.Relation{
 			FromType:     req.FromType,
 			FromId:       req.FromId,
 			ToType:       req.ToType,
@@ -153,7 +153,7 @@ func (s *RelationService) GetRelation(ctx context.Context, req *core_api.GetRela
 func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.CreateRelationReq) (resp *core_api.CreateRelationResp, err error) {
 	resp = new(core_api.CreateRelationResp)
 	if _, err = s.PlatFormRelation.CreateRelation(ctx, &relation.CreateRelationReq{
-		RelationInfo: convertor.CoreApiRelationInfoToRelationInfo(req.Relation),
+		Relation: convertor.CoreApiRelationInfoToRelationInfo(req.Relation),
 	}); err != nil {
 		return resp, err
 	}

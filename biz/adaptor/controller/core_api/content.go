@@ -24,7 +24,7 @@ func UpdateUser(ctx context.Context, c *app.RequestContext) {
 	}
 	resp := new(core_api.UpdateUserResp)
 	p := provider.Get()
-	resp, err = p.ContentService.UpdateUser(ctx, &req)
+	resp, err = p.UserService.UpdateUser(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
@@ -41,7 +41,7 @@ func SearchUser(ctx context.Context, c *app.RequestContext) {
 	}
 	resp := new(core_api.SearchUserResp)
 	p := provider.Get()
-	resp, err = p.ContentService.SearchUser(ctx, &req)
+	resp, err = p.UserService.SearchUser(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
@@ -56,25 +56,9 @@ func GetUser(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 	resp := new(core_api.GetUserResp)
-	//p := provider.Get()
-	//resp, err = p.ContentService.GetFromRelations(ctx, &req)
+	p := provider.Get()
+	resp, err = p.UserService.GetUser(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
-	c.JSON(consts.StatusOK, resp)
-}
-
-// CreateUser .
-// @router /content/user/create [POST]
-func CreateUser(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.CreateUserReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(core_api.CreateUserResp)
-
 	c.JSON(consts.StatusOK, resp)
 }
 
@@ -90,23 +74,9 @@ func GetUserDetail(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.GetUserDetailResp)
-
-	c.JSON(consts.StatusOK, resp)
-}
-
-// DeleteUser .
-// @router /content/user/delete [POST]
-func DeleteUser(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.DeleteUserReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(core_api.DeleteUserResp)
-
+	p := provider.Get()
+	resp, err = p.UserService.GetUserDetail(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 	c.JSON(consts.StatusOK, resp)
 }
 
@@ -490,8 +460,9 @@ func CreatePost(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.CreatePostResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.PostService.CreatePost(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // DeletePost .
@@ -506,8 +477,9 @@ func DeletePost(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.DeletePostResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.PostService.DeletePost(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // UpdatePost .
@@ -522,28 +494,11 @@ func UpdatePost(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.UpdatePostResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.PostService.UpdatePost(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
-// GetPost .
-// @router /content/post/get [GET]
-func GetPost(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.GetPostReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(core_api.GetPostResp)
-
-	c.JSON(consts.StatusOK, resp)
-}
-
-// GetPosts .
-// @router /content/post/posts [GET]
 func GetPosts(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req core_api.GetPostsReq
@@ -554,6 +509,7 @@ func GetPosts(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.GetPostsResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.PostService.GetPosts(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
