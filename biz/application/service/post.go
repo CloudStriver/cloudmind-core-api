@@ -57,9 +57,9 @@ func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (
 	resp = new(core_api.GetPostsResp)
 	var getPostsResp *content.GetPostsResp
 	if getPostsResp, err = s.CloudMindContent.GetPosts(ctx, &content.GetPostsReq{
-		SearchOptions:     convertor.SearchOptionsToFileSearchOptions(req.SearchOptions),
-		PostFilterOptions: convertor.PostFilterOptionsToPostFilterOptions(req.PostFilterOptions),
-		PaginationOptions: convertor.PaginationOptionsToPaginationOptions(req.PaginationOptions),
+		SearchOptions:     convertor.SearchOptionsToFileSearchOptions(req.GetSearchOptions()),
+		PostFilterOptions: convertor.PostFilterOptionsToPostFilterOptions(req.GetPostFilterOptions()),
+		PaginationOptions: convertor.PaginationOptionsToPaginationOptions(req.GetPaginationOptions()),
 	}); err != nil {
 		return resp, err
 	}
@@ -69,7 +69,6 @@ func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (
 	if err = mr.Finish(lo.Map(getPostsResp.Posts, func(item *content.Post, i int) func() error {
 		return func() error {
 			p := convertor.PostToCorePost(item)
-
 			if err = mr.Finish(func() error {
 				s.PostDomainService.LoadLikeCount(ctx, p)
 				return nil

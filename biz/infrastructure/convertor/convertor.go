@@ -127,6 +127,9 @@ func UserDetailToUser(req *content.User) *core_api.User {
 }
 
 func PaginationOptionsToPaginationOptions(req *dto_basic.PaginationOptions) *basic.PaginationOptions {
+	if req == nil {
+		return &basic.PaginationOptions{}
+	}
 	return &basic.PaginationOptions{
 		Limit:     req.Limit,
 		LastToken: req.LastToken,
@@ -214,7 +217,7 @@ func CoreShareFileToShareFile(opts *core_api.ShareFile) *content.ShareFile {
 
 func SearchOptionsToFileSearchOptions(opts *core_api.SearchOptions) (filter *content.SearchOptions) {
 	if opts == nil {
-		filter = &content.SearchOptions{}
+		filter = nil
 	} else {
 		switch o := opts.Type.(type) {
 		case *core_api.SearchOptions_AllFieldsKey:
