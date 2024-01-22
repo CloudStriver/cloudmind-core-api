@@ -11,12 +11,7 @@ func rootMw() []app.HandlerFunc {
 	return nil
 }
 
-func _contentMw() []app.HandlerFunc {
-	// your code...
-	return nil
-}
-
-func _registerMw() []app.HandlerFunc {
+func _applysignedurlMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
@@ -26,22 +21,37 @@ func _authMw() []app.HandlerFunc {
 	return nil
 }
 
-func _loginMw() []app.HandlerFunc {
-	// your code...
-	return nil
-}
-
 func _refreshtokenMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
 
-func _getcaptchaMw() []app.HandlerFunc {
+func _registerMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
 
 func _sendemailMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _loginMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _emailloginMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _giteeloginMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _githubloginMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
@@ -60,62 +70,62 @@ func _setpasswordbypasswordMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
-func _emailloginMw() []app.HandlerFunc {
+
+func _contentMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
-func _githubloginMw() []app.HandlerFunc {
-	// your code...
-	return nil
-}
-func _giteeloginMw() []app.HandlerFunc {
-	// your code...
-	return nil
-}
+
 func _userMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
 func _searchuserMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
 func _updateuserMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
 func _relationMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
-func _createrelationMw() []app.HandlerFunc {
-	// your code...
-	return nil
-}
+
 func _getrelationMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
-func _relationsMw() []app.HandlerFunc {
-	// your code...
-	return nil
-}
-func _getrelationsMw() []app.HandlerFunc {
-	// your code...
-	return nil
-}
+
 func _deleterelationMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
 func _relation0Mw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _createrelationMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _relationsMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
 func _getfromrelationsMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
 func _gettorelationsMw() []app.HandlerFunc {
 	// your code...
 	return nil

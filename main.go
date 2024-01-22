@@ -8,12 +8,15 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/provider"
 	"github.com/CloudStriver/go-pkg/utils/hertz/middleware"
 	"github.com/CloudStriver/go-pkg/utils/util/log"
+	"github.com/hertz-contrib/cors"
+	"github.com/hertz-contrib/obs-opentelemetry/tracing"
+	"time"
+
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/app/middlewares/server/recovery"
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 	prometheus "github.com/hertz-contrib/monitor-prometheus"
-	"github.com/hertz-contrib/obs-opentelemetry/tracing"
 	"go.opentelemetry.io/contrib/propagators/b3"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/propagation"
@@ -34,7 +37,16 @@ func main() {
 		server.WithTracer(prometheus.NewServerTracer(":9091", "/server/metrics")),
 		tracer,
 	)
-	h.Use(tracing.ServerMiddleware(cfg), middleware.EnvironmentMiddleware, recovery.Recovery(), func(ctx context.Context, c *app.RequestContext) {
+	h.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"*"},
+		AllowHeaders:     []string{"*"},
+		ExposeHeaders:    []string{"*"},
+		AllowCredentials: true,
+		AllowOriginFunc: func(origin string) bool {
+			return true
+		}, MaxAge: 24 * time.Hour,
+	}), tracing.ServerMiddleware(cfg), middleware.EnvironmentMiddleware, recovery.Recovery(), func(ctx context.Context, c *app.RequestContext) {
 		ctx = adaptor.InjectContext(ctx, c)
 		c.Next(ctx)
 	})

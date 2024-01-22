@@ -4,10 +4,11 @@ go 1.20
 
 require (
 	github.com/CloudStriver/go-pkg v0.0.0-20240117111745-b4ba57a38f44
-	github.com/CloudStriver/service-idl-gen-go v0.0.0-20240117112200-35e688c4a25f
+	github.com/CloudStriver/service-idl-gen-go v0.0.0-20240117150051-ecfa6300e8c4
 	github.com/cloudwego/hertz v0.7.3
 	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/google/wire v0.5.0
+	github.com/hertz-contrib/cors v0.1.0
 	github.com/hertz-contrib/monitor-prometheus v0.1.2
 	github.com/hertz-contrib/obs-opentelemetry/tracing v0.3.1
 	github.com/samber/lo v1.39.0
@@ -95,8 +96,8 @@ require (
 	golang.org/x/arch v0.6.0 // indirect
 	golang.org/x/exp v0.0.0-20231214170342-aacd6d4b4611 // indirect
 	golang.org/x/net v0.19.0 // indirect
-	golang.org/x/sync v0.5.0 // indirect
-	golang.org/x/sys v0.15.0 // indirect
+	golang.org/x/sync v0.6.0 // indirect
+	golang.org/x/sys v0.16.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20231106174013-bbf56f31fb17 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20231106174013-bbf56f31fb17 // indirect
