@@ -107,7 +107,7 @@ func (s *AuthService) ThirdLogin(ctx context.Context, code string, authType sts.
 			return "", "", "", err
 		}
 		if _, err = s.CloudMindContent.CreateUser(ctx, &content.CreateUserReq{
-			UserInfo: &content.UserInfo{
+			User: &content.User{
 				UserId: createAuthResp.UserId,
 				Name:   data.Name,
 				Sex:    1,
@@ -172,7 +172,7 @@ func (s *AuthService) Register(ctx context.Context, req *core_api.RegisterReq) (
 	}
 
 	if _, err = s.CloudMindContent.CreateUser(ctx, &content.CreateUserReq{
-		UserInfo: &content.UserInfo{
+		User: &content.User{
 			UserId: createAuthResp.UserId,
 			Name:   req.Name,
 			Sex:    req.Sex,

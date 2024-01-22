@@ -225,6 +225,3104 @@ func (x *SearchUserResp) GetTotal() int64 {
 	return 0
 }
 
+type GetFileIsExistReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Md5 string `protobuf:"bytes,1,opt,name=md5,proto3" json:"md5" form:"md5" query:"md5"`
+}
+
+func (x *GetFileIsExistReq) Reset() {
+	*x = GetFileIsExistReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetFileIsExistReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetFileIsExistReq) ProtoMessage() {}
+
+func (x *GetFileIsExistReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetFileIsExistReq.ProtoReflect.Descriptor instead.
+func (*GetFileIsExistReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *GetFileIsExistReq) GetMd5() string {
+	if x != nil {
+		return x.Md5
+	}
+	return ""
+}
+
+type GetFileIsExistResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Ok bool `protobuf:"varint,1,opt,name=ok,proto3" json:"ok" form:"ok" query:"ok"`
+}
+
+func (x *GetFileIsExistResp) Reset() {
+	*x = GetFileIsExistResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetFileIsExistResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetFileIsExistResp) ProtoMessage() {}
+
+func (x *GetFileIsExistResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetFileIsExistResp.ProtoReflect.Descriptor instead.
+func (*GetFileIsExistResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *GetFileIsExistResp) GetOk() bool {
+	if x != nil {
+		return x.Ok
+	}
+	return false
+}
+
+type GetFileReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	FilterOptions *FileFilterOptions `protobuf:"bytes,1,opt,name=filterOptions,proto3,oneof" json:"filterOptions" form:"filterOptions" query:"filterOptions"`
+	IsGetSize     bool               `protobuf:"varint,2,opt,name=IsGetSize,proto3" json:"IsGetSize" form:"IsGetSize" query:"IsGetSize"`
+}
+
+func (x *GetFileReq) Reset() {
+	*x = GetFileReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetFileReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetFileReq) ProtoMessage() {}
+
+func (x *GetFileReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetFileReq.ProtoReflect.Descriptor instead.
+func (*GetFileReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *GetFileReq) GetFilterOptions() *FileFilterOptions {
+	if x != nil {
+		return x.FilterOptions
+	}
+	return nil
+}
+
+func (x *GetFileReq) GetIsGetSize() bool {
+	if x != nil {
+		return x.IsGetSize
+	}
+	return false
+}
+
+type GetFileResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	File *FileInfo `protobuf:"bytes,1,opt,name=file,proto3" json:"file" form:"file" query:"file"`
+}
+
+func (x *GetFileResp) Reset() {
+	*x = GetFileResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetFileResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetFileResp) ProtoMessage() {}
+
+func (x *GetFileResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetFileResp.ProtoReflect.Descriptor instead.
+func (*GetFileResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *GetFileResp) GetFile() *FileInfo {
+	if x != nil {
+		return x.File
+	}
+	return nil
+}
+
+type GetFileListReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	SearchOptions     *SearchOptions           `protobuf:"bytes,1,opt,name=searchOptions,proto3,oneof" json:"searchOptions" form:"searchOptions" query:"searchOptions"`
+	FilterOptions     *FileFilterOptions       `protobuf:"bytes,2,opt,name=filterOptions,proto3,oneof" json:"filterOptions" form:"filterOptions" query:"filterOptions"`
+	PaginationOptions *basic.PaginationOptions `protobuf:"bytes,3,opt,name=paginationOptions,proto3,oneof" json:"paginationOptions" form:"paginationOptions" query:"paginationOptions"`
+}
+
+func (x *GetFileListReq) Reset() {
+	*x = GetFileListReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetFileListReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetFileListReq) ProtoMessage() {}
+
+func (x *GetFileListReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetFileListReq.ProtoReflect.Descriptor instead.
+func (*GetFileListReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *GetFileListReq) GetSearchOptions() *SearchOptions {
+	if x != nil {
+		return x.SearchOptions
+	}
+	return nil
+}
+
+func (x *GetFileListReq) GetFilterOptions() *FileFilterOptions {
+	if x != nil {
+		return x.FilterOptions
+	}
+	return nil
+}
+
+func (x *GetFileListReq) GetPaginationOptions() *basic.PaginationOptions {
+	if x != nil {
+		return x.PaginationOptions
+	}
+	return nil
+}
+
+type GetFileListResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Files []*FileInfo `protobuf:"bytes,1,rep,name=files,proto3" json:"files" form:"files" query:"files"`
+	Total int64       `protobuf:"varint,2,opt,name=total,proto3" json:"total" form:"total" query:"total"`
+	Token string      `protobuf:"bytes,3,opt,name=token,proto3" json:"token" form:"token" query:"token"`
+}
+
+func (x *GetFileListResp) Reset() {
+	*x = GetFileListResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[9]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetFileListResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetFileListResp) ProtoMessage() {}
+
+func (x *GetFileListResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[9]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetFileListResp.ProtoReflect.Descriptor instead.
+func (*GetFileListResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *GetFileListResp) GetFiles() []*FileInfo {
+	if x != nil {
+		return x.Files
+	}
+	return nil
+}
+
+func (x *GetFileListResp) GetTotal() int64 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
+func (x *GetFileListResp) GetToken() string {
+	if x != nil {
+		return x.Token
+	}
+	return ""
+}
+
+type GetFolderSizeReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	FilterOptions *FileFilterOptions `protobuf:"bytes,1,opt,name=filterOptions,proto3,oneof" json:"filterOptions" form:"filterOptions" query:"filterOptions"`
+}
+
+func (x *GetFolderSizeReq) Reset() {
+	*x = GetFolderSizeReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[10]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetFolderSizeReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetFolderSizeReq) ProtoMessage() {}
+
+func (x *GetFolderSizeReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[10]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetFolderSizeReq.ProtoReflect.Descriptor instead.
+func (*GetFolderSizeReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *GetFolderSizeReq) GetFilterOptions() *FileFilterOptions {
+	if x != nil {
+		return x.FilterOptions
+	}
+	return nil
+}
+
+type GetFolderSizeResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	SpaceSize int64 `protobuf:"varint,1,opt,name=spaceSize,proto3" json:"spaceSize" form:"spaceSize" query:"spaceSize"`
+}
+
+func (x *GetFolderSizeResp) Reset() {
+	*x = GetFolderSizeResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[11]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetFolderSizeResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetFolderSizeResp) ProtoMessage() {}
+
+func (x *GetFolderSizeResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[11]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetFolderSizeResp.ProtoReflect.Descriptor instead.
+func (*GetFolderSizeResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *GetFolderSizeResp) GetSpaceSize() int64 {
+	if x != nil {
+		return x.SpaceSize
+	}
+	return 0
+}
+
+type GetFileCountReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	SearchOptions *SearchOptions     `protobuf:"bytes,1,opt,name=searchOptions,proto3,oneof" json:"searchOptions" form:"searchOptions" query:"searchOptions"`
+	FilterOptions *FileFilterOptions `protobuf:"bytes,2,opt,name=filterOptions,proto3,oneof" json:"filterOptions" form:"filterOptions" query:"filterOptions"`
+}
+
+func (x *GetFileCountReq) Reset() {
+	*x = GetFileCountReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[12]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetFileCountReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetFileCountReq) ProtoMessage() {}
+
+func (x *GetFileCountReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[12]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetFileCountReq.ProtoReflect.Descriptor instead.
+func (*GetFileCountReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *GetFileCountReq) GetSearchOptions() *SearchOptions {
+	if x != nil {
+		return x.SearchOptions
+	}
+	return nil
+}
+
+func (x *GetFileCountReq) GetFilterOptions() *FileFilterOptions {
+	if x != nil {
+		return x.FilterOptions
+	}
+	return nil
+}
+
+type GetFileCountResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Count int64 `protobuf:"varint,1,opt,name=count,proto3" json:"count" form:"count" query:"count"`
+}
+
+func (x *GetFileCountResp) Reset() {
+	*x = GetFileCountResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[13]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetFileCountResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetFileCountResp) ProtoMessage() {}
+
+func (x *GetFileCountResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[13]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetFileCountResp.ProtoReflect.Descriptor instead.
+func (*GetFileCountResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *GetFileCountResp) GetCount() int64 {
+	if x != nil {
+		return x.Count
+	}
+	return 0
+}
+
+type GetFileBySharingCodeReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	SharingCode       string                   `protobuf:"bytes,1,opt,name=sharingCode,proto3" json:"sharingCode" form:"sharingCode" query:"sharingCode"`
+	FilterOptions     *FileFilterOptions       `protobuf:"bytes,2,opt,name=filterOptions,proto3,oneof" json:"filterOptions" form:"filterOptions" query:"filterOptions"`
+	PaginationOptions *basic.PaginationOptions `protobuf:"bytes,3,opt,name=paginationOptions,proto3,oneof" json:"paginationOptions" form:"paginationOptions" query:"paginationOptions"`
+}
+
+func (x *GetFileBySharingCodeReq) Reset() {
+	*x = GetFileBySharingCodeReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[14]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetFileBySharingCodeReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetFileBySharingCodeReq) ProtoMessage() {}
+
+func (x *GetFileBySharingCodeReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[14]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetFileBySharingCodeReq.ProtoReflect.Descriptor instead.
+func (*GetFileBySharingCodeReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *GetFileBySharingCodeReq) GetSharingCode() string {
+	if x != nil {
+		return x.SharingCode
+	}
+	return ""
+}
+
+func (x *GetFileBySharingCodeReq) GetFilterOptions() *FileFilterOptions {
+	if x != nil {
+		return x.FilterOptions
+	}
+	return nil
+}
+
+func (x *GetFileBySharingCodeReq) GetPaginationOptions() *basic.PaginationOptions {
+	if x != nil {
+		return x.PaginationOptions
+	}
+	return nil
+}
+
+type GetFileBySharingCodeResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Files []*FileInfo `protobuf:"bytes,1,rep,name=files,proto3" json:"files" form:"files" query:"files"`
+	Total int64       `protobuf:"varint,2,opt,name=total,proto3" json:"total" form:"total" query:"total"`
+	Token string      `protobuf:"bytes,3,opt,name=token,proto3" json:"token" form:"token" query:"token"`
+}
+
+func (x *GetFileBySharingCodeResp) Reset() {
+	*x = GetFileBySharingCodeResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[15]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetFileBySharingCodeResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetFileBySharingCodeResp) ProtoMessage() {}
+
+func (x *GetFileBySharingCodeResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[15]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetFileBySharingCodeResp.ProtoReflect.Descriptor instead.
+func (*GetFileBySharingCodeResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *GetFileBySharingCodeResp) GetFiles() []*FileInfo {
+	if x != nil {
+		return x.Files
+	}
+	return nil
+}
+
+func (x *GetFileBySharingCodeResp) GetTotal() int64 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
+func (x *GetFileBySharingCodeResp) GetToken() string {
+	if x != nil {
+		return x.Token
+	}
+	return ""
+}
+
+type CreateFolderReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	File *File `protobuf:"bytes,1,opt,name=file,proto3" json:"file" form:"file" query:"file"`
+}
+
+func (x *CreateFolderReq) Reset() {
+	*x = CreateFolderReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[16]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CreateFolderReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateFolderReq) ProtoMessage() {}
+
+func (x *CreateFolderReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[16]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateFolderReq.ProtoReflect.Descriptor instead.
+func (*CreateFolderReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *CreateFolderReq) GetFile() *File {
+	if x != nil {
+		return x.File
+	}
+	return nil
+}
+
+type CreateFolderResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	FileId string `protobuf:"bytes,1,opt,name=fileId,proto3" json:"fileId" form:"fileId" query:"fileId"`
+}
+
+func (x *CreateFolderResp) Reset() {
+	*x = CreateFolderResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[17]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CreateFolderResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateFolderResp) ProtoMessage() {}
+
+func (x *CreateFolderResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[17]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateFolderResp.ProtoReflect.Descriptor instead.
+func (*CreateFolderResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *CreateFolderResp) GetFileId() string {
+	if x != nil {
+		return x.FileId
+	}
+	return ""
+}
+
+type UpdateFileReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	File *File `protobuf:"bytes,1,opt,name=file,proto3" json:"file" form:"file" query:"file"`
+}
+
+func (x *UpdateFileReq) Reset() {
+	*x = UpdateFileReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[18]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UpdateFileReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateFileReq) ProtoMessage() {}
+
+func (x *UpdateFileReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[18]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateFileReq.ProtoReflect.Descriptor instead.
+func (*UpdateFileReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{18}
+}
+
+func (x *UpdateFileReq) GetFile() *File {
+	if x != nil {
+		return x.File
+	}
+	return nil
+}
+
+type UpdateFileResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *UpdateFileResp) Reset() {
+	*x = UpdateFileResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[19]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UpdateFileResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateFileResp) ProtoMessage() {}
+
+func (x *UpdateFileResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[19]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateFileResp.ProtoReflect.Descriptor instead.
+func (*UpdateFileResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{19}
+}
+
+type MoveFileReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	UserId   string `protobuf:"bytes,1,opt,name=userId,proto3" json:"userId" form:"userId" query:"userId"`
+	FileId   string `protobuf:"bytes,2,opt,name=fileId,proto3" json:"fileId" form:"fileId" query:"fileId"`
+	FatherId string `protobuf:"bytes,3,opt,name=fatherId,proto3" json:"fatherId" form:"fatherId" query:"fatherId"`
+}
+
+func (x *MoveFileReq) Reset() {
+	*x = MoveFileReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[20]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *MoveFileReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MoveFileReq) ProtoMessage() {}
+
+func (x *MoveFileReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[20]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MoveFileReq.ProtoReflect.Descriptor instead.
+func (*MoveFileReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *MoveFileReq) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *MoveFileReq) GetFileId() string {
+	if x != nil {
+		return x.FileId
+	}
+	return ""
+}
+
+func (x *MoveFileReq) GetFatherId() string {
+	if x != nil {
+		return x.FatherId
+	}
+	return ""
+}
+
+type MoveFileResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *MoveFileResp) Reset() {
+	*x = MoveFileResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[21]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *MoveFileResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MoveFileResp) ProtoMessage() {}
+
+func (x *MoveFileResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[21]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MoveFileResp.ProtoReflect.Descriptor instead.
+func (*MoveFileResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{21}
+}
+
+type SaveFileToPrivateSpaceReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	UserId       string       `protobuf:"bytes,1,opt,name=userId,proto3" json:"userId" form:"userId" query:"userId"`
+	FileId       string       `protobuf:"bytes,2,opt,name=fileId,proto3" json:"fileId" form:"fileId" query:"fileId"`
+	FatherId     string       `protobuf:"bytes,3,opt,name=fatherId,proto3" json:"fatherId" form:"fatherId" query:"fatherId"`
+	DocumentType DocumentType `protobuf:"varint,4,opt,name=documentType,proto3,enum=cloudmind.core_api.DocumentType" json:"documentType" form:"documentType" query:"documentType"`
+}
+
+func (x *SaveFileToPrivateSpaceReq) Reset() {
+	*x = SaveFileToPrivateSpaceReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[22]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SaveFileToPrivateSpaceReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SaveFileToPrivateSpaceReq) ProtoMessage() {}
+
+func (x *SaveFileToPrivateSpaceReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[22]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SaveFileToPrivateSpaceReq.ProtoReflect.Descriptor instead.
+func (*SaveFileToPrivateSpaceReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{22}
+}
+
+func (x *SaveFileToPrivateSpaceReq) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *SaveFileToPrivateSpaceReq) GetFileId() string {
+	if x != nil {
+		return x.FileId
+	}
+	return ""
+}
+
+func (x *SaveFileToPrivateSpaceReq) GetFatherId() string {
+	if x != nil {
+		return x.FatherId
+	}
+	return ""
+}
+
+func (x *SaveFileToPrivateSpaceReq) GetDocumentType() DocumentType {
+	if x != nil {
+		return x.DocumentType
+	}
+	return DocumentType_DocumentType_null
+}
+
+type SaveFileToPrivateSpaceResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	FileId string `protobuf:"bytes,1,opt,name=fileId,proto3" json:"fileId" form:"fileId" query:"fileId"`
+}
+
+func (x *SaveFileToPrivateSpaceResp) Reset() {
+	*x = SaveFileToPrivateSpaceResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[23]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SaveFileToPrivateSpaceResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SaveFileToPrivateSpaceResp) ProtoMessage() {}
+
+func (x *SaveFileToPrivateSpaceResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[23]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SaveFileToPrivateSpaceResp.ProtoReflect.Descriptor instead.
+func (*SaveFileToPrivateSpaceResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{23}
+}
+
+func (x *SaveFileToPrivateSpaceResp) GetFileId() string {
+	if x != nil {
+		return x.FileId
+	}
+	return ""
+}
+
+type AddFileToPublicSpaceReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	File *File `protobuf:"bytes,1,opt,name=file,proto3" json:"file" form:"file" query:"file"`
+}
+
+func (x *AddFileToPublicSpaceReq) Reset() {
+	*x = AddFileToPublicSpaceReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[24]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AddFileToPublicSpaceReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddFileToPublicSpaceReq) ProtoMessage() {}
+
+func (x *AddFileToPublicSpaceReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[24]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddFileToPublicSpaceReq.ProtoReflect.Descriptor instead.
+func (*AddFileToPublicSpaceReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{24}
+}
+
+func (x *AddFileToPublicSpaceReq) GetFile() *File {
+	if x != nil {
+		return x.File
+	}
+	return nil
+}
+
+type AddFileToPublicSpaceResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *AddFileToPublicSpaceResp) Reset() {
+	*x = AddFileToPublicSpaceResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[25]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AddFileToPublicSpaceResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddFileToPublicSpaceResp) ProtoMessage() {}
+
+func (x *AddFileToPublicSpaceResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[25]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddFileToPublicSpaceResp.ProtoReflect.Descriptor instead.
+func (*AddFileToPublicSpaceResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{25}
+}
+
+type DeleteFileReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	FileId         string `protobuf:"bytes,1,opt,name=fileId,proto3" json:"fileId" form:"fileId" query:"fileId"`
+	UserId         string `protobuf:"bytes,2,opt,name=userId,proto3" json:"userId" form:"userId" query:"userId"`
+	DeleteType     IsDel  `protobuf:"varint,3,opt,name=deleteType,proto3,enum=cloudmind.core_api.IsDel" json:"deleteType" form:"deleteType" query:"deleteType"`
+	ClearCommunity bool   `protobuf:"varint,4,opt,name=clearCommunity,proto3" json:"clearCommunity" form:"clearCommunity" query:"clearCommunity"`
+}
+
+func (x *DeleteFileReq) Reset() {
+	*x = DeleteFileReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[26]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteFileReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteFileReq) ProtoMessage() {}
+
+func (x *DeleteFileReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[26]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteFileReq.ProtoReflect.Descriptor instead.
+func (*DeleteFileReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{26}
+}
+
+func (x *DeleteFileReq) GetFileId() string {
+	if x != nil {
+		return x.FileId
+	}
+	return ""
+}
+
+func (x *DeleteFileReq) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *DeleteFileReq) GetDeleteType() IsDel {
+	if x != nil {
+		return x.DeleteType
+	}
+	return IsDel_Is_null
+}
+
+func (x *DeleteFileReq) GetClearCommunity() bool {
+	if x != nil {
+		return x.ClearCommunity
+	}
+	return false
+}
+
+type DeleteFileResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Ok bool `protobuf:"varint,1,opt,name=ok,proto3" json:"ok" form:"ok" query:"ok"`
+}
+
+func (x *DeleteFileResp) Reset() {
+	*x = DeleteFileResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[27]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteFileResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteFileResp) ProtoMessage() {}
+
+func (x *DeleteFileResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[27]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteFileResp.ProtoReflect.Descriptor instead.
+func (*DeleteFileResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{27}
+}
+
+func (x *DeleteFileResp) GetOk() bool {
+	if x != nil {
+		return x.Ok
+	}
+	return false
+}
+
+type RecoverRecycleBinFileReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	FileId string `protobuf:"bytes,1,opt,name=fileId,proto3" json:"fileId" form:"fileId" query:"fileId"`
+	UserId string `protobuf:"bytes,2,opt,name=userId,proto3" json:"userId" form:"userId" query:"userId"`
+}
+
+func (x *RecoverRecycleBinFileReq) Reset() {
+	*x = RecoverRecycleBinFileReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[28]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RecoverRecycleBinFileReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RecoverRecycleBinFileReq) ProtoMessage() {}
+
+func (x *RecoverRecycleBinFileReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[28]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RecoverRecycleBinFileReq.ProtoReflect.Descriptor instead.
+func (*RecoverRecycleBinFileReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{28}
+}
+
+func (x *RecoverRecycleBinFileReq) GetFileId() string {
+	if x != nil {
+		return x.FileId
+	}
+	return ""
+}
+
+func (x *RecoverRecycleBinFileReq) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+type RecoverRecycleBinFileResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *RecoverRecycleBinFileResp) Reset() {
+	*x = RecoverRecycleBinFileResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[29]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RecoverRecycleBinFileResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RecoverRecycleBinFileResp) ProtoMessage() {}
+
+func (x *RecoverRecycleBinFileResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[29]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RecoverRecycleBinFileResp.ProtoReflect.Descriptor instead.
+func (*RecoverRecycleBinFileResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{29}
+}
+
+type CreateLabelReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Label *Label `protobuf:"bytes,1,opt,name=label,proto3" json:"label" form:"label" query:"label"`
+}
+
+func (x *CreateLabelReq) Reset() {
+	*x = CreateLabelReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[30]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CreateLabelReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateLabelReq) ProtoMessage() {}
+
+func (x *CreateLabelReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[30]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateLabelReq.ProtoReflect.Descriptor instead.
+func (*CreateLabelReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{30}
+}
+
+func (x *CreateLabelReq) GetLabel() *Label {
+	if x != nil {
+		return x.Label
+	}
+	return nil
+}
+
+type CreateLabelResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id" form:"id" query:"id"`
+}
+
+func (x *CreateLabelResp) Reset() {
+	*x = CreateLabelResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[31]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CreateLabelResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateLabelResp) ProtoMessage() {}
+
+func (x *CreateLabelResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[31]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateLabelResp.ProtoReflect.Descriptor instead.
+func (*CreateLabelResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{31}
+}
+
+func (x *CreateLabelResp) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+type GetLabelReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id" form:"id" query:"id"`
+}
+
+func (x *GetLabelReq) Reset() {
+	*x = GetLabelReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[32]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetLabelReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetLabelReq) ProtoMessage() {}
+
+func (x *GetLabelReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[32]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetLabelReq.ProtoReflect.Descriptor instead.
+func (*GetLabelReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{32}
+}
+
+func (x *GetLabelReq) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+type GetLabelResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Label *Label `protobuf:"bytes,1,opt,name=label,proto3" json:"label" form:"label" query:"label"`
+}
+
+func (x *GetLabelResp) Reset() {
+	*x = GetLabelResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[33]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetLabelResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetLabelResp) ProtoMessage() {}
+
+func (x *GetLabelResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[33]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetLabelResp.ProtoReflect.Descriptor instead.
+func (*GetLabelResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{33}
+}
+
+func (x *GetLabelResp) GetLabel() *Label {
+	if x != nil {
+		return x.Label
+	}
+	return nil
+}
+
+type UpdateLabelReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Label *Label `protobuf:"bytes,1,opt,name=label,proto3" json:"label" form:"label" query:"label"`
+}
+
+func (x *UpdateLabelReq) Reset() {
+	*x = UpdateLabelReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[34]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UpdateLabelReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateLabelReq) ProtoMessage() {}
+
+func (x *UpdateLabelReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[34]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateLabelReq.ProtoReflect.Descriptor instead.
+func (*UpdateLabelReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{34}
+}
+
+func (x *UpdateLabelReq) GetLabel() *Label {
+	if x != nil {
+		return x.Label
+	}
+	return nil
+}
+
+type UpdateLabelResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *UpdateLabelResp) Reset() {
+	*x = UpdateLabelResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[35]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UpdateLabelResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateLabelResp) ProtoMessage() {}
+
+func (x *UpdateLabelResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[35]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateLabelResp.ProtoReflect.Descriptor instead.
+func (*UpdateLabelResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{35}
+}
+
+type DeleteLabelReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id" form:"id" query:"id"`
+}
+
+func (x *DeleteLabelReq) Reset() {
+	*x = DeleteLabelReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[36]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteLabelReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteLabelReq) ProtoMessage() {}
+
+func (x *DeleteLabelReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[36]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteLabelReq.ProtoReflect.Descriptor instead.
+func (*DeleteLabelReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{36}
+}
+
+func (x *DeleteLabelReq) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+type DeleteLabelResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *DeleteLabelResp) Reset() {
+	*x = DeleteLabelResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[37]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteLabelResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteLabelResp) ProtoMessage() {}
+
+func (x *DeleteLabelResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[37]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteLabelResp.ProtoReflect.Descriptor instead.
+func (*DeleteLabelResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{37}
+}
+
+type CreateShareCodeReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ShareFile *ShareFile `protobuf:"bytes,1,opt,name=shareFile,proto3" json:"shareFile" form:"shareFile" query:"shareFile"`
+}
+
+func (x *CreateShareCodeReq) Reset() {
+	*x = CreateShareCodeReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[38]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CreateShareCodeReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateShareCodeReq) ProtoMessage() {}
+
+func (x *CreateShareCodeReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[38]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateShareCodeReq.ProtoReflect.Descriptor instead.
+func (*CreateShareCodeReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{38}
+}
+
+func (x *CreateShareCodeReq) GetShareFile() *ShareFile {
+	if x != nil {
+		return x.ShareFile
+	}
+	return nil
+}
+
+type CreateShareCodeResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Code string `protobuf:"bytes,1,opt,name=code,proto3" json:"code" form:"code" query:"code"`
+}
+
+func (x *CreateShareCodeResp) Reset() {
+	*x = CreateShareCodeResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[39]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CreateShareCodeResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateShareCodeResp) ProtoMessage() {}
+
+func (x *CreateShareCodeResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[39]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateShareCodeResp.ProtoReflect.Descriptor instead.
+func (*CreateShareCodeResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{39}
+}
+
+func (x *CreateShareCodeResp) GetCode() string {
+	if x != nil {
+		return x.Code
+	}
+	return ""
+}
+
+type GetShareListReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ShareFileFilterOptions *ShareFileFilterOptions  `protobuf:"bytes,1,opt,name=shareFileFilterOptions,proto3,oneof" json:"shareFileFilterOptions" form:"shareFileFilterOptions" query:"shareFileFilterOptions"`
+	PaginationOptions      *basic.PaginationOptions `protobuf:"bytes,2,opt,name=paginationOptions,proto3,oneof" json:"paginationOptions" form:"paginationOptions" query:"paginationOptions"`
+}
+
+func (x *GetShareListReq) Reset() {
+	*x = GetShareListReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[40]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetShareListReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetShareListReq) ProtoMessage() {}
+
+func (x *GetShareListReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[40]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetShareListReq.ProtoReflect.Descriptor instead.
+func (*GetShareListReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{40}
+}
+
+func (x *GetShareListReq) GetShareFileFilterOptions() *ShareFileFilterOptions {
+	if x != nil {
+		return x.ShareFileFilterOptions
+	}
+	return nil
+}
+
+func (x *GetShareListReq) GetPaginationOptions() *basic.PaginationOptions {
+	if x != nil {
+		return x.PaginationOptions
+	}
+	return nil
+}
+
+type GetShareListResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ShareCodes []*ShareCode `protobuf:"bytes,1,rep,name=shareCodes,proto3" json:"shareCodes" form:"shareCodes" query:"shareCodes"`
+	Total      int64        `protobuf:"varint,2,opt,name=total,proto3" json:"total" form:"total" query:"total"`
+	Token      string       `protobuf:"bytes,3,opt,name=token,proto3" json:"token" form:"token" query:"token"`
+}
+
+func (x *GetShareListResp) Reset() {
+	*x = GetShareListResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[41]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetShareListResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetShareListResp) ProtoMessage() {}
+
+func (x *GetShareListResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[41]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetShareListResp.ProtoReflect.Descriptor instead.
+func (*GetShareListResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{41}
+}
+
+func (x *GetShareListResp) GetShareCodes() []*ShareCode {
+	if x != nil {
+		return x.ShareCodes
+	}
+	return nil
+}
+
+func (x *GetShareListResp) GetTotal() int64 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
+func (x *GetShareListResp) GetToken() string {
+	if x != nil {
+		return x.Token
+	}
+	return ""
+}
+
+type UpdateShareCodeReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ShareFile *ShareFile `protobuf:"bytes,1,opt,name=shareFile,proto3" json:"shareFile" form:"shareFile" query:"shareFile"`
+}
+
+func (x *UpdateShareCodeReq) Reset() {
+	*x = UpdateShareCodeReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[42]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UpdateShareCodeReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateShareCodeReq) ProtoMessage() {}
+
+func (x *UpdateShareCodeReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[42]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateShareCodeReq.ProtoReflect.Descriptor instead.
+func (*UpdateShareCodeReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{42}
+}
+
+func (x *UpdateShareCodeReq) GetShareFile() *ShareFile {
+	if x != nil {
+		return x.ShareFile
+	}
+	return nil
+}
+
+type UpdateShareCodeResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *UpdateShareCodeResp) Reset() {
+	*x = UpdateShareCodeResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[43]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UpdateShareCodeResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateShareCodeResp) ProtoMessage() {}
+
+func (x *UpdateShareCodeResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[43]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateShareCodeResp.ProtoReflect.Descriptor instead.
+func (*UpdateShareCodeResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{43}
+}
+
+type DeleteShareCodeReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ShareFileFilterOptions *ShareFileFilterOptions `protobuf:"bytes,1,opt,name=shareFileFilterOptions,proto3,oneof" json:"shareFileFilterOptions" form:"shareFileFilterOptions" query:"shareFileFilterOptions"`
+}
+
+func (x *DeleteShareCodeReq) Reset() {
+	*x = DeleteShareCodeReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[44]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteShareCodeReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteShareCodeReq) ProtoMessage() {}
+
+func (x *DeleteShareCodeReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[44]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteShareCodeReq.ProtoReflect.Descriptor instead.
+func (*DeleteShareCodeReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{44}
+}
+
+func (x *DeleteShareCodeReq) GetShareFileFilterOptions() *ShareFileFilterOptions {
+	if x != nil {
+		return x.ShareFileFilterOptions
+	}
+	return nil
+}
+
+type DeleteShareCodeResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *DeleteShareCodeResp) Reset() {
+	*x = DeleteShareCodeResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[45]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteShareCodeResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteShareCodeResp) ProtoMessage() {}
+
+func (x *DeleteShareCodeResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[45]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteShareCodeResp.ProtoReflect.Descriptor instead.
+func (*DeleteShareCodeResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{45}
+}
+
+type ParsingShareCodeReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Code string `protobuf:"bytes,1,opt,name=code,proto3" json:"code" form:"code" query:"code"`
+}
+
+func (x *ParsingShareCodeReq) Reset() {
+	*x = ParsingShareCodeReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[46]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ParsingShareCodeReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ParsingShareCodeReq) ProtoMessage() {}
+
+func (x *ParsingShareCodeReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[46]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ParsingShareCodeReq.ProtoReflect.Descriptor instead.
+func (*ParsingShareCodeReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{46}
+}
+
+func (x *ParsingShareCodeReq) GetCode() string {
+	if x != nil {
+		return x.Code
+	}
+	return ""
+}
+
+type ParsingShareCodeResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ShareFile *ShareFile `protobuf:"bytes,1,opt,name=shareFile,proto3" json:"shareFile" form:"shareFile" query:"shareFile"`
+}
+
+func (x *ParsingShareCodeResp) Reset() {
+	*x = ParsingShareCodeResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[47]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ParsingShareCodeResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ParsingShareCodeResp) ProtoMessage() {}
+
+func (x *ParsingShareCodeResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[47]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ParsingShareCodeResp.ProtoReflect.Descriptor instead.
+func (*ParsingShareCodeResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{47}
+}
+
+func (x *ParsingShareCodeResp) GetShareFile() *ShareFile {
+	if x != nil {
+		return x.ShareFile
+	}
+	return nil
+}
+
+type DeleteShareFileReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ShareId string `protobuf:"bytes,1,opt,name=shareId,proto3" json:"shareId" form:"shareId" query:"shareId"`
+	UserId  string `protobuf:"bytes,2,opt,name=userId,proto3" json:"userId" form:"userId" query:"userId"`
+}
+
+func (x *DeleteShareFileReq) Reset() {
+	*x = DeleteShareFileReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[48]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteShareFileReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteShareFileReq) ProtoMessage() {}
+
+func (x *DeleteShareFileReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[48]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteShareFileReq.ProtoReflect.Descriptor instead.
+func (*DeleteShareFileReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{48}
+}
+
+func (x *DeleteShareFileReq) GetShareId() string {
+	if x != nil {
+		return x.ShareId
+	}
+	return ""
+}
+
+func (x *DeleteShareFileReq) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+type DeleteShareFileResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *DeleteShareFileResp) Reset() {
+	*x = DeleteShareFileResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[49]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteShareFileResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteShareFileResp) ProtoMessage() {}
+
+func (x *DeleteShareFileResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[49]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteShareFileResp.ProtoReflect.Descriptor instead.
+func (*DeleteShareFileResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{49}
+}
+
+type GetUserReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	UserId string `protobuf:"bytes,1,opt,name=userId,proto3" json:"userId" form:"userId" query:"userId"`
+}
+
+func (x *GetUserReq) Reset() {
+	*x = GetUserReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[50]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetUserReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetUserReq) ProtoMessage() {}
+
+func (x *GetUserReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[50]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetUserReq.ProtoReflect.Descriptor instead.
+func (*GetUserReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{50}
+}
+
+func (x *GetUserReq) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+type GetUserResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	User *User `protobuf:"bytes,1,opt,name=user,proto3" json:"user" form:"user" query:"user"`
+}
+
+func (x *GetUserResp) Reset() {
+	*x = GetUserResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[51]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetUserResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetUserResp) ProtoMessage() {}
+
+func (x *GetUserResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[51]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetUserResp.ProtoReflect.Descriptor instead.
+func (*GetUserResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{51}
+}
+
+func (x *GetUserResp) GetUser() *User {
+	if x != nil {
+		return x.User
+	}
+	return nil
+}
+
+type CreateUserReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	UserInfo *UserInfo `protobuf:"bytes,1,opt,name=userInfo,proto3" json:"userInfo" form:"userInfo" query:"userInfo"`
+}
+
+func (x *CreateUserReq) Reset() {
+	*x = CreateUserReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[52]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CreateUserReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateUserReq) ProtoMessage() {}
+
+func (x *CreateUserReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[52]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateUserReq.ProtoReflect.Descriptor instead.
+func (*CreateUserReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{52}
+}
+
+func (x *CreateUserReq) GetUserInfo() *UserInfo {
+	if x != nil {
+		return x.UserInfo
+	}
+	return nil
+}
+
+type CreateUserResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *CreateUserResp) Reset() {
+	*x = CreateUserResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[53]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CreateUserResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateUserResp) ProtoMessage() {}
+
+func (x *CreateUserResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[53]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateUserResp.ProtoReflect.Descriptor instead.
+func (*CreateUserResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{53}
+}
+
+type GetUserDetailReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	UserId string `protobuf:"bytes,1,opt,name=userId,proto3" json:"userId" form:"userId" query:"userId"`
+}
+
+func (x *GetUserDetailReq) Reset() {
+	*x = GetUserDetailReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[54]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetUserDetailReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetUserDetailReq) ProtoMessage() {}
+
+func (x *GetUserDetailReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[54]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetUserDetailReq.ProtoReflect.Descriptor instead.
+func (*GetUserDetailReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{54}
+}
+
+func (x *GetUserDetailReq) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+type GetUserDetailResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	UserDetail *UserDetail `protobuf:"bytes,1,opt,name=userDetail,proto3" json:"userDetail" form:"userDetail" query:"userDetail"`
+}
+
+func (x *GetUserDetailResp) Reset() {
+	*x = GetUserDetailResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[55]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetUserDetailResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetUserDetailResp) ProtoMessage() {}
+
+func (x *GetUserDetailResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[55]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetUserDetailResp.ProtoReflect.Descriptor instead.
+func (*GetUserDetailResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{55}
+}
+
+func (x *GetUserDetailResp) GetUserDetail() *UserDetail {
+	if x != nil {
+		return x.UserDetail
+	}
+	return nil
+}
+
+type DeleteUserReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	UserId string `protobuf:"bytes,1,opt,name=userId,proto3" json:"userId" form:"userId" query:"userId"`
+}
+
+func (x *DeleteUserReq) Reset() {
+	*x = DeleteUserReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[56]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteUserReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteUserReq) ProtoMessage() {}
+
+func (x *DeleteUserReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[56]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteUserReq.ProtoReflect.Descriptor instead.
+func (*DeleteUserReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{56}
+}
+
+func (x *DeleteUserReq) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+type DeleteUserResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *DeleteUserResp) Reset() {
+	*x = DeleteUserResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[57]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteUserResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteUserResp) ProtoMessage() {}
+
+func (x *DeleteUserResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[57]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteUserResp.ProtoReflect.Descriptor instead.
+func (*DeleteUserResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{57}
+}
+
+type CreatePostReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	PostInfo *PostInfo `protobuf:"bytes,1,opt,name=postInfo,proto3" json:"postInfo" form:"postInfo" query:"postInfo"`
+}
+
+func (x *CreatePostReq) Reset() {
+	*x = CreatePostReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[58]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CreatePostReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreatePostReq) ProtoMessage() {}
+
+func (x *CreatePostReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[58]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreatePostReq.ProtoReflect.Descriptor instead.
+func (*CreatePostReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{58}
+}
+
+func (x *CreatePostReq) GetPostInfo() *PostInfo {
+	if x != nil {
+		return x.PostInfo
+	}
+	return nil
+}
+
+type CreatePostResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *CreatePostResp) Reset() {
+	*x = CreatePostResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[59]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CreatePostResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreatePostResp) ProtoMessage() {}
+
+func (x *CreatePostResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[59]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreatePostResp.ProtoReflect.Descriptor instead.
+func (*CreatePostResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{59}
+}
+
+type DeletePostReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	PostId string `protobuf:"bytes,1,opt,name=postId,proto3" json:"postId" form:"postId" query:"postId"`
+}
+
+func (x *DeletePostReq) Reset() {
+	*x = DeletePostReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[60]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeletePostReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeletePostReq) ProtoMessage() {}
+
+func (x *DeletePostReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[60]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeletePostReq.ProtoReflect.Descriptor instead.
+func (*DeletePostReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{60}
+}
+
+func (x *DeletePostReq) GetPostId() string {
+	if x != nil {
+		return x.PostId
+	}
+	return ""
+}
+
+type DeletePostResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *DeletePostResp) Reset() {
+	*x = DeletePostResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[61]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeletePostResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeletePostResp) ProtoMessage() {}
+
+func (x *DeletePostResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[61]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeletePostResp.ProtoReflect.Descriptor instead.
+func (*DeletePostResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{61}
+}
+
+type UpdatePostReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	PostInfo *PostInfo `protobuf:"bytes,1,opt,name=postInfo,proto3" json:"postInfo" form:"postInfo" query:"postInfo"`
+}
+
+func (x *UpdatePostReq) Reset() {
+	*x = UpdatePostReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[62]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UpdatePostReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdatePostReq) ProtoMessage() {}
+
+func (x *UpdatePostReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[62]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdatePostReq.ProtoReflect.Descriptor instead.
+func (*UpdatePostReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{62}
+}
+
+func (x *UpdatePostReq) GetPostInfo() *PostInfo {
+	if x != nil {
+		return x.PostInfo
+	}
+	return nil
+}
+
+type UpdatePostResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *UpdatePostResp) Reset() {
+	*x = UpdatePostResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[63]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UpdatePostResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdatePostResp) ProtoMessage() {}
+
+func (x *UpdatePostResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[63]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdatePostResp.ProtoReflect.Descriptor instead.
+func (*UpdatePostResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{63}
+}
+
+type GetPostReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	PostId string `protobuf:"bytes,1,opt,name=postId,proto3" json:"postId" form:"postId" query:"postId"`
+}
+
+func (x *GetPostReq) Reset() {
+	*x = GetPostReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[64]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetPostReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetPostReq) ProtoMessage() {}
+
+func (x *GetPostReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[64]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetPostReq.ProtoReflect.Descriptor instead.
+func (*GetPostReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{64}
+}
+
+func (x *GetPostReq) GetPostId() string {
+	if x != nil {
+		return x.PostId
+	}
+	return ""
+}
+
+type GetPostResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Post *Post `protobuf:"bytes,1,opt,name=post,proto3" json:"post" form:"post" query:"post"`
+}
+
+func (x *GetPostResp) Reset() {
+	*x = GetPostResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[65]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetPostResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetPostResp) ProtoMessage() {}
+
+func (x *GetPostResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[65]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetPostResp.ProtoReflect.Descriptor instead.
+func (*GetPostResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{65}
+}
+
+func (x *GetPostResp) GetPost() *Post {
+	if x != nil {
+		return x.Post
+	}
+	return nil
+}
+
+type GetPostsReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	SearchOptions     *SearchOptions           `protobuf:"bytes,1,opt,name=searchOptions,proto3,oneof" json:"searchOptions" form:"searchOptions" query:"searchOptions"`
+	PostFilterOptions *PostFilterOptions       `protobuf:"bytes,2,opt,name=postFilterOptions,proto3,oneof" json:"postFilterOptions" form:"postFilterOptions" query:"postFilterOptions"`
+	PaginationOptions *basic.PaginationOptions `protobuf:"bytes,3,opt,name=paginationOptions,proto3,oneof" json:"paginationOptions" form:"paginationOptions" query:"paginationOptions"`
+}
+
+func (x *GetPostsReq) Reset() {
+	*x = GetPostsReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[66]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetPostsReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetPostsReq) ProtoMessage() {}
+
+func (x *GetPostsReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[66]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetPostsReq.ProtoReflect.Descriptor instead.
+func (*GetPostsReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{66}
+}
+
+func (x *GetPostsReq) GetSearchOptions() *SearchOptions {
+	if x != nil {
+		return x.SearchOptions
+	}
+	return nil
+}
+
+func (x *GetPostsReq) GetPostFilterOptions() *PostFilterOptions {
+	if x != nil {
+		return x.PostFilterOptions
+	}
+	return nil
+}
+
+func (x *GetPostsReq) GetPaginationOptions() *basic.PaginationOptions {
+	if x != nil {
+		return x.PaginationOptions
+	}
+	return nil
+}
+
+type GetPostsResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Posts []*Post `protobuf:"bytes,1,rep,name=posts,proto3" json:"posts" form:"posts" query:"posts"`
+	Total int64   `protobuf:"varint,2,opt,name=total,proto3" json:"total" form:"total" query:"total"`
+	Token string  `protobuf:"bytes,3,opt,name=token,proto3" json:"token" form:"token" query:"token"`
+}
+
+func (x *GetPostsResp) Reset() {
+	*x = GetPostsResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[67]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetPostsResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetPostsResp) ProtoMessage() {}
+
+func (x *GetPostsResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[67]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetPostsResp.ProtoReflect.Descriptor instead.
+func (*GetPostsResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{67}
+}
+
+func (x *GetPostsResp) GetPosts() []*Post {
+	if x != nil {
+		return x.Posts
+	}
+	return nil
+}
+
+func (x *GetPostsResp) GetTotal() int64 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
+func (x *GetPostsResp) GetToken() string {
+	if x != nil {
+		return x.Token
+	}
+	return ""
+}
+
 var File_cloudmind_core_api_content_proto protoreflect.FileDescriptor
 
 var file_cloudmind_core_api_content_proto_rawDesc = []byte{
@@ -256,13 +3354,323 @@ var file_cloudmind_core_api_content_proto_rawDesc = []byte{
 	0x72, 0x52, 0x05, 0x75, 0x73, 0x65, 0x72, 0x73, 0x12, 0x1c, 0x0a, 0x09, 0x6c, 0x61, 0x73, 0x74,
 	0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x6c, 0x61, 0x73,
 	0x74, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x18,
-	0x03, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x42, 0x53, 0x5a, 0x51,
-	0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x43, 0x6c, 0x6f, 0x75, 0x64,
-	0x53, 0x74, 0x72, 0x69, 0x76, 0x65, 0x72, 0x2f, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e,
-	0x64, 0x2d, 0x63, 0x6f, 0x72, 0x65, 0x2d, 0x61, 0x70, 0x69, 0x2f, 0x62, 0x69, 0x7a, 0x2f, 0x61,
-	0x70, 0x70, 0x6c, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2f, 0x64, 0x74, 0x6f, 0x2f, 0x63,
-	0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70,
-	0x69, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x03, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x22, 0x25, 0x0a, 0x11,
+	0x47, 0x65, 0x74, 0x46, 0x69, 0x6c, 0x65, 0x49, 0x73, 0x45, 0x78, 0x69, 0x73, 0x74, 0x52, 0x65,
+	0x71, 0x12, 0x10, 0x0a, 0x03, 0x6d, 0x64, 0x35, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03,
+	0x6d, 0x64, 0x35, 0x22, 0x24, 0x0a, 0x12, 0x47, 0x65, 0x74, 0x46, 0x69, 0x6c, 0x65, 0x49, 0x73,
+	0x45, 0x78, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x12, 0x0e, 0x0a, 0x02, 0x6f, 0x6b, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x02, 0x6f, 0x6b, 0x22, 0x8e, 0x01, 0x0a, 0x0a, 0x47, 0x65,
+	0x74, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x65, 0x71, 0x12, 0x50, 0x0a, 0x0d, 0x66, 0x69, 0x6c, 0x74,
+	0x65, 0x72, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x25, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2e, 0x63, 0x6f, 0x72, 0x65,
+	0x5f, 0x61, 0x70, 0x69, 0x2e, 0x46, 0x69, 0x6c, 0x65, 0x46, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x4f,
+	0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x48, 0x00, 0x52, 0x0d, 0x66, 0x69, 0x6c, 0x74, 0x65, 0x72,
+	0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x88, 0x01, 0x01, 0x12, 0x1c, 0x0a, 0x09, 0x49, 0x73,
+	0x47, 0x65, 0x74, 0x53, 0x69, 0x7a, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x08, 0x52, 0x09, 0x49,
+	0x73, 0x47, 0x65, 0x74, 0x53, 0x69, 0x7a, 0x65, 0x42, 0x10, 0x0a, 0x0e, 0x5f, 0x66, 0x69, 0x6c,
+	0x74, 0x65, 0x72, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x22, 0x3f, 0x0a, 0x0b, 0x47, 0x65,
+	0x74, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x65, 0x73, 0x70, 0x12, 0x30, 0x0a, 0x04, 0x66, 0x69, 0x6c,
+	0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d,
+	0x69, 0x6e, 0x64, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x46, 0x69, 0x6c,
+	0x65, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x04, 0x66, 0x69, 0x6c, 0x65, 0x22, 0xb7, 0x02, 0x0a, 0x0e,
+	0x47, 0x65, 0x74, 0x46, 0x69, 0x6c, 0x65, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x12, 0x4c,
+	0x0a, 0x0d, 0x73, 0x65, 0x61, 0x72, 0x63, 0x68, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x21, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e,
+	0x64, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x53, 0x65, 0x61, 0x72, 0x63,
+	0x68, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x48, 0x00, 0x52, 0x0d, 0x73, 0x65, 0x61, 0x72,
+	0x63, 0x68, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x88, 0x01, 0x01, 0x12, 0x50, 0x0a, 0x0d,
+	0x66, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x25, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2e,
+	0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x46, 0x69, 0x6c, 0x65, 0x46, 0x69, 0x6c,
+	0x74, 0x65, 0x72, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x48, 0x01, 0x52, 0x0d, 0x66, 0x69,
+	0x6c, 0x74, 0x65, 0x72, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x88, 0x01, 0x01, 0x12, 0x4b,
+	0x0a, 0x11, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x4f, 0x70, 0x74, 0x69,
+	0x6f, 0x6e, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x62, 0x61, 0x73, 0x69,
+	0x63, 0x2e, 0x50, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x4f, 0x70, 0x74, 0x69,
+	0x6f, 0x6e, 0x73, 0x48, 0x02, 0x52, 0x11, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x88, 0x01, 0x01, 0x42, 0x10, 0x0a, 0x0e, 0x5f,
+	0x73, 0x65, 0x61, 0x72, 0x63, 0x68, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x42, 0x10, 0x0a,
+	0x0e, 0x5f, 0x66, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x42,
+	0x14, 0x0a, 0x12, 0x5f, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x4f, 0x70,
+	0x74, 0x69, 0x6f, 0x6e, 0x73, 0x22, 0x71, 0x0a, 0x0f, 0x47, 0x65, 0x74, 0x46, 0x69, 0x6c, 0x65,
+	0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x12, 0x32, 0x0a, 0x05, 0x66, 0x69, 0x6c, 0x65,
+	0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d,
+	0x69, 0x6e, 0x64, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x46, 0x69, 0x6c,
+	0x65, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x05, 0x66, 0x69, 0x6c, 0x65, 0x73, 0x12, 0x14, 0x0a, 0x05,
+	0x74, 0x6f, 0x74, 0x61, 0x6c, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x74, 0x6f, 0x74,
+	0x61, 0x6c, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x05, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x22, 0x76, 0x0a, 0x10, 0x47, 0x65, 0x74, 0x46,
+	0x6f, 0x6c, 0x64, 0x65, 0x72, 0x53, 0x69, 0x7a, 0x65, 0x52, 0x65, 0x71, 0x12, 0x50, 0x0a, 0x0d,
+	0x66, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x25, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2e,
+	0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x46, 0x69, 0x6c, 0x65, 0x46, 0x69, 0x6c,
+	0x74, 0x65, 0x72, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x48, 0x00, 0x52, 0x0d, 0x66, 0x69,
+	0x6c, 0x74, 0x65, 0x72, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x88, 0x01, 0x01, 0x42, 0x10,
+	0x0a, 0x0e, 0x5f, 0x66, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73,
+	0x22, 0x31, 0x0a, 0x11, 0x47, 0x65, 0x74, 0x46, 0x6f, 0x6c, 0x64, 0x65, 0x72, 0x53, 0x69, 0x7a,
+	0x65, 0x52, 0x65, 0x73, 0x70, 0x12, 0x1c, 0x0a, 0x09, 0x73, 0x70, 0x61, 0x63, 0x65, 0x53, 0x69,
+	0x7a, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x09, 0x73, 0x70, 0x61, 0x63, 0x65, 0x53,
+	0x69, 0x7a, 0x65, 0x22, 0xd5, 0x01, 0x0a, 0x0f, 0x47, 0x65, 0x74, 0x46, 0x69, 0x6c, 0x65, 0x43,
+	0x6f, 0x75, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x12, 0x4c, 0x0a, 0x0d, 0x73, 0x65, 0x61, 0x72, 0x63,
+	0x68, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x21,
+	0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f,
+	0x61, 0x70, 0x69, 0x2e, 0x53, 0x65, 0x61, 0x72, 0x63, 0x68, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e,
+	0x73, 0x48, 0x00, 0x52, 0x0d, 0x73, 0x65, 0x61, 0x72, 0x63, 0x68, 0x4f, 0x70, 0x74, 0x69, 0x6f,
+	0x6e, 0x73, 0x88, 0x01, 0x01, 0x12, 0x50, 0x0a, 0x0d, 0x66, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x4f,
+	0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x25, 0x2e, 0x63,
+	0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70,
+	0x69, 0x2e, 0x46, 0x69, 0x6c, 0x65, 0x46, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x4f, 0x70, 0x74, 0x69,
+	0x6f, 0x6e, 0x73, 0x48, 0x01, 0x52, 0x0d, 0x66, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x4f, 0x70, 0x74,
+	0x69, 0x6f, 0x6e, 0x73, 0x88, 0x01, 0x01, 0x42, 0x10, 0x0a, 0x0e, 0x5f, 0x73, 0x65, 0x61, 0x72,
+	0x63, 0x68, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x42, 0x10, 0x0a, 0x0e, 0x5f, 0x66, 0x69,
+	0x6c, 0x74, 0x65, 0x72, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x22, 0x28, 0x0a, 0x10, 0x47,
+	0x65, 0x74, 0x46, 0x69, 0x6c, 0x65, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x12,
+	0x14, 0x0a, 0x05, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05,
+	0x63, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0x82, 0x02, 0x0a, 0x17, 0x47, 0x65, 0x74, 0x46, 0x69, 0x6c,
+	0x65, 0x42, 0x79, 0x53, 0x68, 0x61, 0x72, 0x69, 0x6e, 0x67, 0x43, 0x6f, 0x64, 0x65, 0x52, 0x65,
+	0x71, 0x12, 0x20, 0x0a, 0x0b, 0x73, 0x68, 0x61, 0x72, 0x69, 0x6e, 0x67, 0x43, 0x6f, 0x64, 0x65,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x73, 0x68, 0x61, 0x72, 0x69, 0x6e, 0x67, 0x43,
+	0x6f, 0x64, 0x65, 0x12, 0x50, 0x0a, 0x0d, 0x66, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x4f, 0x70, 0x74,
+	0x69, 0x6f, 0x6e, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x25, 0x2e, 0x63, 0x6c, 0x6f,
+	0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e,
+	0x46, 0x69, 0x6c, 0x65, 0x46, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e,
+	0x73, 0x48, 0x00, 0x52, 0x0d, 0x66, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x4f, 0x70, 0x74, 0x69, 0x6f,
+	0x6e, 0x73, 0x88, 0x01, 0x01, 0x12, 0x4b, 0x0a, 0x11, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74,
+	0x69, 0x6f, 0x6e, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x18, 0x2e, 0x62, 0x61, 0x73, 0x69, 0x63, 0x2e, 0x50, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74,
+	0x69, 0x6f, 0x6e, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x48, 0x01, 0x52, 0x11, 0x70, 0x61,
+	0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x88,
+	0x01, 0x01, 0x42, 0x10, 0x0a, 0x0e, 0x5f, 0x66, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x4f, 0x70, 0x74,
+	0x69, 0x6f, 0x6e, 0x73, 0x42, 0x14, 0x0a, 0x12, 0x5f, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74,
+	0x69, 0x6f, 0x6e, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x22, 0x7a, 0x0a, 0x18, 0x47, 0x65,
+	0x74, 0x46, 0x69, 0x6c, 0x65, 0x42, 0x79, 0x53, 0x68, 0x61, 0x72, 0x69, 0x6e, 0x67, 0x43, 0x6f,
+	0x64, 0x65, 0x52, 0x65, 0x73, 0x70, 0x12, 0x32, 0x0a, 0x05, 0x66, 0x69, 0x6c, 0x65, 0x73, 0x18,
+	0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e,
+	0x64, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x46, 0x69, 0x6c, 0x65, 0x49,
+	0x6e, 0x66, 0x6f, 0x52, 0x05, 0x66, 0x69, 0x6c, 0x65, 0x73, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f,
+	0x74, 0x61, 0x6c, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c,
+	0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x05, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x22, 0x3f, 0x0a, 0x0f, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65,
+	0x46, 0x6f, 0x6c, 0x64, 0x65, 0x72, 0x52, 0x65, 0x71, 0x12, 0x2c, 0x0a, 0x04, 0x66, 0x69, 0x6c,
+	0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d,
+	0x69, 0x6e, 0x64, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x46, 0x69, 0x6c,
+	0x65, 0x52, 0x04, 0x66, 0x69, 0x6c, 0x65, 0x22, 0x2a, 0x0a, 0x10, 0x43, 0x72, 0x65, 0x61, 0x74,
+	0x65, 0x46, 0x6f, 0x6c, 0x64, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x12, 0x16, 0x0a, 0x06, 0x66,
+	0x69, 0x6c, 0x65, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x66, 0x69, 0x6c,
+	0x65, 0x49, 0x64, 0x22, 0x3d, 0x0a, 0x0d, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x46, 0x69, 0x6c,
+	0x65, 0x52, 0x65, 0x71, 0x12, 0x2c, 0x0a, 0x04, 0x66, 0x69, 0x6c, 0x65, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x18, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2e, 0x63,
+	0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x04, 0x66, 0x69,
+	0x6c, 0x65, 0x22, 0x10, 0x0a, 0x0e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x46, 0x69, 0x6c, 0x65,
+	0x52, 0x65, 0x73, 0x70, 0x22, 0x59, 0x0a, 0x0b, 0x4d, 0x6f, 0x76, 0x65, 0x46, 0x69, 0x6c, 0x65,
+	0x52, 0x65, 0x71, 0x12, 0x16, 0x0a, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x12, 0x16, 0x0a, 0x06, 0x66,
+	0x69, 0x6c, 0x65, 0x49, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x66, 0x69, 0x6c,
+	0x65, 0x49, 0x64, 0x12, 0x1a, 0x0a, 0x08, 0x66, 0x61, 0x74, 0x68, 0x65, 0x72, 0x49, 0x64, 0x18,
+	0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x66, 0x61, 0x74, 0x68, 0x65, 0x72, 0x49, 0x64, 0x22,
+	0x0e, 0x0a, 0x0c, 0x4d, 0x6f, 0x76, 0x65, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x65, 0x73, 0x70, 0x22,
+	0xad, 0x01, 0x0a, 0x19, 0x53, 0x61, 0x76, 0x65, 0x46, 0x69, 0x6c, 0x65, 0x54, 0x6f, 0x50, 0x72,
+	0x69, 0x76, 0x61, 0x74, 0x65, 0x53, 0x70, 0x61, 0x63, 0x65, 0x52, 0x65, 0x71, 0x12, 0x16, 0x0a,
+	0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x75,
+	0x73, 0x65, 0x72, 0x49, 0x64, 0x12, 0x16, 0x0a, 0x06, 0x66, 0x69, 0x6c, 0x65, 0x49, 0x64, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x66, 0x69, 0x6c, 0x65, 0x49, 0x64, 0x12, 0x1a, 0x0a,
+	0x08, 0x66, 0x61, 0x74, 0x68, 0x65, 0x72, 0x49, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x08, 0x66, 0x61, 0x74, 0x68, 0x65, 0x72, 0x49, 0x64, 0x12, 0x44, 0x0a, 0x0c, 0x64, 0x6f, 0x63,
+	0x75, 0x6d, 0x65, 0x6e, 0x74, 0x54, 0x79, 0x70, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0e, 0x32,
+	0x20, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2e, 0x63, 0x6f, 0x72, 0x65,
+	0x5f, 0x61, 0x70, 0x69, 0x2e, 0x44, 0x6f, 0x63, 0x75, 0x6d, 0x65, 0x6e, 0x74, 0x54, 0x79, 0x70,
+	0x65, 0x52, 0x0c, 0x64, 0x6f, 0x63, 0x75, 0x6d, 0x65, 0x6e, 0x74, 0x54, 0x79, 0x70, 0x65, 0x22,
+	0x34, 0x0a, 0x1a, 0x53, 0x61, 0x76, 0x65, 0x46, 0x69, 0x6c, 0x65, 0x54, 0x6f, 0x50, 0x72, 0x69,
+	0x76, 0x61, 0x74, 0x65, 0x53, 0x70, 0x61, 0x63, 0x65, 0x52, 0x65, 0x73, 0x70, 0x12, 0x16, 0x0a,
+	0x06, 0x66, 0x69, 0x6c, 0x65, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x66,
+	0x69, 0x6c, 0x65, 0x49, 0x64, 0x22, 0x47, 0x0a, 0x17, 0x41, 0x64, 0x64, 0x46, 0x69, 0x6c, 0x65,
+	0x54, 0x6f, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x53, 0x70, 0x61, 0x63, 0x65, 0x52, 0x65, 0x71,
+	0x12, 0x2c, 0x0a, 0x04, 0x66, 0x69, 0x6c, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x18,
+	0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f,
+	0x61, 0x70, 0x69, 0x2e, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x04, 0x66, 0x69, 0x6c, 0x65, 0x22, 0x1a,
+	0x0a, 0x18, 0x41, 0x64, 0x64, 0x46, 0x69, 0x6c, 0x65, 0x54, 0x6f, 0x50, 0x75, 0x62, 0x6c, 0x69,
+	0x63, 0x53, 0x70, 0x61, 0x63, 0x65, 0x52, 0x65, 0x73, 0x70, 0x22, 0xa2, 0x01, 0x0a, 0x0d, 0x44,
+	0x65, 0x6c, 0x65, 0x74, 0x65, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x65, 0x71, 0x12, 0x16, 0x0a, 0x06,
+	0x66, 0x69, 0x6c, 0x65, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x66, 0x69,
+	0x6c, 0x65, 0x49, 0x64, 0x12, 0x16, 0x0a, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x12, 0x39, 0x0a, 0x0a,
+	0x64, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x54, 0x79, 0x70, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0e,
+	0x32, 0x19, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2e, 0x63, 0x6f, 0x72,
+	0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x49, 0x73, 0x44, 0x65, 0x6c, 0x52, 0x0a, 0x64, 0x65, 0x6c,
+	0x65, 0x74, 0x65, 0x54, 0x79, 0x70, 0x65, 0x12, 0x26, 0x0a, 0x0e, 0x63, 0x6c, 0x65, 0x61, 0x72,
+	0x43, 0x6f, 0x6d, 0x6d, 0x75, 0x6e, 0x69, 0x74, 0x79, 0x18, 0x04, 0x20, 0x01, 0x28, 0x08, 0x52,
+	0x0e, 0x63, 0x6c, 0x65, 0x61, 0x72, 0x43, 0x6f, 0x6d, 0x6d, 0x75, 0x6e, 0x69, 0x74, 0x79, 0x22,
+	0x20, 0x0a, 0x0e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x65, 0x73,
+	0x70, 0x12, 0x0e, 0x0a, 0x02, 0x6f, 0x6b, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x02, 0x6f,
+	0x6b, 0x22, 0x4a, 0x0a, 0x18, 0x52, 0x65, 0x63, 0x6f, 0x76, 0x65, 0x72, 0x52, 0x65, 0x63, 0x79,
+	0x63, 0x6c, 0x65, 0x42, 0x69, 0x6e, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x65, 0x71, 0x12, 0x16, 0x0a,
+	0x06, 0x66, 0x69, 0x6c, 0x65, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x66,
+	0x69, 0x6c, 0x65, 0x49, 0x64, 0x12, 0x16, 0x0a, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x22, 0x1b, 0x0a,
+	0x19, 0x52, 0x65, 0x63, 0x6f, 0x76, 0x65, 0x72, 0x52, 0x65, 0x63, 0x79, 0x63, 0x6c, 0x65, 0x42,
+	0x69, 0x6e, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x65, 0x73, 0x70, 0x22, 0x41, 0x0a, 0x0e, 0x43, 0x72,
+	0x65, 0x61, 0x74, 0x65, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x52, 0x65, 0x71, 0x12, 0x2f, 0x0a, 0x05,
+	0x6c, 0x61, 0x62, 0x65, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6c,
+	0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69,
+	0x2e, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x52, 0x05, 0x6c, 0x61, 0x62, 0x65, 0x6c, 0x22, 0x21, 0x0a,
+	0x0f, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x52, 0x65, 0x73, 0x70,
+	0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64,
+	0x22, 0x1d, 0x0a, 0x0b, 0x47, 0x65, 0x74, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x52, 0x65, 0x71, 0x12,
+	0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22,
+	0x3f, 0x0a, 0x0c, 0x47, 0x65, 0x74, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x12,
+	0x2f, 0x0a, 0x05, 0x6c, 0x61, 0x62, 0x65, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19,
+	0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f,
+	0x61, 0x70, 0x69, 0x2e, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x52, 0x05, 0x6c, 0x61, 0x62, 0x65, 0x6c,
+	0x22, 0x41, 0x0a, 0x0e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x52,
+	0x65, 0x71, 0x12, 0x2f, 0x0a, 0x05, 0x6c, 0x61, 0x62, 0x65, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x19, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2e, 0x63, 0x6f,
+	0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x52, 0x05, 0x6c, 0x61,
+	0x62, 0x65, 0x6c, 0x22, 0x11, 0x0a, 0x0f, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x4c, 0x61, 0x62,
+	0x65, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x22, 0x20, 0x0a, 0x0e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65,
+	0x4c, 0x61, 0x62, 0x65, 0x6c, 0x52, 0x65, 0x71, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22, 0x11, 0x0a, 0x0f, 0x44, 0x65, 0x6c, 0x65,
+	0x74, 0x65, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x22, 0x51, 0x0a, 0x12, 0x43,
+	0x72, 0x65, 0x61, 0x74, 0x65, 0x53, 0x68, 0x61, 0x72, 0x65, 0x43, 0x6f, 0x64, 0x65, 0x52, 0x65,
+	0x71, 0x12, 0x3b, 0x0a, 0x09, 0x73, 0x68, 0x61, 0x72, 0x65, 0x46, 0x69, 0x6c, 0x65, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x1d, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64,
+	0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x53, 0x68, 0x61, 0x72, 0x65, 0x46,
+	0x69, 0x6c, 0x65, 0x52, 0x09, 0x73, 0x68, 0x61, 0x72, 0x65, 0x46, 0x69, 0x6c, 0x65, 0x22, 0x29,
+	0x0a, 0x13, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x53, 0x68, 0x61, 0x72, 0x65, 0x43, 0x6f, 0x64,
+	0x65, 0x52, 0x65, 0x73, 0x70, 0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x22, 0xf8, 0x01, 0x0a, 0x0f, 0x47, 0x65,
+	0x74, 0x53, 0x68, 0x61, 0x72, 0x65, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x12, 0x67, 0x0a,
+	0x16, 0x73, 0x68, 0x61, 0x72, 0x65, 0x46, 0x69, 0x6c, 0x65, 0x46, 0x69, 0x6c, 0x74, 0x65, 0x72,
+	0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x2a, 0x2e,
+	0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61,
+	0x70, 0x69, 0x2e, 0x53, 0x68, 0x61, 0x72, 0x65, 0x46, 0x69, 0x6c, 0x65, 0x46, 0x69, 0x6c, 0x74,
+	0x65, 0x72, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x48, 0x00, 0x52, 0x16, 0x73, 0x68, 0x61,
+	0x72, 0x65, 0x46, 0x69, 0x6c, 0x65, 0x46, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x4f, 0x70, 0x74, 0x69,
+	0x6f, 0x6e, 0x73, 0x88, 0x01, 0x01, 0x12, 0x4b, 0x0a, 0x11, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61,
+	0x74, 0x69, 0x6f, 0x6e, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x18, 0x2e, 0x62, 0x61, 0x73, 0x69, 0x63, 0x2e, 0x50, 0x61, 0x67, 0x69, 0x6e, 0x61,
+	0x74, 0x69, 0x6f, 0x6e, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x48, 0x01, 0x52, 0x11, 0x70,
+	0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73,
+	0x88, 0x01, 0x01, 0x42, 0x19, 0x0a, 0x17, 0x5f, 0x73, 0x68, 0x61, 0x72, 0x65, 0x46, 0x69, 0x6c,
+	0x65, 0x46, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x42, 0x14,
+	0x0a, 0x12, 0x5f, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x4f, 0x70, 0x74,
+	0x69, 0x6f, 0x6e, 0x73, 0x22, 0x7d, 0x0a, 0x10, 0x47, 0x65, 0x74, 0x53, 0x68, 0x61, 0x72, 0x65,
+	0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x12, 0x3d, 0x0a, 0x0a, 0x73, 0x68, 0x61, 0x72,
+	0x65, 0x43, 0x6f, 0x64, 0x65, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1d, 0x2e, 0x63,
+	0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70,
+	0x69, 0x2e, 0x53, 0x68, 0x61, 0x72, 0x65, 0x43, 0x6f, 0x64, 0x65, 0x52, 0x0a, 0x73, 0x68, 0x61,
+	0x72, 0x65, 0x43, 0x6f, 0x64, 0x65, 0x73, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x12, 0x14, 0x0a,
+	0x05, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x6f,
+	0x6b, 0x65, 0x6e, 0x22, 0x51, 0x0a, 0x12, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x53, 0x68, 0x61,
+	0x72, 0x65, 0x43, 0x6f, 0x64, 0x65, 0x52, 0x65, 0x71, 0x12, 0x3b, 0x0a, 0x09, 0x73, 0x68, 0x61,
+	0x72, 0x65, 0x46, 0x69, 0x6c, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1d, 0x2e, 0x63,
+	0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70,
+	0x69, 0x2e, 0x53, 0x68, 0x61, 0x72, 0x65, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x09, 0x73, 0x68, 0x61,
+	0x72, 0x65, 0x46, 0x69, 0x6c, 0x65, 0x22, 0x15, 0x0a, 0x13, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65,
+	0x53, 0x68, 0x61, 0x72, 0x65, 0x43, 0x6f, 0x64, 0x65, 0x52, 0x65, 0x73, 0x70, 0x22, 0x98, 0x01,
+	0x0a, 0x12, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x53, 0x68, 0x61, 0x72, 0x65, 0x43, 0x6f, 0x64,
+	0x65, 0x52, 0x65, 0x71, 0x12, 0x67, 0x0a, 0x16, 0x73, 0x68, 0x61, 0x72, 0x65, 0x46, 0x69, 0x6c,
+	0x65, 0x46, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x2a, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64,
+	0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x53, 0x68, 0x61, 0x72, 0x65, 0x46,
+	0x69, 0x6c, 0x65, 0x46, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73,
+	0x48, 0x00, 0x52, 0x16, 0x73, 0x68, 0x61, 0x72, 0x65, 0x46, 0x69, 0x6c, 0x65, 0x46, 0x69, 0x6c,
+	0x74, 0x65, 0x72, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x88, 0x01, 0x01, 0x42, 0x19, 0x0a,
+	0x17, 0x5f, 0x73, 0x68, 0x61, 0x72, 0x65, 0x46, 0x69, 0x6c, 0x65, 0x46, 0x69, 0x6c, 0x74, 0x65,
+	0x72, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x22, 0x15, 0x0a, 0x13, 0x44, 0x65, 0x6c, 0x65,
+	0x74, 0x65, 0x53, 0x68, 0x61, 0x72, 0x65, 0x43, 0x6f, 0x64, 0x65, 0x52, 0x65, 0x73, 0x70, 0x22,
+	0x29, 0x0a, 0x13, 0x50, 0x61, 0x72, 0x73, 0x69, 0x6e, 0x67, 0x53, 0x68, 0x61, 0x72, 0x65, 0x43,
+	0x6f, 0x64, 0x65, 0x52, 0x65, 0x71, 0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x22, 0x53, 0x0a, 0x14, 0x50, 0x61,
+	0x72, 0x73, 0x69, 0x6e, 0x67, 0x53, 0x68, 0x61, 0x72, 0x65, 0x43, 0x6f, 0x64, 0x65, 0x52, 0x65,
+	0x73, 0x70, 0x12, 0x3b, 0x0a, 0x09, 0x73, 0x68, 0x61, 0x72, 0x65, 0x46, 0x69, 0x6c, 0x65, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1d, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e,
+	0x64, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x53, 0x68, 0x61, 0x72, 0x65,
+	0x46, 0x69, 0x6c, 0x65, 0x52, 0x09, 0x73, 0x68, 0x61, 0x72, 0x65, 0x46, 0x69, 0x6c, 0x65, 0x22,
+	0x46, 0x0a, 0x12, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x53, 0x68, 0x61, 0x72, 0x65, 0x46, 0x69,
+	0x6c, 0x65, 0x52, 0x65, 0x71, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x68, 0x61, 0x72, 0x65, 0x49, 0x64,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x73, 0x68, 0x61, 0x72, 0x65, 0x49, 0x64, 0x12,
+	0x16, 0x0a, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x22, 0x15, 0x0a, 0x13, 0x44, 0x65, 0x6c, 0x65, 0x74,
+	0x65, 0x53, 0x68, 0x61, 0x72, 0x65, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x65, 0x73, 0x70, 0x22, 0x24,
+	0x0a, 0x0a, 0x47, 0x65, 0x74, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x71, 0x12, 0x16, 0x0a, 0x06,
+	0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73,
+	0x65, 0x72, 0x49, 0x64, 0x22, 0x3b, 0x0a, 0x0b, 0x47, 0x65, 0x74, 0x55, 0x73, 0x65, 0x72, 0x52,
+	0x65, 0x73, 0x70, 0x12, 0x2c, 0x0a, 0x04, 0x75, 0x73, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x18, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2e, 0x63, 0x6f,
+	0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x52, 0x04, 0x75, 0x73, 0x65,
+	0x72, 0x22, 0x49, 0x0a, 0x0d, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x55, 0x73, 0x65, 0x72, 0x52,
+	0x65, 0x71, 0x12, 0x38, 0x0a, 0x08, 0x75, 0x73, 0x65, 0x72, 0x49, 0x6e, 0x66, 0x6f, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64,
+	0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x49, 0x6e,
+	0x66, 0x6f, 0x52, 0x08, 0x75, 0x73, 0x65, 0x72, 0x49, 0x6e, 0x66, 0x6f, 0x22, 0x10, 0x0a, 0x0e,
+	0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x22, 0x2a,
+	0x0a, 0x10, 0x47, 0x65, 0x74, 0x55, 0x73, 0x65, 0x72, 0x44, 0x65, 0x74, 0x61, 0x69, 0x6c, 0x52,
+	0x65, 0x71, 0x12, 0x16, 0x0a, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x22, 0x53, 0x0a, 0x11, 0x47, 0x65,
+	0x74, 0x55, 0x73, 0x65, 0x72, 0x44, 0x65, 0x74, 0x61, 0x69, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x12,
+	0x3e, 0x0a, 0x0a, 0x75, 0x73, 0x65, 0x72, 0x44, 0x65, 0x74, 0x61, 0x69, 0x6c, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x1e, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2e,
+	0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x44, 0x65, 0x74,
+	0x61, 0x69, 0x6c, 0x52, 0x0a, 0x75, 0x73, 0x65, 0x72, 0x44, 0x65, 0x74, 0x61, 0x69, 0x6c, 0x22,
+	0x27, 0x0a, 0x0d, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x71,
+	0x12, 0x16, 0x0a, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x22, 0x10, 0x0a, 0x0e, 0x44, 0x65, 0x6c, 0x65,
+	0x74, 0x65, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x22, 0x49, 0x0a, 0x0d, 0x43, 0x72,
+	0x65, 0x61, 0x74, 0x65, 0x50, 0x6f, 0x73, 0x74, 0x52, 0x65, 0x71, 0x12, 0x38, 0x0a, 0x08, 0x70,
+	0x6f, 0x73, 0x74, 0x49, 0x6e, 0x66, 0x6f, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1c, 0x2e,
+	0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61,
+	0x70, 0x69, 0x2e, 0x50, 0x6f, 0x73, 0x74, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x08, 0x70, 0x6f, 0x73,
+	0x74, 0x49, 0x6e, 0x66, 0x6f, 0x22, 0x10, 0x0a, 0x0e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x50,
+	0x6f, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x22, 0x27, 0x0a, 0x0d, 0x44, 0x65, 0x6c, 0x65, 0x74,
+	0x65, 0x50, 0x6f, 0x73, 0x74, 0x52, 0x65, 0x71, 0x12, 0x16, 0x0a, 0x06, 0x70, 0x6f, 0x73, 0x74,
+	0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x70, 0x6f, 0x73, 0x74, 0x49, 0x64,
+	0x22, 0x10, 0x0a, 0x0e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x50, 0x6f, 0x73, 0x74, 0x52, 0x65,
+	0x73, 0x70, 0x22, 0x49, 0x0a, 0x0d, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x6f, 0x73, 0x74,
+	0x52, 0x65, 0x71, 0x12, 0x38, 0x0a, 0x08, 0x70, 0x6f, 0x73, 0x74, 0x49, 0x6e, 0x66, 0x6f, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e,
+	0x64, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x50, 0x6f, 0x73, 0x74, 0x49,
+	0x6e, 0x66, 0x6f, 0x52, 0x08, 0x70, 0x6f, 0x73, 0x74, 0x49, 0x6e, 0x66, 0x6f, 0x22, 0x10, 0x0a,
+	0x0e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x6f, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x22,
+	0x24, 0x0a, 0x0a, 0x47, 0x65, 0x74, 0x50, 0x6f, 0x73, 0x74, 0x52, 0x65, 0x71, 0x12, 0x16, 0x0a,
+	0x06, 0x70, 0x6f, 0x73, 0x74, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x70,
+	0x6f, 0x73, 0x74, 0x49, 0x64, 0x22, 0x3b, 0x0a, 0x0b, 0x47, 0x65, 0x74, 0x50, 0x6f, 0x73, 0x74,
+	0x52, 0x65, 0x73, 0x70, 0x12, 0x2c, 0x0a, 0x04, 0x70, 0x6f, 0x73, 0x74, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x18, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2e, 0x63,
+	0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x50, 0x6f, 0x73, 0x74, 0x52, 0x04, 0x70, 0x6f,
+	0x73, 0x74, 0x22, 0xc0, 0x02, 0x0a, 0x0b, 0x47, 0x65, 0x74, 0x50, 0x6f, 0x73, 0x74, 0x73, 0x52,
+	0x65, 0x71, 0x12, 0x4c, 0x0a, 0x0d, 0x73, 0x65, 0x61, 0x72, 0x63, 0x68, 0x4f, 0x70, 0x74, 0x69,
+	0x6f, 0x6e, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x21, 0x2e, 0x63, 0x6c, 0x6f, 0x75,
+	0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x53,
+	0x65, 0x61, 0x72, 0x63, 0x68, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x48, 0x00, 0x52, 0x0d,
+	0x73, 0x65, 0x61, 0x72, 0x63, 0x68, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x88, 0x01, 0x01,
+	0x12, 0x58, 0x0a, 0x11, 0x70, 0x6f, 0x73, 0x74, 0x46, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x4f, 0x70,
+	0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x25, 0x2e, 0x63, 0x6c,
+	0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69,
+	0x2e, 0x50, 0x6f, 0x73, 0x74, 0x46, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x4f, 0x70, 0x74, 0x69, 0x6f,
+	0x6e, 0x73, 0x48, 0x01, 0x52, 0x11, 0x70, 0x6f, 0x73, 0x74, 0x46, 0x69, 0x6c, 0x74, 0x65, 0x72,
+	0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x88, 0x01, 0x01, 0x12, 0x4b, 0x0a, 0x11, 0x70, 0x61,
+	0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18,
+	0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x62, 0x61, 0x73, 0x69, 0x63, 0x2e, 0x50, 0x61,
+	0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x48,
+	0x02, 0x52, 0x11, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x4f, 0x70, 0x74,
+	0x69, 0x6f, 0x6e, 0x73, 0x88, 0x01, 0x01, 0x42, 0x10, 0x0a, 0x0e, 0x5f, 0x73, 0x65, 0x61, 0x72,
+	0x63, 0x68, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x42, 0x14, 0x0a, 0x12, 0x5f, 0x70, 0x6f,
+	0x73, 0x74, 0x46, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x42,
+	0x14, 0x0a, 0x12, 0x5f, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x4f, 0x70,
+	0x74, 0x69, 0x6f, 0x6e, 0x73, 0x22, 0x6a, 0x0a, 0x0c, 0x47, 0x65, 0x74, 0x50, 0x6f, 0x73, 0x74,
+	0x73, 0x52, 0x65, 0x73, 0x70, 0x12, 0x2e, 0x0a, 0x05, 0x70, 0x6f, 0x73, 0x74, 0x73, 0x18, 0x01,
+	0x20, 0x03, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64,
+	0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x50, 0x6f, 0x73, 0x74, 0x52, 0x05,
+	0x70, 0x6f, 0x73, 0x74, 0x73, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x12, 0x14, 0x0a, 0x05, 0x74,
+	0x6f, 0x6b, 0x65, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x6f, 0x6b, 0x65,
+	0x6e, 0x42, 0x53, 0x5a, 0x51, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f,
+	0x43, 0x6c, 0x6f, 0x75, 0x64, 0x53, 0x74, 0x72, 0x69, 0x76, 0x65, 0x72, 0x2f, 0x63, 0x6c, 0x6f,
+	0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2d, 0x63, 0x6f, 0x72, 0x65, 0x2d, 0x61, 0x70, 0x69, 0x2f,
+	0x62, 0x69, 0x7a, 0x2f, 0x61, 0x70, 0x70, 0x6c, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2f,
+	0x64, 0x74, 0x6f, 0x2f, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2f, 0x63, 0x6f,
+	0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -277,25 +3685,140 @@ func file_cloudmind_core_api_content_proto_rawDescGZIP() []byte {
 	return file_cloudmind_core_api_content_proto_rawDescData
 }
 
-var file_cloudmind_core_api_content_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_cloudmind_core_api_content_proto_msgTypes = make([]protoimpl.MessageInfo, 68)
 var file_cloudmind_core_api_content_proto_goTypes = []interface{}{
-	(*UpdateUserReq)(nil),           // 0: cloudmind.core_api.UpdateUserReq
-	(*UpdateUserResp)(nil),          // 1: cloudmind.core_api.UpdateUserResp
-	(*SearchUserReq)(nil),           // 2: cloudmind.core_api.SearchUserReq
-	(*SearchUserResp)(nil),          // 3: cloudmind.core_api.SearchUserResp
-	(*UserDetail)(nil),              // 4: cloudmind.core_api.UserDetail
-	(*basic.PaginationOptions)(nil), // 5: basic.PaginationOptions
-	(*User)(nil),                    // 6: cloudmind.core_api.User
+	(*UpdateUserReq)(nil),              // 0: cloudmind.core_api.UpdateUserReq
+	(*UpdateUserResp)(nil),             // 1: cloudmind.core_api.UpdateUserResp
+	(*SearchUserReq)(nil),              // 2: cloudmind.core_api.SearchUserReq
+	(*SearchUserResp)(nil),             // 3: cloudmind.core_api.SearchUserResp
+	(*GetFileIsExistReq)(nil),          // 4: cloudmind.core_api.GetFileIsExistReq
+	(*GetFileIsExistResp)(nil),         // 5: cloudmind.core_api.GetFileIsExistResp
+	(*GetFileReq)(nil),                 // 6: cloudmind.core_api.GetFileReq
+	(*GetFileResp)(nil),                // 7: cloudmind.core_api.GetFileResp
+	(*GetFileListReq)(nil),             // 8: cloudmind.core_api.GetFileListReq
+	(*GetFileListResp)(nil),            // 9: cloudmind.core_api.GetFileListResp
+	(*GetFolderSizeReq)(nil),           // 10: cloudmind.core_api.GetFolderSizeReq
+	(*GetFolderSizeResp)(nil),          // 11: cloudmind.core_api.GetFolderSizeResp
+	(*GetFileCountReq)(nil),            // 12: cloudmind.core_api.GetFileCountReq
+	(*GetFileCountResp)(nil),           // 13: cloudmind.core_api.GetFileCountResp
+	(*GetFileBySharingCodeReq)(nil),    // 14: cloudmind.core_api.GetFileBySharingCodeReq
+	(*GetFileBySharingCodeResp)(nil),   // 15: cloudmind.core_api.GetFileBySharingCodeResp
+	(*CreateFolderReq)(nil),            // 16: cloudmind.core_api.CreateFolderReq
+	(*CreateFolderResp)(nil),           // 17: cloudmind.core_api.CreateFolderResp
+	(*UpdateFileReq)(nil),              // 18: cloudmind.core_api.UpdateFileReq
+	(*UpdateFileResp)(nil),             // 19: cloudmind.core_api.UpdateFileResp
+	(*MoveFileReq)(nil),                // 20: cloudmind.core_api.MoveFileReq
+	(*MoveFileResp)(nil),               // 21: cloudmind.core_api.MoveFileResp
+	(*SaveFileToPrivateSpaceReq)(nil),  // 22: cloudmind.core_api.SaveFileToPrivateSpaceReq
+	(*SaveFileToPrivateSpaceResp)(nil), // 23: cloudmind.core_api.SaveFileToPrivateSpaceResp
+	(*AddFileToPublicSpaceReq)(nil),    // 24: cloudmind.core_api.AddFileToPublicSpaceReq
+	(*AddFileToPublicSpaceResp)(nil),   // 25: cloudmind.core_api.AddFileToPublicSpaceResp
+	(*DeleteFileReq)(nil),              // 26: cloudmind.core_api.DeleteFileReq
+	(*DeleteFileResp)(nil),             // 27: cloudmind.core_api.DeleteFileResp
+	(*RecoverRecycleBinFileReq)(nil),   // 28: cloudmind.core_api.RecoverRecycleBinFileReq
+	(*RecoverRecycleBinFileResp)(nil),  // 29: cloudmind.core_api.RecoverRecycleBinFileResp
+	(*CreateLabelReq)(nil),             // 30: cloudmind.core_api.CreateLabelReq
+	(*CreateLabelResp)(nil),            // 31: cloudmind.core_api.CreateLabelResp
+	(*GetLabelReq)(nil),                // 32: cloudmind.core_api.GetLabelReq
+	(*GetLabelResp)(nil),               // 33: cloudmind.core_api.GetLabelResp
+	(*UpdateLabelReq)(nil),             // 34: cloudmind.core_api.UpdateLabelReq
+	(*UpdateLabelResp)(nil),            // 35: cloudmind.core_api.UpdateLabelResp
+	(*DeleteLabelReq)(nil),             // 36: cloudmind.core_api.DeleteLabelReq
+	(*DeleteLabelResp)(nil),            // 37: cloudmind.core_api.DeleteLabelResp
+	(*CreateShareCodeReq)(nil),         // 38: cloudmind.core_api.CreateShareCodeReq
+	(*CreateShareCodeResp)(nil),        // 39: cloudmind.core_api.CreateShareCodeResp
+	(*GetShareListReq)(nil),            // 40: cloudmind.core_api.GetShareListReq
+	(*GetShareListResp)(nil),           // 41: cloudmind.core_api.GetShareListResp
+	(*UpdateShareCodeReq)(nil),         // 42: cloudmind.core_api.UpdateShareCodeReq
+	(*UpdateShareCodeResp)(nil),        // 43: cloudmind.core_api.UpdateShareCodeResp
+	(*DeleteShareCodeReq)(nil),         // 44: cloudmind.core_api.DeleteShareCodeReq
+	(*DeleteShareCodeResp)(nil),        // 45: cloudmind.core_api.DeleteShareCodeResp
+	(*ParsingShareCodeReq)(nil),        // 46: cloudmind.core_api.ParsingShareCodeReq
+	(*ParsingShareCodeResp)(nil),       // 47: cloudmind.core_api.ParsingShareCodeResp
+	(*DeleteShareFileReq)(nil),         // 48: cloudmind.core_api.DeleteShareFileReq
+	(*DeleteShareFileResp)(nil),        // 49: cloudmind.core_api.DeleteShareFileResp
+	(*GetUserReq)(nil),                 // 50: cloudmind.core_api.GetUserReq
+	(*GetUserResp)(nil),                // 51: cloudmind.core_api.GetUserResp
+	(*CreateUserReq)(nil),              // 52: cloudmind.core_api.CreateUserReq
+	(*CreateUserResp)(nil),             // 53: cloudmind.core_api.CreateUserResp
+	(*GetUserDetailReq)(nil),           // 54: cloudmind.core_api.GetUserDetailReq
+	(*GetUserDetailResp)(nil),          // 55: cloudmind.core_api.GetUserDetailResp
+	(*DeleteUserReq)(nil),              // 56: cloudmind.core_api.DeleteUserReq
+	(*DeleteUserResp)(nil),             // 57: cloudmind.core_api.DeleteUserResp
+	(*CreatePostReq)(nil),              // 58: cloudmind.core_api.CreatePostReq
+	(*CreatePostResp)(nil),             // 59: cloudmind.core_api.CreatePostResp
+	(*DeletePostReq)(nil),              // 60: cloudmind.core_api.DeletePostReq
+	(*DeletePostResp)(nil),             // 61: cloudmind.core_api.DeletePostResp
+	(*UpdatePostReq)(nil),              // 62: cloudmind.core_api.UpdatePostReq
+	(*UpdatePostResp)(nil),             // 63: cloudmind.core_api.UpdatePostResp
+	(*GetPostReq)(nil),                 // 64: cloudmind.core_api.GetPostReq
+	(*GetPostResp)(nil),                // 65: cloudmind.core_api.GetPostResp
+	(*GetPostsReq)(nil),                // 66: cloudmind.core_api.GetPostsReq
+	(*GetPostsResp)(nil),               // 67: cloudmind.core_api.GetPostsResp
+	(*UserDetail)(nil),                 // 68: cloudmind.core_api.UserDetail
+	(*basic.PaginationOptions)(nil),    // 69: basic.PaginationOptions
+	(*User)(nil),                       // 70: cloudmind.core_api.User
+	(*FileFilterOptions)(nil),          // 71: cloudmind.core_api.FileFilterOptions
+	(*FileInfo)(nil),                   // 72: cloudmind.core_api.FileInfo
+	(*SearchOptions)(nil),              // 73: cloudmind.core_api.SearchOptions
+	(*File)(nil),                       // 74: cloudmind.core_api.File
+	(DocumentType)(0),                  // 75: cloudmind.core_api.DocumentType
+	(IsDel)(0),                         // 76: cloudmind.core_api.IsDel
+	(*Label)(nil),                      // 77: cloudmind.core_api.Label
+	(*ShareFile)(nil),                  // 78: cloudmind.core_api.ShareFile
+	(*ShareFileFilterOptions)(nil),     // 79: cloudmind.core_api.ShareFileFilterOptions
+	(*ShareCode)(nil),                  // 80: cloudmind.core_api.ShareCode
+	(*UserInfo)(nil),                   // 81: cloudmind.core_api.UserInfo
+	(*PostInfo)(nil),                   // 82: cloudmind.core_api.PostInfo
+	(*Post)(nil),                       // 83: cloudmind.core_api.Post
+	(*PostFilterOptions)(nil),          // 84: cloudmind.core_api.PostFilterOptions
 }
 var file_cloudmind_core_api_content_proto_depIdxs = []int32{
-	4, // 0: cloudmind.core_api.UpdateUserReq.userDetail:type_name -> cloudmind.core_api.UserDetail
-	5, // 1: cloudmind.core_api.SearchUserReq.paginationOptions:type_name -> basic.PaginationOptions
-	6, // 2: cloudmind.core_api.SearchUserResp.users:type_name -> cloudmind.core_api.User
-	3, // [3:3] is the sub-list for method output_type
-	3, // [3:3] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	68, // 0: cloudmind.core_api.UpdateUserReq.userDetail:type_name -> cloudmind.core_api.UserDetail
+	69, // 1: cloudmind.core_api.SearchUserReq.paginationOptions:type_name -> basic.PaginationOptions
+	70, // 2: cloudmind.core_api.SearchUserResp.users:type_name -> cloudmind.core_api.User
+	71, // 3: cloudmind.core_api.GetFileReq.filterOptions:type_name -> cloudmind.core_api.FileFilterOptions
+	72, // 4: cloudmind.core_api.GetFileResp.file:type_name -> cloudmind.core_api.FileInfo
+	73, // 5: cloudmind.core_api.GetFileListReq.searchOptions:type_name -> cloudmind.core_api.SearchOptions
+	71, // 6: cloudmind.core_api.GetFileListReq.filterOptions:type_name -> cloudmind.core_api.FileFilterOptions
+	69, // 7: cloudmind.core_api.GetFileListReq.paginationOptions:type_name -> basic.PaginationOptions
+	72, // 8: cloudmind.core_api.GetFileListResp.files:type_name -> cloudmind.core_api.FileInfo
+	71, // 9: cloudmind.core_api.GetFolderSizeReq.filterOptions:type_name -> cloudmind.core_api.FileFilterOptions
+	73, // 10: cloudmind.core_api.GetFileCountReq.searchOptions:type_name -> cloudmind.core_api.SearchOptions
+	71, // 11: cloudmind.core_api.GetFileCountReq.filterOptions:type_name -> cloudmind.core_api.FileFilterOptions
+	71, // 12: cloudmind.core_api.GetFileBySharingCodeReq.filterOptions:type_name -> cloudmind.core_api.FileFilterOptions
+	69, // 13: cloudmind.core_api.GetFileBySharingCodeReq.paginationOptions:type_name -> basic.PaginationOptions
+	72, // 14: cloudmind.core_api.GetFileBySharingCodeResp.files:type_name -> cloudmind.core_api.FileInfo
+	74, // 15: cloudmind.core_api.CreateFolderReq.file:type_name -> cloudmind.core_api.File
+	74, // 16: cloudmind.core_api.UpdateFileReq.file:type_name -> cloudmind.core_api.File
+	75, // 17: cloudmind.core_api.SaveFileToPrivateSpaceReq.documentType:type_name -> cloudmind.core_api.DocumentType
+	74, // 18: cloudmind.core_api.AddFileToPublicSpaceReq.file:type_name -> cloudmind.core_api.File
+	76, // 19: cloudmind.core_api.DeleteFileReq.deleteType:type_name -> cloudmind.core_api.IsDel
+	77, // 20: cloudmind.core_api.CreateLabelReq.label:type_name -> cloudmind.core_api.Label
+	77, // 21: cloudmind.core_api.GetLabelResp.label:type_name -> cloudmind.core_api.Label
+	77, // 22: cloudmind.core_api.UpdateLabelReq.label:type_name -> cloudmind.core_api.Label
+	78, // 23: cloudmind.core_api.CreateShareCodeReq.shareFile:type_name -> cloudmind.core_api.ShareFile
+	79, // 24: cloudmind.core_api.GetShareListReq.shareFileFilterOptions:type_name -> cloudmind.core_api.ShareFileFilterOptions
+	69, // 25: cloudmind.core_api.GetShareListReq.paginationOptions:type_name -> basic.PaginationOptions
+	80, // 26: cloudmind.core_api.GetShareListResp.shareCodes:type_name -> cloudmind.core_api.ShareCode
+	78, // 27: cloudmind.core_api.UpdateShareCodeReq.shareFile:type_name -> cloudmind.core_api.ShareFile
+	79, // 28: cloudmind.core_api.DeleteShareCodeReq.shareFileFilterOptions:type_name -> cloudmind.core_api.ShareFileFilterOptions
+	78, // 29: cloudmind.core_api.ParsingShareCodeResp.shareFile:type_name -> cloudmind.core_api.ShareFile
+	70, // 30: cloudmind.core_api.GetUserResp.user:type_name -> cloudmind.core_api.User
+	81, // 31: cloudmind.core_api.CreateUserReq.userInfo:type_name -> cloudmind.core_api.UserInfo
+	68, // 32: cloudmind.core_api.GetUserDetailResp.userDetail:type_name -> cloudmind.core_api.UserDetail
+	82, // 33: cloudmind.core_api.CreatePostReq.postInfo:type_name -> cloudmind.core_api.PostInfo
+	82, // 34: cloudmind.core_api.UpdatePostReq.postInfo:type_name -> cloudmind.core_api.PostInfo
+	83, // 35: cloudmind.core_api.GetPostResp.post:type_name -> cloudmind.core_api.Post
+	73, // 36: cloudmind.core_api.GetPostsReq.searchOptions:type_name -> cloudmind.core_api.SearchOptions
+	84, // 37: cloudmind.core_api.GetPostsReq.postFilterOptions:type_name -> cloudmind.core_api.PostFilterOptions
+	69, // 38: cloudmind.core_api.GetPostsReq.paginationOptions:type_name -> basic.PaginationOptions
+	83, // 39: cloudmind.core_api.GetPostsResp.posts:type_name -> cloudmind.core_api.Post
+	40, // [40:40] is the sub-list for method output_type
+	40, // [40:40] is the sub-list for method input_type
+	40, // [40:40] is the sub-list for extension type_name
+	40, // [40:40] is the sub-list for extension extendee
+	0,  // [0:40] is the sub-list for field type_name
 }
 
 
@@ -353,14 +3876,790 @@ func file_cloudmind_core_api_content_proto_init() {
 				return nil
 			}
 		}
+		file_cloudmind_core_api_content_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetFileIsExistReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetFileIsExistResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetFileReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetFileResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetFileListReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetFileListResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetFolderSizeReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetFolderSizeResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetFileCountReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetFileCountResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetFileBySharingCodeReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetFileBySharingCodeResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreateFolderReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreateFolderResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UpdateFileReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UpdateFileResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*MoveFileReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*MoveFileResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SaveFileToPrivateSpaceReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[23].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SaveFileToPrivateSpaceResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[24].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AddFileToPublicSpaceReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[25].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AddFileToPublicSpaceResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[26].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DeleteFileReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[27].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DeleteFileResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[28].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*RecoverRecycleBinFileReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[29].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*RecoverRecycleBinFileResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[30].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreateLabelReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[31].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreateLabelResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[32].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetLabelReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[33].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetLabelResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[34].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UpdateLabelReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[35].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UpdateLabelResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[36].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DeleteLabelReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[37].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DeleteLabelResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[38].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreateShareCodeReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[39].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreateShareCodeResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[40].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetShareListReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[41].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetShareListResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[42].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UpdateShareCodeReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[43].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UpdateShareCodeResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[44].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DeleteShareCodeReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[45].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DeleteShareCodeResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[46].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ParsingShareCodeReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[47].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ParsingShareCodeResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[48].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DeleteShareFileReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[49].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DeleteShareFileResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[50].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetUserReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[51].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetUserResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[52].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreateUserReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[53].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreateUserResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[54].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetUserDetailReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[55].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetUserDetailResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[56].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DeleteUserReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[57].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DeleteUserResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[58].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreatePostReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[59].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreatePostResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[60].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DeletePostReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[61].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DeletePostResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[62].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UpdatePostReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[63].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UpdatePostResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[64].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetPostReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[65].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetPostResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[66].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetPostsReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[67].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetPostsResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
+	file_cloudmind_core_api_content_proto_msgTypes[6].OneofWrappers = []interface{}{}
+	file_cloudmind_core_api_content_proto_msgTypes[8].OneofWrappers = []interface{}{}
+	file_cloudmind_core_api_content_proto_msgTypes[10].OneofWrappers = []interface{}{}
+	file_cloudmind_core_api_content_proto_msgTypes[12].OneofWrappers = []interface{}{}
+	file_cloudmind_core_api_content_proto_msgTypes[14].OneofWrappers = []interface{}{}
+	file_cloudmind_core_api_content_proto_msgTypes[40].OneofWrappers = []interface{}{}
+	file_cloudmind_core_api_content_proto_msgTypes[44].OneofWrappers = []interface{}{}
+	file_cloudmind_core_api_content_proto_msgTypes[66].OneofWrappers = []interface{}{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_cloudmind_core_api_content_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   68,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

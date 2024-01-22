@@ -2,6 +2,7 @@ package provider
 
 import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/service"
+	domainservice "github.com/CloudStriver/cloudmind-core-api/biz/domain/service"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
@@ -22,9 +23,12 @@ func Init() {
 // Provider 提供controller依赖的对象
 type Provider struct {
 	Config          *config.Config
-	ContentService  service.IContentService
+	ContentService  service.IFileService
+	PostService     service.IPostService
 	AuthService     service.IAuthService
 	RelationService service.IRelationService
+	UserService     service.IUserService
+	LabelService    service.ILabelService
 	StsService      service.IStsService
 }
 
@@ -39,18 +43,17 @@ var RPCSet = wire.NewSet(
 )
 
 var ApplicationSet = wire.NewSet(
-	service.ContentServiceSet,
+	service.FileServiceSet,
 	service.RelationServiceSet,
 	service.AuthServiceSet,
+	service.PostServiceSet,
+	service.UserServiceSet,
+	service.LabelServiceSet,
 	service.StsServiceSet,
 )
 
 var DomainSet = wire.NewSet(
-	//domainservice.UserDomainServiceSet,
-	//domainservice.CommentDomainServiceSet,
-	//domainservice.MomentDomainServiceSet,
-	//domainservice.PostDomainServiceSet,
-	//domainservice.CatImageDomainServiceSet,
+	domainservice.PostDomainServiceSet,
 )
 
 var InfrastructureSet = wire.NewSet(
