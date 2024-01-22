@@ -11,11 +11,6 @@ func rootMw() []app.HandlerFunc {
 	return nil
 }
 
-func _applysignedurlMw() []app.HandlerFunc {
-	// your code...
-	return nil
-}
-
 func _authMw() []app.HandlerFunc {
 	// your code...
 	return nil

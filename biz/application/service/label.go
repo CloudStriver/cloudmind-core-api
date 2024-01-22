@@ -36,7 +36,7 @@ func (s *LabelService) GetLabel(ctx context.Context, req *core_api.GetLabelReq) 
 		return resp, consts.ErrNotAuthentication
 	}
 
-	res := new(content.GetLabelResp)
+	var res *content.GetLabelResp
 	if res, err = s.CloudMindContent.GetLabel(ctx, &content.GetLabelReq{Id: req.Id}); err != nil {
 		return resp, err
 	}
@@ -51,7 +51,7 @@ func (s *LabelService) CreateLabel(ctx context.Context, req *core_api.CreateLabe
 		return resp, consts.ErrNotAuthentication
 	}
 
-	res := new(content.CreateLabelResp)
+	var res *content.CreateLabelResp
 	label := convertor.CoreLabelToLabel(req.Label)
 	if res, err = s.CloudMindContent.CreateLabel(ctx, &content.CreateLabelReq{Label: label}); err != nil {
 		return resp, err

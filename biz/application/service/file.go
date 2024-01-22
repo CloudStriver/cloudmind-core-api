@@ -51,7 +51,7 @@ func (s *FileService) GetFileIsExist(ctx context.Context, req *core_api.GetFileI
 		return resp, consts.ErrNotAuthentication
 	}
 
-	res := new(content.GetFileIsExistResp)
+	var res *content.GetFileIsExistResp
 	if res, err = s.CloudMindContent.GetFileIsExist(ctx, &content.GetFileIsExistReq{Md5: req.Md5}); err != nil {
 		return resp, err
 	}
@@ -67,7 +67,7 @@ func (s *FileService) GetFile(ctx context.Context, req *core_api.GetFileReq) (re
 	}
 	filter := convertor.FilterOptionsToFilterOptions(req.FilterOptions)
 	filter.OnlyUserId = lo.ToPtr(userData.UserId)
-	res := new(content.GetFileResp)
+	var res *content.GetFileResp
 	if res, err = s.CloudMindContent.GetFile(ctx, &content.GetFileReq{FilterOptions: filter, IsGetSize: req.IsGetSize}); err != nil {
 		return resp, err
 	}
@@ -82,7 +82,7 @@ func (s *FileService) GetFileList(ctx context.Context, req *core_api.GetFileList
 		return resp, consts.ErrNotAuthentication
 	}
 
-	res := new(content.GetFileListResp)
+	var res *content.GetFileListResp
 	p := convertor.PaginationOptionsToPaginationOptions(req.PaginationOptions)
 	if req.SearchOptions == nil {
 		searchOptions := convertor.SearchOptionsToFileSearchOptions(req.SearchOptions)
@@ -112,7 +112,7 @@ func (s *FileService) GetFileBySharingCode(ctx context.Context, req *core_api.Ge
 		return resp, consts.ErrNotAuthentication
 	}
 
-	res := new(content.GetFileBySharingCodeResp)
+	var res *content.GetFileBySharingCodeResp
 	filter := convertor.FilterOptionsToFilterOptions(req.FilterOptions)
 	p := convertor.PaginationOptionsToPaginationOptions(req.PaginationOptions)
 	if res, err = s.CloudMindContent.GetFileBySharingCode(ctx, &content.GetFileBySharingCodeReq{SharingCode: req.SharingCode, FilterOptions: filter, PaginationOptions: p}); err != nil {
@@ -134,7 +134,7 @@ func (s *FileService) GetFolderSize(ctx context.Context, req *core_api.GetFolder
 		return resp, consts.ErrNotAuthentication
 	}
 
-	res := new(content.GetFolderSizeResp)
+	var res *content.GetFolderSizeResp
 	filter := convertor.FilterOptionsToFilterOptions(req.FilterOptions)
 	if res, err = s.CloudMindContent.GetFolderSize(ctx, &content.GetFolderSizeReq{FilterOptions: filter}); err != nil {
 		return resp, err
@@ -150,7 +150,7 @@ func (s *FileService) CreateFolder(ctx context.Context, req *core_api.CreateFold
 		return resp, consts.ErrNotAuthentication
 	}
 
-	res := new(content.CreateFolderResp)
+	var res *content.CreateFolderResp
 	req.File.UserId = userData.UserId
 	file := convertor.CoreFileToFile(req.File)
 	if res, err = s.CloudMindContent.CreateFolder(ctx, &content.CreateFolderReq{File: file}); err != nil {
@@ -207,7 +207,7 @@ func (s *FileService) GetShareList(ctx context.Context, req *core_api.GetShareLi
 		return resp, consts.ErrNotAuthentication
 	}
 
-	res := new(content.GetShareListResp)
+	var res *content.GetShareListResp
 	shareOptions := convertor.ShareOptionsToShareOptions(req.ShareFileFilterOptions)
 	p := convertor.PaginationOptionsToPaginationOptions(req.PaginationOptions)
 	if res, err = s.CloudMindContent.GetShareList(ctx, &content.GetShareListReq{ShareFileFilterOptions: shareOptions, PaginationOptions: p}); err != nil {
@@ -229,7 +229,7 @@ func (s *FileService) CreateShareCode(ctx context.Context, req *core_api.CreateS
 		return resp, consts.ErrNotAuthentication
 	}
 
-	res := new(content.CreateShareCodeResp)
+	var res *content.CreateShareCodeResp
 	req.ShareFile.UserId = userData.UserId
 	sharefile := convertor.CoreShareFileToShareFile(req.ShareFile)
 	if res, err = s.CloudMindContent.CreateShareCode(ctx, &content.CreateShareCodeReq{ShareFile: sharefile}); err != nil {
@@ -275,7 +275,7 @@ func (s *FileService) ParsingShareCode(ctx context.Context, req *core_api.Parsin
 		return resp, consts.ErrNotAuthentication
 	}
 
-	res := new(content.ParsingShareCodeResp)
+	var res *content.ParsingShareCodeResp
 	if res, err = s.CloudMindContent.ParsingShareCode(ctx, &content.ParsingShareCodeReq{Code: req.Code}); err != nil {
 		return resp, err
 	}
@@ -290,7 +290,7 @@ func (s *FileService) SaveFileToPrivateSpace(ctx context.Context, req *core_api.
 		return resp, consts.ErrNotAuthentication
 	}
 
-	res := new(content.SaveFileToPrivateSpaceResp)
+	var res *content.SaveFileToPrivateSpaceResp
 	if res, err = s.CloudMindContent.SaveFileToPrivateSpace(ctx, &content.SaveFileToPrivateSpaceReq{UserId: userData.UserId, FileId: req.FileId, FatherId: req.FatherId, DocumentType: content.DocumentType(req.DocumentType)}); err != nil {
 		return resp, err
 	}
