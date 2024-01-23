@@ -26,9 +26,6 @@ type Config struct {
 	Auth       Auth
 	GithubConf OauthConf
 	GiteeConf  OauthConf
-	Mongo      struct {
-		Url string
-	}
 }
 
 func NewConfig() (*Config, error) {
