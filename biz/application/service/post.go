@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"github.com/CloudStriver/cloudmind-core-api/biz/adaptor"
 	//"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/basic"
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
@@ -65,11 +64,9 @@ func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (
 	}
 
 	resp.Posts = make([]*core_api.Post, len(getPostsResp.Posts))
-	fmt.Println(getPostsResp.Posts)
 	if err = mr.Finish(lo.Map(getPostsResp.Posts, func(item *content.Post, i int) func() error {
 		return func() error {
 			p := convertor.PostToCorePost(item)
-
 			if err = mr.Finish(func() error {
 				s.PostDomainService.LoadLikeCount(ctx, p)
 				return nil
