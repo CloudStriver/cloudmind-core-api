@@ -148,11 +148,11 @@ func CoreApiRelationInfoToRelationInfo(req *core_api.RelationInfo) *relation.Rel
 	}
 }
 
-func FilterOptionsToFilterOptions(opts *core_api.FileFilterOptions) (filter *content.FileFilterOptions) {
+func FilterOptionsToFilterOptions(opts *core_api.FileFilterOptions) *content.FileFilterOptions {
 	if opts == nil {
-		filter = &content.FileFilterOptions{}
+		return nil
 	} else {
-		filter = &content.FileFilterOptions{
+		return &content.FileFilterOptions{
 			OnlyUserId:       opts.OnlyUserId,
 			OnlyFileId:       opts.OnlyFileId,
 			OnlyFatherId:     opts.OnlyFatherId,
@@ -164,22 +164,20 @@ func FilterOptionsToFilterOptions(opts *core_api.FileFilterOptions) (filter *con
 			OnlySetRelation:  opts.OnlySetRelation,
 		}
 	}
-	return filter
 }
 
-func ShareOptionsToShareOptions(opts *core_api.ShareFileFilterOptions) (filter *content.ShareFileFilterOptions) {
+func ShareOptionsToShareOptions(opts *core_api.ShareFileFilterOptions) *content.ShareFileFilterOptions {
 	if opts == nil {
-		filter = &content.ShareFileFilterOptions{}
+		return nil
 	} else {
-		filter = &content.ShareFileFilterOptions{
+		return &content.ShareFileFilterOptions{
 			OnlyCode:   opts.OnlyCode,
 			OnlyUserId: opts.OnlyUserId,
 		}
 	}
-	return filter
 }
 
-func ShareCodeToShareCode(opts *content.ShareCode) *core_api.ShareCode {
+func ShareCodeToCoreShareCode(opts *content.ShareCode) *core_api.ShareCode {
 	return &core_api.ShareCode{
 		Code:         opts.Code,
 		Name:         opts.Name,
@@ -215,15 +213,15 @@ func CoreShareFileToShareFile(opts *core_api.ShareFile) *content.ShareFile {
 	}
 }
 
-func SearchOptionsToFileSearchOptions(opts *core_api.SearchOptions) (filter *content.SearchOptions) {
+func SearchOptionsToFileSearchOptions(opts *core_api.SearchOptions) *content.SearchOptions {
 	if opts == nil {
-		filter = nil
+		return nil
 	} else {
 		switch o := opts.Type.(type) {
 		case *core_api.SearchOptions_AllFieldsKey:
-			filter = &content.SearchOptions{Type: &content.SearchOptions_AllFieldsKey{AllFieldsKey: o.AllFieldsKey}}
+			return &content.SearchOptions{Type: &content.SearchOptions_AllFieldsKey{AllFieldsKey: o.AllFieldsKey}}
 		case *core_api.SearchOptions_MultiFieldsKey:
-			filter = &content.SearchOptions{Type: &content.SearchOptions_MultiFieldsKey{MultiFieldsKey: &content.SearchField{
+			return &content.SearchOptions{Type: &content.SearchOptions_MultiFieldsKey{MultiFieldsKey: &content.SearchField{
 				Name:        o.MultiFieldsKey.Name,
 				Id:          o.MultiFieldsKey.Id,
 				Tag:         o.MultiFieldsKey.Tag,
@@ -234,12 +232,12 @@ func SearchOptionsToFileSearchOptions(opts *core_api.SearchOptions) (filter *con
 			}}}
 		}
 	}
-	return filter
+	return nil
 }
 
 func PostFilterOptionsToPostFilterOptions(in *core_api.PostFilterOptions) *content.PostFilterOptions {
 	if in == nil {
-		return &content.PostFilterOptions{}
+		return nil
 	} else {
 		return &content.PostFilterOptions{
 			OnlyUserId:      in.OnlyUserId,

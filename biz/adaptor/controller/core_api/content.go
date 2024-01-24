@@ -59,7 +59,6 @@ func GetUser(ctx context.Context, c *app.RequestContext) {
 	p := provider.Get()
 	resp, err = p.UserService.GetUser(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
-	c.JSON(consts.StatusOK, resp)
 }
 
 // GetUserDetail .
@@ -77,39 +76,6 @@ func GetUserDetail(ctx context.Context, c *app.RequestContext) {
 	p := provider.Get()
 	resp, err = p.UserService.GetUserDetail(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
-	c.JSON(consts.StatusOK, resp)
-}
-
-// GetFileIsExist .
-// @router /content/file/exist [GET]
-func GetFileIsExist(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.GetFileIsExistReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(core_api.GetFileIsExistResp)
-
-	c.JSON(consts.StatusOK, resp)
-}
-
-// GetFile .
-// @router /content/file/get [GET]
-func GetFile(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.GetFileReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(core_api.GetFileResp)
-
-	c.JSON(consts.StatusOK, resp)
 }
 
 // GetFileList .
@@ -124,56 +90,26 @@ func GetFileList(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.GetFileListResp)
-
-	c.JSON(consts.StatusOK, resp)
-}
-
-// GetFolderSize .
-// @router /content/folder/size [GET]
-func GetFolderSize(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.GetFolderSizeReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(core_api.GetFolderSizeResp)
-
-	c.JSON(consts.StatusOK, resp)
-}
-
-// GetFileCount .
-// @router /content/file/count [GET]
-func GetFileCount(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.GetFileCountReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(core_api.GetFileCountResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.ContentService.GetFileList(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // GetFileBySharingCode .
 // @router /content/sharecode/file [GET]
 func GetFileBySharingCode(ctx context.Context, c *app.RequestContext) {
 	var err error
-	var req core_api.GetFileIsExistReq
+	var req core_api.GetFileBySharingCodeReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
 
-	resp := new(core_api.GetFileIsExistResp)
-
-	c.JSON(consts.StatusOK, resp)
+	resp := new(core_api.GetFileBySharingCodeResp)
+	p := provider.Get()
+	resp, err = p.ContentService.GetFileBySharingCode(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // CreateFolder .
@@ -187,9 +123,10 @@ func CreateFolder(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	resp := new(core_api.GetFileIsExistResp)
-
-	c.JSON(consts.StatusOK, resp)
+	resp := new(core_api.CreateFolderResp)
+	p := provider.Get()
+	resp, err = p.ContentService.CreateFolder(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // UpdateFile .
@@ -204,8 +141,9 @@ func UpdateFile(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.UpdateFileResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.ContentService.UpdateFile(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // MoveFile .
@@ -220,8 +158,9 @@ func MoveFile(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.MoveFileResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.ContentService.MoveFile(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // SaveFileToPrivateSpace .
@@ -236,8 +175,9 @@ func SaveFileToPrivateSpace(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.SaveFileToPrivateSpaceResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.ContentService.SaveFileToPrivateSpace(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // AddFileToPublicSpace .
@@ -252,8 +192,9 @@ func AddFileToPublicSpace(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.AddFileToPublicSpaceResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.ContentService.AddFileToPublicSpace(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // DeleteFile .
@@ -268,8 +209,9 @@ func DeleteFile(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.DeleteFileResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.ContentService.DeleteFile(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // RecoverRecycleBinFile .
@@ -284,8 +226,9 @@ func RecoverRecycleBinFile(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.RecoverRecycleBinFileResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.ContentService.RecoverRecycleBinFile(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // CreateLabel .
@@ -300,8 +243,9 @@ func CreateLabel(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.CreateLabelResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.LabelService.CreateLabel(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // UpdateLabel .
@@ -316,8 +260,9 @@ func UpdateLabel(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.UpdateLabelResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.LabelService.UpdateLabel(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // GetLabel .
@@ -332,8 +277,9 @@ func GetLabel(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.GetLabelResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.LabelService.GetLabel(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // DeleteLabel .
@@ -348,8 +294,9 @@ func DeleteLabel(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.DeleteLabelResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.LabelService.DeleteLabel(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // CreateShareCode .
@@ -364,8 +311,9 @@ func CreateShareCode(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.CreateShareCodeResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.ContentService.CreateShareCode(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // GetShareList .
@@ -380,24 +328,9 @@ func GetShareList(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.GetShareListResp)
-
-	c.JSON(consts.StatusOK, resp)
-}
-
-// UpdateShareCode .
-// @router /content/sharecode/update [POST]
-func UpdateShareCode(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.UpdateShareCodeReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(core_api.UpdateShareCodeResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.ContentService.GetShareList(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // DeleteShareCode .
@@ -412,8 +345,9 @@ func DeleteShareCode(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.DeleteShareCodeResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.ContentService.DeleteShareCode(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // ParsingShareCode .
@@ -428,24 +362,9 @@ func ParsingShareCode(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.ParsingShareCodeResp)
-
-	c.JSON(consts.StatusOK, resp)
-}
-
-// DeleteShareFile .
-// @router /content/sharefile/delete [POST]
-func DeleteShareFile(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.DeleteShareFileReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(core_api.DeleteShareFileResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.ContentService.ParsingShareCode(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // CreatePost .
@@ -511,6 +430,23 @@ func GetPosts(ctx context.Context, c *app.RequestContext) {
 	resp := new(core_api.GetPostsResp)
 	p := provider.Get()
 	resp, err = p.PostService.GetPosts(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
+}
+
+// GetFile .
+// @router /content/getFile [GET]
+func GetFile(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.GetFileReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.GetFileResp)
+	p := provider.Get()
+	resp, err = p.ContentService.GetFile(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 

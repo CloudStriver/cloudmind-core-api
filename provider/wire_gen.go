@@ -13,6 +13,7 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/store/redis"
 )
 
 // Injectors from wire.go:
@@ -30,14 +31,18 @@ func NewProvider() (*Provider, error) {
 	platFormRelation := &platform_relation.PlatFormRelation{
 		Client: relationserviceClient,
 	}
-	postDomainService := &service.PostDomainService{
+	fileDomainService := &service.FileDomainService{
 		CloudMindUser:    cloudMindContent,
 		PlatformRelation: platFormRelation,
 	}
 	fileService := &service2.FileService{
 		Config:            configConfig,
 		CloudMindContent:  cloudMindContent,
-		PostDomainService: postDomainService,
+		FileDomainService: fileDomainService,
+	}
+	postDomainService := &service.PostDomainService{
+		CloudMindUser:    cloudMindContent,
+		PlatformRelation: platFormRelation,
 	}
 	postService := &service2.PostService{
 		Config:            configConfig,
@@ -48,10 +53,12 @@ func NewProvider() (*Provider, error) {
 	cloudMindSts := &cloudmind_sts.CloudMindSts{
 		Client: stsserviceClient,
 	}
+	redisRedis := redis.NewRedis(configConfig)
 	authService := &service2.AuthService{
 		Config:           configConfig,
 		CloudMindContent: cloudMindContent,
 		CloudMindSts:     cloudMindSts,
+		Redis:            redisRedis,
 	}
 	relationService := &service2.RelationService{
 		Config:           configConfig,
@@ -66,6 +73,9 @@ func NewProvider() (*Provider, error) {
 		Config:           configConfig,
 		CloudMindContent: cloudMindContent,
 	}
+	stsService := &service2.StsService{
+		PlatformSts: cloudMindSts,
+	}
 	providerProvider := &Provider{
 		Config:          configConfig,
 		ContentService:  fileService,
@@ -74,6 +84,7 @@ func NewProvider() (*Provider, error) {
 		RelationService: relationService,
 		UserService:     userService,
 		LabelService:    labelService,
+		StsService:      stsService,
 	}
 	return providerProvider, nil
 }
