@@ -75,6 +75,10 @@ func (s *AuthService) EmailLogin(ctx context.Context, req *core_api.EmailLoginRe
 		return resp, err
 	}
 
+	if loginResp.UserId == "" {
+		return resp, consts.ErrEmailNotFound
+	}
+
 	resp.ShortToken, resp.LongToken, err = generateShortLongToken(s.Config.Auth.SecretKey, loginResp.UserId, s.Config.Auth.AccessExpire)
 	if err != nil {
 		return resp, consts.ErrAuthentication

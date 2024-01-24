@@ -22,4 +22,5 @@ var (
 	ErrHaveExist        = status.Error(20004, "邮箱已被注册")
 	ErrNotPermission    = status.Error(20005, "没有权限")
 	ErrNotEmailCheck    = status.Error(20006, "请先通过邮箱验证")
+	ErrEmailNotFound    = status.Error(20007, "邮箱不存在")
 )
