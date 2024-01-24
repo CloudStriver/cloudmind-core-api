@@ -14,8 +14,10 @@ import (
 type IPostDomainService interface {
 	LoadAuthor(ctx context.Context, post *core_api.Post, userId string)
 	LoadLikeCount(ctx context.Context, post *core_api.Post)
+	LoadViewCount(ctx context.Context, post *core_api.Post)
 	LoadLiked(ctx context.Context, post *core_api.Post, userId string)
 	LoadCollectCount(ctx context.Context, post *core_api.Post)
+	LoadCollected(ctx context.Context, post *core_api.Post, userId string)
 }
 type PostDomainService struct {
 	CloudMindUser    cloudmind_content.ICloudMindContent
@@ -27,6 +29,36 @@ var PostDomainServiceSet = wire.NewSet(
 	wire.Bind(new(IPostDomainService), new(*PostDomainService)),
 )
 
+func (s *PostDomainService) LoadCollected(ctx context.Context, post *core_api.Post, userId string) {
+	getRelationResp, err := s.PlatformRelation.GetRelation(ctx, &relation.GetRelationReq{
+		Relation: &relation.Relation{
+			FromType:     consts.RelationUserType,
+			FromId:       userId,
+			ToType:       consts.RelationPostType,
+			ToId:         post.PostId,
+			RelationType: consts.RelationCollectType,
+		},
+	})
+	if err == nil {
+		post.PostRelation.Collected = getRelationResp.Ok
+	}
+}
+
+func (s *PostDomainService) LoadViewCount(ctx context.Context, post *core_api.Post) {
+	getRelationCountResp, err := s.PlatformRelation.GetRelationCount(ctx, &relation.GetRelationCountReq{
+		RelationFilterOptions: &relation.GetRelationCountReq_ToFilterOptions{
+			ToFilterOptions: &relation.ToFilterOptions{
+				ToType:   consts.RelationPostType,
+				ToId:     post.PostId,
+				FromType: consts.RelationUserType,
+			},
+		},
+		RelationType: consts.RelationViewType,
+	})
+	if err == nil {
+		post.PostCount.ViewCount = getRelationCountResp.Total
+	}
+}
 func (s *PostDomainService) LoadAuthor(ctx context.Context, post *core_api.Post, userId string) {
 	if userId == "" {
 		return

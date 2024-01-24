@@ -462,6 +462,7 @@ func GetPost(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.GetPostResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.PostService.GetPost(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
