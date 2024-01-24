@@ -13,4 +13,5 @@ const (
 	RelationLikeType    = 1 // 点赞
 	RelationCollectType = 3 // 收藏
 	RelationViewType    = 4 // 浏览
+	PassCheckEmail      = "PassCheckEmail"
 )
