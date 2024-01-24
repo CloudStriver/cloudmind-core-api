@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/CloudStriver/go-pkg v0.0.0-20240117111745-b4ba57a38f44
-	github.com/CloudStriver/service-idl-gen-go v0.0.0-20240124081419-4b7dcb9d1ad1
+	github.com/CloudStriver/service-idl-gen-go v0.0.0-20240124091147-b9f3b0ea9d4b
 	github.com/cloudwego/hertz v0.7.3
 	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/google/wire v0.5.0
@@ -42,11 +42,13 @@ require (
 	github.com/cloudwego/netpoll v0.5.1 // indirect
 	github.com/cloudwego/thriftgo v0.3.3 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
+	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/fatih/color v1.16.0 // indirect
 	github.com/fatih/structtag v1.2.0 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/go-logr/logr v1.3.0 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
+	github.com/go-redis/redis/v8 v8.11.5 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/pprof v0.0.0-20230509042627-b1315fad0c5a // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.18.1 // indirect

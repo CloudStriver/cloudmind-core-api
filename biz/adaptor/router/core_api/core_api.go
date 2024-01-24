@@ -19,6 +19,7 @@ func Register(r *server.Hertz) {
 	root := r.Group("/", rootMw()...)
 	{
 		_auth := root.Group("/auth", _authMw()...)
+		_auth.GET("/checkEmail", append(_checkemailMw(), core_api.CheckEmail)...)
 		_auth.POST("/emailLogin", append(_emailloginMw(), core_api.EmailLogin)...)
 		_auth.GET("/giteeLogin", append(_giteeloginMw(), core_api.GiteeLogin)...)
 		_auth.GET("/githubLogin", append(_githubloginMw(), core_api.GithubLogin)...)

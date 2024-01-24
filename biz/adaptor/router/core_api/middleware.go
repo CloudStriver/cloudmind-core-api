@@ -325,3 +325,8 @@ func _stsMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _checkemailMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}

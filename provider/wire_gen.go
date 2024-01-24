@@ -13,6 +13,7 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/store/redis"
 )
 
 // Injectors from wire.go:
@@ -52,10 +53,12 @@ func NewProvider() (*Provider, error) {
 	cloudMindSts := &cloudmind_sts.CloudMindSts{
 		Client: stsserviceClient,
 	}
+	redisRedis := redis.NewRedis(configConfig)
 	authService := &service2.AuthService{
 		Config:           configConfig,
 		CloudMindContent: cloudMindContent,
 		CloudMindSts:     cloudMindSts,
+		Redis:            redisRedis,
 	}
 	relationService := &service2.RelationService{
 		Config:           configConfig,

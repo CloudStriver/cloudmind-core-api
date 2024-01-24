@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"github.com/CloudStriver/cloudmind-core-api/biz/adaptor"
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
@@ -14,6 +15,7 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/google/wire"
 	"github.com/samber/lo"
+	"github.com/zeromicro/go-zero/core/stores/redis"
 	"strconv"
 	"time"
 )
@@ -27,6 +29,7 @@ type IAuthService interface {
 	EmailLogin(ctx context.Context, req *core_api.EmailLoginReq) (resp *core_api.EmailLoginResp, err error)
 	GithubLogin(ctx context.Context, req *core_api.GithubLoginReq) (resp *core_api.GithubLoginResp, err error)
 	GiteeLogin(ctx context.Context, req *core_api.GiteeLoginReq) (resp *core_api.GiteeLoginResp, err error)
+	CheckEmail(ctx context.Context, c *core_api.CheckEmailReq) (resp *core_api.CheckEmailResp, err error)
 }
 
 var AuthServiceSet = wire.NewSet(
@@ -38,6 +41,20 @@ type AuthService struct {
 	Config           *config.Config
 	CloudMindContent cloudmind_content.ICloudMindContent
 	CloudMindSts     cloudmind_sts.ICloudMindSts
+	Redis            *redis.Redis
+}
+
+func (s *AuthService) CheckEmail(ctx context.Context, req *core_api.CheckEmailReq) (resp *core_api.CheckEmailResp, err error) {
+	resp = new(core_api.CheckEmailResp)
+	checkEmailResp, err := s.CloudMindSts.CheckEmail(ctx, &sts.CheckEmailReq{
+		Email: req.Email,
+		Code:  req.Code,
+	})
+	if err != nil {
+		return resp, err
+	}
+	resp.Ok = checkEmailResp.Ok
+	return resp, nil
 }
 
 func (s *AuthService) GiteeLogin(ctx context.Context, req *core_api.GiteeLoginReq) (resp *core_api.GiteeLoginResp, err error) {
@@ -156,6 +173,14 @@ func (s *AuthService) RefreshToken(_ context.Context, req *core_api.RefreshToken
 
 func (s *AuthService) Register(ctx context.Context, req *core_api.RegisterReq) (resp *core_api.RegisterResp, err error) {
 	resp = new(core_api.RegisterResp)
+	value := ""
+	if value, err = s.Redis.GetCtx(ctx, fmt.Sprintf("%s:%s", consts.PassCheckEmail, req.Email)); err != nil {
+		return resp, err
+	}
+	if value != "true" {
+		return resp, consts.ErrNotEmailCheck
+	}
+
 	createAuthResp, err := s.CloudMindSts.CreateAuth(ctx, &sts.CreateAuthReq{
 		AuthInfo: &sts.AuthInfo{
 			AuthType: sts.AuthType_email,
@@ -165,7 +190,6 @@ func (s *AuthService) Register(ctx context.Context, req *core_api.RegisterReq) (
 			Role:     sts.Role_user,
 			Password: lo.ToPtr(req.Password),
 		},
-		Code: lo.ToPtr(req.Code),
 	})
 	if err != nil {
 		return resp, err
@@ -236,7 +260,7 @@ func (s *AuthService) SetPasswordByEmail(ctx context.Context, req *core_api.SetP
 	resp = new(core_api.SetPasswordByEmailResp)
 	if _, err = s.CloudMindSts.SetPassword(ctx, &sts.SetPasswordReq{
 		Key: &sts.SetPasswordReq_EmailOptions{
-			EmailOptions: &sts.EmailOptions{Email: req.Email, Code: req.Code},
+			EmailOptions: &sts.EmailOptions{Email: req.Email},
 		},
 		Password: req.Password,
 	}); err != nil {

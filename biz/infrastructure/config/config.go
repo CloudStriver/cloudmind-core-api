@@ -1,6 +1,7 @@
 package config
 
 import (
+	"github.com/zeromicro/go-zero/core/stores/redis"
 	"os"
 
 	"github.com/zeromicro/go-zero/core/service"
@@ -26,6 +27,7 @@ type Config struct {
 	Auth       Auth
 	GithubConf OauthConf
 	GiteeConf  OauthConf
+	Redis      redis.RedisConf
 }
 
 func NewConfig() (*Config, error) {

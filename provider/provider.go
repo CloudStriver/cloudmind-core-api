@@ -7,6 +7,7 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/store/redis"
 	"github.com/google/wire"
 )
 
@@ -59,6 +60,7 @@ var DomainSet = wire.NewSet(
 
 var InfrastructureSet = wire.NewSet(
 	config.NewConfig,
+	redis.NewRedis,
 	RPCSet,
 )
 
