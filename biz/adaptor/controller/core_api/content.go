@@ -449,3 +449,19 @@ func GetFile(ctx context.Context, c *app.RequestContext) {
 	resp, err = p.ContentService.GetFile(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
+
+// GetPost .
+// @router /content/getPost [GET]
+func GetPost(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.GetPostReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.GetPostResp)
+
+	c.JSON(consts.StatusOK, resp)
+}

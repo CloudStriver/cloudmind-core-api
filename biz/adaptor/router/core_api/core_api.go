@@ -43,6 +43,7 @@ func Register(r *server.Hertz) {
 		_content.POST("/getFileBySharingCode", append(_getfilebysharingcodeMw(), core_api.GetFileBySharingCode)...)
 		_content.POST("/getFileList", append(_getfilelistMw(), core_api.GetFileList)...)
 		_content.GET("/getLabel", append(_getlabelMw(), core_api.GetLabel)...)
+		_content.GET("/getPost", append(_getpostMw(), core_api.GetPost)...)
 		_content.POST("/getPosts", append(_getpostsMw(), core_api.GetPosts)...)
 		_content.POST("/getShareList", append(_getsharelistMw(), core_api.GetShareList)...)
 		_content.GET("/getUser", append(_getuserMw(), core_api.GetUser)...)
