@@ -12,21 +12,20 @@ import (
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
 	"github.com/google/wire"
 	"github.com/samber/lo"
+	"github.com/zeromicro/go-zero/core/mr"
 )
 
 type IFileService interface {
-	GetFileIsExist(ctx context.Context, req *core_api.GetFileIsExistReq) (resp *core_api.GetFileIsExistResp, err error)
 	GetFile(ctx context.Context, req *core_api.GetFileReq) (resp *core_api.GetFileResp, err error)
 	GetFileList(ctx context.Context, req *core_api.GetFileListReq) (resp *core_api.GetFileListResp, err error)
 	GetFileBySharingCode(ctx context.Context, req *core_api.GetFileBySharingCodeReq) (resp *core_api.GetFileBySharingCodeResp, err error)
-	GetFolderSize(ctx context.Context, req *core_api.GetFolderSizeReq) (resp *core_api.GetFolderSizeResp, err error)
 	CreateFolder(ctx context.Context, req *core_api.CreateFolderReq) (resp *core_api.CreateFolderResp, err error)
 	UpdateFile(ctx context.Context, req *core_api.UpdateFileReq) (resp *core_api.UpdateFileResp, err error)
 	MoveFile(ctx context.Context, req *core_api.MoveFileReq) (resp *core_api.MoveFileResp, err error)
 	DeleteFile(ctx context.Context, req *core_api.DeleteFileReq) (resp *core_api.DeleteFileResp, err error)
+	RecoverRecycleBinFile(ctx context.Context, req *core_api.RecoverRecycleBinFileReq) (resp *core_api.RecoverRecycleBinFileResp, err error)
 	GetShareList(ctx context.Context, req *core_api.GetShareListReq) (resp *core_api.GetShareListResp, err error)
 	CreateShareCode(ctx context.Context, req *core_api.CreateShareCodeReq) (resp *core_api.CreateShareCodeResp, err error)
-	UpdateShareCode(ctx context.Context, req *core_api.UpdateShareCodeReq) (resp *core_api.UpdateShareCodeResp, err error)
 	DeleteShareCode(ctx context.Context, req *core_api.DeleteShareCodeReq) (resp *core_api.DeleteShareCodeResp, err error)
 	ParsingShareCode(ctx context.Context, req *core_api.ParsingShareCodeReq) (resp *core_api.ParsingShareCodeResp, err error)
 	SaveFileToPrivateSpace(ctx context.Context, req *core_api.SaveFileToPrivateSpaceReq) (resp *core_api.SaveFileToPrivateSpaceResp, err error)
@@ -41,22 +40,7 @@ var FileServiceSet = wire.NewSet(
 type FileService struct {
 	Config            *config.Config
 	CloudMindContent  cloudmind_content.ICloudMindContent
-	PostDomainService service.IPostDomainService
-}
-
-func (s *FileService) GetFileIsExist(ctx context.Context, req *core_api.GetFileIsExistReq) (resp *core_api.GetFileIsExistResp, err error) {
-	resp = new(core_api.GetFileIsExistResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
-		return resp, consts.ErrNotAuthentication
-	}
-
-	var res *content.GetFileIsExistResp
-	if res, err = s.CloudMindContent.GetFileIsExist(ctx, &content.GetFileIsExistReq{Md5: req.Md5}); err != nil {
-		return resp, err
-	}
-	resp.Ok = res.Ok
-	return resp, nil
+	FileDomainService service.IFileDomainService
 }
 
 func (s *FileService) GetFile(ctx context.Context, req *core_api.GetFileReq) (resp *core_api.GetFileResp, err error) {
@@ -65,13 +49,27 @@ func (s *FileService) GetFile(ctx context.Context, req *core_api.GetFileReq) (re
 	if userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
+
+	var res *content.GetFileResp
 	filter := convertor.FilterOptionsToFilterOptions(req.FilterOptions)
 	filter.OnlyUserId = lo.ToPtr(userData.UserId)
-	var res *content.GetFileResp
-	if res, err = s.CloudMindContent.GetFile(ctx, &content.GetFileReq{FilterOptions: filter, IsGetSize: req.IsGetSize}); err != nil {
+	if res, err = s.CloudMindContent.GetFile(ctx, &content.GetFileReq{FilterOptions: filter, IsGetSize: true}); err != nil {
 		return resp, err
 	}
 	resp.File = convertor.FileToCoreFile(res.File)
+	_ = mr.Finish(func() error {
+		s.FileDomainService.LoadLikeCount(ctx, resp.File)
+		return nil
+	}, func() error {
+		s.FileDomainService.LoadAuthor(ctx, resp.File, res.File.UserId)
+		return nil
+	}, func() error {
+		s.FileDomainService.LoadCollectCount(ctx, resp.File)
+		return nil
+	}, func() error {
+		s.FileDomainService.LoadLiked(ctx, resp.File, res.File.UserId)
+		return nil
+	})
 	return resp, nil
 }
 
@@ -96,10 +94,9 @@ func (s *FileService) GetFileList(ctx context.Context, req *core_api.GetFileList
 			return resp, err
 		}
 	}
-	resp.Files = make([]*core_api.FileInfo, 0, len(res.Files))
-	for _, file := range res.Files {
-		resp.Files = append(resp.Files, convertor.FileToCoreFile(file))
-	}
+	resp.Files = lo.Map[*content.FileInfo, *core_api.FileInfo](res.Files, func(item *content.FileInfo, _ int) *core_api.FileInfo {
+		return convertor.FileToCoreFile(item)
+	})
 	resp.Token = res.Token
 	resp.Total = res.Total
 	return resp, nil
@@ -118,28 +115,12 @@ func (s *FileService) GetFileBySharingCode(ctx context.Context, req *core_api.Ge
 	if res, err = s.CloudMindContent.GetFileBySharingCode(ctx, &content.GetFileBySharingCodeReq{SharingCode: req.SharingCode, FilterOptions: filter, PaginationOptions: p}); err != nil {
 		return resp, err
 	}
-	resp.Files = make([]*core_api.FileInfo, 0, len(res.Files))
-	for _, file := range res.Files {
-		resp.Files = append(resp.Files, convertor.FileToCoreFile(file))
-	}
+
+	resp.Files = lo.Map[*content.FileInfo, *core_api.FileInfo](res.Files, func(item *content.FileInfo, _ int) *core_api.FileInfo {
+		return convertor.FileToCoreFile(item)
+	})
 	resp.Token = res.Token
 	resp.Total = res.Total
-	return resp, nil
-}
-
-func (s *FileService) GetFolderSize(ctx context.Context, req *core_api.GetFolderSizeReq) (resp *core_api.GetFolderSizeResp, err error) {
-	resp = new(core_api.GetFolderSizeResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
-		return resp, consts.ErrNotAuthentication
-	}
-
-	var res *content.GetFolderSizeResp
-	filter := convertor.FilterOptionsToFilterOptions(req.FilterOptions)
-	if res, err = s.CloudMindContent.GetFolderSize(ctx, &content.GetFolderSizeReq{FilterOptions: filter}); err != nil {
-		return resp, err
-	}
-	resp.SpaceSize = res.SpaceSize
 	return resp, nil
 }
 
@@ -213,10 +194,10 @@ func (s *FileService) GetShareList(ctx context.Context, req *core_api.GetShareLi
 	if res, err = s.CloudMindContent.GetShareList(ctx, &content.GetShareListReq{ShareFileFilterOptions: shareOptions, PaginationOptions: p}); err != nil {
 		return resp, err
 	}
-	resp.ShareCodes = make([]*core_api.ShareCode, 0, len(res.ShareCodes))
-	for _, shareCode := range res.ShareCodes {
-		resp.ShareCodes = append(resp.ShareCodes, convertor.ShareCodeToShareCode(shareCode))
-	}
+
+	resp.ShareCodes = lo.Map[*content.ShareCode, *core_api.ShareCode](res.ShareCodes, func(item *content.ShareCode, _ int) *core_api.ShareCode {
+		return convertor.ShareCodeToCoreShareCode(item)
+	})
 	resp.Token = res.Token
 	resp.Total = res.Total
 	return resp, nil
@@ -236,20 +217,7 @@ func (s *FileService) CreateShareCode(ctx context.Context, req *core_api.CreateS
 		return resp, err
 	}
 	resp.Code = res.Code
-	return resp, nil
-}
-
-func (s *FileService) UpdateShareCode(ctx context.Context, req *core_api.UpdateShareCodeReq) (resp *core_api.UpdateShareCodeResp, err error) {
-	resp = new(core_api.UpdateShareCodeResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
-		return resp, consts.ErrNotAuthentication
-	}
-	req.ShareFile.UserId = userData.UserId
-	sharefile := convertor.CoreShareFileToShareFile(req.ShareFile)
-	if _, err = s.CloudMindContent.UpdateShareCode(ctx, &content.UpdateShareCodeReq{ShareFile: sharefile}); err != nil {
-		return resp, err
-	}
+	resp.Key = res.Key
 	return resp, nil
 }
 
@@ -308,6 +276,19 @@ func (s *FileService) AddFileToPublicSpace(ctx context.Context, req *core_api.Ad
 	req.File.UserId = userData.UserId
 	file := convertor.CoreFileToFile(req.File)
 	if _, err = s.CloudMindContent.AddFileToPublicSpace(ctx, &content.AddFileToPublicSpaceReq{File: file}); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (s *FileService) RecoverRecycleBinFile(ctx context.Context, req *core_api.RecoverRecycleBinFileReq) (resp *core_api.RecoverRecycleBinFileResp, err error) {
+	resp = new(core_api.RecoverRecycleBinFileResp)
+	userData := adaptor.ExtractUserMeta(ctx)
+	if userData.GetUserId() == "" {
+		return resp, consts.ErrNotAuthentication
+	}
+
+	if _, err = s.CloudMindContent.RecoverRecycleBinFile(ctx, &content.RecoverRecycleBinFileReq{FileId: req.FileId, UserId: userData.UserId}); err != nil {
 		return resp, err
 	}
 	return resp, nil

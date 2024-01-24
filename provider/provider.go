@@ -54,6 +54,7 @@ var ApplicationSet = wire.NewSet(
 
 var DomainSet = wire.NewSet(
 	domainservice.PostDomainServiceSet,
+	domainservice.FileDomainServiceSet,
 )
 
 var InfrastructureSet = wire.NewSet(
