@@ -4,6 +4,8 @@ package core_api
 
 import (
 	"context"
+	"github.com/CloudStriver/cloudmind-core-api/biz/adaptor"
+	"github.com/CloudStriver/cloudmind-core-api/provider"
 
 	core_api "github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/cloudwego/hertz/pkg/app"
@@ -22,6 +24,7 @@ func ApplySignedUrl(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.ApplySignedUrlResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.StsService.ApplySignedUrl(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
