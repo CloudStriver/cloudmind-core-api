@@ -112,23 +112,6 @@ func GetFileBySharingCode(ctx context.Context, c *app.RequestContext) {
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
-// CreateFolder .
-// @router /content/folder/create [POST]
-func CreateFolder(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.CreateFolderReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(core_api.CreateFolderResp)
-	p := provider.Get()
-	resp, err = p.ContentService.CreateFolder(ctx, &req)
-	adaptor.PostProcess(ctx, c, &req, resp, err)
-}
-
 // UpdateFile .
 // @router /content/file/update [POST]
 func UpdateFile(ctx context.Context, c *app.RequestContext) {
@@ -464,5 +447,22 @@ func GetPost(ctx context.Context, c *app.RequestContext) {
 	resp := new(core_api.GetPostResp)
 	p := provider.Get()
 	resp, err = p.PostService.GetPost(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
+}
+
+// CreateFile .
+// @router /content/createFile [POST]
+func CreateFile(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.CreateFileReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.CreateFileResp)
+	p := provider.Get()
+	resp, err = p.ContentService.CreateFile(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }

@@ -32,7 +32,7 @@ func Register(r *server.Hertz) {
 	{
 		_content := root.Group("/content", _contentMw()...)
 		_content.POST("/addFileToPublicSpace", append(_addfiletopublicspaceMw(), core_api.AddFileToPublicSpace)...)
-		_content.POST("/createFolder", append(_createfolderMw(), core_api.CreateFolder)...)
+		_content.POST("/createFile", append(_createfileMw(), core_api.CreateFile)...)
 		_content.POST("/createLabel", append(_createlabelMw(), core_api.CreateLabel)...)
 		_content.POST("/createPost", append(_createpostMw(), core_api.CreatePost)...)
 		_content.POST("/createShareCode", append(_createsharecodeMw(), core_api.CreateShareCode)...)

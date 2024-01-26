@@ -19,7 +19,7 @@ type IFileService interface {
 	GetFile(ctx context.Context, req *core_api.GetFileReq) (resp *core_api.GetFileResp, err error)
 	GetFileList(ctx context.Context, req *core_api.GetFileListReq) (resp *core_api.GetFileListResp, err error)
 	GetFileBySharingCode(ctx context.Context, req *core_api.GetFileBySharingCodeReq) (resp *core_api.GetFileBySharingCodeResp, err error)
-	CreateFolder(ctx context.Context, req *core_api.CreateFolderReq) (resp *core_api.CreateFolderResp, err error)
+	CreateFile(ctx context.Context, req *core_api.CreateFileReq) (resp *core_api.CreateFileResp, err error)
 	UpdateFile(ctx context.Context, req *core_api.UpdateFileReq) (resp *core_api.UpdateFileResp, err error)
 	MoveFile(ctx context.Context, req *core_api.MoveFileReq) (resp *core_api.MoveFileResp, err error)
 	DeleteFile(ctx context.Context, req *core_api.DeleteFileReq) (resp *core_api.DeleteFileResp, err error)
@@ -124,17 +124,17 @@ func (s *FileService) GetFileBySharingCode(ctx context.Context, req *core_api.Ge
 	return resp, nil
 }
 
-func (s *FileService) CreateFolder(ctx context.Context, req *core_api.CreateFolderReq) (resp *core_api.CreateFolderResp, err error) {
-	resp = new(core_api.CreateFolderResp)
+func (s *FileService) CreateFile(ctx context.Context, req *core_api.CreateFileReq) (resp *core_api.CreateFileResp, err error) {
+	resp = new(core_api.CreateFileResp)
 	userData := adaptor.ExtractUserMeta(ctx)
 	if userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 
-	var res *content.CreateFolderResp
+	var res *content.CreateFileResp
 	req.File.UserId = userData.UserId
 	file := convertor.CoreFileToFile(req.File)
-	if res, err = s.CloudMindContent.CreateFolder(ctx, &content.CreateFolderReq{File: file}); err != nil {
+	if res, err = s.CloudMindContent.CreateFile(ctx, &content.CreateFileReq{File: file}); err != nil {
 		return resp, err
 	}
 	resp.FileId = res.FileId
