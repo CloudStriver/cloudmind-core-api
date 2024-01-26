@@ -131,10 +131,10 @@ func (s *FileService) CreateFile(ctx context.Context, req *core_api.CreateFileRe
 		return resp, consts.ErrNotAuthentication
 	}
 
-	var res *content.CreateFolderResp
+	var res *content.CreateFileResp
 	req.File.UserId = userData.UserId
 	file := convertor.CoreFileToFile(req.File)
-	if res, err = s.CloudMindContent.CreateFolder(ctx, &content.CreateFolderReq{File: file}); err != nil {
+	if res, err = s.CloudMindContent.CreateFile(ctx, &content.CreateFileReq{File: file}); err != nil {
 		return resp, err
 	}
 	resp.FileId = res.FileId

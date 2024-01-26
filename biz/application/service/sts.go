@@ -38,9 +38,9 @@ func (s *StsService) ApplySignedUrl(ctx context.Context, req *core_api.ApplySign
 	resp := new(core_api.ApplySignedUrlResp)
 	userId := user.GetUserId()
 	fmt.Println(userId)
-	if req.File {
-		//	 TODO：扣取用户流量
-	}
+	//if req.File {
+	//	 TODO：扣取用户流量
+	//}
 	// TODO：判断是否已经上传过
 	getFileIsExist, err := s.CloudMindContent.GetFileIsExist(ctx, &content.GetFileIsExistReq{
 		Md5: req.Md5,
