@@ -46,7 +46,7 @@ type FileService struct {
 func (s *FileService) GetFile(ctx context.Context, req *core_api.GetFileReq) (resp *core_api.GetFileResp, err error) {
 	resp = new(core_api.GetFileResp)
 	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	if userData.GetUserId() == "" && *req.FilterOptions.OnlyDocumentType == int64(core_api.DocumentType_DocumentType_personal) {
 		return resp, consts.ErrNotAuthentication
 	}
 
@@ -76,7 +76,7 @@ func (s *FileService) GetFile(ctx context.Context, req *core_api.GetFileReq) (re
 func (s *FileService) GetFileList(ctx context.Context, req *core_api.GetFileListReq) (resp *core_api.GetFileListResp, err error) {
 	resp = new(core_api.GetFileListResp)
 	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	if userData.GetUserId() == "" && *req.FilterOptions.OnlyDocumentType == int64(core_api.DocumentType_DocumentType_personal) {
 		return resp, consts.ErrNotAuthentication
 	}
 
@@ -104,10 +104,6 @@ func (s *FileService) GetFileList(ctx context.Context, req *core_api.GetFileList
 
 func (s *FileService) GetFileBySharingCode(ctx context.Context, req *core_api.GetFileBySharingCodeReq) (resp *core_api.GetFileBySharingCodeResp, err error) {
 	resp = new(core_api.GetFileBySharingCodeResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
-		return resp, consts.ErrNotAuthentication
-	}
 
 	var res *content.GetFileBySharingCodeResp
 	filter := convertor.FilterOptionsToFilterOptions(req.FilterOptions)
