@@ -74,7 +74,8 @@ func NewProvider() (*Provider, error) {
 		CloudMindContent: cloudMindContent,
 	}
 	stsService := &service2.StsService{
-		PlatformSts: cloudMindSts,
+		PlatformSts:      cloudMindSts,
+		CloudMindContent: cloudMindContent,
 	}
 	providerProvider := &Provider{
 		Config:          configConfig,
