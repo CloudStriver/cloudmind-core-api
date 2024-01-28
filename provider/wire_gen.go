@@ -10,6 +10,7 @@ import (
 	service2 "github.com/CloudStriver/cloudmind-core-api/biz/application/service"
 	"github.com/CloudStriver/cloudmind-core-api/biz/domain/service"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
@@ -60,10 +61,12 @@ func NewProvider() (*Provider, error) {
 		CloudMindSts:     cloudMindSts,
 		Redis:            redisRedis,
 	}
+	createNotificationsKq := kq.NewCreateNotificationsKq(configConfig)
 	relationService := &service2.RelationService{
-		Config:           configConfig,
-		PlatFormRelation: platFormRelation,
-		CloudMindContent: cloudMindContent,
+		Config:               configConfig,
+		PlatFormRelation:     platFormRelation,
+		CloudMindContent:     cloudMindContent,
+		CreateNotificationKq: createNotificationsKq,
 	}
 	userService := &service2.UserService{
 		Config:           configConfig,
