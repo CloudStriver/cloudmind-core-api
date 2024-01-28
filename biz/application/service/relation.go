@@ -7,10 +7,13 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/convertor"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
+	"github.com/CloudStriver/cloudmind-mq/app/util/message"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/basic"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
+	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/system"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/relation"
 	"github.com/google/wire"
 	"github.com/samber/lo"
@@ -31,9 +34,10 @@ var RelationServiceSet = wire.NewSet(
 )
 
 type RelationService struct {
-	Config           *config.Config
-	PlatFormRelation platform_relation.IPlatFormRelation
-	CloudMindContent cloudmind_content.ICloudMindContent
+	Config               *config.Config
+	PlatFormRelation     platform_relation.IPlatFormRelation
+	CloudMindContent     cloudmind_content.ICloudMindContent
+	CreateNotificationKq *kq.CreateNotificationsKq
 }
 
 func (s *RelationService) GetFromRelations(ctx context.Context, req *core_api.GetFromRelationsReq) (resp *core_api.GetFromRelationsResp, err error) {
@@ -165,6 +169,17 @@ func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.Crea
 
 	if _, err = s.PlatFormRelation.CreateRelation(ctx, &relation.CreateRelationReq{
 		Relation: convertor.CoreApiRelationInfoToRelationInfo(req.Relation),
+	}); err != nil {
+		return resp, err
+	}
+
+	if err = s.CreateNotificationKq.Add(req.Relation.ToId, &message.CreateNotificationsMessage{
+		Notification: &system.Notification{
+			TargetUserId: req.Relation.ToId,
+			SourceUserId: req.Relation.FromId,
+			TargetType:   req.Relation.FromType,
+			Type:         req.Relation.RelationType,
+		},
 	}); err != nil {
 		return resp, err
 	}
