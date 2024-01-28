@@ -130,6 +130,7 @@ func (s *FileService) CreateFile(ctx context.Context, req *core_api.CreateFileRe
 	var res *content.CreateFileResp
 	req.File.UserId = userData.UserId
 	file := convertor.CoreFileToFile(req.File)
+	file.IsDel = int64(core_api.IsDel_Is_no)
 	if res, err = s.CloudMindContent.CreateFile(ctx, &content.CreateFileReq{File: file}); err != nil {
 		return resp, err
 	}
