@@ -2,6 +2,7 @@ package consts
 
 import (
 	"google.golang.org/grpc/codes"
+	"time"
 )
 
 var PageSize int64 = 10
@@ -19,4 +20,8 @@ const (
 	RelationCollectType = 3 // 收藏
 	RelationViewType    = 4 // 浏览
 	PassCheckEmail      = "PassCheckEmail"
+	BatcherSize         = 100
+	BatcherBuffer       = 100
+	BatcherWorker       = 10
+	BatcherInterval     = time.Second
 )

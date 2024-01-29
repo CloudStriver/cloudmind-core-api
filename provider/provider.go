@@ -4,6 +4,7 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/service"
 	domainservice "github.com/CloudStriver/cloudmind-core-api/biz/domain/service"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
@@ -61,6 +62,9 @@ var DomainSet = wire.NewSet(
 var InfrastructureSet = wire.NewSet(
 	config.NewConfig,
 	redis.NewRedis,
+	kq.NewCreateNotificationsKq,
+	kq.NewCleanNotificationKq,
+	kq.NewReadNotificationsKq,
 	RPCSet,
 )
 

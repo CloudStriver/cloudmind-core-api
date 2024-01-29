@@ -21,13 +21,22 @@ type OauthConf struct {
 	ClientId string
 	Secret   string
 }
+
+type KqConfig struct {
+	Brokers []string
+	Topic   string
+}
+
 type Config struct {
 	service.ServiceConf
-	ListenOn   string
-	Auth       Auth
-	GithubConf OauthConf
-	GiteeConf  OauthConf
-	Redis      redis.RedisConf
+	ListenOn              string
+	Auth                  Auth
+	GithubConf            OauthConf
+	GiteeConf             OauthConf
+	Redis                 redis.RedisConf
+	CreateNotificationsKq KqConfig
+	ReadNotificationsKq   KqConfig
+	CleanNotificationKq   KqConfig
 }
 
 func NewConfig() (*Config, error) {

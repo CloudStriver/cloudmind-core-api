@@ -32,14 +32,11 @@ type UserService struct {
 
 func (s *UserService) GetUser(ctx context.Context, req *core_api.GetUserReq) (resp *core_api.GetUserResp, err error) {
 	resp = new(core_api.GetUserResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
-		return resp, consts.ErrNotAuthentication
-	}
-
-	if _, err = s.CloudMindContent.GetUser(ctx, &content.GetUserReq{UserId: req.UserId}); err != nil {
+	getUserResp, err := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{UserId: req.UserId})
+	if err != nil {
 		return resp, err
 	}
+	resp.User = convertor.UserDetailToUser(getUserResp.User)
 	return resp, nil
 }
 
@@ -66,9 +63,8 @@ func (s *UserService) UpdateUser(ctx context.Context, req *core_api.UpdateUserRe
 	}
 	user := convertor.UserToUserDetailInfo(req.UserDetail)
 	user.UserId = userData.UserId
-
 	if _, err = s.CloudMindContent.UpdateUser(ctx, &content.UpdateUserReq{
-		User: convertor.CoreUserDetailToUser(req.UserDetail),
+		User: user,
 	}); err != nil {
 		return resp, err
 	}
@@ -82,11 +78,13 @@ func (s *UserService) GetUserDetail(ctx context.Context, req *core_api.GetUserDe
 		return resp, consts.ErrNotAuthentication
 	}
 
-	if _, err = s.CloudMindContent.GetUser(ctx, &content.GetUserReq{
-		UserId: req.UserId,
-	}); err != nil {
+	getUserResp, err := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{
+		UserId: userData.GetUserId(),
+	})
+	if err != nil {
 		return resp, err
 	}
+	resp.UserDetail = convertor.UserDetailToCoreUserDetail(getUserResp.User)
 	return resp, nil
 }
 

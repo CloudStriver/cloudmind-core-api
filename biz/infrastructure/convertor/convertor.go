@@ -123,6 +123,17 @@ func UserDetailToUser(req *content.User) *core_api.User {
 	}
 }
 
+func UserDetailToCoreUserDetail(req *content.User) *core_api.UserDetail {
+	return &core_api.UserDetail{
+		Name:        req.Name,
+		Sex:         req.Sex,
+		FullName:    req.FullName,
+		IdCard:      req.IdCard,
+		Description: req.Description,
+		Url:         req.Url,
+	}
+}
+
 func PaginationOptionsToPaginationOptions(req *dto_basic.PaginationOptions) *basic.PaginationOptions {
 	if req == nil {
 		return &basic.PaginationOptions{}
