@@ -69,12 +69,13 @@ func NewProvider() (*Provider, error) {
 		Config:           configConfig,
 		CloudMindContent: cloudMindContent,
 	}
-	labelService := &service2.LabelService{
+	zoneService := &service2.ZoneService{
 		Config:           configConfig,
 		CloudMindContent: cloudMindContent,
 	}
 	stsService := &service2.StsService{
-		PlatformSts: cloudMindSts,
+		PlatformSts:      cloudMindSts,
+		CloudMindContent: cloudMindContent,
 	}
 	providerProvider := &Provider{
 		Config:          configConfig,
@@ -83,7 +84,7 @@ func NewProvider() (*Provider, error) {
 		AuthService:     authService,
 		RelationService: relationService,
 		UserService:     userService,
-		LabelService:    labelService,
+		ZoneService:     zoneService,
 		StsService:      stsService,
 	}
 	return providerProvider, nil

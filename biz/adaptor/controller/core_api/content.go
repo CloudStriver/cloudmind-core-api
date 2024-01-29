@@ -78,23 +78,6 @@ func GetUserDetail(ctx context.Context, c *app.RequestContext) {
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
-// GetFileList .
-// @router /content/file/list [GET]
-func GetFileList(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.GetFileListReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(core_api.GetFileListResp)
-	p := provider.Get()
-	resp, err = p.ContentService.GetFileList(ctx, &req)
-	adaptor.PostProcess(ctx, c, &req, resp, err)
-}
-
 // GetFileBySharingCode .
 // @router /content/sharecode/file [GET]
 func GetFileBySharingCode(ctx context.Context, c *app.RequestContext) {
@@ -211,74 +194,6 @@ func RecoverRecycleBinFile(ctx context.Context, c *app.RequestContext) {
 	resp := new(core_api.RecoverRecycleBinFileResp)
 	p := provider.Get()
 	resp, err = p.ContentService.RecoverRecycleBinFile(ctx, &req)
-	adaptor.PostProcess(ctx, c, &req, resp, err)
-}
-
-// CreateLabel .
-// @router /content/label/create [POST]
-func CreateLabel(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.CreateLabelReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(core_api.CreateLabelResp)
-	p := provider.Get()
-	resp, err = p.LabelService.CreateLabel(ctx, &req)
-	adaptor.PostProcess(ctx, c, &req, resp, err)
-}
-
-// UpdateLabel .
-// @router /content/label/update [POST]
-func UpdateLabel(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.UpdateLabelReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(core_api.UpdateLabelResp)
-	p := provider.Get()
-	resp, err = p.LabelService.UpdateLabel(ctx, &req)
-	adaptor.PostProcess(ctx, c, &req, resp, err)
-}
-
-// GetLabel .
-// @router /content/label/get [GET]
-func GetLabel(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.GetLabelReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(core_api.GetLabelResp)
-	p := provider.Get()
-	resp, err = p.LabelService.GetLabel(ctx, &req)
-	adaptor.PostProcess(ctx, c, &req, resp, err)
-}
-
-// DeleteLabel .
-// @router /content/label/delete [POST]
-func DeleteLabel(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.DeleteLabelReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(core_api.DeleteLabelResp)
-	p := provider.Get()
-	resp, err = p.LabelService.DeleteLabel(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
@@ -464,5 +379,124 @@ func CreateFile(ctx context.Context, c *app.RequestContext) {
 	resp := new(core_api.CreateFileResp)
 	p := provider.Get()
 	resp, err = p.ContentService.CreateFile(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
+}
+
+// GetPrivateFiles .
+// @router /content/getPrivateFiles [POST]
+func GetPrivateFiles(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.GetPrivateFilesReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.GetPrivateFilesResp)
+	p := provider.Get()
+	resp, err = p.ContentService.GetPrivateFiles(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
+}
+
+// GetPublicFiles .
+// @router /content/getPublicFiles [POST]
+func GetPublicFiles(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.GetPublicFilesReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.GetPublicFilesResp)
+	p := provider.Get()
+	resp, err = p.ContentService.GetPublicFiles(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
+}
+
+// GetRecycleBinFiles .
+// @router /content/getRecycleBinFiles [POST]
+func GetRecycleBinFiles(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.GetRecycleBinFilesReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.GetRecycleBinFilesResp)
+	p := provider.Get()
+	resp, err = p.ContentService.GetRecycleBinFiles(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
+}
+
+// CreateZone .
+// @router /content/createZone [POST]
+func CreateZone(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.CreateZoneReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.CreateZoneResp)
+	p := provider.Get()
+	resp, err = p.ZoneService.CreateZone(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
+}
+
+// UpdateZone .
+// @router /content/updateZone [POST]
+func UpdateZone(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.UpdateZoneReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.UpdateZoneResp)
+	p := provider.Get()
+	resp, err = p.ZoneService.UpdateZone(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
+}
+
+// GetZone .
+// @router /content/getZone [GET]
+func GetZone(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.GetZoneReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.GetZoneResp)
+	p := provider.Get()
+	resp, err = p.ZoneService.GetZone(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
+}
+
+// DeleteZone .
+// @router /content/deleteZone [POST]
+func DeleteZone(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.DeleteZoneReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.DeleteZoneResp)
+	p := provider.Get()
+	resp, err = p.ZoneService.DeleteZone(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }

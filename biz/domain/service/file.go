@@ -28,7 +28,7 @@ var FileDomainServiceSet = wire.NewSet(
 )
 
 func (s *FileDomainService) LoadAuthor(ctx context.Context, file *core_api.FileInfo, userId string) {
-	if userId == "" || file.Tag == nil {
+	if userId == "" || file.Zone == "" || file.SubZone == "" {
 		return
 	}
 	file.Author = &core_api.User{
@@ -42,7 +42,7 @@ func (s *FileDomainService) LoadAuthor(ctx context.Context, file *core_api.FileI
 }
 
 func (s *FileDomainService) LoadLikeCount(ctx context.Context, file *core_api.FileInfo) {
-	if file.Tag == nil {
+	if file.Zone == "" || file.SubZone == "" {
 		return
 	}
 	getRelationCountResp, err := s.PlatformRelation.GetRelationCount(ctx, &relation.GetRelationCountReq{
@@ -61,7 +61,7 @@ func (s *FileDomainService) LoadLikeCount(ctx context.Context, file *core_api.Fi
 }
 
 func (s *FileDomainService) LoadLiked(ctx context.Context, file *core_api.FileInfo, userId string) {
-	if file.Tag == nil {
+	if file.Zone == "" || file.SubZone == "" {
 		return
 	}
 	getRelationResp, err := s.PlatformRelation.GetRelation(ctx, &relation.GetRelationReq{
@@ -79,7 +79,7 @@ func (s *FileDomainService) LoadLiked(ctx context.Context, file *core_api.FileIn
 }
 
 func (s *FileDomainService) LoadCollectCount(ctx context.Context, file *core_api.FileInfo) {
-	if file.Tag == nil {
+	if file.Zone == "" || file.SubZone == "" {
 		return
 	}
 	getRelationCountResp, err := s.PlatformRelation.GetRelationCount(ctx, &relation.GetRelationCountReq{

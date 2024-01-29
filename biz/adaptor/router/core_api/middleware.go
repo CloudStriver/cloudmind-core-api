@@ -335,3 +335,38 @@ func _createfileMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _getprivatefilesMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getpublicfilesMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getrecyclebinfilesMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _createzoneMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _deletezoneMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getzoneMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _updatezoneMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
