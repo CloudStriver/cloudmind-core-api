@@ -514,6 +514,6 @@ func GetPrivateFile(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(core_api.GetFileResp)
 	p := provider.Get()
-	resp, err = p.ContentService.GetPublicFile(ctx, &req)
+	resp, err = p.ContentService.GetPrivateFile(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
