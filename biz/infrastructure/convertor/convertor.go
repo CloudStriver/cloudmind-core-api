@@ -30,7 +30,6 @@ func FileToCoreFile(req *content.FileInfo) *core_api.FileInfo {
 		SpaceSize:   req.SpaceSize,
 		Md5:         req.Md5,
 		IsDel:       req.IsDel,
-		Tag:         req.Tag,
 		Description: req.Description,
 		UpdateAt:    req.UpdateAt,
 	}
@@ -47,21 +46,19 @@ func CoreFileToFile(req *core_api.File) *content.File {
 		SpaceSize:   req.SpaceSize,
 		Md5:         req.Md5,
 		IsDel:       req.IsDel,
-		Tag:         req.Tag,
 		Description: req.Description,
-		UpdateAt:    req.UpdateAt,
 	}
 }
 
-func LabelToCoreLabel(req *content.Label) *core_api.Label {
-	return &core_api.Label{
+func ZoneToCoreZone(req *content.Zone) *core_api.Zone {
+	return &core_api.Zone{
 		Id:    req.Id,
 		Value: req.Value,
 	}
 }
 
-func CoreLabelToLabel(req *core_api.Label) *content.Label {
-	return &content.Label{
+func CoreZoneToZone(req *core_api.Zone) *content.Zone {
+	return &content.Zone{
 		Id:    req.Id,
 		Value: req.Value,
 	}
@@ -168,11 +165,8 @@ func FilterOptionsToFilterOptions(opts *core_api.FileFilterOptions) *content.Fil
 			OnlyFileId:       opts.OnlyFileId,
 			OnlyFatherId:     opts.OnlyFatherId,
 			OnlyFileType:     opts.OnlyFileType,
-			OnlyTags:         opts.OnlyTags,
 			OnlyIsDel:        opts.OnlyIsDel,
 			OnlyDocumentType: opts.OnlyDocumentType,
-			OnlyMd5:          opts.OnlyMd5,
-			OnlySetRelation:  opts.OnlySetRelation,
 		}
 	}
 }

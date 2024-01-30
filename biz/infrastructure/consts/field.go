@@ -7,6 +7,8 @@ import (
 
 var PageSize int64 = 10
 var NotContent = codes.Code(204)
+var NotDel int64 = 1
+var SoftDel int64 = 2
 
 const (
 	RelationUserType    = 1
