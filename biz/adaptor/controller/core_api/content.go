@@ -331,23 +331,6 @@ func GetPosts(ctx context.Context, c *app.RequestContext) {
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
-// GetFile .
-// @router /content/getFile [GET]
-func GetFile(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.GetFileReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(core_api.GetFileResp)
-	p := provider.Get()
-	resp, err = p.ContentService.GetFile(ctx, &req)
-	adaptor.PostProcess(ctx, c, &req, resp, err)
-}
-
 // GetPost .
 // @router /content/getPost [GET]
 func GetPost(ctx context.Context, c *app.RequestContext) {
@@ -498,5 +481,39 @@ func DeleteZone(ctx context.Context, c *app.RequestContext) {
 	resp := new(core_api.DeleteZoneResp)
 	p := provider.Get()
 	resp, err = p.ZoneService.DeleteZone(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
+}
+
+// GetPublicFile .
+// @router /content/getPublicFile [POST]
+func GetPublicFile(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.GetFileReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.GetFileResp)
+	p := provider.Get()
+	resp, err = p.ContentService.GetPublicFile(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
+}
+
+// GetPrivateFile .
+// @router /content/getPrivateFile [POST]
+func GetPrivateFile(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.GetFileReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.GetFileResp)
+	p := provider.Get()
+	resp, err = p.ContentService.GetPublicFile(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }

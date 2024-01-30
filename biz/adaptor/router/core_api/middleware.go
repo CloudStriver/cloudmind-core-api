@@ -370,3 +370,13 @@ func _updatezoneMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _getprivatefileMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getpublicfileMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
