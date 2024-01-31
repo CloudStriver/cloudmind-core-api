@@ -24,8 +24,7 @@ func FileToCoreFile(req *content.FileInfo) *core_api.FileInfo {
 		FileId:      req.FileId,
 		UserId:      req.UserId,
 		Name:        req.Name,
-		TypeString:  req.TypeString,
-		Type:        core_api.Type(req.Type),
+		Type:        req.Type,
 		Path:        req.Path,
 		FatherId:    req.FatherId,
 		SpaceSize:   req.SpaceSize,
@@ -45,8 +44,7 @@ func CoreFileToFile(req *core_api.File) *content.File {
 		FileId:      req.FileId,
 		UserId:      req.UserId,
 		Name:        req.Name,
-		TypeString:  req.TypeString,
-		Type:        content.Type(req.Type),
+		Type:        req.Type,
 		Path:        req.Path,
 		FatherId:    req.FatherId,
 		SpaceSize:   req.SpaceSize,
@@ -171,10 +169,9 @@ func FilterOptionsToFilterOptions(opts *core_api.FileFilterOptions) *content.Fil
 			OnlyUserId:       opts.OnlyUserId,
 			OnlyFileId:       opts.OnlyFileId,
 			OnlyFatherId:     opts.OnlyFatherId,
-			OnlyFileType:     opts.OnlyFileType,
 			OnlyIsDel:        opts.OnlyIsDel,
 			OnlyDocumentType: opts.OnlyDocumentType,
-			OnlyTypeString:   opts.OnlyTypeStrings,
+			OnlyType:         opts.OnlyType,
 		}
 	}
 }
