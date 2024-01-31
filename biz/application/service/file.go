@@ -99,21 +99,20 @@ func (s *FileService) GetPrivateFiles(ctx context.Context, req *core_api.GetPriv
 	if userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
+	sort := lo.ToPtr(content.SortOptions_SortOptions_createAtDesc)
+	if req.SortType != nil {
+		sort = lo.ToPtr(content.SortOptions(*req.SortType))
+	}
 
 	var res *content.GetFileListResp
 	p := convertor.PaginationOptionsToPaginationOptions(req.PaginationOptions)
 	req.FilterOptions.OnlyIsDel = lo.ToPtr(consts.NotDel)
 	req.FilterOptions.OnlyUserId = lo.ToPtr(userData.UserId)
 	filter := convertor.FilterOptionsToFilterOptions(req.FilterOptions)
-	if req.SearchOptions != nil {
-		searchOptions := convertor.SearchOptionsToFileSearchOptions(req.SearchOptions)
-		if res, err = s.CloudMindContent.GetFileList(ctx, &content.GetFileListReq{SearchOptions: searchOptions, FilterOptions: filter, PaginationOptions: p}); err != nil {
-			return resp, err
-		}
-	} else {
-		if res, err = s.CloudMindContent.GetFileList(ctx, &content.GetFileListReq{FilterOptions: filter, PaginationOptions: p}); err != nil {
-			return resp, err
-		}
+	searchOptions := convertor.SearchOptionsToFileSearchOptions(req.SearchOptions)
+
+	if res, err = s.CloudMindContent.GetFileList(ctx, &content.GetFileListReq{SearchOptions: searchOptions, FilterOptions: filter, PaginationOptions: p, SortOptions: sort}); err != nil {
+		return resp, err
 	}
 	resp.Files = lo.Map[*content.FileInfo, *core_api.FileInfo](res.Files, func(item *content.FileInfo, _ int) *core_api.FileInfo {
 		return convertor.FileToCoreFile(item)
@@ -130,15 +129,9 @@ func (s *FileService) GetPublicFiles(ctx context.Context, req *core_api.GetPubli
 	req.FilterOptions.OnlyDocumentType = lo.ToPtr(int64(core_api.DocumentType_DocumentType_public))
 	req.FilterOptions.OnlyIsDel = lo.ToPtr(consts.NotDel)
 	filter := convertor.FilterOptionsToFilterOptions(req.FilterOptions)
-	if req.SearchOptions != nil {
-		searchOptions := convertor.SearchOptionsToFileSearchOptions(req.SearchOptions)
-		if res, err = s.CloudMindContent.GetFileList(ctx, &content.GetFileListReq{SearchOptions: searchOptions, FilterOptions: filter, PaginationOptions: p}); err != nil {
-			return resp, err
-		}
-	} else {
-		if res, err = s.CloudMindContent.GetFileList(ctx, &content.GetFileListReq{FilterOptions: filter, PaginationOptions: p}); err != nil {
-			return resp, err
-		}
+	searchOptions := convertor.SearchOptionsToFileSearchOptions(req.SearchOptions)
+	if res, err = s.CloudMindContent.GetFileList(ctx, &content.GetFileListReq{SearchOptions: searchOptions, FilterOptions: filter, PaginationOptions: p}); err != nil {
+		return resp, err
 	}
 	resp.Files = lo.Map[*content.FileInfo, *core_api.FileInfo](res.Files, func(item *content.FileInfo, _ int) *core_api.FileInfo {
 		return convertor.FileToCoreFile(item)

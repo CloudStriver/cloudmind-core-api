@@ -517,3 +517,19 @@ func GetPrivateFile(ctx context.Context, c *app.RequestContext) {
 	resp, err = p.ContentService.GetPrivateFile(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
+
+// GetFile .
+// @router /content/getFile [POST]
+func GetFile(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.GetFileReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.GetFileResp)
+
+	c.JSON(consts.StatusOK, resp)
+}
