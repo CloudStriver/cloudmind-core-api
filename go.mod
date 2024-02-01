@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/CloudStriver/cloudmind-mq v0.0.0-20240128054402-6d73c229790e
 	github.com/CloudStriver/go-pkg v0.0.0-20240128062158-e5fe090d8117
-	github.com/CloudStriver/service-idl-gen-go v0.0.0-20240201060740-cadd39081dc7
+	github.com/CloudStriver/service-idl-gen-go v0.0.0-20240201091924-a3cefad75be4
 	github.com/bytedance/sonic v1.10.2
 	github.com/cloudwego/hertz v0.7.3
 	github.com/golang-jwt/jwt/v4 v4.5.0
@@ -21,10 +21,6 @@ require (
 	google.golang.org/grpc v1.61.0
 	google.golang.org/protobuf v1.32.0
 )
-
-//replace (
-//github.com/CloudStriver/service-idl-gen-go => ../service-idl-gen-go
-//)
 
 require (
 	github.com/andeya/ameda v1.5.3 // indirect
