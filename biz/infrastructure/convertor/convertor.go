@@ -36,6 +36,7 @@ func FileToCoreFile(req *content.FileInfo) *core_api.FileInfo {
 		Url:         req.Url,
 		CreateAt:    req.CreateAt,
 		UpdateAt:    req.UpdateAt,
+		Labels:      req.Labels,
 	}
 }
 
@@ -50,8 +51,11 @@ func CoreFileToFile(req *core_api.File) *content.File {
 		SpaceSize:   req.SpaceSize,
 		Md5:         req.Md5,
 		IsDel:       req.IsDel,
+		Zone:        req.Zone,
+		SubZone:     req.SubZone,
 		Description: req.Description,
 		Url:         req.Url,
+		Labels:      req.Labels,
 	}
 }
 
