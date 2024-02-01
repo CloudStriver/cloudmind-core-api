@@ -117,8 +117,10 @@ func (s *FileService) GetPrivateFiles(ctx context.Context, req *core_api.GetPriv
 	resp.Files = lo.Map[*content.FileInfo, *core_api.FileInfo](res.Files, func(item *content.FileInfo, _ int) *core_api.FileInfo {
 		return convertor.FileToCoreFile(item)
 	})
+
 	resp.Token = res.Token
 	resp.Total = res.Total
+	resp.FatherPath = res.FatherPath
 	return resp, nil
 }
 
@@ -138,6 +140,7 @@ func (s *FileService) GetPublicFiles(ctx context.Context, req *core_api.GetPubli
 	})
 	resp.Token = res.Token
 	resp.Total = res.Total
+	resp.FatherPath = res.FatherPath
 	return resp, nil
 }
 
