@@ -24,9 +24,13 @@ func NewProvider() (*Provider, error) {
 	if err != nil {
 		return nil, err
 	}
-	client := cloudmind_content.NewCloudMindContent(configConfig)
-	cloudMindContent := &cloudmind_content.CloudMindContent{
+	client := cloudmind_sts.NewCloudMindSts(configConfig)
+	cloudMindSts := &cloudmind_sts.CloudMindSts{
 		Client: client,
+	}
+	contentserviceClient := cloudmind_content.NewCloudMindContent(configConfig)
+	cloudMindContent := &cloudmind_content.CloudMindContent{
+		Client: contentserviceClient,
 	}
 	relationserviceClient := platform_relation.NewPlatFormRelation(configConfig)
 	platFormRelation := &platform_relation.PlatFormRelation{
@@ -38,6 +42,7 @@ func NewProvider() (*Provider, error) {
 	}
 	fileService := &service2.FileService{
 		Config:            configConfig,
+		PlatformSts:       cloudMindSts,
 		CloudMindContent:  cloudMindContent,
 		FileDomainService: fileDomainService,
 	}
@@ -49,10 +54,6 @@ func NewProvider() (*Provider, error) {
 		Config:            configConfig,
 		CloudMindContent:  cloudMindContent,
 		PostDomainService: postDomainService,
-	}
-	stsserviceClient := cloudmind_sts.NewCloudMindSts(configConfig)
-	cloudMindSts := &cloudmind_sts.CloudMindSts{
-		Client: stsserviceClient,
 	}
 	redisRedis := redis.NewRedis(configConfig)
 	authService := &service2.AuthService{
@@ -71,6 +72,7 @@ func NewProvider() (*Provider, error) {
 	userService := &service2.UserService{
 		Config:           configConfig,
 		CloudMindContent: cloudMindContent,
+		PlatformSts:      cloudMindSts,
 	}
 	zoneService := &service2.ZoneService{
 		Config:           configConfig,
@@ -82,7 +84,7 @@ func NewProvider() (*Provider, error) {
 	}
 	providerProvider := &Provider{
 		Config:          configConfig,
-		ContentService:  fileService,
+		FileService:     fileService,
 		PostService:     postService,
 		AuthService:     authService,
 		RelationService: relationService,

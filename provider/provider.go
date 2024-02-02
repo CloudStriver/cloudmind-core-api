@@ -25,7 +25,7 @@ func Init() {
 // Provider 提供controller依赖的对象
 type Provider struct {
 	Config          *config.Config
-	ContentService  service.IFileService
+	FileService     service.IFileService
 	PostService     service.IPostService
 	AuthService     service.IAuthService
 	RelationService service.IRelationService
