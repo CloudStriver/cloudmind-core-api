@@ -91,7 +91,7 @@ func GetFileBySharingCode(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(core_api.GetFileBySharingCodeResp)
 	p := provider.Get()
-	resp, err = p.ContentService.GetFileBySharingCode(ctx, &req)
+	resp, err = p.FileService.GetFileBySharingCode(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
@@ -108,7 +108,7 @@ func UpdateFile(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(core_api.UpdateFileResp)
 	p := provider.Get()
-	resp, err = p.ContentService.UpdateFile(ctx, &req)
+	resp, err = p.FileService.UpdateFile(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
@@ -125,7 +125,7 @@ func MoveFile(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(core_api.MoveFileResp)
 	p := provider.Get()
-	resp, err = p.ContentService.MoveFile(ctx, &req)
+	resp, err = p.FileService.MoveFile(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
@@ -142,7 +142,7 @@ func SaveFileToPrivateSpace(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(core_api.SaveFileToPrivateSpaceResp)
 	p := provider.Get()
-	resp, err = p.ContentService.SaveFileToPrivateSpace(ctx, &req)
+	resp, err = p.FileService.SaveFileToPrivateSpace(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
@@ -159,7 +159,7 @@ func AddFileToPublicSpace(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(core_api.AddFileToPublicSpaceResp)
 	p := provider.Get()
-	resp, err = p.ContentService.AddFileToPublicSpace(ctx, &req)
+	resp, err = p.FileService.AddFileToPublicSpace(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
@@ -176,7 +176,7 @@ func DeleteFile(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(core_api.DeleteFileResp)
 	p := provider.Get()
-	resp, err = p.ContentService.DeleteFile(ctx, &req)
+	resp, err = p.FileService.DeleteFile(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
@@ -193,7 +193,7 @@ func RecoverRecycleBinFile(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(core_api.RecoverRecycleBinFileResp)
 	p := provider.Get()
-	resp, err = p.ContentService.RecoverRecycleBinFile(ctx, &req)
+	resp, err = p.FileService.RecoverRecycleBinFile(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
@@ -210,7 +210,7 @@ func CreateShareCode(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(core_api.CreateShareCodeResp)
 	p := provider.Get()
-	resp, err = p.ContentService.CreateShareCode(ctx, &req)
+	resp, err = p.FileService.CreateShareCode(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
@@ -227,7 +227,7 @@ func GetShareList(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(core_api.GetShareListResp)
 	p := provider.Get()
-	resp, err = p.ContentService.GetShareList(ctx, &req)
+	resp, err = p.FileService.GetShareList(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
@@ -244,7 +244,7 @@ func DeleteShareCode(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(core_api.DeleteShareCodeResp)
 	p := provider.Get()
-	resp, err = p.ContentService.DeleteShareCode(ctx, &req)
+	resp, err = p.FileService.DeleteShareCode(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
@@ -261,7 +261,7 @@ func ParsingShareCode(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(core_api.ParsingShareCodeResp)
 	p := provider.Get()
-	resp, err = p.ContentService.ParsingShareCode(ctx, &req)
+	resp, err = p.FileService.ParsingShareCode(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
@@ -361,7 +361,7 @@ func CreateFile(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(core_api.CreateFileResp)
 	p := provider.Get()
-	resp, err = p.ContentService.CreateFile(ctx, &req)
+	resp, err = p.FileService.CreateFile(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
@@ -378,7 +378,7 @@ func GetPrivateFiles(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(core_api.GetPrivateFilesResp)
 	p := provider.Get()
-	resp, err = p.ContentService.GetPrivateFiles(ctx, &req)
+	resp, err = p.FileService.GetPrivateFiles(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
@@ -395,7 +395,7 @@ func GetPublicFiles(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(core_api.GetPublicFilesResp)
 	p := provider.Get()
-	resp, err = p.ContentService.GetPublicFiles(ctx, &req)
+	resp, err = p.FileService.GetPublicFiles(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
@@ -412,7 +412,7 @@ func GetRecycleBinFiles(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(core_api.GetRecycleBinFilesResp)
 	p := provider.Get()
-	resp, err = p.ContentService.GetRecycleBinFiles(ctx, &req)
+	resp, err = p.FileService.GetRecycleBinFiles(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
@@ -497,7 +497,7 @@ func GetPublicFile(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(core_api.GetFileResp)
 	p := provider.Get()
-	resp, err = p.ContentService.GetPublicFile(ctx, &req)
+	resp, err = p.FileService.GetPublicFile(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
@@ -514,22 +514,57 @@ func GetPrivateFile(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(core_api.GetFileResp)
 	p := provider.Get()
-	resp, err = p.ContentService.GetPrivateFile(ctx, &req)
+	resp, err = p.FileService.GetPrivateFile(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
-// GetFile .
-// @router /content/getFile [POST]
-func GetFile(ctx context.Context, c *app.RequestContext) {
+// AskUploadFile .
+// @router /content/askUploadFile [POST]
+func AskUploadFile(ctx context.Context, c *app.RequestContext) {
 	var err error
-	var req core_api.GetFileReq
+	var req core_api.AskUploadFileReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
 
-	resp := new(core_api.GetFileResp)
+	resp := new(core_api.AskUploadFileResp)
+	p := provider.Get()
+	resp, err = p.FileService.AskUploadFile(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
+}
 
-	c.JSON(consts.StatusOK, resp)
+// AskUploadAvatar .
+// @router /content/askUploadAvatar [POST]
+func AskUploadAvatar(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.AskUploadAvatarReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.AskUploadAvatarResp)
+	p := provider.Get()
+	resp, err = p.UserService.AskUploadAvatar(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
+}
+
+// AskDownloadFile .
+// @router /content/askDownloadFile [POST]
+func AskDownloadFile(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.AskDownloadFileReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.AskDownloadFileResp)
+	p := provider.Get()
+	resp, err = p.FileService.AskDownloadFile(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
