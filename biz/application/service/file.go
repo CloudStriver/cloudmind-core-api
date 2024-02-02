@@ -120,7 +120,8 @@ func (s *FileService) GetPrivateFiles(ctx context.Context, req *core_api.GetPriv
 
 	resp.Token = res.Token
 	resp.Total = res.Total
-	resp.FatherPath = res.FatherPath
+	resp.FatherNamePath = res.FatherNamePath
+	resp.FatherIdPath = res.FatherIdPath
 	return resp, nil
 }
 
@@ -140,7 +141,8 @@ func (s *FileService) GetPublicFiles(ctx context.Context, req *core_api.GetPubli
 	})
 	resp.Token = res.Token
 	resp.Total = res.Total
-	resp.FatherPath = res.FatherPath
+	resp.FatherNamePath = res.FatherNamePath
+	resp.FatherIdPath = res.FatherIdPath
 	return resp, nil
 }
 
