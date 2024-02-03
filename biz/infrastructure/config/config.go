@@ -37,6 +37,11 @@ type Config struct {
 	CreateNotificationsKq KqConfig
 	ReadNotificationsKq   KqConfig
 	CleanNotificationKq   KqConfig
+	BaseUrl               string
+}
+
+func (c *Config) GetUrl(name string) string {
+	return c.BaseUrl + name
 }
 
 func NewConfig() (*Config, error) {

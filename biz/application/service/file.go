@@ -9,7 +9,9 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/convertor"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
+	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/sts"
 	"github.com/google/wire"
 	"github.com/samber/lo"
 	"github.com/zeromicro/go-zero/core/mr"
@@ -33,6 +35,8 @@ type IFileService interface {
 	ParsingShareCode(ctx context.Context, req *core_api.ParsingShareCodeReq) (resp *core_api.ParsingShareCodeResp, err error)
 	SaveFileToPrivateSpace(ctx context.Context, req *core_api.SaveFileToPrivateSpaceReq) (resp *core_api.SaveFileToPrivateSpaceResp, err error)
 	AddFileToPublicSpace(ctx context.Context, req *core_api.AddFileToPublicSpaceReq) (resp *core_api.AddFileToPublicSpaceResp, err error)
+	AskUploadFile(ctx context.Context, req *core_api.AskUploadFileReq) (resp *core_api.AskUploadFileResp, err error)
+	AskDownloadFile(ctx context.Context, req *core_api.AskDownloadFileReq) (resp *core_api.AskDownloadFileResp, err error)
 }
 
 var FileServiceSet = wire.NewSet(
@@ -42,8 +46,84 @@ var FileServiceSet = wire.NewSet(
 
 type FileService struct {
 	Config            *config.Config
+	PlatformSts       cloudmind_sts.ICloudMindSts
 	CloudMindContent  cloudmind_content.ICloudMindContent
 	FileDomainService service.IFileDomainService
+}
+
+func (s *FileService) AskDownloadFile(ctx context.Context, req *core_api.AskDownloadFileReq) (resp *core_api.AskDownloadFileResp, err error) {
+	resp = new(core_api.AskDownloadFileResp)
+	user := adaptor.ExtractUserMeta(ctx)
+	if user.GetUserId() == "" {
+		return resp, consts.ErrNotAuthentication
+	}
+
+	resp.Urls = make([]string, len(req.FileIds))
+	if err = mr.Finish(lo.Map(req.FileIds, func(item string, i int) func() error {
+		return func() error {
+			getFileResp, err1 := s.CloudMindContent.GetFile(ctx, &content.GetFileReq{
+				FilterOptions: &content.FileFilterOptions{
+					OnlyUserId: lo.ToPtr(user.GetUserId()),
+					OnlyFileId: lo.ToPtr(item),
+				},
+				IsGetSize: true,
+			})
+			if err1 != nil {
+				return err1
+			}
+			genSignedUrlResp, err1 := s.PlatformSts.GenSignedUrl(ctx, &sts.GenSignedUrlReq{
+				Path: item,
+				Ttl:  getFileResp.File.SpaceSize,
+			})
+			if err1 != nil {
+				return err1
+			}
+			resp.Urls[i] = genSignedUrlResp.SignedUrl
+			return nil
+		}
+	})...); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (s *FileService) AskUploadFile(ctx context.Context, req *core_api.AskUploadFileReq) (resp *core_api.AskUploadFileResp, err error) {
+	resp = new(core_api.AskUploadFileResp)
+	user := adaptor.ExtractUserMeta(ctx)
+	if user.GetUserId() == "" {
+		return resp, consts.ErrNotAuthentication
+	}
+	//userId := user.GetUserId()
+	//fmt.Println(userId)
+	//if req.File {
+	//	 TODO：扣取用户流量
+	//}
+	// TODO：判断是否已经上传过
+	//getFileIsExist, err := s.CloudMindContent.GetFileIsExist(ctx, &content.GetFileIsExistReq{
+	//	Md5: req.Md5,
+	//})
+	//if err != nil {
+	//	return resp, err
+	//}
+	//
+	//if getFileIsExist.Ok {
+	//	return resp, nil
+	//}
+
+	genCosStsResp, err := s.PlatformSts.GenCosSts(ctx, &sts.GenCosStsReq{
+		Path:   req.Name,
+		IsFile: true,
+		Time:   req.FileSize / (1024 * 1024),
+	})
+	if err != nil {
+		return resp, err
+	}
+	resp.SessionToken = genCosStsResp.SessionToken
+	resp.TmpSecretId = genCosStsResp.SecretId
+	resp.TmpSecretKey = genCosStsResp.SecretKey
+	resp.StartTime = genCosStsResp.StartTime
+	resp.ExpiredTime = genCosStsResp.ExpiredTime
+	return resp, nil
 }
 
 func (s *FileService) GetPrivateFile(ctx context.Context, req *core_api.GetFileReq) (resp *core_api.GetFileResp, err error) {
@@ -128,7 +208,8 @@ func (s *FileService) GetPrivateFiles(ctx context.Context, req *core_api.GetPriv
 
 	resp.Token = res.Token
 	resp.Total = res.Total
-	resp.FatherPath = res.FatherPath
+	resp.FatherNamePath = res.FatherNamePath
+	resp.FatherIdPath = res.FatherIdPath
 	return resp, nil
 }
 
@@ -169,7 +250,8 @@ func (s *FileService) GetPublicFiles(ctx context.Context, req *core_api.GetPubli
 	})
 	resp.Token = res.Token
 	resp.Total = res.Total
-	resp.FatherPath = res.FatherPath
+	resp.FatherNamePath = res.FatherNamePath
+	resp.FatherIdPath = res.FatherIdPath
 	return resp, nil
 }
 
