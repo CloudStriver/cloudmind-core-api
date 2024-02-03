@@ -533,3 +533,51 @@ func GetFile(ctx context.Context, c *app.RequestContext) {
 
 	c.JSON(consts.StatusOK, resp)
 }
+
+// AskUploadAvatar .
+// @router /content/askUploadAvatar [POST]
+func AskUploadAvatar(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.AskUploadAvatarReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.AskUploadAvatarResp)
+
+	c.JSON(consts.StatusOK, resp)
+}
+
+// AskUploadFile .
+// @router /content/askUploadFile [POST]
+func AskUploadFile(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.AskUploadFileReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.AskUploadFileResp)
+
+	c.JSON(consts.StatusOK, resp)
+}
+
+// AskDownloadFile .
+// @router /content/askDownloadFile [POST]
+func AskDownloadFile(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.AskDownloadFileReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.AskDownloadFileResp)
+
+	c.JSON(consts.StatusOK, resp)
+}

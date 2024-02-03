@@ -32,6 +32,9 @@ func Register(r *server.Hertz) {
 	{
 		_content := root.Group("/content", _contentMw()...)
 		_content.POST("/addFileToPublicSpace", append(_addfiletopublicspaceMw(), core_api.AddFileToPublicSpace)...)
+		_content.POST("/askDownloadFile", append(_askdownloadfileMw(), core_api.AskDownloadFile)...)
+		_content.POST("/askUploadAvatar", append(_askuploadavatarMw(), core_api.AskUploadAvatar)...)
+		_content.POST("/askUploadFile", append(_askuploadfileMw(), core_api.AskUploadFile)...)
 		_content.POST("/createFile", append(_createfileMw(), core_api.CreateFile)...)
 		_content.POST("/createPost", append(_createpostMw(), core_api.CreatePost)...)
 		_content.POST("/createShareCode", append(_createsharecodeMw(), core_api.CreateShareCode)...)
@@ -72,9 +75,5 @@ func Register(r *server.Hertz) {
 		_relations := root.Group("/relations", _relationsMw()...)
 		_relations.GET("/getFromRelations", append(_getfromrelationsMw(), core_api.GetFromRelations)...)
 		_relations.GET("/getToRelations", append(_gettorelationsMw(), core_api.GetToRelations)...)
-	}
-	{
-		_sts := root.Group("/sts", _stsMw()...)
-		_sts.POST("/applySignedUrl", append(_applysignedurlMw(), core_api.ApplySignedUrl)...)
 	}
 }

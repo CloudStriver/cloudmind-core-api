@@ -12,10 +12,12 @@ import (
 )
 
 type IFileDomainService interface {
-	LoadAuthor(ctx context.Context, post *core_api.FileInfo, userId string)
-	LoadLikeCount(ctx context.Context, post *core_api.FileInfo)
-	LoadLiked(ctx context.Context, post *core_api.FileInfo, userId string)
-	LoadCollectCount(ctx context.Context, post *core_api.FileInfo)
+	LoadAuthor(ctx context.Context, file *core_api.FileInfo, userId string)
+	LoadLikeCount(ctx context.Context, file *core_api.FileInfo)
+	LoadViewCount(ctx context.Context, file *core_api.FileInfo)
+	LoadLiked(ctx context.Context, file *core_api.FileInfo, userId string)
+	LoadCollectCount(ctx context.Context, file *core_api.FileInfo)
+	LoadCollected(ctx context.Context, file *core_api.FileInfo, userId string)
 }
 type FileDomainService struct {
 	CloudMindUser    cloudmind_content.ICloudMindContent
@@ -27,6 +29,36 @@ var FileDomainServiceSet = wire.NewSet(
 	wire.Bind(new(IFileDomainService), new(*FileDomainService)),
 )
 
+func (s *FileDomainService) LoadCollected(ctx context.Context, file *core_api.FileInfo, userId string) {
+	getRelationResp, err := s.PlatformRelation.GetRelation(ctx, &relation.GetRelationReq{
+		Relation: &relation.Relation{
+			FromType:     consts.RelationUserType,
+			FromId:       userId,
+			ToType:       consts.RelationFileType,
+			ToId:         file.FileId,
+			RelationType: consts.RelationCollectType,
+		},
+	})
+	if err == nil {
+		file.FileRelation.Collected = getRelationResp.Ok
+	}
+}
+
+func (s *FileDomainService) LoadViewCount(ctx context.Context, file *core_api.FileInfo) {
+	getRelationCountResp, err := s.PlatformRelation.GetRelationCount(ctx, &relation.GetRelationCountReq{
+		RelationFilterOptions: &relation.GetRelationCountReq_ToFilterOptions{
+			ToFilterOptions: &relation.ToFilterOptions{
+				ToType:   consts.RelationFileType,
+				ToId:     file.FileId,
+				FromType: consts.RelationUserType,
+			},
+		},
+		RelationType: consts.RelationViewType,
+	})
+	if err == nil {
+		file.FileCount.ViewCount = getRelationCountResp.Total
+	}
+}
 func (s *FileDomainService) LoadAuthor(ctx context.Context, file *core_api.FileInfo, userId string) {
 	if userId == "" || file.Zone == "" || file.SubZone == "" {
 		return

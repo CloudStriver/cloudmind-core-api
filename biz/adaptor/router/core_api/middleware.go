@@ -380,3 +380,18 @@ func _getpublicfileMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _askdownloadfileMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _askuploadavatarMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _askuploadfileMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}

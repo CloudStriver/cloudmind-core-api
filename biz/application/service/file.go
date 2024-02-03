@@ -77,19 +77,27 @@ func (s *FileService) GetPublicFile(ctx context.Context, req *core_api.GetFileRe
 		return resp, err
 	}
 	resp.File = convertor.FileToCoreFile(res.File)
-	_ = mr.Finish(func() error {
-		s.FileDomainService.LoadLikeCount(ctx, resp.File)
+	if err = mr.Finish(func() error {
+		s.FileDomainService.LoadLikeCount(ctx, resp.File) // 点赞量
 		return nil
 	}, func() error {
-		s.FileDomainService.LoadAuthor(ctx, resp.File, res.File.UserId)
+		s.FileDomainService.LoadAuthor(ctx, resp.File, res.File.UserId) // 作者
 		return nil
 	}, func() error {
-		s.FileDomainService.LoadCollectCount(ctx, resp.File)
+		s.FileDomainService.LoadViewCount(ctx, resp.File) // 浏览量
 		return nil
 	}, func() error {
-		s.FileDomainService.LoadLiked(ctx, resp.File, res.File.UserId)
+		s.FileDomainService.LoadLiked(ctx, resp.File, userData.GetUserId()) // 是否点赞
 		return nil
-	})
+	}, func() error {
+		s.FileDomainService.LoadCollected(ctx, resp.File, userData.GetUserId()) // 是否收藏
+		return nil
+	}, func() error {
+		s.FileDomainService.LoadCollectCount(ctx, resp.File) // 收藏量
+		return nil
+	}); err != nil {
+		return resp, err
+	}
 	return resp, nil
 }
 
@@ -126,6 +134,7 @@ func (s *FileService) GetPrivateFiles(ctx context.Context, req *core_api.GetPriv
 
 func (s *FileService) GetPublicFiles(ctx context.Context, req *core_api.GetPublicFilesReq) (resp *core_api.GetPublicFilesResp, err error) {
 	resp = new(core_api.GetPublicFilesResp)
+	userData := adaptor.ExtractUserMeta(ctx)
 	var res *content.GetFileListResp
 	p := convertor.PaginationOptionsToPaginationOptions(req.PaginationOptions)
 	req.FilterOptions.OnlyDocumentType = lo.ToPtr(int64(core_api.DocumentType_DocumentType_public))
@@ -136,7 +145,27 @@ func (s *FileService) GetPublicFiles(ctx context.Context, req *core_api.GetPubli
 		return resp, err
 	}
 	resp.Files = lo.Map[*content.FileInfo, *core_api.FileInfo](res.Files, func(item *content.FileInfo, _ int) *core_api.FileInfo {
-		return convertor.FileToCoreFile(item)
+		file := convertor.FileToCoreFile(item)
+		_ = mr.Finish(func() error {
+			s.FileDomainService.LoadLikeCount(ctx, file) // 点赞量
+			return nil
+		}, func() error {
+			s.FileDomainService.LoadAuthor(ctx, file, item.UserId) // 作者
+			return nil
+		}, func() error {
+			s.FileDomainService.LoadViewCount(ctx, file) // 浏览量
+			return nil
+		}, func() error {
+			s.FileDomainService.LoadLiked(ctx, file, userData.GetUserId()) // 是否点赞
+			return nil
+		}, func() error {
+			s.FileDomainService.LoadCollected(ctx, file, userData.GetUserId()) // 是否收藏
+			return nil
+		}, func() error {
+			s.FileDomainService.LoadCollectCount(ctx, file) // 收藏量
+			return nil
+		})
+		return file
 	})
 	resp.Token = res.Token
 	resp.Total = res.Total
@@ -250,6 +279,9 @@ func (s *FileService) GetShareList(ctx context.Context, req *core_api.GetShareLi
 	}
 
 	var res *content.GetShareListResp
+	req.ShareFileFilterOptions = &core_api.ShareFileFilterOptions{
+		OnlyUserId: lo.ToPtr(userData.UserId),
+	}
 	shareOptions := convertor.ShareOptionsToShareOptions(req.ShareFileFilterOptions)
 	p := convertor.PaginationOptionsToPaginationOptions(req.PaginationOptions)
 	if res, err = s.CloudMindContent.GetShareList(ctx, &content.GetShareListReq{ShareFileFilterOptions: shareOptions, PaginationOptions: p}); err != nil {
@@ -299,13 +331,8 @@ func (s *FileService) DeleteShareCode(ctx context.Context, req *core_api.DeleteS
 
 func (s *FileService) ParsingShareCode(ctx context.Context, req *core_api.ParsingShareCodeReq) (resp *core_api.ParsingShareCodeResp, err error) {
 	resp = new(core_api.ParsingShareCodeResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
-		return resp, consts.ErrNotAuthentication
-	}
-
 	var res *content.ParsingShareCodeResp
-	if res, err = s.CloudMindContent.ParsingShareCode(ctx, &content.ParsingShareCodeReq{Code: req.Code}); err != nil {
+	if res, err = s.CloudMindContent.ParsingShareCode(ctx, &content.ParsingShareCodeReq{Code: req.Code, Key: req.Key}); err != nil {
 		return resp, err
 	}
 	resp.ShareFile = convertor.ShareFileToCoreShareFile(res.ShareFile)
