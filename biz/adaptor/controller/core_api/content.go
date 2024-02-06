@@ -316,38 +316,6 @@ func UpdatePost(ctx context.Context, c *app.RequestContext) {
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
-func GetPosts(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.GetPostsReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(core_api.GetPostsResp)
-	p := provider.Get()
-	resp, err = p.PostService.GetPosts(ctx, &req)
-	adaptor.PostProcess(ctx, c, &req, resp, err)
-}
-
-// GetPost .
-// @router /content/getPost [GET]
-func GetPost(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.GetPostReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(core_api.GetPostResp)
-	p := provider.Get()
-	resp, err = p.PostService.GetPost(ctx, &req)
-	adaptor.PostProcess(ctx, c, &req, resp, err)
-}
-
 // CreateFile .
 // @router /content/createFile [POST]
 func CreateFile(ctx context.Context, c *app.RequestContext) {
@@ -564,6 +532,39 @@ func AskDownloadFile(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.AskDownloadFileResp)
+	p := provider.Get()
+	resp, err = p.FileService.AskDownloadFile(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
+}
+
+// CompletelyRemoveFile .
+// @router /content/completelyRemoveFile [POST]
+func CompletelyRemoveFile(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.CompletelyRemoveFileReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.CompletelyRemoveFileReq)
+
+	c.JSON(consts.StatusOK, resp)
+}
+
+// GetOtherPosts .
+// @router /content/getOtherPosts [GET]
+func GetOtherPosts(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.GetOtherPostsReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.GetOtherPostsResp)
 	p := provider.Get()
 	resp, err = p.FileService.AskDownloadFile(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)

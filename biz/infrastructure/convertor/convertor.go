@@ -70,57 +70,6 @@ func CoreZoneToZone(req *core_api.Zone) *content.Zone {
 	}
 }
 
-func PostInfoToCorePostInfo(req *content.Post) *core_api.PostInfo {
-	return &core_api.PostInfo{
-		PostId: req.PostId,
-		UserId: req.UserId,
-		Title:  req.Title,
-		Text:   req.Text,
-		Tags:   req.Tags,
-		Status: req.Status,
-		Url:    req.Url,
-	}
-}
-
-func CorePostInfoToPostInfo(req *core_api.PostInfo) *content.Post {
-	return &content.Post{
-		PostId: req.PostId,
-		UserId: req.UserId,
-		Title:  req.Title,
-		Text:   req.Text,
-		Tags:   req.Tags,
-		Status: req.Status,
-		Url:    req.Url,
-	}
-}
-
-func PostToCorePost(req *content.Post) *core_api.Post {
-	return &core_api.Post{
-		PostId:       req.PostId,
-		Title:        req.Title,
-		Text:         req.Text,
-		Tags:         req.Tags,
-		Status:       req.Status,
-		Url:          req.Url,
-		PostCount:    &core_api.PostCount{},
-		PostRelation: &core_api.PostRelation{},
-		CreateTime:   req.CreateTime,
-		UpdateTime:   req.UpdateTime,
-	}
-}
-
-func CorePostToPost(req *core_api.PostInfo) *content.Post {
-	return &content.Post{
-		PostId: req.PostId,
-		UserId: req.UserId,
-		Title:  req.Title,
-		Text:   req.Text,
-		Tags:   req.Tags,
-		Status: req.Status,
-		Url:    req.Url,
-	}
-}
-
 func UserDetailToUser(req *content.User) *core_api.User {
 	return &core_api.User{
 		UserId: req.UserId,
@@ -227,19 +176,6 @@ func SearchOptionsToFileSearchOptions(opts *core_api.SearchOptions) *content.Sea
 		}
 	}
 	return nil
-}
-
-func PostFilterOptionsToPostFilterOptions(in *core_api.PostFilterOptions) *content.PostFilterOptions {
-	if in == nil {
-		return nil
-	} else {
-		return &content.PostFilterOptions{
-			OnlyUserId:      in.OnlyUserId,
-			OnlyTags:        in.OnlyTags,
-			OnlySetRelation: in.OnlySetRelation,
-			OnlyStatus:      in.OnlyStatus,
-		}
-	}
 }
 
 func CoreUserInfoToUser(req *core_api.UserInfo) *content.User {

@@ -24,4 +24,6 @@ const (
 	BatcherBuffer       = 100
 	BatcherWorker       = 10
 	BatcherInterval     = time.Second
+	PostPublicStatus    = int64(1)
+	PostPrivateStatus   = int64(2)
 )
