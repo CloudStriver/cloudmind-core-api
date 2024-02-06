@@ -548,9 +548,10 @@ func CompletelyRemoveFile(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	resp := new(core_api.CompletelyRemoveFileReq)
-
-	c.JSON(consts.StatusOK, resp)
+	resp := new(core_api.CompletelyRemoveFileResp)
+	p := provider.Get()
+	resp, err = p.FileService.CompletelyRemoveFile(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // GetOtherPosts .
@@ -566,40 +567,8 @@ func GetOtherPosts(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(core_api.GetOtherPostsResp)
 	p := provider.Get()
-	resp, err = p.FileService.AskDownloadFile(ctx, &req)
+	resp, err = p.PostService.GetOtherPosts(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
-}
-
-// CompletelyRemoveFile .
-// @router /content/completelyRemoveFile [POST]
-func CompletelyRemoveFile(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.CompletelyRemoveFileReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(core_api.CompletelyRemoveFileReq)
-
-	c.JSON(consts.StatusOK, resp)
-}
-
-// GetOtherPosts .
-// @router /content/getOtherPosts [GET]
-func GetOtherPosts(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.GetOtherPostsReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(core_api.GetOtherPostsResp)
-
-	c.JSON(consts.StatusOK, resp)
 }
 
 // GetOtherPost .
@@ -614,8 +583,9 @@ func GetOtherPost(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.GetOtherPostResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.PostService.GetOtherPost(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // GetOwnPosts .
@@ -630,8 +600,9 @@ func GetOwnPosts(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.GetOwnPostsResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.PostService.GetOwnPosts(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // GetOwnPost .
@@ -646,6 +617,7 @@ func GetOwnPost(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.GetOwnPostResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.PostService.GetOwnPost(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }

@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/CloudStriver/cloudmind-mq v0.0.0-20240128054402-6d73c229790e
 	github.com/CloudStriver/go-pkg v0.0.0-20240128062158-e5fe090d8117
-	github.com/CloudStriver/service-idl-gen-go v0.0.0-20240206150308-c7a07fdf6d24
+	github.com/CloudStriver/service-idl-gen-go v0.0.0-20240206154107-9713bbb71db2
 	github.com/bytedance/sonic v1.10.2
 	github.com/cloudwego/hertz v0.7.3
 	github.com/golang-jwt/jwt/v4 v4.5.0
