@@ -52,8 +52,11 @@ func (s *ZoneService) CreateZone(ctx context.Context, req *core_api.CreateZoneRe
 	}
 
 	var res *content.CreateZoneResp
-	label := convertor.CoreZoneToZone(req.Zone)
-	if res, err = s.CloudMindContent.CreateZone(ctx, &content.CreateZoneReq{Zone: label}); err != nil {
+	zone := &content.Zone{
+		FatherId: req.FatherId,
+		Value:    req.Value,
+	}
+	if res, err = s.CloudMindContent.CreateZone(ctx, &content.CreateZoneReq{Zone: zone}); err != nil {
 		return resp, err
 	}
 	resp.Id = res.Id
@@ -67,8 +70,8 @@ func (s *ZoneService) UpdateZone(ctx context.Context, req *core_api.UpdateZoneRe
 		return resp, consts.ErrNotAuthentication
 	}
 
-	label := convertor.CoreZoneToZone(req.Zone)
-	if _, err = s.CloudMindContent.UpdateZone(ctx, &content.UpdateZoneReq{Zone: label}); err != nil {
+	zone := convertor.CoreZoneToZone(req.Zone)
+	if _, err = s.CloudMindContent.UpdateZone(ctx, &content.UpdateZoneReq{Zone: zone}); err != nil {
 		return resp, err
 	}
 	return resp, nil

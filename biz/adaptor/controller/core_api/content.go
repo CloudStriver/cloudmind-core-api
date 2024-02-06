@@ -488,14 +488,14 @@ func DeleteZone(ctx context.Context, c *app.RequestContext) {
 // @router /content/getPublicFile [POST]
 func GetPublicFile(ctx context.Context, c *app.RequestContext) {
 	var err error
-	var req core_api.GetFileReq
+	var req core_api.GetPublicFileReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
 
-	resp := new(core_api.GetFileResp)
+	resp := new(core_api.GetPublicFileResp)
 	p := provider.Get()
 	resp, err = p.FileService.GetPublicFile(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
@@ -505,14 +505,14 @@ func GetPublicFile(ctx context.Context, c *app.RequestContext) {
 // @router /content/getPrivateFile [POST]
 func GetPrivateFile(ctx context.Context, c *app.RequestContext) {
 	var err error
-	var req core_api.GetFileReq
+	var req core_api.GetPrivateFileReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
 
-	resp := new(core_api.GetFileResp)
+	resp := new(core_api.GetPrivateFileResp)
 	p := provider.Get()
 	resp, err = p.FileService.GetPrivateFile(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
@@ -569,50 +569,82 @@ func AskDownloadFile(ctx context.Context, c *app.RequestContext) {
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
-// AskUploadAvatar .
-// @router /content/askUploadAvatar [POST]
-func AskUploadAvatar(ctx context.Context, c *app.RequestContext) {
+// CompletelyRemoveFile .
+// @router /content/completelyRemoveFile [POST]
+func CompletelyRemoveFile(ctx context.Context, c *app.RequestContext) {
 	var err error
-	var req core_api.AskUploadAvatarReq
+	var req core_api.CompletelyRemoveFileReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
 
-	resp := new(core_api.AskUploadAvatarResp)
+	resp := new(core_api.CompletelyRemoveFileReq)
 
 	c.JSON(consts.StatusOK, resp)
 }
 
-// AskUploadFile .
-// @router /content/askUploadFile [POST]
-func AskUploadFile(ctx context.Context, c *app.RequestContext) {
+// GetOtherPosts .
+// @router /content/getOtherPosts [GET]
+func GetOtherPosts(ctx context.Context, c *app.RequestContext) {
 	var err error
-	var req core_api.AskUploadFileReq
+	var req core_api.GetOtherPostsReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
 
-	resp := new(core_api.AskUploadFileResp)
+	resp := new(core_api.GetOtherPostsResp)
 
 	c.JSON(consts.StatusOK, resp)
 }
 
-// AskDownloadFile .
-// @router /content/askDownloadFile [POST]
-func AskDownloadFile(ctx context.Context, c *app.RequestContext) {
+// GetOtherPost .
+// @router /content/getOtherPost [GET]
+func GetOtherPost(ctx context.Context, c *app.RequestContext) {
 	var err error
-	var req core_api.AskDownloadFileReq
+	var req core_api.GetOtherPostReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
 
-	resp := new(core_api.AskDownloadFileResp)
+	resp := new(core_api.GetOtherPostResp)
+
+	c.JSON(consts.StatusOK, resp)
+}
+
+// GetOwnPosts .
+// @router /content/getOwnPosts [GET]
+func GetOwnPosts(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.GetOwnPostsReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.GetOwnPostsResp)
+
+	c.JSON(consts.StatusOK, resp)
+}
+
+// GetOwnPost .
+// @router /content/getOwnPost [GET]
+func GetOwnPost(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.GetOwnPostReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.GetOwnPostResp)
 
 	c.JSON(consts.StatusOK, resp)
 }

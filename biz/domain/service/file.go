@@ -12,12 +12,12 @@ import (
 )
 
 type IFileDomainService interface {
-	LoadAuthor(ctx context.Context, file *core_api.FileInfo, userId string)
-	LoadLikeCount(ctx context.Context, file *core_api.FileInfo)
-	LoadViewCount(ctx context.Context, file *core_api.FileInfo)
-	LoadLiked(ctx context.Context, file *core_api.FileInfo, userId string)
-	LoadCollectCount(ctx context.Context, file *core_api.FileInfo)
-	LoadCollected(ctx context.Context, file *core_api.FileInfo, userId string)
+	LoadAuthor(ctx context.Context, file *core_api.PublicFile, userId string)
+	LoadLikeCount(ctx context.Context, file *core_api.PublicFile)
+	LoadViewCount(ctx context.Context, file *core_api.PublicFile)
+	LoadLiked(ctx context.Context, file *core_api.PublicFile, userId string)
+	LoadCollectCount(ctx context.Context, file *core_api.PublicFile)
+	LoadCollected(ctx context.Context, file *core_api.PublicFile, userId string)
 }
 type FileDomainService struct {
 	CloudMindUser    cloudmind_content.ICloudMindContent
@@ -29,7 +29,7 @@ var FileDomainServiceSet = wire.NewSet(
 	wire.Bind(new(IFileDomainService), new(*FileDomainService)),
 )
 
-func (s *FileDomainService) LoadCollected(ctx context.Context, file *core_api.FileInfo, userId string) {
+func (s *FileDomainService) LoadCollected(ctx context.Context, file *core_api.PublicFile, userId string) {
 	getRelationResp, err := s.PlatformRelation.GetRelation(ctx, &relation.GetRelationReq{
 		Relation: &relation.Relation{
 			FromType:     consts.RelationUserType,
@@ -44,7 +44,7 @@ func (s *FileDomainService) LoadCollected(ctx context.Context, file *core_api.Fi
 	}
 }
 
-func (s *FileDomainService) LoadViewCount(ctx context.Context, file *core_api.FileInfo) {
+func (s *FileDomainService) LoadViewCount(ctx context.Context, file *core_api.PublicFile) {
 	getRelationCountResp, err := s.PlatformRelation.GetRelationCount(ctx, &relation.GetRelationCountReq{
 		RelationFilterOptions: &relation.GetRelationCountReq_ToFilterOptions{
 			ToFilterOptions: &relation.ToFilterOptions{
@@ -59,7 +59,7 @@ func (s *FileDomainService) LoadViewCount(ctx context.Context, file *core_api.Fi
 		file.FileCount.ViewCount = getRelationCountResp.Total
 	}
 }
-func (s *FileDomainService) LoadAuthor(ctx context.Context, file *core_api.FileInfo, userId string) {
+func (s *FileDomainService) LoadAuthor(ctx context.Context, file *core_api.PublicFile, userId string) {
 	if userId == "" || file.Zone == "" || file.SubZone == "" {
 		return
 	}
@@ -73,7 +73,7 @@ func (s *FileDomainService) LoadAuthor(ctx context.Context, file *core_api.FileI
 	}
 }
 
-func (s *FileDomainService) LoadLikeCount(ctx context.Context, file *core_api.FileInfo) {
+func (s *FileDomainService) LoadLikeCount(ctx context.Context, file *core_api.PublicFile) {
 	if file.Zone == "" || file.SubZone == "" {
 		return
 	}
@@ -92,7 +92,7 @@ func (s *FileDomainService) LoadLikeCount(ctx context.Context, file *core_api.Fi
 	}
 }
 
-func (s *FileDomainService) LoadLiked(ctx context.Context, file *core_api.FileInfo, userId string) {
+func (s *FileDomainService) LoadLiked(ctx context.Context, file *core_api.PublicFile, userId string) {
 	if file.Zone == "" || file.SubZone == "" {
 		return
 	}
@@ -110,7 +110,7 @@ func (s *FileDomainService) LoadLiked(ctx context.Context, file *core_api.FileIn
 	}
 }
 
-func (s *FileDomainService) LoadCollectCount(ctx context.Context, file *core_api.FileInfo) {
+func (s *FileDomainService) LoadCollectCount(ctx context.Context, file *core_api.PublicFile) {
 	if file.Zone == "" || file.SubZone == "" {
 		return
 	}

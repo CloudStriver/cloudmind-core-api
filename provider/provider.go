@@ -31,7 +31,6 @@ type Provider struct {
 	RelationService service.IRelationService
 	UserService     service.IUserService
 	ZoneService     service.IZoneService
-	StsService      service.IStsService
 }
 
 func Get() *Provider {
@@ -51,7 +50,6 @@ var ApplicationSet = wire.NewSet(
 	service.PostServiceSet,
 	service.UserServiceSet,
 	service.ZoneServiceSet,
-	service.StsServiceSet,
 )
 
 var DomainSet = wire.NewSet(
