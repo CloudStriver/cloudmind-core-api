@@ -57,7 +57,7 @@ func PostProcess(ctx context.Context, c *app.RequestContext, req, resp any, err 
 	default:
 		startIndex := strings.Index(err.Error(), "desc =")
 		if startIndex == -1 {
-			log.CtxError(ctx, "internal error, err=%s", err.Error())
+			log.CtxError(ctx, "internal error, err=%s", err)
 			code := hertz.StatusInternalServerError
 			c.String(code, hertz.StatusMessage(code))
 		} else {
