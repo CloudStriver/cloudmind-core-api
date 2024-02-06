@@ -395,3 +395,28 @@ func _askdownloadfileMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _completelyremovefileMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getotherpostMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getotherpostsMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getownpostMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getownpostsMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}

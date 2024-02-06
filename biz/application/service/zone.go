@@ -46,17 +46,17 @@ func (s *ZoneService) GetZone(ctx context.Context, req *core_api.GetZoneReq) (re
 
 func (s *ZoneService) CreateZone(ctx context.Context, req *core_api.CreateZoneReq) (resp *core_api.CreateZoneResp, err error) {
 	resp = new(core_api.CreateZoneResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
-		return resp, consts.ErrNotAuthentication
-	}
-
-	var res *content.CreateZoneResp
-	label := convertor.CoreZoneToZone(req.Zone)
-	if res, err = s.CloudMindContent.CreateZone(ctx, &content.CreateZoneReq{Zone: label}); err != nil {
-		return resp, err
-	}
-	resp.Id = res.Id
+	//userData := adaptor.ExtractUserMeta(ctx)
+	//if userData.GetUserId() == "" {
+	//	return resp, consts.ErrNotAuthentication
+	//}
+	//
+	//var res *content.CreateZoneResp
+	//label := convertor.CoreZoneToZone(req.Zone)
+	//if res, err = s.CloudMindContent.CreateZone(ctx, &content.CreateZoneReq{Zone: label}); err != nil {
+	//	return resp, err
+	//}
+	//resp.Id = res.Id
 	return resp, nil
 }
 

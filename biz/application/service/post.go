@@ -3,12 +3,13 @@ package service
 import (
 	"context"
 	"github.com/CloudStriver/cloudmind-core-api/biz/adaptor"
+	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/basic"
+
 	//"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/basic"
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/CloudStriver/cloudmind-core-api/biz/domain/service"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/convertor"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
 	"github.com/google/wire"
@@ -18,10 +19,12 @@ import (
 
 type IPostService interface {
 	CreatePost(ctx context.Context, req *core_api.CreatePostReq) (resp *core_api.CreatePostResp, err error)
-	GetPosts(ctx context.Context, req *core_api.GetPostsReq) (resp *core_api.GetPostsResp, err error)
 	UpdatePost(ctx context.Context, req *core_api.UpdatePostReq) (resp *core_api.UpdatePostResp, err error)
 	DeletePost(ctx context.Context, req *core_api.DeletePostReq) (resp *core_api.DeletePostResp, err error)
-	GetPost(ctx context.Context, c *core_api.GetPostReq) (resp *core_api.GetPostResp, err error)
+	GetOwnPost(ctx context.Context, req *core_api.GetOwnPostReq) (resp *core_api.GetOwnPostResp, err error)
+	GetOwnPosts(ctx context.Context, req *core_api.GetOwnPostsReq) (resp *core_api.GetOwnPostsResp, err error)
+	GetOtherPost(ctx context.Context, req *core_api.GetOtherPostReq) (resp *core_api.GetOtherPostResp, err error)
+	GetOtherPosts(ctx context.Context, req *core_api.GetOtherPostsReq) (resp *core_api.GetOtherPostsResp, err error)
 }
 
 var PostServiceSet = wire.NewSet(
@@ -35,89 +38,185 @@ type PostService struct {
 	PostDomainService service.IPostDomainService
 }
 
-func (s *PostService) GetPost(ctx context.Context, c *core_api.GetPostReq) (resp *core_api.GetPostResp, err error) {
-	resp = new(core_api.GetPostResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-
-	var res *content.GetPostResp
-	if res, err = s.CloudMindContent.GetPost(ctx, &content.GetPostReq{
-		PostFilterOptions: &content.PostFilterOptions{
-			OnlyPostId: lo.ToPtr(c.PostId),
-		},
-	}); err != nil {
-		return resp, err
-	}
-	resp.Post = convertor.PostToCorePost(res.Post)
-	if err = mr.Finish(func() error {
-		s.PostDomainService.LoadLikeCount(ctx, resp.Post) // 点赞量
-		return nil
-	}, func() error {
-		s.PostDomainService.LoadAuthor(ctx, resp.Post, res.Post.UserId) // 作者
-		return nil
-	}, func() error {
-		s.PostDomainService.LoadViewCount(ctx, resp.Post) // 浏览量
-		return nil
-	}, func() error {
-		s.PostDomainService.LoadLiked(ctx, resp.Post, userData.UserId) // 是否点赞
-		return nil
-	}, func() error {
-		s.PostDomainService.LoadCollected(ctx, resp.Post, userData.GetUserId()) // 是否收藏
-		return nil
-	}, func() error {
-		s.PostDomainService.LoadCollectCount(ctx, resp.Post) // 收藏量
-		return nil
-	}); err != nil {
-		return resp, err
-	}
-	return resp, nil
-}
-
 func (s *PostService) CreatePost(ctx context.Context, req *core_api.CreatePostReq) (resp *core_api.CreatePostResp, err error) {
-	resp = new(core_api.CreatePostResp)
 	userData := adaptor.ExtractUserMeta(ctx)
 	if userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
-	if userData.UserId != req.PostInfo.UserId {
-		return resp, consts.ErrNotPermission
-	}
 
 	if _, err = s.CloudMindContent.CreatePost(ctx, &content.CreatePostReq{
-		Post: convertor.CorePostInfoToPostInfo(req.PostInfo),
+		UserId: userData.UserId,
+		Title:  req.Title,
+		Text:   req.Text,
+		Tags:   req.Tags,
+		Status: req.Status,
+		Url:    req.Url,
 	}); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (resp *core_api.GetPostsResp, err error) {
-	resp = new(core_api.GetPostsResp)
-	var getPostsResp *content.GetPostsResp
-	if getPostsResp, err = s.CloudMindContent.GetPosts(ctx, &content.GetPostsReq{
-		SearchOptions:     convertor.SearchOptionsToFileSearchOptions(req.GetSearchOptions()),
-		PostFilterOptions: convertor.PostFilterOptionsToPostFilterOptions(req.GetPostFilterOptions()),
-		PaginationOptions: convertor.PaginationOptionsToPaginationOptions(req.GetPaginationOptions()),
+func (s *PostService) UpdatePost(ctx context.Context, req *core_api.UpdatePostReq) (resp *core_api.UpdatePostResp, err error) {
+	userData := adaptor.ExtractUserMeta(ctx)
+	if userData.GetUserId() == "" {
+		return resp, consts.ErrNotAuthentication
+	}
+
+	if err = s.CheckIsMyPost(ctx, req.PostId, userData.UserId); err != nil {
+		return resp, err
+	}
+
+	if _, err = s.CloudMindContent.UpdatePost(ctx, &content.UpdatePostReq{
+		PostId: req.PostId,
+		Title:  req.Title,
+		Text:   req.Text,
+		Tags:   req.Tags,
+		Status: req.Status,
+		Url:    req.Url,
 	}); err != nil {
 		return resp, err
 	}
 
-	resp.Posts = make([]*core_api.Post, len(getPostsResp.Posts))
+	return resp, nil
+}
+
+func (s *PostService) DeletePost(ctx context.Context, req *core_api.DeletePostReq) (resp *core_api.DeletePostResp, err error) {
+	userData := adaptor.ExtractUserMeta(ctx)
+	if userData.GetUserId() == "" {
+		return resp, consts.ErrNotAuthentication
+	}
+
+	// 只能删除自己的帖子
+	if err = s.CheckIsMyPost(ctx, req.PostId, userData.UserId); err != nil {
+		return resp, err
+	}
+
+	if _, err = s.CloudMindContent.DeletePost(ctx, &content.DeletePostReq{
+		PostId: req.PostId,
+	}); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (s *PostService) GetOwnPost(ctx context.Context, req *core_api.GetOwnPostReq) (resp *core_api.GetOwnPostResp, err error) {
+	userData := adaptor.ExtractUserMeta(ctx)
+	var res *content.GetPostResp
+	if res, err = s.CloudMindContent.GetPost(ctx, &content.GetPostReq{
+		PostId: req.PostId,
+	}); err != nil {
+		return resp, err
+	}
+
+	if err = s.CheckIsMyPost(ctx, req.PostId, userData.UserId); err != nil {
+		return resp, err
+	}
+
+	resp = &core_api.GetOwnPostResp{
+		Title:      res.Title,
+		Text:       res.Text,
+		Url:        res.Url,
+		Tags:       res.Tags,
+		CreateTime: res.CreateTime,
+		UpdateTime: res.UpdateTime,
+		Author:     &core_api.User{},
+	}
+	if err = mr.Finish(func() error {
+		s.PostDomainService.LoadAuthor(ctx, resp.Author, res.UserId) // 作者
+		return nil
+	}, func() error {
+		s.PostDomainService.LoadLikeCount(ctx, &resp.LikeCount, req.PostId) // 点赞量
+		return nil
+	}, func() error {
+		s.PostDomainService.LoadViewCount(ctx, &resp.ViewCount, req.PostId) // 浏览量
+		return nil
+	}, func() error {
+		s.PostDomainService.LoadCollectCount(ctx, &resp.CollectCount, req.PostId) // 收藏量
+		return nil
+	}, func() error {
+		s.PostDomainService.LoadLiked(ctx, &resp.Liked, userData.GetUserId(), req.PostId) // 是否点赞
+		return nil
+	}, func() error {
+		s.PostDomainService.LoadCollected(ctx, &resp.Collected, userData.GetUserId(), req.PostId) // 是否收藏
+		return nil
+	}); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (s *PostService) GetOwnPosts(ctx context.Context, req *core_api.GetOwnPostsReq) (resp *core_api.GetOwnPostsResp, err error) {
+	resp = new(core_api.GetOwnPostsResp)
+	var (
+		getPostsResp  *content.GetPostsResp
+		searchOptions *content.SearchOptions
+	)
+
+	userData := adaptor.ExtractUserMeta(ctx)
+	if userData.GetUserId() == "" {
+		return resp, consts.ErrNotAuthentication
+	}
+
+	if req.AllFieldsKey != nil {
+		searchOptions = &content.SearchOptions{
+			Type: &content.SearchOptions_AllFieldsKey{
+				AllFieldsKey: *req.AllFieldsKey,
+			},
+		}
+	}
+	if req.Text != nil || req.Title != nil || req.Tag != nil {
+		searchOptions = &content.SearchOptions{
+			Type: &content.SearchOptions_MultiFieldsKey{
+				MultiFieldsKey: &content.SearchField{
+					Tag:   req.Tag,
+					Text:  req.Text,
+					Title: req.Title,
+				},
+			},
+		}
+	}
+	if getPostsResp, err = s.CloudMindContent.GetPosts(ctx, &content.GetPostsReq{
+		SearchOptions: searchOptions,
+		PostFilterOptions: &content.PostFilterOptions{
+			OnlyUserId:      lo.ToPtr(userData.UserId),
+			OnlyTags:        req.OnlyTags,
+			OnlySetRelation: req.OnlySetRelation,
+		},
+		PaginationOptions: &basic.PaginationOptions{
+			Limit:     req.Limit,
+			LastToken: req.LastToken,
+			Backward:  req.Backward,
+			Offset:    req.Offset,
+		},
+	}); err != nil {
+		return resp, err
+	}
+
+	resp.Posts = make([]*core_api.OwnPost, len(getPostsResp.Posts))
 	if err = mr.Finish(lo.Map(getPostsResp.Posts, func(item *content.Post, i int) func() error {
 		return func() error {
-			p := convertor.PostToCorePost(item)
+			resp.Posts[i] = &core_api.OwnPost{
+				PostId:     item.PostId,
+				Title:      item.Title,
+				Text:       item.Text,
+				Url:        item.Url,
+				CreateTime: item.CreateTime,
+				UpdateTime: item.UpdateTime,
+				Author:     &core_api.User{},
+			}
 			if err = mr.Finish(func() error {
-				s.PostDomainService.LoadLikeCount(ctx, p) // 点赞量
+				s.PostDomainService.LoadLikeCount(ctx, &resp.Posts[i].LikeCount, item.PostId) // 点赞量
 				return nil
 			}, func() error {
-				s.PostDomainService.LoadAuthor(ctx, p, item.UserId) // 作者
+				s.PostDomainService.LoadAuthor(ctx, resp.Posts[i].Author, item.UserId) // 作者
 				return nil
 			}, func() error {
-				s.PostDomainService.LoadViewCount(ctx, p) // 浏览量
+				s.PostDomainService.LoadViewCount(ctx, &resp.Posts[i].ViewCount, item.PostId) // 浏览量
 				return nil
 			}); err != nil {
 				return err
 			}
-			resp.Posts[i] = p
 			return nil
 		}
 	})...); err != nil {
@@ -128,39 +227,139 @@ func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (
 	return resp, nil
 }
 
-func (s *PostService) UpdatePost(ctx context.Context, req *core_api.UpdatePostReq) (resp *core_api.UpdatePostResp, err error) {
-	resp = new(core_api.UpdatePostResp)
+func (s *PostService) GetOtherPost(ctx context.Context, req *core_api.GetOtherPostReq) (resp *core_api.GetOtherPostResp, err error) {
 	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
-		return resp, consts.ErrNotAuthentication
-	}
-	if userData.UserId != req.PostInfo.UserId {
-		return resp, consts.ErrNotPermission
-	}
-
-	if _, err = s.CloudMindContent.UpdatePost(ctx, &content.UpdatePostReq{
-		Post: convertor.CorePostInfoToPostInfo(req.PostInfo),
-	}); err != nil {
-		return resp, err
-	}
-
-	return resp, nil
-}
-
-func (s *PostService) DeletePost(ctx context.Context, req *core_api.DeletePostReq) (resp *core_api.DeletePostResp, err error) {
-	resp = new(core_api.DeletePostResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
-		return resp, consts.ErrNotAuthentication
-	}
-	if userData.UserId != req.PostId {
-		return resp, consts.ErrNotPermission
-	}
-
-	if _, err = s.CloudMindContent.DeletePost(ctx, &content.DeletePostReq{
+	var res *content.GetPostResp
+	if res, err = s.CloudMindContent.GetPost(ctx, &content.GetPostReq{
 		PostId: req.PostId,
 	}); err != nil {
 		return resp, err
 	}
+
+	if res.Status != consts.PostPublicStatus {
+		return resp, consts.ErrForbidden
+	}
+
+	resp = &core_api.GetOtherPostResp{
+		Title:      res.Title,
+		Text:       res.Text,
+		Url:        res.Url,
+		Tags:       res.Tags,
+		CreateTime: res.CreateTime,
+		UpdateTime: res.UpdateTime,
+		Author:     &core_api.User{},
+	}
+	if err = mr.Finish(func() error {
+		s.PostDomainService.LoadAuthor(ctx, resp.Author, res.UserId) // 作者
+		return nil
+	}, func() error {
+		s.PostDomainService.LoadLikeCount(ctx, &resp.LikeCount, req.PostId) // 点赞量
+		return nil
+	}, func() error {
+		s.PostDomainService.LoadViewCount(ctx, &resp.ViewCount, req.PostId) // 浏览量
+		return nil
+	}, func() error {
+		s.PostDomainService.LoadCollectCount(ctx, &resp.CollectCount, req.PostId) // 收藏量
+		return nil
+	}, func() error {
+		s.PostDomainService.LoadLiked(ctx, &resp.Liked, userData.GetUserId(), req.PostId) // 是否点赞
+		return nil
+	}, func() error {
+		s.PostDomainService.LoadCollected(ctx, &resp.Collected, userData.GetUserId(), req.PostId) // 是否收藏
+		return nil
+	}); err != nil {
+		return resp, err
+	}
 	return resp, nil
+}
+
+func (s *PostService) GetOtherPosts(ctx context.Context, req *core_api.GetOtherPostsReq) (resp *core_api.GetOtherPostsResp, err error) {
+	resp = new(core_api.GetOtherPostsResp)
+	var (
+		getPostsResp  *content.GetPostsResp
+		searchOptions *content.SearchOptions
+	)
+
+	if req.AllFieldsKey != nil {
+		searchOptions = &content.SearchOptions{
+			Type: &content.SearchOptions_AllFieldsKey{
+				AllFieldsKey: *req.AllFieldsKey,
+			},
+		}
+	}
+	if req.Text != nil || req.Title != nil || req.Tag != nil {
+		searchOptions = &content.SearchOptions{
+			Type: &content.SearchOptions_MultiFieldsKey{
+				MultiFieldsKey: &content.SearchField{
+					Tag:   req.Tag,
+					Text:  req.Text,
+					Title: req.Title,
+				},
+			},
+		}
+	}
+	if getPostsResp, err = s.CloudMindContent.GetPosts(ctx, &content.GetPostsReq{
+		SearchOptions: searchOptions,
+		PostFilterOptions: &content.PostFilterOptions{
+			OnlyUserId:      req.OnlyUserId,
+			OnlyTags:        req.OnlyTags,
+			OnlySetRelation: req.OnlySetRelation,
+			OnlyStatus:      lo.ToPtr(consts.PostPublicStatus),
+		},
+		PaginationOptions: &basic.PaginationOptions{
+			Limit:     req.Limit,
+			LastToken: req.LastToken,
+			Backward:  req.Backward,
+			Offset:    req.Offset,
+		},
+	}); err != nil {
+		return resp, err
+	}
+
+	resp.Posts = make([]*core_api.Post, len(getPostsResp.Posts))
+	if err = mr.Finish(lo.Map(getPostsResp.Posts, func(item *content.Post, i int) func() error {
+		return func() error {
+			resp.Posts[i] = &core_api.Post{
+				PostId:     item.PostId,
+				Title:      item.Title,
+				Text:       item.Text,
+				Status:     item.Status,
+				Url:        item.Url,
+				CreateTime: item.CreateTime,
+				UpdateTime: item.UpdateTime,
+				Author:     &core_api.User{},
+			}
+			if err = mr.Finish(func() error {
+				s.PostDomainService.LoadLikeCount(ctx, &resp.Posts[i].LikeCount, item.PostId) // 点赞量
+				return nil
+			}, func() error {
+				s.PostDomainService.LoadAuthor(ctx, resp.Posts[i].Author, item.UserId) // 作者
+				return nil
+			}, func() error {
+				s.PostDomainService.LoadViewCount(ctx, &resp.Posts[i].ViewCount, item.PostId) // 浏览量
+				return nil
+			}); err != nil {
+				return err
+			}
+			return nil
+		}
+	})...); err != nil {
+		return resp, err
+	}
+	resp.Total = getPostsResp.Total
+	resp.Token = getPostsResp.Token
+	return resp, nil
+}
+
+func (s *PostService) CheckIsMyPost(ctx context.Context, postId, userId string) (err error) {
+	post, err := s.CloudMindContent.GetPost(ctx, &content.GetPostReq{
+		PostId: postId,
+	})
+	if err != nil {
+		return err
+	}
+	if post.UserId != userId {
+		return consts.ErrForbidden
+	}
+	return nil
 }
