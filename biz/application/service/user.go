@@ -19,7 +19,7 @@ type IUserService interface {
 	CreateUser(ctx context.Context, req *core_api.CreateUserReq) (resp *core_api.CreateUserResp, err error)
 	UpdateUser(ctx context.Context, req *core_api.UpdateUserReq) (resp *core_api.UpdateUserResp, err error)
 	GetUserDetail(ctx context.Context, req *core_api.GetUserDetailReq) (resp *core_api.GetUserDetailResp, err error)
-	//SearchUser(ctx context.Context, req *core_api.SearchUserReq) (resp *core_api.SearchUserResp, err error)
+	SearchUser(ctx context.Context, req *core_api.SearchUserReq) (resp *core_api.SearchUserResp, err error)
 	AskUploadAvatar(ctx context.Context, req *core_api.AskUploadAvatarReq) (resp *core_api.AskUploadAvatarResp, err error)
 }
 
@@ -124,20 +124,20 @@ func (s *UserService) GetUserDetail(ctx context.Context, req *core_api.GetUserDe
 	return resp, nil
 }
 
-//func (s *UserService) SearchUser(ctx context.Context, req *core_api.SearchUserReq) (resp *core_api.SearchUserResp, err error) {
-//	resp = new(core_api.SearchUserResp)
-//	users, err := s.CloudMindContent.SearchUser(ctx, &content.SearchUserReq{
-//		Keyword:           req.Keyword,
-//		PaginationOptions: convertor.PaginationOptionsToPaginationOptions(req.PaginationOptions),
-//	})
-//	if err != nil {
-//		return resp, err
-//	}
-//	resp.Users = make([]*core_api.User, 0, len(users.Users))
-//	for _, user := range users.Users {
-//		resp.Users = append(resp.Users, convertor.UserDetailToUser(user))
-//	}
-//	resp.Total = users.Total
-//	resp.LastToken = users.LastToken
-//	return resp, nil
-//}
+func (s *UserService) SearchUser(ctx context.Context, req *core_api.SearchUserReq) (resp *core_api.SearchUserResp, err error) {
+	resp = new(core_api.SearchUserResp)
+	users, err := s.CloudMindContent.SearchUser(ctx, &content.SearchUserReq{
+		Keyword:           req.Keyword,
+		PaginationOptions: convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward),
+	})
+	if err != nil {
+		return resp, err
+	}
+	resp.Users = make([]*core_api.User, 0, len(users.Users))
+	for _, user := range users.Users {
+		resp.Users = append(resp.Users, convertor.UserDetailToUser(user))
+	}
+	resp.Total = users.Total
+	resp.LastToken = users.LastToken
+	return resp, nil
+}

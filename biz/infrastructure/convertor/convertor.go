@@ -19,46 +19,42 @@ func UserToUserDetailInfo(req *core_api.UserDetail) *content.User {
 	}
 }
 
-//
-//func FileToCoreFile(req *content.FileInfo) *core_api.FileInfo {
-//	return &core_api.FileInfo{
-//		FileId:      req.FileId,
-//		UserId:      req.UserId,
-//		Name:        req.Name,
-//		Type:        req.Type,
-//		Path:        req.Path,
-//		FatherId:    req.FatherId,
-//		SpaceSize:   req.SpaceSize,
-//		Md5:         req.Md5,
-//		IsDel:       req.IsDel,
-//		Zone:        req.Zone,
-//		SubZone:     req.SubZone,
-//		Description: req.Description,
-//		Url:         req.Url,
-//		CreateAt:    req.CreateAt,
-//		UpdateAt:    req.UpdateAt,
-//		Labels:      req.Labels,
-//	}
-//}
-//
-//func CoreFileToFile(req *core_api.File) *content.File {
-//	return &content.File{
-//		FileId:      req.FileId,
-//		UserId:      req.UserId,
-//		Name:        req.Name,
-//		Type:        req.Type,
-//		Path:        req.Path,
-//		FatherId:    req.FatherId,
-//		SpaceSize:   req.SpaceSize,
-//		Md5:         req.Md5,
-//		IsDel:       req.IsDel,
-//		Zone:        req.Zone,
-//		SubZone:     req.SubZone,
-//		Description: req.Description,
-//		Url:         req.Url,
-//		Labels:      req.Labels,
-//	}
-//}
+func FileToCorePublicFile(req *content.FileInfo) *core_api.PublicFile {
+	return &core_api.PublicFile{
+		FileId:       req.FileId,
+		UserId:       req.UserId,
+		Name:         req.Name,
+		Type:         req.Type,
+		Path:         req.Path,
+		FatherId:     req.FatherId,
+		SpaceSize:    req.SpaceSize,
+		IsDel:        req.IsDel,
+		Zone:         req.Zone,
+		SubZone:      req.SubZone,
+		Description:  req.Description,
+		CreateAt:     req.CreateAt,
+		UpdateAt:     req.UpdateAt,
+		Labels:       req.Labels,
+		Author:       &core_api.User{},
+		FileCount:    &core_api.PostCount{},
+		FileRelation: &core_api.PostRelation{},
+	}
+}
+
+func FileToCorePrivateFile(req *content.FileInfo) *core_api.PrivateFile {
+	return &core_api.PrivateFile{
+		FileId:    req.FileId,
+		UserId:    req.UserId,
+		Name:      req.Name,
+		Type:      req.Type,
+		Path:      req.Path,
+		FatherId:  req.FatherId,
+		SpaceSize: req.SpaceSize,
+		IsDel:     req.IsDel,
+		CreateAt:  req.CreateAt,
+		UpdateAt:  req.UpdateAt,
+	}
+}
 
 func ZoneToCoreZone(req *content.Zone) *core_api.Zone {
 	return &core_api.Zone{
@@ -95,13 +91,23 @@ func UserDetailToCoreUserDetail(req *content.User) *core_api.UserDetail {
 
 func PaginationOptionsToPaginationOptions(req *dto_basic.PaginationOptions) *basic.PaginationOptions {
 	if req == nil {
-		return &basic.PaginationOptions{}
+		return nil
+	} else {
+		return &basic.PaginationOptions{
+			Limit:     req.Limit,
+			LastToken: req.LastToken,
+			Backward:  req.Backward,
+			Offset:    req.Offset,
+		}
 	}
+}
+
+func MakePaginationOptions(limit, offset *int64, lastToken *string, backward *bool) *basic.PaginationOptions {
 	return &basic.PaginationOptions{
-		Limit:     req.Limit,
-		LastToken: req.LastToken,
-		Backward:  req.Backward,
-		Offset:    req.Offset,
+		Limit:     limit,
+		LastToken: lastToken,
+		Backward:  backward,
+		Offset:    offset,
 	}
 }
 
@@ -115,32 +121,6 @@ func CoreApiRelationInfoToRelationInfo(req *core_api.RelationInfo) *relation.Rel
 	}
 }
 
-func FilterOptionsToFilterOptions(opts *core_api.FileFilterOptions) *content.FileFilterOptions {
-	if opts == nil {
-		return nil
-	} else {
-		return &content.FileFilterOptions{
-			OnlyUserId:       opts.OnlyUserId,
-			OnlyFileId:       opts.OnlyFileId,
-			OnlyFatherId:     opts.OnlyFatherId,
-			OnlyIsDel:        opts.OnlyIsDel,
-			OnlyDocumentType: opts.OnlyDocumentType,
-			OnlyType:         opts.OnlyType,
-		}
-	}
-}
-
-func ShareOptionsToShareOptions(opts *core_api.ShareFileFilterOptions) *content.ShareFileFilterOptions {
-	if opts == nil {
-		return nil
-	} else {
-		return &content.ShareFileFilterOptions{
-			OnlyCode:   opts.OnlyCode,
-			OnlyUserId: opts.OnlyUserId,
-		}
-	}
-}
-
 func ShareCodeToCoreShareCode(opts *content.ShareCode) *core_api.ShareCode {
 	return &core_api.ShareCode{
 		Code:         opts.Code,
@@ -148,34 +128,33 @@ func ShareCodeToCoreShareCode(opts *content.ShareCode) *core_api.ShareCode {
 		Status:       opts.Status,
 		BrowseNumber: opts.BrowseNumber,
 		CreateAt:     opts.CreateAt,
+		Key:          opts.Key,
 	}
 }
 
-//func ShareFileToCoreShareFile(opts *content.ShareFile) *core_api.ShareFile {
-//	return &core_api.ShareFile{
-//		Code:          opts.Code,
-//		UserId:        opts.UserId,
-//		Name:          opts.Name,
-//		Status:        opts.Status,
-//		EffectiveTime: opts.EffectiveTime,
-//		BrowseNumber:  opts.BrowseNumber,
-//		CreateAt:      opts.CreateAt,
-//		FileList:      opts.FileList,
-//	}
-//}
+func ShareFileToCoreShareFile(opts *content.ShareFile) *core_api.ShareFile {
+	return &core_api.ShareFile{
+		Code:          opts.Code,
+		UserId:        opts.UserId,
+		Name:          opts.Name,
+		EffectiveTime: opts.EffectiveTime,
+		BrowseNumber:  opts.BrowseNumber,
+		CreateAt:      opts.CreateAt,
+		FileList:      opts.FileList,
+	}
+}
 
-//func CoreShareFileToShareFile(opts *core_api.ShareFile) *content.ShareFile {
-//	return &content.ShareFile{
-//		Code:          opts.Code,
-//		UserId:        opts.UserId,
-//		Name:          opts.Name,
-//		Status:        opts.Status,
-//		EffectiveTime: opts.EffectiveTime,
-//		BrowseNumber:  opts.BrowseNumber,
-//		CreateAt:      opts.CreateAt,
-//		FileList:      opts.FileList,
-//	}
-//}
+func CoreShareFileToShareFile(opts *core_api.ShareFile) *content.ShareFile {
+	return &content.ShareFile{
+		Code:          opts.Code,
+		UserId:        opts.UserId,
+		Name:          opts.Name,
+		EffectiveTime: opts.EffectiveTime,
+		BrowseNumber:  opts.BrowseNumber,
+		CreateAt:      opts.CreateAt,
+		FileList:      opts.FileList,
+	}
+}
 
 func SearchOptionsToFileSearchOptions(opts *core_api.SearchOptions) *content.SearchOptions {
 	if opts == nil {

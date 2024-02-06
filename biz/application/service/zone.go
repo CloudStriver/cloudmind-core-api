@@ -46,17 +46,20 @@ func (s *ZoneService) GetZone(ctx context.Context, req *core_api.GetZoneReq) (re
 
 func (s *ZoneService) CreateZone(ctx context.Context, req *core_api.CreateZoneReq) (resp *core_api.CreateZoneResp, err error) {
 	resp = new(core_api.CreateZoneResp)
-	//userData := adaptor.ExtractUserMeta(ctx)
-	//if userData.GetUserId() == "" {
-	//	return resp, consts.ErrNotAuthentication
-	//}
-	//
-	//var res *content.CreateZoneResp
-	//label := convertor.CoreZoneToZone(req.Zone)
-	//if res, err = s.CloudMindContent.CreateZone(ctx, &content.CreateZoneReq{Zone: label}); err != nil {
-	//	return resp, err
-	//}
-	//resp.Id = res.Id
+	userData := adaptor.ExtractUserMeta(ctx)
+	if userData.GetUserId() == "" {
+		return resp, consts.ErrNotAuthentication
+	}
+
+	var res *content.CreateZoneResp
+	zone := &content.Zone{
+		FatherId: req.FatherId,
+		Value:    req.Value,
+	}
+	if res, err = s.CloudMindContent.CreateZone(ctx, &content.CreateZoneReq{Zone: zone}); err != nil {
+		return resp, err
+	}
+	resp.Id = res.Id
 	return resp, nil
 }
 
@@ -67,8 +70,8 @@ func (s *ZoneService) UpdateZone(ctx context.Context, req *core_api.UpdateZoneRe
 		return resp, consts.ErrNotAuthentication
 	}
 
-	label := convertor.CoreZoneToZone(req.Zone)
-	if _, err = s.CloudMindContent.UpdateZone(ctx, &content.UpdateZoneReq{Zone: label}); err != nil {
+	zone := convertor.CoreZoneToZone(req.Zone)
+	if _, err = s.CloudMindContent.UpdateZone(ctx, &content.UpdateZoneReq{Zone: zone}); err != nil {
 		return resp, err
 	}
 	return resp, nil

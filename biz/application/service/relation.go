@@ -135,7 +135,11 @@ func (s *RelationService) DeleteRelation(ctx context.Context, req *core_api.Dele
 		return resp, consts.ErrNotPermission
 	}
 	if _, err = s.PlatFormRelation.DeleteRelation(ctx, &relation.DeleteRelationReq{
-		Relation: convertor.CoreApiRelationInfoToRelationInfo(req.RelationInfo),
+		FromType:     req.RelationInfo.FromType,
+		FromId:       req.RelationInfo.FromId,
+		ToType:       req.RelationInfo.ToType,
+		ToId:         req.RelationInfo.ToId,
+		RelationType: req.RelationInfo.RelationType,
 	}); err != nil {
 		return resp, err
 	}
@@ -168,7 +172,11 @@ func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.Crea
 	}
 
 	if _, err = s.PlatFormRelation.CreateRelation(ctx, &relation.CreateRelationReq{
-		Relation: convertor.CoreApiRelationInfoToRelationInfo(req.Relation),
+		FromType:     req.Relation.FromType,
+		FromId:       req.Relation.FromId,
+		ToType:       req.Relation.ToType,
+		ToId:         req.Relation.ToId,
+		RelationType: req.Relation.RelationType,
 	}); err != nil {
 		return resp, err
 	}
