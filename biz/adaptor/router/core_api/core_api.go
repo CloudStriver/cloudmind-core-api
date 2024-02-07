@@ -72,11 +72,8 @@ func Register(r *server.Hertz) {
 		_relation := root.Group("/relation", _relationMw()...)
 		_relation.POST("/createRelation", append(_createrelationMw(), core_api.CreateRelation)...)
 		_relation.POST("/deleteRelation", append(_deleterelationMw(), core_api.DeleteRelation)...)
+		_relation.GET("/getFromRelations", append(_getfromrelationsMw(), core_api.GetFromRelations)...)
 		_relation.GET("/getRelation", append(_getrelationMw(), core_api.GetRelation)...)
-	}
-	{
-		_relations := root.Group("/relations", _relationsMw()...)
-		_relations.GET("/getFromRelations", append(_getfromrelationsMw(), core_api.GetFromRelations)...)
-		_relations.GET("/getToRelations", append(_gettorelationsMw(), core_api.GetToRelations)...)
+		_relation.GET("/getToRelations", append(_gettorelationsMw(), core_api.GetToRelations)...)
 	}
 }

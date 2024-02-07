@@ -18,12 +18,12 @@ type CreateNotificationsKq struct {
 	*batcher.Batcher
 }
 
-type ReadNotificationsKq struct {
+type UpdateNotificationsKq struct {
 	*kq.Pusher
 	*batcher.Batcher
 }
 
-type CleanNotificationKq struct {
+type DeleteNotificationKq struct {
 	*kq.Pusher
 	*batcher.Batcher
 }
@@ -63,9 +63,9 @@ func NewCreateNotificationsKq(c *config.Config) *CreateNotificationsKq {
 	}
 }
 
-func NewReadNotificationsKq(c *config.Config) *ReadNotificationsKq {
+func NewUpdateNotificationsKq(c *config.Config) *UpdateNotificationsKq {
 	crc := crc32.MakeTable(0xD5828281)
-	pusher := kq.NewPusher(c.CreateNotificationsKq.Brokers, c.CreateNotificationsKq.Topic)
+	pusher := kq.NewPusher(c.UpdateNotificationsKq.Brokers, c.UpdateNotificationsKq.Topic)
 	b := batcher.New(
 		batcher.WithSize(consts.BatcherSize),
 		batcher.WithBuffer(consts.BatcherBuffer),
@@ -77,10 +77,10 @@ func NewReadNotificationsKq(c *config.Config) *ReadNotificationsKq {
 		return int(pid) % consts.BatcherWorker
 	}
 	b.Do = func(ctx context.Context, val map[string][]interface{}) {
-		var msgs []*message.ReadNotificationsMessage
+		var msgs []*message.UpdateNotificationsMessage
 		for _, vs := range val {
 			for _, v := range vs {
-				msgs = append(msgs, v.(*message.ReadNotificationsMessage))
+				msgs = append(msgs, v.(*message.UpdateNotificationsMessage))
 			}
 		}
 		kd, err := sonic.Marshal(msgs)
@@ -92,14 +92,14 @@ func NewReadNotificationsKq(c *config.Config) *ReadNotificationsKq {
 		}
 	}
 	b.Start()
-	return &ReadNotificationsKq{
+	return &UpdateNotificationsKq{
 		Pusher:  pusher,
 		Batcher: b,
 	}
 }
-func NewCleanNotificationKq(c *config.Config) *CleanNotificationKq {
+func NewDeleteNotificationKq(c *config.Config) *DeleteNotificationKq {
 	crc := crc32.MakeTable(0xD5828281)
-	pusher := kq.NewPusher(c.CreateNotificationsKq.Brokers, c.CreateNotificationsKq.Topic)
+	pusher := kq.NewPusher(c.DeleteNotificationsKq.Brokers, c.DeleteNotificationsKq.Topic)
 	b := batcher.New(
 		batcher.WithSize(consts.BatcherSize),
 		batcher.WithBuffer(consts.BatcherBuffer),
@@ -111,10 +111,10 @@ func NewCleanNotificationKq(c *config.Config) *CleanNotificationKq {
 		return int(pid) % consts.BatcherWorker
 	}
 	b.Do = func(ctx context.Context, val map[string][]interface{}) {
-		var msgs []*message.CleanNotificationMessage
+		var msgs []*message.DeleteNotificationsMessage
 		for _, vs := range val {
 			for _, v := range vs {
-				msgs = append(msgs, v.(*message.CleanNotificationMessage))
+				msgs = append(msgs, v.(*message.DeleteNotificationsMessage))
 			}
 		}
 		data, err := sonic.Marshal(msgs)
@@ -126,7 +126,7 @@ func NewCleanNotificationKq(c *config.Config) *CleanNotificationKq {
 		}
 	}
 	b.Start()
-	return &CleanNotificationKq{
+	return &DeleteNotificationKq{
 		Pusher:  pusher,
 		Batcher: b,
 	}

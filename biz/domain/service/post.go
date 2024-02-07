@@ -35,8 +35,8 @@ func (s *PostDomainService) LoadAuthor(ctx context.Context, user *core_api.User,
 	}
 	getUserResp, err := s.CloudMindUser.GetUser(ctx, &content.GetUserReq{UserId: userId})
 	if err == nil {
-		user.Name = getUserResp.User.Name
-		user.Url = getUserResp.User.Url
+		user.Name = getUserResp.Name
+		user.Url = getUserResp.Url
 		user.UserId = userId
 	}
 }
