@@ -6,7 +6,6 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/convertor"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
@@ -71,7 +70,11 @@ func (s *RelationService) GetFromRelations(ctx context.Context, req *core_api.Ge
 				if err != nil {
 					return err
 				}
-				resp.Users[i] = convertor.UserDetailToUser(user.User)
+				resp.Users[i] = &core_api.User{
+					UserId: relation.ToId,
+					Name:   user.Name,
+					Url:    user.Url,
+				}
 				return nil
 			}
 		})...)
@@ -115,7 +118,11 @@ func (s *RelationService) GetToRelations(ctx context.Context, req *core_api.GetT
 				if err != nil {
 					return err
 				}
-				resp.Users[i] = convertor.UserDetailToUser(user.User)
+				resp.Users[i] = &core_api.User{
+					UserId: relation.FromId,
+					Name:   user.Name,
+					Url:    user.Url,
+				}
 				return nil
 			}
 		})...)
@@ -129,17 +136,16 @@ func (s *RelationService) GetToRelations(ctx context.Context, req *core_api.GetT
 }
 
 func (s *RelationService) DeleteRelation(ctx context.Context, req *core_api.DeleteRelationReq) (resp *core_api.DeleteRelationResp, err error) {
-	resp = new(core_api.DeleteRelationResp)
 	user := adaptor.ExtractUserMeta(ctx)
-	if user.GetUserId() != req.RelationInfo.FromId {
-		return resp, consts.ErrNotPermission
+	if user.GetUserId() == "" {
+		return resp, consts.ErrNotAuthentication
 	}
 	if _, err = s.PlatFormRelation.DeleteRelation(ctx, &relation.DeleteRelationReq{
-		FromType:     req.RelationInfo.FromType,
-		FromId:       req.RelationInfo.FromId,
-		ToType:       req.RelationInfo.ToType,
-		ToId:         req.RelationInfo.ToId,
-		RelationType: req.RelationInfo.RelationType,
+		FromType:     consts.RelationUserType,
+		FromId:       user.UserId,
+		ToType:       req.ToType,
+		ToId:         req.ToId,
+		RelationType: req.RelationType,
 	}); err != nil {
 		return resp, err
 	}
@@ -160,33 +166,36 @@ func (s *RelationService) GetRelation(ctx context.Context, req *core_api.GetRela
 	if err != nil {
 		return resp, err
 	}
+
 	resp.Ok = getRelationResp.Ok
 	return resp, nil
 }
 
 func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.CreateRelationReq) (resp *core_api.CreateRelationResp, err error) {
-	resp = new(core_api.CreateRelationResp)
 	user := adaptor.ExtractUserMeta(ctx)
-	if user.GetUserId() != req.Relation.FromId {
-		return resp, consts.ErrNotPermission
+	if user.GetUserId() == "" {
+		return resp, consts.ErrNotAuthentication
 	}
 
 	if _, err = s.PlatFormRelation.CreateRelation(ctx, &relation.CreateRelationReq{
-		FromType:     req.Relation.FromType,
-		FromId:       req.Relation.FromId,
-		ToType:       req.Relation.ToType,
-		ToId:         req.Relation.ToId,
-		RelationType: req.Relation.RelationType,
+		FromType:     consts.RelationUserType,
+		FromId:       user.UserId,
+		ToType:       req.ToType,
+		ToId:         req.ToId,
+		RelationType: req.RelationType,
 	}); err != nil {
 		return resp, err
 	}
 
-	if err = s.CreateNotificationKq.Add(req.Relation.ToId, &message.CreateNotificationsMessage{
-		Notification: &system.Notification{
-			TargetUserId: req.Relation.ToId,
-			SourceUserId: req.Relation.FromId,
-			TargetType:   req.Relation.FromType,
-			Type:         req.Relation.RelationType,
+	if err = s.CreateNotificationKq.Add(req.ToId, &message.CreateNotificationsMessage{
+		Notification: &system.NotificationInfo{
+			TargetUserId:    req.ToId,
+			SourceUserId:    user.UserId,
+			SourceContentId: "",
+			TargetType:      consts.RelationUserType,
+			Type:            req.RelationType,
+			Text:            "",
+			IsRead:          false,
 		},
 	}); err != nil {
 		return resp, err

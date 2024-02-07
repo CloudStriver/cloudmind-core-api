@@ -68,8 +68,8 @@ func (s *FileDomainService) LoadAuthor(ctx context.Context, file *core_api.Publi
 	}
 	getUserResp, err := s.CloudMindUser.GetUser(ctx, &content.GetUserReq{UserId: userId})
 	if err == nil {
-		file.Author.Name = getUserResp.User.Name
-		file.Author.Url = getUserResp.User.Url
+		file.Author.Name = getUserResp.Name
+		file.Author.Url = getUserResp.Url
 	}
 }
 

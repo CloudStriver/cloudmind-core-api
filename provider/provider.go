@@ -61,8 +61,8 @@ var InfrastructureSet = wire.NewSet(
 	config.NewConfig,
 	redis.NewRedis,
 	kq.NewCreateNotificationsKq,
-	kq.NewCleanNotificationKq,
-	kq.NewReadNotificationsKq,
+	kq.NewDeleteNotificationKq,
+	kq.NewUpdateNotificationsKq,
 	RPCSet,
 )
 
