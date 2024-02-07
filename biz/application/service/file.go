@@ -112,7 +112,7 @@ func (s *FileService) AskUploadFile(ctx context.Context, req *core_api.AskUpload
 	//}
 
 	genCosStsResp, err := s.PlatformSts.GenCosSts(ctx, &sts.GenCosStsReq{
-		Path:   req.Name,
+		Path:   "users/" + req.Name,
 		IsFile: true,
 		Time:   req.FileSize / (1024 * 1024),
 	})
