@@ -48,7 +48,7 @@ func (s *UserService) AskUploadAvatar(ctx context.Context, req *core_api.AskUplo
 	}
 
 	genCosStsResp, err := s.PlatformSts.GenCosSts(ctx, &sts.GenCosStsReq{
-		Path:   req.Name,
+		Path:   "users/" + req.Name,
 		IsFile: false,
 		Time:   req.AvatarSize / (1024 * 1024),
 	})
