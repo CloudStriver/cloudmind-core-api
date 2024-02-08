@@ -20,6 +20,7 @@ type Auth struct {
 type OauthConf struct {
 	ClientId string
 	Secret   string
+	Redirect string
 }
 
 type KqConfig struct {

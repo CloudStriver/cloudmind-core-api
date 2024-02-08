@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/CloudStriver/cloudmind-core-api/biz/adaptor"
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
+	"github.com/CloudStriver/cloudmind-core-api/biz/domain/service"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
@@ -33,9 +34,11 @@ var RelationServiceSet = wire.NewSet(
 )
 
 type RelationService struct {
-	Config               *config.Config
-	PlatFormRelation     platform_relation.IPlatFormRelation
-	CloudMindContent     cloudmind_content.ICloudMindContent
+	Config            *config.Config
+	PlatFormRelation  platform_relation.IPlatFormRelation
+	CloudMindContent  cloudmind_content.ICloudMindContent
+	PostDomainService service.IPostDomainService
+
 	CreateNotificationKq *kq.CreateNotificationsKq
 }
 
@@ -80,6 +83,32 @@ func (s *RelationService) GetFromRelations(ctx context.Context, req *core_api.Ge
 			}
 		})...)
 		if err != nil {
+			return resp, err
+		}
+	case core_api.TargetType_PostType:
+		resp.Posts = make([]*core_api.OwnPost, len(getFromRelationsResp.Relations))
+		if err = mr.Finish(lo.Map[*relation.Relation](getFromRelationsResp.Relations, func(relation *relation.Relation, i int) func() error {
+			return func() error {
+				resp.Posts[i] = &core_api.OwnPost{}
+				if err = mr.Finish(func() error {
+					post, err := s.CloudMindContent.GetPost(ctx, &content.GetPostReq{
+						PostId: relation.ToId,
+					})
+					resp.Posts[i].PostId = relation.ToId
+					resp.Posts[i].Title = post.Title
+					resp.Posts[i].Text = post.Text
+					resp.Posts[i].Url = post.Url
+					resp.Posts[i].Tags = post.Tags
+					return err
+				}, func() error {
+					s.PostDomainService.LoadLikeCount(ctx, &resp.Posts[i].LikeCount, relation.ToId)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}
+		})...); err != nil {
 			return resp, err
 		}
 	default:
