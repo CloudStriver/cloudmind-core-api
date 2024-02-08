@@ -203,7 +203,17 @@ func (s *PostService) GetOwnPosts(ctx context.Context, req *core_api.GetOwnPosts
 				Url:    item.Url,
 				Tags:   item.Tags,
 			}
-			s.PostDomainService.LoadLikeCount(ctx, &resp.Posts[i].LikeCount, item.PostId) // 点赞量
+			author := &core_api.User{}
+			if err = mr.Finish(func() error {
+				s.PostDomainService.LoadLikeCount(ctx, &resp.Posts[i].LikeCount, item.PostId) // 点赞量
+				return nil
+			}, func() error {
+				s.PostDomainService.LoadAuthor(ctx, author, item.UserId)
+				resp.Posts[i].UserName = author.Name
+				return nil
+			}); err != nil {
+				return err
+			}
 			return nil
 		}
 	})...); err != nil {
@@ -313,7 +323,17 @@ func (s *PostService) GetOtherPosts(ctx context.Context, req *core_api.GetOtherP
 				Url:    item.Url,
 				Tags:   item.Tags,
 			}
-			s.PostDomainService.LoadLikeCount(ctx, &resp.Posts[i].LikeCount, item.PostId) // 点赞量
+			author := &core_api.User{}
+			if err = mr.Finish(func() error {
+				s.PostDomainService.LoadLikeCount(ctx, &resp.Posts[i].LikeCount, item.PostId) // 点赞量
+				return nil
+			}, func() error {
+				s.PostDomainService.LoadAuthor(ctx, author, item.UserId)
+				resp.Posts[i].UserName = author.Name
+				return nil
+			}); err != nil {
+				return err
+			}
 			return nil
 		}
 	})...); err != nil {
