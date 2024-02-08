@@ -197,26 +197,13 @@ func (s *PostService) GetOwnPosts(ctx context.Context, req *core_api.GetOwnPosts
 	if err = mr.Finish(lo.Map(getPostsResp.Posts, func(item *content.Post, i int) func() error {
 		return func() error {
 			resp.Posts[i] = &core_api.OwnPost{
-				PostId:     item.PostId,
-				Title:      item.Title,
-				Text:       item.Text,
-				Url:        item.Url,
-				CreateTime: item.CreateTime,
-				UpdateTime: item.UpdateTime,
-				Author:     &core_api.User{},
+				PostId: item.PostId,
+				Title:  item.Title,
+				Text:   item.Text,
+				Url:    item.Url,
+				Tags:   item.Tags,
 			}
-			if err = mr.Finish(func() error {
-				s.PostDomainService.LoadLikeCount(ctx, &resp.Posts[i].LikeCount, item.PostId) // 点赞量
-				return nil
-			}, func() error {
-				s.PostDomainService.LoadAuthor(ctx, resp.Posts[i].Author, item.UserId) // 作者
-				return nil
-			}, func() error {
-				s.PostDomainService.LoadViewCount(ctx, &resp.Posts[i].ViewCount, item.PostId) // 浏览量
-				return nil
-			}); err != nil {
-				return err
-			}
+			s.PostDomainService.LoadLikeCount(ctx, &resp.Posts[i].LikeCount, item.PostId) // 点赞量
 			return nil
 		}
 	})...); err != nil {
@@ -320,27 +307,13 @@ func (s *PostService) GetOtherPosts(ctx context.Context, req *core_api.GetOtherP
 	if err = mr.Finish(lo.Map(getPostsResp.Posts, func(item *content.Post, i int) func() error {
 		return func() error {
 			resp.Posts[i] = &core_api.Post{
-				PostId:     item.PostId,
-				Title:      item.Title,
-				Text:       item.Text,
-				Status:     item.Status,
-				Url:        item.Url,
-				CreateTime: item.CreateTime,
-				UpdateTime: item.UpdateTime,
-				Author:     &core_api.User{},
+				PostId: item.PostId,
+				Title:  item.Title,
+				Text:   item.Text,
+				Url:    item.Url,
+				Tags:   item.Tags,
 			}
-			if err = mr.Finish(func() error {
-				s.PostDomainService.LoadLikeCount(ctx, &resp.Posts[i].LikeCount, item.PostId) // 点赞量
-				return nil
-			}, func() error {
-				s.PostDomainService.LoadAuthor(ctx, resp.Posts[i].Author, item.UserId) // 作者
-				return nil
-			}, func() error {
-				s.PostDomainService.LoadViewCount(ctx, &resp.Posts[i].ViewCount, item.PostId) // 浏览量
-				return nil
-			}); err != nil {
-				return err
-			}
+			s.PostDomainService.LoadLikeCount(ctx, &resp.Posts[i].LikeCount, item.PostId) // 点赞量
 			return nil
 		}
 	})...); err != nil {

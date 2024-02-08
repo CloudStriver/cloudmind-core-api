@@ -68,6 +68,7 @@ func NewProvider() (*Provider, error) {
 		Config:               configConfig,
 		PlatFormRelation:     platFormRelation,
 		CloudMindContent:     cloudMindContent,
+		PostDomainService:    postDomainService,
 		CreateNotificationKq: createNotificationsKq,
 	}
 	userService := &service2.UserService{

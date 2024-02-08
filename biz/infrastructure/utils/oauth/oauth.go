@@ -67,7 +67,7 @@ func getTokenUrl(conf config.OauthConf, authType sts.AuthType, code string) stri
 	case sts.AuthType_github:
 		return fmt.Sprintf("https://github.com/login/oauth/access_token?client_id=%s&client_secret=%s&code=%s", conf.ClientId, conf.Secret, code)
 	case sts.AuthType_gitee:
-		return fmt.Sprintf("https://gitee.com/oauth/token?grant_type=authorization_code&code=%s&client_id=%s&redirect_uri=%s&client_secret=%s", code, conf.ClientId, "http://apisix.cloudmind.top/auth/giteeLogin", conf.Secret)
+		return fmt.Sprintf("https://gitee.com/oauth/token?grant_type=authorization_code&code=%s&client_id=%s&redirect_uri=%s&client_secret=%s", code, conf.ClientId, conf.Redirect, conf.Secret)
 	default:
 		return ""
 	}
