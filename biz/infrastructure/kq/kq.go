@@ -23,7 +23,7 @@ type UpdateNotificationsKq struct {
 	*batcher.Batcher
 }
 
-type DeleteNotificationKq struct {
+type DeleteNotificationsKq struct {
 	*kq.Pusher
 	*batcher.Batcher
 }
@@ -97,7 +97,7 @@ func NewUpdateNotificationsKq(c *config.Config) *UpdateNotificationsKq {
 		Batcher: b,
 	}
 }
-func NewDeleteNotificationKq(c *config.Config) *DeleteNotificationKq {
+func NewDeleteNotificationsKq(c *config.Config) *DeleteNotificationsKq {
 	crc := crc32.MakeTable(0xD5828281)
 	pusher := kq.NewPusher(c.DeleteNotificationsKq.Brokers, c.DeleteNotificationsKq.Topic)
 	b := batcher.New(
@@ -126,7 +126,7 @@ func NewDeleteNotificationKq(c *config.Config) *DeleteNotificationKq {
 		}
 	}
 	b.Start()
-	return &DeleteNotificationKq{
+	return &DeleteNotificationsKq{
 		Pusher:  pusher,
 		Batcher: b,
 	}

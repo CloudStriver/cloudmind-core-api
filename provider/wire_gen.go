@@ -13,6 +13,7 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_system"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/store/redis"
 )
@@ -78,14 +79,28 @@ func NewProvider() (*Provider, error) {
 		Config:           configConfig,
 		CloudMindContent: cloudMindContent,
 	}
+	systemserviceClient := cloudmind_system.NewCloudMindSystem(configConfig)
+	cloudMindSystem := &cloudmind_system.CloudMindSystem{
+		Client: systemserviceClient,
+	}
+	updateNotificationsKq := kq.NewUpdateNotificationsKq(configConfig)
+	deleteNotificationsKq := kq.NewDeleteNotificationsKq(configConfig)
+	notificationService := &service2.NotificationService{
+		Config:                configConfig,
+		CloudMindSystem:       cloudMindSystem,
+		UpdateNotificationsKq: updateNotificationsKq,
+		DeleteNotificationsKq: deleteNotificationsKq,
+		Redis:                 redisRedis,
+	}
 	providerProvider := &Provider{
-		Config:          configConfig,
-		FileService:     fileService,
-		PostService:     postService,
-		AuthService:     authService,
-		RelationService: relationService,
-		UserService:     userService,
-		ZoneService:     zoneService,
+		Config:              configConfig,
+		FileService:         fileService,
+		PostService:         postService,
+		AuthService:         authService,
+		RelationService:     relationService,
+		UserService:         userService,
+		ZoneService:         zoneService,
+		NotificationService: notificationService,
 	}
 	return providerProvider, nil
 }

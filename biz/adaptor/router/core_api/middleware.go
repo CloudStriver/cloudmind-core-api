@@ -420,3 +420,28 @@ func _getownpostsMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _systemMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _deletenotificationsMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getnotificationcountMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getnotificationsMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _updatenotificationsMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
