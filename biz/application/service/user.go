@@ -118,8 +118,28 @@ func (s *UserService) GetUserDetail(ctx context.Context, req *core_api.GetUserDe
 
 func (s *UserService) SearchUser(ctx context.Context, req *core_api.SearchUserReq) (resp *core_api.SearchUserResp, err error) {
 	resp = new(core_api.SearchUserResp)
+	var searchOptions *content.SearchOptions
+
+	if req.AllFieldsKey != nil {
+		searchOptions = &content.SearchOptions{
+			Type: &content.SearchOptions_AllFieldsKey{
+				AllFieldsKey: *req.AllFieldsKey,
+			},
+		}
+	}
+	if req.Name != nil || req.Id != nil || req.Description != nil {
+		searchOptions = &content.SearchOptions{
+			Type: &content.SearchOptions_MultiFieldsKey{
+				MultiFieldsKey: &content.SearchField{
+					Name:        req.Name,
+					Id:          req.Id,
+					Description: req.Description,
+				},
+			},
+		}
+	}
 	users, err := s.CloudMindContent.SearchUser(ctx, &content.SearchUserReq{
-		Keyword:           req.Keyword,
+		SearchOptions:     searchOptions,
 		PaginationOptions: convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward),
 	})
 	if err != nil {

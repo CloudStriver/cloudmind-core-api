@@ -70,6 +70,7 @@ func (s *RelationService) GetFromRelations(ctx context.Context, req *core_api.Ge
 				if err != nil {
 					return err
 				}
+
 				resp.Users[i] = &core_api.User{
 					UserId: relation.ToId,
 					Name:   user.Name,
@@ -180,25 +181,89 @@ func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.Crea
 	if _, err = s.PlatFormRelation.CreateRelation(ctx, &relation.CreateRelationReq{
 		FromType:     consts.RelationUserType,
 		FromId:       user.UserId,
-		ToType:       req.ToType,
+		ToType:       int64(req.ToType),
 		ToId:         req.ToId,
-		RelationType: req.RelationType,
+		RelationType: int64(req.RelationType),
 	}); err != nil {
 		return resp, err
 	}
 
+	userId := ""
+	switch req.ToType {
+	case core_api.TargetType_UserType:
+		userId = req.ToId
+	case core_api.TargetType_FileType:
+		getFileResp, err := s.CloudMindContent.GetFile(ctx, &content.GetFileReq{
+			FilterOptions: &content.FileFilterOptions{
+				OnlyFileId: lo.ToPtr(req.ToId),
+			},
+			IsGetSize: false,
+		})
+		if err != nil {
+			return resp, err
+		}
+		userId = getFileResp.File.UserId
+	case core_api.TargetType_ProductType:
+		getProductResp, err := s.CloudMindContent.GetProduct(ctx, &content.GetProductReq{
+			ProductFilterOptions: &content.ProductFilterOptions{
+				OnlyProductId: lo.ToPtr(req.ToId),
+			},
+		})
+		if err != nil {
+			return resp, err
+		}
+		userId = getProductResp.Product.UserId
+	case core_api.TargetType_PostType:
+		getPostResp, err := s.CloudMindContent.GetPost(ctx, &content.GetPostReq{
+			PostId: req.ToId,
+		})
+		if err != nil {
+			return resp, err
+		}
+		userId = getPostResp.UserId
+	}
 	if err = s.CreateNotificationKq.Add(req.ToId, &message.CreateNotificationsMessage{
 		Notification: &system.NotificationInfo{
-			TargetUserId:    req.ToId,
+			TargetUserId:    userId,
 			SourceUserId:    user.UserId,
-			SourceContentId: "",
-			TargetType:      consts.RelationUserType,
-			Type:            req.RelationType,
-			Text:            "",
+			SourceContentId: req.ToId,
+			TargetType:      int64(req.ToType),
+			Type:            int64(req.RelationType),
+			Text:            getNotificationText(req.RelationType, req.ToType),
 			IsRead:          false,
 		},
 	}); err != nil {
 		return resp, err
 	}
 	return resp, nil
+}
+
+func getNotificationText(relationType core_api.RelationType, targetType core_api.TargetType) (s string) {
+	switch relationType {
+	case core_api.RelationType_FollowType:
+		s += "关注了"
+	case core_api.RelationType_CollectType:
+		s += "收藏了"
+	case core_api.RelationType_LikeType:
+		s += "点赞了"
+	case core_api.RelationType_ShareType:
+		s += "分享了"
+	case core_api.RelationType_CommentType:
+		s += "评论了"
+	case core_api.RelationType_ViewType:
+		s += "查看了"
+	default:
+		return s
+	}
+	switch targetType {
+	case core_api.TargetType_UserType:
+		s += "你"
+	case core_api.TargetType_FileType:
+		s += "你的文件"
+	case core_api.TargetType_ProductType:
+		s += "你的商品"
+	case core_api.TargetType_PostType:
+		s += "你的帖子"
+	}
+	return s
 }
