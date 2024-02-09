@@ -222,16 +222,16 @@ func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.Crea
 	case core_api.TargetType_UserType:
 		userId = req.ToId
 	case core_api.TargetType_FileType:
-		getFileResp, err := s.CloudMindContent.GetFile(ctx, &content.GetFileReq{
-			FilterOptions: &content.FileFilterOptions{
-				OnlyFileId: lo.ToPtr(req.ToId),
-			},
-			IsGetSize: false,
-		})
-		if err != nil {
-			return resp, err
-		}
-		userId = getFileResp.File.UserId
+		//getFileResp, err := s.CloudMindContent.GetFile(ctx, &content.GetFileReq{
+		//	FilterOptions: &content.FileFilterOptions{
+		//		OnlyFileId: lo.ToPtr(req.ToId),
+		//	},
+		//	IsGetSize: false,
+		//})
+		//if err != nil {
+		//	return resp, err
+		//}
+		//userId = getFileResp.File.UserId
 	case core_api.TargetType_ProductType:
 		getProductResp, err := s.CloudMindContent.GetProduct(ctx, &content.GetProductReq{
 			ProductFilterOptions: &content.ProductFilterOptions{

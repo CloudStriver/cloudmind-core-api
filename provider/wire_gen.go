@@ -93,6 +93,13 @@ func NewProvider() (*Provider, error) {
 		DeleteNotificationsKq: deleteNotificationsKq,
 		Redis:                 redisRedis,
 	}
+	createFeedBacksKq := kq.NewCreateFeedBacksKq(configConfig)
+	recommendService := &service2.RecommendService{
+		Config:            configConfig,
+		CloudMindContent:  cloudMindContent,
+		PostDomainService: postDomainService,
+		CreateFeedBacks:   createFeedBacksKq,
+	}
 	providerProvider := &Provider{
 		Config:              configConfig,
 		FileService:         fileService,
@@ -102,6 +109,7 @@ func NewProvider() (*Provider, error) {
 		UserService:         userService,
 		ZoneService:         zoneService,
 		NotificationService: notificationService,
+		RecommendService:    recommendService,
 	}
 	return providerProvider, nil
 }
