@@ -13,6 +13,7 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_comment"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/store/redis"
 )
@@ -40,11 +41,16 @@ func NewProvider() (*Provider, error) {
 		CloudMindUser:    cloudMindContent,
 		PlatformRelation: platFormRelation,
 	}
+	commentserviceClient := platform_comment.NewPlatFormComment(configConfig)
+	platFormComment := &platform_comment.PlatFormComment{
+		Client: commentserviceClient,
+	}
 	fileService := &service2.FileService{
 		Config:            configConfig,
 		PlatformSts:       cloudMindSts,
 		CloudMindContent:  cloudMindContent,
 		FileDomainService: fileDomainService,
+		PlatformComment:   platFormComment,
 	}
 	postDomainService := &service.PostDomainService{
 		CloudMindUser:    cloudMindContent,

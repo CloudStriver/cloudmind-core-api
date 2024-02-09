@@ -9,6 +9,8 @@ var PageSize int64 = 10
 var NotContent = codes.Code(204)
 var NotDel int64 = 1
 var SoftDel int64 = 2
+var HardDel int64 = 3
+var InitBrowseNumber int64 = 0
 
 const (
 	RelationUserType    = 1
@@ -26,4 +28,6 @@ const (
 	BatcherInterval     = time.Second
 	PostPublicStatus    = int64(1)
 	PostPrivateStatus   = int64(2)
+	ObjectFile          = int64(1)
+	FolderSize          = int64(-1)
 )

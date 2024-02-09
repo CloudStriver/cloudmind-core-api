@@ -7,6 +7,7 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_comment"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/store/redis"
 	"github.com/google/wire"
@@ -41,6 +42,7 @@ var RPCSet = wire.NewSet(
 	cloudmind_content.CloudMindContentSet,
 	cloudmind_sts.CloudMindStsSet,
 	platform_relation.PlatFormRelationSet,
+	platform_comment.PlatFormCommentSet,
 )
 
 var ApplicationSet = wire.NewSet(

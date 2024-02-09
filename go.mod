@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/CloudStriver/cloudmind-mq v0.0.0-20240128054402-6d73c229790e
-	github.com/CloudStriver/go-pkg v0.0.0-20240128062158-e5fe090d8117
+	github.com/CloudStriver/go-pkg v0.0.0-20240206060942-84060a3dd273
 	github.com/CloudStriver/service-idl-gen-go v0.0.0-20240206154107-9713bbb71db2
 	github.com/bytedance/sonic v1.10.2
 	github.com/cloudwego/hertz v0.7.3
@@ -20,6 +20,10 @@ require (
 	go.opentelemetry.io/otel v1.21.0
 	google.golang.org/grpc v1.61.0
 	google.golang.org/protobuf v1.32.0
+)
+
+replace (
+	github.com/CloudStriver/service-idl-gen-go  => ../service-idl-gen-go
 )
 
 require (
