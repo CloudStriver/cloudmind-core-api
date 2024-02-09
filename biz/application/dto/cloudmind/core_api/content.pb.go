@@ -4871,6 +4871,515 @@ func (x *GetOwnPostsResp) GetToken() string {
 	return ""
 }
 
+type CreateFeedBackReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	FeedbackType string `protobuf:"bytes,1,opt,name=feedbackType,proto3" json:"feedbackType" form:"feedbackType" query:"feedbackType"`
+	ItemId       string `protobuf:"bytes,2,opt,name=itemId,proto3" json:"itemId" form:"itemId" query:"itemId"`
+}
+
+func (x *CreateFeedBackReq) Reset() {
+	*x = CreateFeedBackReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[78]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CreateFeedBackReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateFeedBackReq) ProtoMessage() {}
+
+func (x *CreateFeedBackReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[78]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateFeedBackReq.ProtoReflect.Descriptor instead.
+func (*CreateFeedBackReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{78}
+}
+
+func (x *CreateFeedBackReq) GetFeedbackType() string {
+	if x != nil {
+		return x.FeedbackType
+	}
+	return ""
+}
+
+func (x *CreateFeedBackReq) GetItemId() string {
+	if x != nil {
+		return x.ItemId
+	}
+	return ""
+}
+
+type CreateFeedBackResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *CreateFeedBackResp) Reset() {
+	*x = CreateFeedBackResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[79]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CreateFeedBackResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateFeedBackResp) ProtoMessage() {}
+
+func (x *CreateFeedBackResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[79]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateFeedBackResp.ProtoReflect.Descriptor instead.
+func (*CreateFeedBackResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{79}
+}
+
+type GetPopularRecommendReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Limit    *int64   `protobuf:"varint,1,opt,name=limit,proto3,oneof" json:"limit" form:"limit" query:"limit"`
+	Category Category `protobuf:"varint,2,opt,name=category,proto3,enum=cloudmind.core_api.Category" json:"category" form:"category" query:"category"`
+}
+
+func (x *GetPopularRecommendReq) Reset() {
+	*x = GetPopularRecommendReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[80]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetPopularRecommendReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetPopularRecommendReq) ProtoMessage() {}
+
+func (x *GetPopularRecommendReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[80]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetPopularRecommendReq.ProtoReflect.Descriptor instead.
+func (*GetPopularRecommendReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{80}
+}
+
+func (x *GetPopularRecommendReq) GetLimit() int64 {
+	if x != nil && x.Limit != nil {
+		return *x.Limit
+	}
+	return 0
+}
+
+func (x *GetPopularRecommendReq) GetCategory() Category {
+	if x != nil {
+		return x.Category
+	}
+	return Category_UnknowCategory
+}
+
+type GetPopularRecommendResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Recommends *Recommends `protobuf:"bytes,1,opt,name=recommends,proto3" json:"recommends" form:"recommends" query:"recommends"`
+}
+
+func (x *GetPopularRecommendResp) Reset() {
+	*x = GetPopularRecommendResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[81]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetPopularRecommendResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetPopularRecommendResp) ProtoMessage() {}
+
+func (x *GetPopularRecommendResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[81]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetPopularRecommendResp.ProtoReflect.Descriptor instead.
+func (*GetPopularRecommendResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{81}
+}
+
+func (x *GetPopularRecommendResp) GetRecommends() *Recommends {
+	if x != nil {
+		return x.Recommends
+	}
+	return nil
+}
+
+type GetLatestRecommendReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Limit    *int64   `protobuf:"varint,1,opt,name=limit,proto3,oneof" json:"limit" form:"limit" query:"limit"`
+	Category Category `protobuf:"varint,2,opt,name=category,proto3,enum=cloudmind.core_api.Category" json:"category" form:"category" query:"category"`
+}
+
+func (x *GetLatestRecommendReq) Reset() {
+	*x = GetLatestRecommendReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[82]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetLatestRecommendReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetLatestRecommendReq) ProtoMessage() {}
+
+func (x *GetLatestRecommendReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[82]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetLatestRecommendReq.ProtoReflect.Descriptor instead.
+func (*GetLatestRecommendReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{82}
+}
+
+func (x *GetLatestRecommendReq) GetLimit() int64 {
+	if x != nil && x.Limit != nil {
+		return *x.Limit
+	}
+	return 0
+}
+
+func (x *GetLatestRecommendReq) GetCategory() Category {
+	if x != nil {
+		return x.Category
+	}
+	return Category_UnknowCategory
+}
+
+type GetLatestRecommendResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Recommends *Recommends `protobuf:"bytes,1,opt,name=recommends,proto3" json:"recommends" form:"recommends" query:"recommends"`
+}
+
+func (x *GetLatestRecommendResp) Reset() {
+	*x = GetLatestRecommendResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[83]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetLatestRecommendResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetLatestRecommendResp) ProtoMessage() {}
+
+func (x *GetLatestRecommendResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[83]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetLatestRecommendResp.ProtoReflect.Descriptor instead.
+func (*GetLatestRecommendResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{83}
+}
+
+func (x *GetLatestRecommendResp) GetRecommends() *Recommends {
+	if x != nil {
+		return x.Recommends
+	}
+	return nil
+}
+
+type GetRecommendByItemReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ItemId   string   `protobuf:"bytes,1,opt,name=itemId,proto3" json:"itemId" form:"itemId" query:"itemId"`
+	Limit    *int64   `protobuf:"varint,2,opt,name=limit,proto3,oneof" json:"limit" form:"limit" query:"limit"`
+	Category Category `protobuf:"varint,3,opt,name=category,proto3,enum=cloudmind.core_api.Category" json:"category" form:"category" query:"category"`
+}
+
+func (x *GetRecommendByItemReq) Reset() {
+	*x = GetRecommendByItemReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[84]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetRecommendByItemReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetRecommendByItemReq) ProtoMessage() {}
+
+func (x *GetRecommendByItemReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[84]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetRecommendByItemReq.ProtoReflect.Descriptor instead.
+func (*GetRecommendByItemReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{84}
+}
+
+func (x *GetRecommendByItemReq) GetItemId() string {
+	if x != nil {
+		return x.ItemId
+	}
+	return ""
+}
+
+func (x *GetRecommendByItemReq) GetLimit() int64 {
+	if x != nil && x.Limit != nil {
+		return *x.Limit
+	}
+	return 0
+}
+
+func (x *GetRecommendByItemReq) GetCategory() Category {
+	if x != nil {
+		return x.Category
+	}
+	return Category_UnknowCategory
+}
+
+type GetRecommendByItemResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Recommends *Recommends `protobuf:"bytes,1,opt,name=recommends,proto3" json:"recommends" form:"recommends" query:"recommends"`
+}
+
+func (x *GetRecommendByItemResp) Reset() {
+	*x = GetRecommendByItemResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[85]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetRecommendByItemResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetRecommendByItemResp) ProtoMessage() {}
+
+func (x *GetRecommendByItemResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[85]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetRecommendByItemResp.ProtoReflect.Descriptor instead.
+func (*GetRecommendByItemResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{85}
+}
+
+func (x *GetRecommendByItemResp) GetRecommends() *Recommends {
+	if x != nil {
+		return x.Recommends
+	}
+	return nil
+}
+
+type GetRecommendByUserReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Limit    *int64   `protobuf:"varint,1,opt,name=limit,proto3,oneof" json:"limit" form:"limit" query:"limit"`
+	Category Category `protobuf:"varint,2,opt,name=category,proto3,enum=cloudmind.core_api.Category" json:"category" form:"category" query:"category"`
+}
+
+func (x *GetRecommendByUserReq) Reset() {
+	*x = GetRecommendByUserReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[86]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetRecommendByUserReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetRecommendByUserReq) ProtoMessage() {}
+
+func (x *GetRecommendByUserReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[86]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetRecommendByUserReq.ProtoReflect.Descriptor instead.
+func (*GetRecommendByUserReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{86}
+}
+
+func (x *GetRecommendByUserReq) GetLimit() int64 {
+	if x != nil && x.Limit != nil {
+		return *x.Limit
+	}
+	return 0
+}
+
+func (x *GetRecommendByUserReq) GetCategory() Category {
+	if x != nil {
+		return x.Category
+	}
+	return Category_UnknowCategory
+}
+
+type GetRecommendByUserResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Recommends *Recommends `protobuf:"bytes,1,opt,name=recommends,proto3" json:"recommends" form:"recommends" query:"recommends"`
+}
+
+func (x *GetRecommendByUserResp) Reset() {
+	*x = GetRecommendByUserResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[87]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetRecommendByUserResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetRecommendByUserResp) ProtoMessage() {}
+
+func (x *GetRecommendByUserResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[87]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetRecommendByUserResp.ProtoReflect.Descriptor instead.
+func (*GetRecommendByUserResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{87}
+}
+
+func (x *GetRecommendByUserResp) GetRecommends() *Recommends {
+	if x != nil {
+		return x.Recommends
+	}
+	return nil
+}
+
 var File_cloudmind_core_api_content_proto protoreflect.FileDescriptor
 
 var file_cloudmind_core_api_content_proto_rawDesc = []byte{
@@ -5455,13 +5964,73 @@ var file_cloudmind_core_api_content_proto_rawDesc = []byte{
 	0x6f, 0x73, 0x74, 0x52, 0x05, 0x70, 0x6f, 0x73, 0x74, 0x73, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f,
 	0x74, 0x61, 0x6c, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c,
 	0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x05, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x42, 0x53, 0x5a, 0x51, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62,
-	0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x43, 0x6c, 0x6f, 0x75, 0x64, 0x53, 0x74, 0x72, 0x69, 0x76, 0x65,
-	0x72, 0x2f, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2d, 0x63, 0x6f, 0x72, 0x65,
-	0x2d, 0x61, 0x70, 0x69, 0x2f, 0x62, 0x69, 0x7a, 0x2f, 0x61, 0x70, 0x70, 0x6c, 0x69, 0x63, 0x61,
-	0x74, 0x69, 0x6f, 0x6e, 0x2f, 0x64, 0x74, 0x6f, 0x2f, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69,
-	0x6e, 0x64, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x62, 0x06, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x33,
+	0x05, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x22, 0x4f, 0x0a, 0x11, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65,
+	0x46, 0x65, 0x65, 0x64, 0x42, 0x61, 0x63, 0x6b, 0x52, 0x65, 0x71, 0x12, 0x22, 0x0a, 0x0c, 0x66,
+	0x65, 0x65, 0x64, 0x62, 0x61, 0x63, 0x6b, 0x54, 0x79, 0x70, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x0c, 0x66, 0x65, 0x65, 0x64, 0x62, 0x61, 0x63, 0x6b, 0x54, 0x79, 0x70, 0x65, 0x12,
+	0x16, 0x0a, 0x06, 0x69, 0x74, 0x65, 0x6d, 0x49, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x06, 0x69, 0x74, 0x65, 0x6d, 0x49, 0x64, 0x22, 0x14, 0x0a, 0x12, 0x43, 0x72, 0x65, 0x61, 0x74,
+	0x65, 0x46, 0x65, 0x65, 0x64, 0x42, 0x61, 0x63, 0x6b, 0x52, 0x65, 0x73, 0x70, 0x22, 0x77, 0x0a,
+	0x16, 0x47, 0x65, 0x74, 0x50, 0x6f, 0x70, 0x75, 0x6c, 0x61, 0x72, 0x52, 0x65, 0x63, 0x6f, 0x6d,
+	0x6d, 0x65, 0x6e, 0x64, 0x52, 0x65, 0x71, 0x12, 0x19, 0x0a, 0x05, 0x6c, 0x69, 0x6d, 0x69, 0x74,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x48, 0x00, 0x52, 0x05, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x88,
+	0x01, 0x01, 0x12, 0x38, 0x0a, 0x08, 0x63, 0x61, 0x74, 0x65, 0x67, 0x6f, 0x72, 0x79, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x0e, 0x32, 0x1c, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64,
+	0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x43, 0x61, 0x74, 0x65, 0x67, 0x6f,
+	0x72, 0x79, 0x52, 0x08, 0x63, 0x61, 0x74, 0x65, 0x67, 0x6f, 0x72, 0x79, 0x42, 0x08, 0x0a, 0x06,
+	0x5f, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x22, 0x59, 0x0a, 0x17, 0x47, 0x65, 0x74, 0x50, 0x6f, 0x70,
+	0x75, 0x6c, 0x61, 0x72, 0x52, 0x65, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x64, 0x52, 0x65, 0x73,
+	0x70, 0x12, 0x3e, 0x0a, 0x0a, 0x72, 0x65, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x64, 0x73, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1e, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e,
+	0x64, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x52, 0x65, 0x63, 0x6f, 0x6d,
+	0x6d, 0x65, 0x6e, 0x64, 0x73, 0x52, 0x0a, 0x72, 0x65, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x64,
+	0x73, 0x22, 0x76, 0x0a, 0x15, 0x47, 0x65, 0x74, 0x4c, 0x61, 0x74, 0x65, 0x73, 0x74, 0x52, 0x65,
+	0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x64, 0x52, 0x65, 0x71, 0x12, 0x19, 0x0a, 0x05, 0x6c, 0x69,
+	0x6d, 0x69, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x48, 0x00, 0x52, 0x05, 0x6c, 0x69, 0x6d,
+	0x69, 0x74, 0x88, 0x01, 0x01, 0x12, 0x38, 0x0a, 0x08, 0x63, 0x61, 0x74, 0x65, 0x67, 0x6f, 0x72,
+	0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x1c, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d,
+	0x69, 0x6e, 0x64, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x43, 0x61, 0x74,
+	0x65, 0x67, 0x6f, 0x72, 0x79, 0x52, 0x08, 0x63, 0x61, 0x74, 0x65, 0x67, 0x6f, 0x72, 0x79, 0x42,
+	0x08, 0x0a, 0x06, 0x5f, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x22, 0x58, 0x0a, 0x16, 0x47, 0x65, 0x74,
+	0x4c, 0x61, 0x74, 0x65, 0x73, 0x74, 0x52, 0x65, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x64, 0x52,
+	0x65, 0x73, 0x70, 0x12, 0x3e, 0x0a, 0x0a, 0x72, 0x65, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x64,
+	0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1e, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d,
+	0x69, 0x6e, 0x64, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x52, 0x65, 0x63,
+	0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x64, 0x73, 0x52, 0x0a, 0x72, 0x65, 0x63, 0x6f, 0x6d, 0x6d, 0x65,
+	0x6e, 0x64, 0x73, 0x22, 0x8e, 0x01, 0x0a, 0x15, 0x47, 0x65, 0x74, 0x52, 0x65, 0x63, 0x6f, 0x6d,
+	0x6d, 0x65, 0x6e, 0x64, 0x42, 0x79, 0x49, 0x74, 0x65, 0x6d, 0x52, 0x65, 0x71, 0x12, 0x16, 0x0a,
+	0x06, 0x69, 0x74, 0x65, 0x6d, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x69,
+	0x74, 0x65, 0x6d, 0x49, 0x64, 0x12, 0x19, 0x0a, 0x05, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x03, 0x48, 0x00, 0x52, 0x05, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x88, 0x01, 0x01,
+	0x12, 0x38, 0x0a, 0x08, 0x63, 0x61, 0x74, 0x65, 0x67, 0x6f, 0x72, 0x79, 0x18, 0x03, 0x20, 0x01,
+	0x28, 0x0e, 0x32, 0x1c, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2e, 0x63,
+	0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x43, 0x61, 0x74, 0x65, 0x67, 0x6f, 0x72, 0x79,
+	0x52, 0x08, 0x63, 0x61, 0x74, 0x65, 0x67, 0x6f, 0x72, 0x79, 0x42, 0x08, 0x0a, 0x06, 0x5f, 0x6c,
+	0x69, 0x6d, 0x69, 0x74, 0x22, 0x58, 0x0a, 0x16, 0x47, 0x65, 0x74, 0x52, 0x65, 0x63, 0x6f, 0x6d,
+	0x6d, 0x65, 0x6e, 0x64, 0x42, 0x79, 0x49, 0x74, 0x65, 0x6d, 0x52, 0x65, 0x73, 0x70, 0x12, 0x3e,
+	0x0a, 0x0a, 0x72, 0x65, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x64, 0x73, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x1e, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2e, 0x63,
+	0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x52, 0x65, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e,
+	0x64, 0x73, 0x52, 0x0a, 0x72, 0x65, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x64, 0x73, 0x22, 0x76,
+	0x0a, 0x15, 0x47, 0x65, 0x74, 0x52, 0x65, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x64, 0x42, 0x79,
+	0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x71, 0x12, 0x19, 0x0a, 0x05, 0x6c, 0x69, 0x6d, 0x69, 0x74,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x48, 0x00, 0x52, 0x05, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x88,
+	0x01, 0x01, 0x12, 0x38, 0x0a, 0x08, 0x63, 0x61, 0x74, 0x65, 0x67, 0x6f, 0x72, 0x79, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x0e, 0x32, 0x1c, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64,
+	0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x43, 0x61, 0x74, 0x65, 0x67, 0x6f,
+	0x72, 0x79, 0x52, 0x08, 0x63, 0x61, 0x74, 0x65, 0x67, 0x6f, 0x72, 0x79, 0x42, 0x08, 0x0a, 0x06,
+	0x5f, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x22, 0x58, 0x0a, 0x16, 0x47, 0x65, 0x74, 0x52, 0x65, 0x63,
+	0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x64, 0x42, 0x79, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70,
+	0x12, 0x3e, 0x0a, 0x0a, 0x72, 0x65, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x64, 0x73, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x1e, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64,
+	0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x52, 0x65, 0x63, 0x6f, 0x6d, 0x6d,
+	0x65, 0x6e, 0x64, 0x73, 0x52, 0x0a, 0x72, 0x65, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x64, 0x73,
+	0x42, 0x53, 0x5a, 0x51, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x43,
+	0x6c, 0x6f, 0x75, 0x64, 0x53, 0x74, 0x72, 0x69, 0x76, 0x65, 0x72, 0x2f, 0x63, 0x6c, 0x6f, 0x75,
+	0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2d, 0x63, 0x6f, 0x72, 0x65, 0x2d, 0x61, 0x70, 0x69, 0x2f, 0x62,
+	0x69, 0x7a, 0x2f, 0x61, 0x70, 0x70, 0x6c, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2f, 0x64,
+	0x74, 0x6f, 0x2f, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2f, 0x63, 0x6f, 0x72,
+	0x65, 0x5f, 0x61, 0x70, 0x69, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -5476,7 +6045,7 @@ func file_cloudmind_core_api_content_proto_rawDescGZIP() []byte {
 	return file_cloudmind_core_api_content_proto_rawDescData
 }
 
-var file_cloudmind_core_api_content_proto_msgTypes = make([]protoimpl.MessageInfo, 78)
+var file_cloudmind_core_api_content_proto_msgTypes = make([]protoimpl.MessageInfo, 88)
 var file_cloudmind_core_api_content_proto_goTypes = []interface{}{
 	(*UpdateUserReq)(nil),              // 0: cloudmind.core_api.UpdateUserReq
 	(*UpdateUserResp)(nil),             // 1: cloudmind.core_api.UpdateUserResp
@@ -5556,40 +6125,60 @@ var file_cloudmind_core_api_content_proto_goTypes = []interface{}{
 	(*GetOwnPostResp)(nil),             // 75: cloudmind.core_api.GetOwnPostResp
 	(*GetOwnPostsReq)(nil),             // 76: cloudmind.core_api.GetOwnPostsReq
 	(*GetOwnPostsResp)(nil),            // 77: cloudmind.core_api.GetOwnPostsResp
-	(*User)(nil),                       // 78: cloudmind.core_api.User
-	(*PrivateFile)(nil),                // 79: cloudmind.core_api.PrivateFile
-	(*PublicFile)(nil),                 // 80: cloudmind.core_api.PublicFile
-	(DocumentType)(0),                  // 81: cloudmind.core_api.DocumentType
-	(IsDel)(0),                         // 82: cloudmind.core_api.IsDel
-	(*Zone)(nil),                       // 83: cloudmind.core_api.Zone
-	(*ShareCode)(nil),                  // 84: cloudmind.core_api.ShareCode
-	(*ShareFile)(nil),                  // 85: cloudmind.core_api.ShareFile
-	(*Post)(nil),                       // 86: cloudmind.core_api.Post
-	(*OwnPost)(nil),                    // 87: cloudmind.core_api.OwnPost
+	(*CreateFeedBackReq)(nil),          // 78: cloudmind.core_api.CreateFeedBackReq
+	(*CreateFeedBackResp)(nil),         // 79: cloudmind.core_api.CreateFeedBackResp
+	(*GetPopularRecommendReq)(nil),     // 80: cloudmind.core_api.GetPopularRecommendReq
+	(*GetPopularRecommendResp)(nil),    // 81: cloudmind.core_api.GetPopularRecommendResp
+	(*GetLatestRecommendReq)(nil),      // 82: cloudmind.core_api.GetLatestRecommendReq
+	(*GetLatestRecommendResp)(nil),     // 83: cloudmind.core_api.GetLatestRecommendResp
+	(*GetRecommendByItemReq)(nil),      // 84: cloudmind.core_api.GetRecommendByItemReq
+	(*GetRecommendByItemResp)(nil),     // 85: cloudmind.core_api.GetRecommendByItemResp
+	(*GetRecommendByUserReq)(nil),      // 86: cloudmind.core_api.GetRecommendByUserReq
+	(*GetRecommendByUserResp)(nil),     // 87: cloudmind.core_api.GetRecommendByUserResp
+	(*User)(nil),                       // 88: cloudmind.core_api.User
+	(*PrivateFile)(nil),                // 89: cloudmind.core_api.PrivateFile
+	(*PublicFile)(nil),                 // 90: cloudmind.core_api.PublicFile
+	(DocumentType)(0),                  // 91: cloudmind.core_api.DocumentType
+	(IsDel)(0),                         // 92: cloudmind.core_api.IsDel
+	(*Zone)(nil),                       // 93: cloudmind.core_api.Zone
+	(*ShareCode)(nil),                  // 94: cloudmind.core_api.ShareCode
+	(*ShareFile)(nil),                  // 95: cloudmind.core_api.ShareFile
+	(*Post)(nil),                       // 96: cloudmind.core_api.Post
+	(*OwnPost)(nil),                    // 97: cloudmind.core_api.OwnPost
+	(Category)(0),                      // 98: cloudmind.core_api.Category
+	(*Recommends)(nil),                 // 99: cloudmind.core_api.Recommends
 }
 var file_cloudmind_core_api_content_proto_depIdxs = []int32{
-	78, // 0: cloudmind.core_api.SearchUserResp.users:type_name -> cloudmind.core_api.User
-	79, // 1: cloudmind.core_api.GetPrivateFileResp.file:type_name -> cloudmind.core_api.PrivateFile
-	80, // 2: cloudmind.core_api.GetPublicFileResp.file:type_name -> cloudmind.core_api.PublicFile
-	79, // 3: cloudmind.core_api.GetPrivateFilesResp.files:type_name -> cloudmind.core_api.PrivateFile
-	80, // 4: cloudmind.core_api.GetPublicFilesResp.files:type_name -> cloudmind.core_api.PublicFile
-	79, // 5: cloudmind.core_api.GetRecycleBinFilesResp.files:type_name -> cloudmind.core_api.PrivateFile
-	79, // 6: cloudmind.core_api.GetFileBySharingCodeResp.files:type_name -> cloudmind.core_api.PrivateFile
-	81, // 7: cloudmind.core_api.SaveFileToPrivateSpaceReq.documentType:type_name -> cloudmind.core_api.DocumentType
-	82, // 8: cloudmind.core_api.DeleteFileReq.deleteType:type_name -> cloudmind.core_api.IsDel
-	83, // 9: cloudmind.core_api.GetZoneResp.zone:type_name -> cloudmind.core_api.Zone
-	83, // 10: cloudmind.core_api.UpdateZoneReq.zone:type_name -> cloudmind.core_api.Zone
-	84, // 11: cloudmind.core_api.GetShareListResp.shareCodes:type_name -> cloudmind.core_api.ShareCode
-	85, // 12: cloudmind.core_api.ParsingShareCodeResp.shareFile:type_name -> cloudmind.core_api.ShareFile
-	78, // 13: cloudmind.core_api.GetOtherPostResp.author:type_name -> cloudmind.core_api.User
-	86, // 14: cloudmind.core_api.GetOtherPostsResp.posts:type_name -> cloudmind.core_api.Post
-	78, // 15: cloudmind.core_api.GetOwnPostResp.author:type_name -> cloudmind.core_api.User
-	87, // 16: cloudmind.core_api.GetOwnPostsResp.posts:type_name -> cloudmind.core_api.OwnPost
-	17, // [17:17] is the sub-list for method output_type
-	17, // [17:17] is the sub-list for method input_type
-	17, // [17:17] is the sub-list for extension type_name
-	17, // [17:17] is the sub-list for extension extendee
-	0,  // [0:17] is the sub-list for field type_name
+	88, // 0: cloudmind.core_api.SearchUserResp.users:type_name -> cloudmind.core_api.User
+	89, // 1: cloudmind.core_api.GetPrivateFileResp.file:type_name -> cloudmind.core_api.PrivateFile
+	90, // 2: cloudmind.core_api.GetPublicFileResp.file:type_name -> cloudmind.core_api.PublicFile
+	89, // 3: cloudmind.core_api.GetPrivateFilesResp.files:type_name -> cloudmind.core_api.PrivateFile
+	90, // 4: cloudmind.core_api.GetPublicFilesResp.files:type_name -> cloudmind.core_api.PublicFile
+	89, // 5: cloudmind.core_api.GetRecycleBinFilesResp.files:type_name -> cloudmind.core_api.PrivateFile
+	89, // 6: cloudmind.core_api.GetFileBySharingCodeResp.files:type_name -> cloudmind.core_api.PrivateFile
+	91, // 7: cloudmind.core_api.SaveFileToPrivateSpaceReq.documentType:type_name -> cloudmind.core_api.DocumentType
+	92, // 8: cloudmind.core_api.DeleteFileReq.deleteType:type_name -> cloudmind.core_api.IsDel
+	93, // 9: cloudmind.core_api.GetZoneResp.zone:type_name -> cloudmind.core_api.Zone
+	93, // 10: cloudmind.core_api.UpdateZoneReq.zone:type_name -> cloudmind.core_api.Zone
+	94, // 11: cloudmind.core_api.GetShareListResp.shareCodes:type_name -> cloudmind.core_api.ShareCode
+	95, // 12: cloudmind.core_api.ParsingShareCodeResp.shareFile:type_name -> cloudmind.core_api.ShareFile
+	88, // 13: cloudmind.core_api.GetOtherPostResp.author:type_name -> cloudmind.core_api.User
+	96, // 14: cloudmind.core_api.GetOtherPostsResp.posts:type_name -> cloudmind.core_api.Post
+	88, // 15: cloudmind.core_api.GetOwnPostResp.author:type_name -> cloudmind.core_api.User
+	97, // 16: cloudmind.core_api.GetOwnPostsResp.posts:type_name -> cloudmind.core_api.OwnPost
+	98, // 17: cloudmind.core_api.GetPopularRecommendReq.category:type_name -> cloudmind.core_api.Category
+	99, // 18: cloudmind.core_api.GetPopularRecommendResp.recommends:type_name -> cloudmind.core_api.Recommends
+	98, // 19: cloudmind.core_api.GetLatestRecommendReq.category:type_name -> cloudmind.core_api.Category
+	99, // 20: cloudmind.core_api.GetLatestRecommendResp.recommends:type_name -> cloudmind.core_api.Recommends
+	98, // 21: cloudmind.core_api.GetRecommendByItemReq.category:type_name -> cloudmind.core_api.Category
+	99, // 22: cloudmind.core_api.GetRecommendByItemResp.recommends:type_name -> cloudmind.core_api.Recommends
+	98, // 23: cloudmind.core_api.GetRecommendByUserReq.category:type_name -> cloudmind.core_api.Category
+	99, // 24: cloudmind.core_api.GetRecommendByUserResp.recommends:type_name -> cloudmind.core_api.Recommends
+	25, // [25:25] is the sub-list for method output_type
+	25, // [25:25] is the sub-list for method input_type
+	25, // [25:25] is the sub-list for extension type_name
+	25, // [25:25] is the sub-list for extension extendee
+	0,  // [0:25] is the sub-list for field type_name
 }
 
 
@@ -6535,6 +7124,126 @@ func file_cloudmind_core_api_content_proto_init() {
 				return nil
 			}
 		}
+		file_cloudmind_core_api_content_proto_msgTypes[78].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreateFeedBackReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[79].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreateFeedBackResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[80].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetPopularRecommendReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[81].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetPopularRecommendResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[82].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetLatestRecommendReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[83].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetLatestRecommendResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[84].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetRecommendByItemReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[85].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetRecommendByItemResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[86].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetRecommendByUserReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[87].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetRecommendByUserResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	file_cloudmind_core_api_content_proto_msgTypes[2].OneofWrappers = []interface{}{}
 	file_cloudmind_core_api_content_proto_msgTypes[8].OneofWrappers = []interface{}{}
@@ -6545,13 +7254,17 @@ func file_cloudmind_core_api_content_proto_init() {
 	file_cloudmind_core_api_content_proto_msgTypes[42].OneofWrappers = []interface{}{}
 	file_cloudmind_core_api_content_proto_msgTypes[72].OneofWrappers = []interface{}{}
 	file_cloudmind_core_api_content_proto_msgTypes[76].OneofWrappers = []interface{}{}
+	file_cloudmind_core_api_content_proto_msgTypes[80].OneofWrappers = []interface{}{}
+	file_cloudmind_core_api_content_proto_msgTypes[82].OneofWrappers = []interface{}{}
+	file_cloudmind_core_api_content_proto_msgTypes[84].OneofWrappers = []interface{}{}
+	file_cloudmind_core_api_content_proto_msgTypes[86].OneofWrappers = []interface{}{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_cloudmind_core_api_content_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   78,
+			NumMessages:   88,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

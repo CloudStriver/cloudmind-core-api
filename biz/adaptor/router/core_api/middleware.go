@@ -445,3 +445,28 @@ func _updatenotificationsMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _createfeedbackMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getlatestrecommendMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getpopularrecommendMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getrecommendbyitemMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getrecommendbyuserMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
