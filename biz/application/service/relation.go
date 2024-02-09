@@ -4,9 +4,9 @@ import (
 	"context"
 	"github.com/CloudStriver/cloudmind-core-api/biz/adaptor"
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
+	"github.com/CloudStriver/cloudmind-core-api/biz/domain/service"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/convertor"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
@@ -34,9 +34,11 @@ var RelationServiceSet = wire.NewSet(
 )
 
 type RelationService struct {
-	Config               *config.Config
-	PlatFormRelation     platform_relation.IPlatFormRelation
-	CloudMindContent     cloudmind_content.ICloudMindContent
+	Config            *config.Config
+	PlatFormRelation  platform_relation.IPlatFormRelation
+	CloudMindContent  cloudmind_content.ICloudMindContent
+	PostDomainService service.IPostDomainService
+
 	CreateNotificationKq *kq.CreateNotificationsKq
 }
 
@@ -71,11 +73,42 @@ func (s *RelationService) GetFromRelations(ctx context.Context, req *core_api.Ge
 				if err != nil {
 					return err
 				}
-				resp.Users[i] = convertor.UserDetailToUser(user.User)
+
+				resp.Users[i] = &core_api.User{
+					UserId: relation.ToId,
+					Name:   user.Name,
+					Url:    user.Url,
+				}
 				return nil
 			}
 		})...)
 		if err != nil {
+			return resp, err
+		}
+	case core_api.TargetType_PostType:
+		resp.Posts = make([]*core_api.OwnPost, len(getFromRelationsResp.Relations))
+		if err = mr.Finish(lo.Map[*relation.Relation](getFromRelationsResp.Relations, func(relation *relation.Relation, i int) func() error {
+			return func() error {
+				resp.Posts[i] = &core_api.OwnPost{}
+				if err = mr.Finish(func() error {
+					post, err := s.CloudMindContent.GetPost(ctx, &content.GetPostReq{
+						PostId: relation.ToId,
+					})
+					resp.Posts[i].PostId = relation.ToId
+					resp.Posts[i].Title = post.Title
+					resp.Posts[i].Text = post.Text
+					resp.Posts[i].Url = post.Url
+					resp.Posts[i].Tags = post.Tags
+					return err
+				}, func() error {
+					s.PostDomainService.LoadLikeCount(ctx, &resp.Posts[i].LikeCount, relation.ToId)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}
+		})...); err != nil {
 			return resp, err
 		}
 	default:
@@ -115,7 +148,11 @@ func (s *RelationService) GetToRelations(ctx context.Context, req *core_api.GetT
 				if err != nil {
 					return err
 				}
-				resp.Users[i] = convertor.UserDetailToUser(user.User)
+				resp.Users[i] = &core_api.User{
+					UserId: relation.FromId,
+					Name:   user.Name,
+					Url:    user.Url,
+				}
 				return nil
 			}
 		})...)
@@ -129,17 +166,16 @@ func (s *RelationService) GetToRelations(ctx context.Context, req *core_api.GetT
 }
 
 func (s *RelationService) DeleteRelation(ctx context.Context, req *core_api.DeleteRelationReq) (resp *core_api.DeleteRelationResp, err error) {
-	resp = new(core_api.DeleteRelationResp)
 	user := adaptor.ExtractUserMeta(ctx)
-	if user.GetUserId() != req.RelationInfo.FromId {
-		return resp, consts.ErrNotPermission
+	if user.GetUserId() == "" {
+		return resp, consts.ErrNotAuthentication
 	}
 	if _, err = s.PlatFormRelation.DeleteRelation(ctx, &relation.DeleteRelationReq{
-		FromType:     req.RelationInfo.FromType,
-		FromId:       req.RelationInfo.FromId,
-		ToType:       req.RelationInfo.ToType,
-		ToId:         req.RelationInfo.ToId,
-		RelationType: req.RelationInfo.RelationType,
+		FromType:     consts.RelationUserType,
+		FromId:       user.UserId,
+		ToType:       req.ToType,
+		ToId:         req.ToId,
+		RelationType: req.RelationType,
 	}); err != nil {
 		return resp, err
 	}
@@ -160,36 +196,103 @@ func (s *RelationService) GetRelation(ctx context.Context, req *core_api.GetRela
 	if err != nil {
 		return resp, err
 	}
+
 	resp.Ok = getRelationResp.Ok
 	return resp, nil
 }
 
 func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.CreateRelationReq) (resp *core_api.CreateRelationResp, err error) {
-	resp = new(core_api.CreateRelationResp)
 	user := adaptor.ExtractUserMeta(ctx)
-	if user.GetUserId() != req.Relation.FromId {
-		return resp, consts.ErrNotPermission
+	if user.GetUserId() == "" {
+		return resp, consts.ErrNotAuthentication
 	}
 
 	if _, err = s.PlatFormRelation.CreateRelation(ctx, &relation.CreateRelationReq{
-		FromType:     req.Relation.FromType,
-		FromId:       req.Relation.FromId,
-		ToType:       req.Relation.ToType,
-		ToId:         req.Relation.ToId,
-		RelationType: req.Relation.RelationType,
+		FromType:     consts.RelationUserType,
+		FromId:       user.UserId,
+		ToType:       int64(req.ToType),
+		ToId:         req.ToId,
+		RelationType: int64(req.RelationType),
 	}); err != nil {
 		return resp, err
 	}
 
-	if err = s.CreateNotificationKq.Add(req.Relation.ToId, &message.CreateNotificationsMessage{
-		Notification: &system.Notification{
-			TargetUserId: req.Relation.ToId,
-			SourceUserId: req.Relation.FromId,
-			TargetType:   req.Relation.FromType,
-			Type:         req.Relation.RelationType,
+	userId := ""
+	switch req.ToType {
+	case core_api.TargetType_UserType:
+		userId = req.ToId
+	case core_api.TargetType_FileType:
+		getFileResp, err := s.CloudMindContent.GetFile(ctx, &content.GetFileReq{
+			FilterOptions: &content.FileFilterOptions{
+				OnlyFileId: lo.ToPtr(req.ToId),
+			},
+			IsGetSize: false,
+		})
+		if err != nil {
+			return resp, err
+		}
+		userId = getFileResp.File.UserId
+	case core_api.TargetType_ProductType:
+		getProductResp, err := s.CloudMindContent.GetProduct(ctx, &content.GetProductReq{
+			ProductFilterOptions: &content.ProductFilterOptions{
+				OnlyProductId: lo.ToPtr(req.ToId),
+			},
+		})
+		if err != nil {
+			return resp, err
+		}
+		userId = getProductResp.Product.UserId
+	case core_api.TargetType_PostType:
+		getPostResp, err := s.CloudMindContent.GetPost(ctx, &content.GetPostReq{
+			PostId: req.ToId,
+		})
+		if err != nil {
+			return resp, err
+		}
+		userId = getPostResp.UserId
+	}
+	if err = s.CreateNotificationKq.Add(req.ToId, &message.CreateNotificationsMessage{
+		Notification: &system.NotificationInfo{
+			TargetUserId:    userId,
+			SourceUserId:    user.UserId,
+			SourceContentId: req.ToId,
+			TargetType:      int64(req.ToType),
+			Type:            int64(req.RelationType),
+			Text:            getNotificationText(req.RelationType, req.ToType),
+			IsRead:          false,
 		},
 	}); err != nil {
 		return resp, err
 	}
 	return resp, nil
+}
+
+func getNotificationText(relationType core_api.RelationType, targetType core_api.TargetType) (s string) {
+	switch relationType {
+	case core_api.RelationType_FollowType:
+		s += "关注了"
+	case core_api.RelationType_CollectType:
+		s += "收藏了"
+	case core_api.RelationType_LikeType:
+		s += "点赞了"
+	case core_api.RelationType_ShareType:
+		s += "分享了"
+	case core_api.RelationType_CommentType:
+		s += "评论了"
+	case core_api.RelationType_ViewType:
+		s += "查看了"
+	default:
+		return s
+	}
+	switch targetType {
+	case core_api.TargetType_UserType:
+		s += "你"
+	case core_api.TargetType_FileType:
+		s += "你的文件"
+	case core_api.TargetType_ProductType:
+		s += "你的商品"
+	case core_api.TargetType_PostType:
+		s += "你的帖子"
+	}
+	return s
 }

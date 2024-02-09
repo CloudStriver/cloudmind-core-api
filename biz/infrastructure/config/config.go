@@ -20,6 +20,7 @@ type Auth struct {
 type OauthConf struct {
 	ClientId string
 	Secret   string
+	Redirect string
 }
 
 type KqConfig struct {
@@ -35,8 +36,8 @@ type Config struct {
 	GiteeConf             OauthConf
 	Redis                 redis.RedisConf
 	CreateNotificationsKq KqConfig
-	ReadNotificationsKq   KqConfig
-	CleanNotificationKq   KqConfig
+	UpdateNotificationsKq KqConfig
+	DeleteNotificationsKq KqConfig
 	BaseUrl               string
 }
 

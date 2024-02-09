@@ -28,6 +28,8 @@ const (
 	BatcherInterval     = time.Second
 	PostPublicStatus    = int64(1)
 	PostPrivateStatus   = int64(2)
+	NotificationRead    = true
+	NotificationNotRead = false
 	ObjectFile          = int64(1)
 	FolderSize          = int64(-1)
 )

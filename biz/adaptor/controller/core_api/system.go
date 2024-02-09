@@ -4,6 +4,8 @@ package core_api
 
 import (
 	"context"
+	"github.com/CloudStriver/cloudmind-core-api/biz/adaptor"
+	"github.com/CloudStriver/cloudmind-core-api/provider"
 
 	core_api "github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/cloudwego/hertz/pkg/app"
@@ -22,8 +24,9 @@ func GetNotifications(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.GetNotificationsResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.NotificationService.GetNotifications(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // GetNotificationCount .
@@ -38,8 +41,9 @@ func GetNotificationCount(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.GetNotificationCountResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.NotificationService.GetNotificationCount(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // DeleteNotifications .
@@ -52,10 +56,10 @@ func DeleteNotifications(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-
 	resp := new(core_api.DeleteNotificationsResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.NotificationService.DeleteNotifications(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // UpdateNotifications .
@@ -70,6 +74,7 @@ func UpdateNotifications(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.UpdateNotificationsResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.NotificationService.UpdateNotifications(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }

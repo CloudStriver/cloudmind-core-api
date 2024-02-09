@@ -8,6 +8,7 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_comment"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_system"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/store/redis"
 	"github.com/google/wire"
@@ -25,13 +26,14 @@ func Init() {
 
 // Provider 提供controller依赖的对象
 type Provider struct {
-	Config          *config.Config
-	FileService     service.IFileService
-	PostService     service.IPostService
-	AuthService     service.IAuthService
-	RelationService service.IRelationService
-	UserService     service.IUserService
-	ZoneService     service.IZoneService
+	Config              *config.Config
+	FileService         service.IFileService
+	PostService         service.IPostService
+	AuthService         service.IAuthService
+	RelationService     service.IRelationService
+	UserService         service.IUserService
+	ZoneService         service.IZoneService
+	NotificationService service.INotificationService
 }
 
 func Get() *Provider {
@@ -42,6 +44,7 @@ var RPCSet = wire.NewSet(
 	cloudmind_content.CloudMindContentSet,
 	cloudmind_sts.CloudMindStsSet,
 	platform_relation.PlatFormRelationSet,
+	cloudmind_system.CloudMindSystemSet,
 	platform_comment.PlatFormCommentSet,
 )
 
@@ -52,6 +55,7 @@ var ApplicationSet = wire.NewSet(
 	service.PostServiceSet,
 	service.UserServiceSet,
 	service.ZoneServiceSet,
+	service.NotificationServiceSet,
 )
 
 var DomainSet = wire.NewSet(
@@ -63,8 +67,8 @@ var InfrastructureSet = wire.NewSet(
 	config.NewConfig,
 	redis.NewRedis,
 	kq.NewCreateNotificationsKq,
-	kq.NewCleanNotificationKq,
-	kq.NewReadNotificationsKq,
+	kq.NewDeleteNotificationsKq,
+	kq.NewUpdateNotificationsKq,
 	RPCSet,
 )
 
