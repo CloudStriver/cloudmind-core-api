@@ -9,6 +9,7 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-mq/app/util/message"
+	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/basic"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
 	"github.com/google/wire"
 	"github.com/samber/lo"
@@ -39,19 +40,21 @@ func (s *RecommendService) GetLatestRecommend(ctx context.Context, req *core_api
 	resp = new(core_api.GetLatestRecommendResp)
 	resp.Recommends = new(core_api.Recommends)
 	user := adaptor.ExtractUserMeta(ctx)
+	userId := user.GetUserId()
+	if userId == "" {
+		userId = "default"
+	}
 	getLatestRecommendResp, err := s.CloudMindContent.GetLatestRecommend(ctx, &content.GetLatestRecommendReq{
-		UserId:   user.GetUserId(),
+		UserId:   userId,
 		Limit:    req.Limit,
 		Category: int64(req.Category),
 	})
 	if err != nil {
 		return resp, err
 	}
-
-	if err = s.GetItemByItemId(ctx, user.GetUserId(), req.Category, getLatestRecommendResp.ItemIds, resp.Recommends); err != nil {
+	if err = s.GetItemByItemId(ctx, userId, req.Category, getLatestRecommendResp.ItemIds, resp.Recommends); err != nil {
 		return resp, err
 	}
-
 	return resp, nil
 }
 
@@ -59,8 +62,12 @@ func (s *RecommendService) GetPopularRecommend(ctx context.Context, req *core_ap
 	resp = new(core_api.GetPopularRecommendResp)
 	resp.Recommends = new(core_api.Recommends)
 	user := adaptor.ExtractUserMeta(ctx)
+	userId := user.GetUserId()
+	if userId == "" {
+		userId = "default"
+	}
 	getPopularRecommendResp, err := s.CloudMindContent.GetPopularRecommend(ctx, &content.GetPopularRecommendReq{
-		UserId:   user.GetUserId(),
+		UserId:   userId,
 		Limit:    req.Limit,
 		Category: int64(req.Category),
 	})
@@ -68,7 +75,7 @@ func (s *RecommendService) GetPopularRecommend(ctx context.Context, req *core_ap
 		return resp, err
 	}
 
-	if err = s.GetItemByItemId(ctx, user.GetUserId(), req.Category, getPopularRecommendResp.ItemIds, resp.Recommends); err != nil {
+	if err = s.GetItemByItemId(ctx, userId, req.Category, getPopularRecommendResp.ItemIds, resp.Recommends); err != nil {
 		return resp, err
 	}
 
@@ -93,6 +100,10 @@ func (s *RecommendService) GetRecommendByItem(ctx context.Context, req *core_api
 	resp = new(core_api.GetRecommendByItemResp)
 	resp.Recommends = new(core_api.Recommends)
 	user := adaptor.ExtractUserMeta(ctx)
+	userId := user.GetUserId()
+	if userId == "" {
+		userId = "default"
+	}
 	getRecommendByItemResp, err := s.CloudMindContent.GetRecommendByItem(ctx, &content.GetRecommendByItemReq{
 		ItemId:   req.ItemId,
 		Limit:    req.Limit,
@@ -102,7 +113,7 @@ func (s *RecommendService) GetRecommendByItem(ctx context.Context, req *core_api
 		return resp, err
 	}
 
-	if err = s.GetItemByItemId(ctx, user.GetUserId(), req.Category, getRecommendByItemResp.ItemIds, resp.Recommends); err != nil {
+	if err = s.GetItemByItemId(ctx, userId, req.Category, getRecommendByItemResp.ItemIds, resp.Recommends); err != nil {
 		return resp, err
 	}
 
@@ -113,8 +124,12 @@ func (s *RecommendService) GetRecommendByUser(ctx context.Context, req *core_api
 	resp = new(core_api.GetRecommendByUserResp)
 	resp.Recommends = new(core_api.Recommends)
 	user := adaptor.ExtractUserMeta(ctx)
+	userId := user.GetUserId()
+	if userId == "" {
+		userId = "default"
+	}
 	getRecommendByItemResp, err := s.CloudMindContent.GetRecommendByUser(ctx, &content.GetRecommendByUserReq{
-		UserId:   user.GetUserId(),
+		UserId:   userId,
 		Limit:    req.Limit,
 		Category: int64(req.Category),
 	})
@@ -122,7 +137,7 @@ func (s *RecommendService) GetRecommendByUser(ctx context.Context, req *core_api
 		return resp, err
 	}
 
-	if err = s.GetItemByItemId(ctx, user.GetUserId(), req.Category, getRecommendByItemResp.ItemIds, resp.Recommends); err != nil {
+	if err = s.GetItemByItemId(ctx, userId, req.Category, getRecommendByItemResp.ItemIds, resp.Recommends); err != nil {
 		return resp, err
 	}
 
@@ -132,6 +147,30 @@ func (s *RecommendService) GetRecommendByUser(ctx context.Context, req *core_api
 func (s *RecommendService) GetItemByItemId(ctx context.Context, userId string, category core_api.Category, itemIds []string, recommends *core_api.Recommends) (err error) {
 	switch category {
 	case core_api.Category_UserCategory:
+		getUsersResp, err := s.CloudMindContent.GetUsers(ctx, &content.GetUsersReq{
+			UserFilterOptions: &content.UserFilterOptions{
+				UserIds: itemIds,
+			},
+			PaginationOptions: &basic.PaginationOptions{
+				Limit: lo.ToPtr(int64(len(itemIds))),
+			},
+		})
+		if err != nil {
+			return err
+		}
+		recommends.Users = make([]*core_api.User, len(getUsersResp.Users))
+		if err = mr.Finish(lo.Map(getUsersResp.Users, func(user *content.User, i int) func() error {
+			return func() error {
+				recommends.Users[i] = &core_api.User{
+					UserId: user.UserId,
+					Name:   user.Name,
+					Url:    user.Url,
+				}
+				return nil
+			}
+		})...); err != nil {
+			return err
+		}
 	case core_api.Category_FileCategory:
 	case core_api.Category_ProductCategory:
 	case core_api.Category_PostCategory:
@@ -139,7 +178,9 @@ func (s *RecommendService) GetItemByItemId(ctx context.Context, userId string, c
 			PostFilterOptions: &content.PostFilterOptions{
 				OnlyPostIds: itemIds,
 			},
-			PaginationOptions: nil,
+			PaginationOptions: &basic.PaginationOptions{
+				Limit: lo.ToPtr(int64(len(itemIds))),
+			},
 		})
 		if err != nil {
 			return err

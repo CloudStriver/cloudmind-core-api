@@ -470,3 +470,108 @@ func _getrecommendbyuserMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _commentMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _createcommentMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _createcommentsubjectMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _deletecommentMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _deletecommentsubjectMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getcommentMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getcommentsubjectMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getcommentsMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _setcommentattrsMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _setcommentstateMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _setcommentsubjectattrsMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _setcommentsubjectstateMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _updatecommentMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _updatecommentsubjectMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _createobjectMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _createobjectsMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _deleteobjectMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getlabelsMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getlabelsinbatchMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getobjectsMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _updateobjectMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}

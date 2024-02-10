@@ -7,9 +7,11 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/utils/oauth"
+	"github.com/CloudStriver/cloudmind-mq/app/util/message"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/sts"
 	"github.com/golang-jwt/jwt/v4"
@@ -41,6 +43,7 @@ type AuthService struct {
 	Config           *config.Config
 	CloudMindContent cloudmind_content.ICloudMindContent
 	CloudMindSts     cloudmind_sts.ICloudMindSts
+	CreateItemsKq    *kq.CreateItemsKq
 	Redis            *redis.Redis
 }
 
@@ -210,6 +213,19 @@ func (s *AuthService) Register(ctx context.Context, req *core_api.RegisterReq) (
 		return resp, consts.ErrAuthentication
 	}
 	resp.UserId = createAuthResp.UserId
+
+	if err = s.CreateItemsKq.Add(createAuthResp.UserId, &message.CreateItemsMessage{
+		Item: &content.Item{
+			ItemId:   createAuthResp.UserId,
+			IsHidden: false,
+			Labels:   nil,
+			Category: int64(core_api.Category_UserCategory),
+			Comment:  req.Name,
+		},
+	}); err != nil {
+		return resp, err
+	}
+
 	return resp, nil
 }
 

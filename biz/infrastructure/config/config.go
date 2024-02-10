@@ -40,6 +40,8 @@ type Config struct {
 	DeleteNotificationsKq KqConfig
 	CreateItemsKq         KqConfig
 	CreateFeedBacksKq     KqConfig
+	UpdateItemKq          KqConfig
+	DeleteItemKq          KqConfig
 	BaseUrl               string
 }
 

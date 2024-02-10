@@ -51,25 +51,34 @@ func NewProvider() (*Provider, error) {
 		CloudMindUser:    cloudMindContent,
 		PlatformRelation: platFormRelation,
 	}
+	createItemsKq := kq.NewCreateItemsKq(configConfig)
+	updateItemKq := kq.NewUpdateItemKq(configConfig)
+	deleteItemKq := kq.NewDeleteItemKq(configConfig)
 	postService := &service2.PostService{
 		Config:            configConfig,
 		CloudMindContent:  cloudMindContent,
 		PostDomainService: postDomainService,
+		CreateItemsKq:     createItemsKq,
+		UpdateItemKq:      updateItemKq,
+		DeleteItemKq:      deleteItemKq,
 	}
 	redisRedis := redis.NewRedis(configConfig)
 	authService := &service2.AuthService{
 		Config:           configConfig,
 		CloudMindContent: cloudMindContent,
 		CloudMindSts:     cloudMindSts,
+		CreateItemsKq:    createItemsKq,
 		Redis:            redisRedis,
 	}
 	createNotificationsKq := kq.NewCreateNotificationsKq(configConfig)
+	createFeedBacksKq := kq.NewCreateFeedBacksKq(configConfig)
 	relationService := &service2.RelationService{
 		Config:               configConfig,
 		PlatFormRelation:     platFormRelation,
 		CloudMindContent:     cloudMindContent,
 		PostDomainService:    postDomainService,
 		CreateNotificationKq: createNotificationsKq,
+		CreateFeedBacksKq:    createFeedBacksKq,
 	}
 	userService := &service2.UserService{
 		Config:           configConfig,
@@ -93,7 +102,6 @@ func NewProvider() (*Provider, error) {
 		DeleteNotificationsKq: deleteNotificationsKq,
 		Redis:                 redisRedis,
 	}
-	createFeedBacksKq := kq.NewCreateFeedBacksKq(configConfig)
 	recommendService := &service2.RecommendService{
 		Config:            configConfig,
 		CloudMindContent:  cloudMindContent,

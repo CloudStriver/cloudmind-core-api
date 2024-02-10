@@ -30,6 +30,22 @@ func Register(r *server.Hertz) {
 		_auth.POST("/setPasswordByPassword", append(_setpasswordbypasswordMw(), core_api.SetPasswordByPassword)...)
 	}
 	{
+		_comment := root.Group("/comment", _commentMw()...)
+		_comment.POST("/createComment", append(_createcommentMw(), core_api.CreateComment)...)
+		_comment.POST("/createCommentSubject", append(_createcommentsubjectMw(), core_api.CreateCommentSubject)...)
+		_comment.POST("/deleteComment", append(_deletecommentMw(), core_api.DeleteComment)...)
+		_comment.POST("/deleteCommentSubject", append(_deletecommentsubjectMw(), core_api.DeleteCommentSubject)...)
+		_comment.GET("/getComment", append(_getcommentMw(), core_api.GetComment)...)
+		_comment.GET("/getCommentSubject", append(_getcommentsubjectMw(), core_api.GetCommentSubject)...)
+		_comment.GET("/getComments", append(_getcommentsMw(), core_api.GetComments)...)
+		_comment.POST("/setCommentAttrs", append(_setcommentattrsMw(), core_api.SetCommentAttrs)...)
+		_comment.POST("/setCommentState", append(_setcommentstateMw(), core_api.SetCommentState)...)
+		_comment.POST("/setCommentSubjectAttrs", append(_setcommentsubjectattrsMw(), core_api.SetCommentSubjectAttrs)...)
+		_comment.POST("/setCommentSubjectState", append(_setcommentsubjectstateMw(), core_api.SetCommentSubjectState)...)
+		_comment.POST("/updateComment", append(_updatecommentMw(), core_api.UpdateComment)...)
+		_comment.POST("/updateCommentSubject", append(_updatecommentsubjectMw(), core_api.UpdateCommentSubject)...)
+	}
+	{
 		_content := root.Group("/content", _contentMw()...)
 		_content.POST("/addFileToPublicSpace", append(_addfiletopublicspaceMw(), core_api.AddFileToPublicSpace)...)
 		_content.POST("/askDownloadFile", append(_askdownloadfileMw(), core_api.AskDownloadFile)...)
@@ -72,6 +88,20 @@ func Register(r *server.Hertz) {
 		_content.POST("/updatePost", append(_updatepostMw(), core_api.UpdatePost)...)
 		_content.POST("/updateUser", append(_updateuserMw(), core_api.UpdateUser)...)
 		_content.POST("/updateZone", append(_updatezoneMw(), core_api.UpdateZone)...)
+	}
+	{
+		_label := root.Group("/label", _labelMw()...)
+		_label.POST("/createLabel", append(_createlabelMw(), core_api.CreateLabel)...)
+		_label.POST("/createObject", append(_createobjectMw(), core_api.CreateObject)...)
+		_label.POST("/createObjects", append(_createobjectsMw(), core_api.CreateObjects)...)
+		_label.POST("/deleteLabel", append(_deletelabelMw(), core_api.DeleteLabel)...)
+		_label.POST("/deleteObject", append(_deleteobjectMw(), core_api.DeleteObject)...)
+		_label.GET("/getLabel", append(_getlabelMw(), core_api.GetLabel)...)
+		_label.GET("/getLabels", append(_getlabelsMw(), core_api.GetLabels)...)
+		_label.GET("/getLabelsInBatch", append(_getlabelsinbatchMw(), core_api.GetLabelsInBatch)...)
+		_label.GET("/getObjects", append(_getobjectsMw(), core_api.GetObjects)...)
+		_label.POST("/updateLabel", append(_updatelabelMw(), core_api.UpdateLabel)...)
+		_label.POST("/updateObject", append(_updateobjectMw(), core_api.UpdateObject)...)
 	}
 	{
 		_relation := root.Group("/relation", _relationMw()...)
