@@ -31,13 +31,11 @@ var FileDomainServiceSet = wire.NewSet(
 
 func (s *FileDomainService) LoadCollected(ctx context.Context, file *core_api.PublicFile, userId string) {
 	getRelationResp, err := s.PlatformRelation.GetRelation(ctx, &relation.GetRelationReq{
-		Relation: &relation.Relation{
-			FromType:     consts.RelationUserType,
-			FromId:       userId,
-			ToType:       consts.RelationFileType,
-			ToId:         file.FileId,
-			RelationType: consts.RelationCollectType,
-		},
+		FromType:     consts.RelationUserType,
+		FromId:       userId,
+		ToType:       consts.RelationFileType,
+		ToId:         file.FileId,
+		RelationType: consts.RelationCollectType,
 	})
 	if err == nil {
 		file.FileRelation.Collected = getRelationResp.Ok
@@ -97,13 +95,11 @@ func (s *FileDomainService) LoadLiked(ctx context.Context, file *core_api.Public
 		return
 	}
 	getRelationResp, err := s.PlatformRelation.GetRelation(ctx, &relation.GetRelationReq{
-		Relation: &relation.Relation{
-			FromType:     consts.RelationUserType,
-			FromId:       userId,
-			ToType:       consts.RelationFileType,
-			ToId:         file.FileId,
-			RelationType: consts.RelationLikeType,
-		},
+		FromType:     consts.RelationUserType,
+		FromId:       userId,
+		ToType:       consts.RelationFileType,
+		ToId:         file.FileId,
+		RelationType: consts.RelationLikeType,
 	})
 	if err == nil {
 		file.FileRelation.Liked = getRelationResp.Ok

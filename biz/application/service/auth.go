@@ -219,7 +219,7 @@ func (s *AuthService) Register(ctx context.Context, req *core_api.RegisterReq) (
 			ItemId:   createAuthResp.UserId,
 			IsHidden: false,
 			Labels:   nil,
-			Category: int64(core_api.Category_UserCategory),
+			Category: core_api.Category_name[int32(core_api.Category_UserCategory)],
 			Comment:  req.Name,
 		},
 	}); err != nil {

@@ -47,7 +47,7 @@ func (s *RecommendService) GetLatestRecommend(ctx context.Context, req *core_api
 	getLatestRecommendResp, err := s.CloudMindContent.GetLatestRecommend(ctx, &content.GetLatestRecommendReq{
 		UserId:   userId,
 		Limit:    req.Limit,
-		Category: int64(req.Category),
+		Category: core_api.Category_name[int32(req.Category)],
 	})
 	if err != nil {
 		return resp, err
@@ -69,7 +69,7 @@ func (s *RecommendService) GetPopularRecommend(ctx context.Context, req *core_ap
 	getPopularRecommendResp, err := s.CloudMindContent.GetPopularRecommend(ctx, &content.GetPopularRecommendReq{
 		UserId:   userId,
 		Limit:    req.Limit,
-		Category: int64(req.Category),
+		Category: core_api.Category_name[int32(req.Category)],
 	})
 	if err != nil {
 		return resp, err
@@ -107,7 +107,7 @@ func (s *RecommendService) GetRecommendByItem(ctx context.Context, req *core_api
 	getRecommendByItemResp, err := s.CloudMindContent.GetRecommendByItem(ctx, &content.GetRecommendByItemReq{
 		ItemId:   req.ItemId,
 		Limit:    req.Limit,
-		Category: int64(req.Category),
+		Category: core_api.Category_name[int32(req.Category)],
 	})
 	if err != nil {
 		return resp, err
@@ -131,7 +131,7 @@ func (s *RecommendService) GetRecommendByUser(ctx context.Context, req *core_api
 	getRecommendByItemResp, err := s.CloudMindContent.GetRecommendByUser(ctx, &content.GetRecommendByUserReq{
 		UserId:   userId,
 		Limit:    req.Limit,
-		Category: int64(req.Category),
+		Category: core_api.Category_name[int32(req.Category)],
 	})
 	if err != nil {
 		return resp, err

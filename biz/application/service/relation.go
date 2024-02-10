@@ -185,13 +185,11 @@ func (s *RelationService) DeleteRelation(ctx context.Context, req *core_api.Dele
 func (s *RelationService) GetRelation(ctx context.Context, req *core_api.GetRelationReq) (resp *core_api.GetRelationResp, err error) {
 	resp = new(core_api.GetRelationResp)
 	getRelationResp, err := s.PlatFormRelation.GetRelation(ctx, &relation.GetRelationReq{
-		Relation: &relation.Relation{
-			FromType:     req.FromType,
-			FromId:       req.FromId,
-			ToType:       req.ToType,
-			ToId:         req.ToId,
-			RelationType: req.RelationType,
-		},
+		FromType:     req.FromType,
+		FromId:       req.FromId,
+		ToType:       req.ToType,
+		ToId:         req.ToId,
+		RelationType: req.RelationType,
 	})
 	if err != nil {
 		return resp, err
@@ -207,14 +205,19 @@ func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.Crea
 		return resp, consts.ErrNotAuthentication
 	}
 
-	if _, err = s.PlatFormRelation.CreateRelation(ctx, &relation.CreateRelationReq{
+	createRelation, err := s.PlatFormRelation.CreateRelation(ctx, &relation.CreateRelationReq{
 		FromType:     consts.RelationUserType,
 		FromId:       user.UserId,
 		ToType:       int64(req.ToType),
 		ToId:         req.ToId,
 		RelationType: int64(req.RelationType),
-	}); err != nil {
+	})
+	if err != nil {
 		return resp, err
+	}
+
+	if !createRelation.Ok {
+		return resp, nil
 	}
 
 	userId := ""

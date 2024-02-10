@@ -91,13 +91,11 @@ func (s *PostDomainService) LoadCollectCount(ctx context.Context, collectCount *
 
 func (s *PostDomainService) LoadLiked(ctx context.Context, liked *bool, userId, postId string) {
 	getRelationResp, err := s.PlatformRelation.GetRelation(ctx, &relation.GetRelationReq{
-		Relation: &relation.Relation{
-			FromType:     consts.RelationUserType,
-			FromId:       userId,
-			ToType:       consts.RelationPostType,
-			ToId:         postId,
-			RelationType: consts.RelationLikeType,
-		},
+		FromType:     consts.RelationUserType,
+		FromId:       userId,
+		ToType:       consts.RelationPostType,
+		ToId:         postId,
+		RelationType: consts.RelationLikeType,
 	})
 	if err == nil {
 		*liked = getRelationResp.Ok
@@ -106,13 +104,11 @@ func (s *PostDomainService) LoadLiked(ctx context.Context, liked *bool, userId, 
 
 func (s *PostDomainService) LoadCollected(ctx context.Context, collected *bool, userId, postId string) {
 	getRelationResp, err := s.PlatformRelation.GetRelation(ctx, &relation.GetRelationReq{
-		Relation: &relation.Relation{
-			FromType:     consts.RelationUserType,
-			FromId:       userId,
-			ToType:       consts.RelationPostType,
-			ToId:         postId,
-			RelationType: consts.RelationCollectType,
-		},
+		FromType:     consts.RelationUserType,
+		FromId:       userId,
+		ToType:       consts.RelationPostType,
+		ToId:         postId,
+		RelationType: consts.RelationCollectType,
 	})
 	if err == nil {
 		*collected = getRelationResp.Ok
