@@ -34,12 +34,12 @@ var RelationServiceSet = wire.NewSet(
 )
 
 type RelationService struct {
-	Config            *config.Config
-	PlatFormRelation  platform_relation.IPlatFormRelation
-	CloudMindContent  cloudmind_content.ICloudMindContent
-	PostDomainService service.IPostDomainService
-
+	Config               *config.Config
+	PlatFormRelation     platform_relation.IPlatFormRelation
+	CloudMindContent     cloudmind_content.ICloudMindContent
+	PostDomainService    service.IPostDomainService
 	CreateNotificationKq *kq.CreateNotificationsKq
+	CreateFeedBacksKq    *kq.CreateFeedBacksKq
 }
 
 func (s *RelationService) GetFromRelations(ctx context.Context, req *core_api.GetFromRelationsReq) (resp *core_api.GetFromRelationsResp, err error) {
@@ -260,6 +260,16 @@ func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.Crea
 			Type:            int64(req.RelationType),
 			Text:            getNotificationText(req.RelationType, req.ToType),
 			IsRead:          false,
+		},
+	}); err != nil {
+		return resp, err
+	}
+
+	if err = s.CreateFeedBacksKq.Add(user.UserId, &message.CreateFeedBacksMessage{
+		FeedBack: &content.FeedBack{
+			FeedbackType: core_api.RelationType_name[int32(req.RelationType)],
+			UserId:       user.UserId,
+			ItemId:       req.ToId,
 		},
 	}); err != nil {
 		return resp, err

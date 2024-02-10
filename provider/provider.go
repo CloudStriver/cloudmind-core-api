@@ -71,6 +71,8 @@ var InfrastructureSet = wire.NewSet(
 	kq.NewUpdateNotificationsKq,
 	kq.NewCreateItemsKq,
 	kq.NewCreateFeedBacksKq,
+	kq.NewDeleteItemKq,
+	kq.NewUpdateItemKq,
 	RPCSet,
 )
 
