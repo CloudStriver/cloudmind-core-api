@@ -65,7 +65,7 @@ func (s *PostService) CreatePost(ctx context.Context, req *core_api.CreatePostRe
 			ItemId:   createPostResp.PostId,
 			IsHidden: req.Status == consts.PostPrivateStatus,
 			Labels:   req.Tags,
-			Category: int64(core_api.Category_PostCategory),
+			Category: core_api.Category_name[int32(core_api.Category_PostCategory)],
 			Comment:  req.Title,
 		},
 	}); err != nil {
