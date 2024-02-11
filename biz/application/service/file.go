@@ -300,9 +300,9 @@ func (s *FileService) GetRecycleBinFiles(ctx context.Context, req *core_api.GetR
 		OnlyIsDel:    lo.ToPtr(consts.SoftDel),
 	}
 	sort := lo.ToPtr(content.SortOptions_SortOptions_createAtDesc)
-	if req.SortType != nil {
-		sort = lo.ToPtr(content.SortOptions(*req.SortType))
-	}
+	//if req.SortType != nil {
+	//	sort = lo.ToPtr(content.SortOptions(*req.SortType))
+	//}
 	if res, err = s.CloudMindContent.GetFileList(ctx, &content.GetFileListReq{FilterOptions: filter, PaginationOptions: p, SortOptions: sort}); err != nil {
 		return resp, err
 	}

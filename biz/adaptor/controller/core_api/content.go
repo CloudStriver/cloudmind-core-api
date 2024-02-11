@@ -316,6 +316,39 @@ func UpdatePost(ctx context.Context, c *app.RequestContext) {
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
+// GetPosts .
+// @router /content/getPosts [GET]
+func GetPosts(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.GetPostsReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.GetPostsResp)
+	p := provider.Get()
+	resp, err = p.PostService.GetPosts(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
+}
+
+// GetPost .
+// @router /content/getPost [GET]
+func GetPost(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.GetPostReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	resp := new(core_api.GetPostResp)
+	p := provider.Get()
+	resp, err = p.PostService.GetPost(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
+}
+
 // CreateFile .
 // @router /content/createFile [POST]
 func CreateFile(ctx context.Context, c *app.RequestContext) {
@@ -554,74 +587,6 @@ func CompletelyRemoveFile(ctx context.Context, c *app.RequestContext) {
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
-// GetOtherPosts .
-// @router /content/getOtherPosts [GET]
-func GetOtherPosts(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.GetOtherPostsReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(core_api.GetOtherPostsResp)
-	p := provider.Get()
-	resp, err = p.PostService.GetOtherPosts(ctx, &req)
-	adaptor.PostProcess(ctx, c, &req, resp, err)
-}
-
-// GetOtherPost .
-// @router /content/getOtherPost [GET]
-func GetOtherPost(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.GetOtherPostReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(core_api.GetOtherPostResp)
-	p := provider.Get()
-	resp, err = p.PostService.GetOtherPost(ctx, &req)
-	adaptor.PostProcess(ctx, c, &req, resp, err)
-}
-
-// GetOwnPosts .
-// @router /content/getOwnPosts [GET]
-func GetOwnPosts(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.GetOwnPostsReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(core_api.GetOwnPostsResp)
-	p := provider.Get()
-	resp, err = p.PostService.GetOwnPosts(ctx, &req)
-	adaptor.PostProcess(ctx, c, &req, resp, err)
-}
-
-// GetOwnPost .
-// @router /content/getOwnPost [GET]
-func GetOwnPost(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.GetOwnPostReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(core_api.GetOwnPostResp)
-	p := provider.Get()
-	resp, err = p.PostService.GetOwnPost(ctx, &req)
-	adaptor.PostProcess(ctx, c, &req, resp, err)
-}
-
 // GetRecommendByUser .
 // @router /content/getRecommendByUser [GET]
 func GetRecommendByUser(ctx context.Context, c *app.RequestContext) {
@@ -704,5 +669,90 @@ func GetLatestRecommend(ctx context.Context, c *app.RequestContext) {
 	resp := new(core_api.GetLatestRecommendResp)
 	p := provider.Get()
 	resp, err = p.RecommendService.GetLatestRecommend(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
+}
+
+// CreateProduct .
+// @router /content/createProduct [POST]
+func CreateProduct(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.CreateProductReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.CreateProductResp)
+	p := provider.Get()
+	resp, err = p.ProductService.CreateProduct(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
+}
+
+// GetProduct .
+// @router /content/getProduct [GET]
+func GetProduct(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.GetProductReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.GetProductResp)
+	p := provider.Get()
+	resp, err = p.ProductService.GetProduct(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
+}
+
+// GetProducts .
+// @router /content/getProducts [GET]
+func GetProducts(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.GetProductsReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.GetProductsResp)
+	p := provider.Get()
+	resp, err = p.ProductService.GetProducts(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
+}
+
+// UpdateProduct .
+// @router /content/updateProduct [POST]
+func UpdateProduct(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.UpdateProductReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.UpdateProductResp)
+	p := provider.Get()
+	resp, err = p.ProductService.UpdateProduct(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
+}
+
+// DeleteProduct .
+// @router /content/deleteProduct [POST]
+func DeleteProduct(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.DeleteProductReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.DeleteProductResp)
+	p := provider.Get()
+	resp, err = p.ProductService.DeleteProduct(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }

@@ -14,6 +14,7 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_system"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_trade"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/store/redis"
 )
@@ -108,6 +109,24 @@ func NewProvider() (*Provider, error) {
 		PostDomainService: postDomainService,
 		CreateFeedBacks:   createFeedBacksKq,
 	}
+	tradeserviceClient := cloudmind_trade.NewCloudMindTrade(configConfig)
+	cloudMindTrade := &cloudmind_trade.CloudMindTrade{
+		Client: tradeserviceClient,
+	}
+	productDomainService := &service.ProductDomainService{
+		CloudMindUser:    cloudMindContent,
+		PlatformRelation: platFormRelation,
+		CloudMindTrade:   cloudMindTrade,
+	}
+	productService := &service2.ProductService{
+		Config:               configConfig,
+		CloudMindContent:     cloudMindContent,
+		ProductDomainService: productDomainService,
+		CloudMindTrade:       cloudMindTrade,
+		CreateItemsKq:        createItemsKq,
+		UpdateItemKq:         updateItemKq,
+		DeleteItemKq:         deleteItemKq,
+	}
 	providerProvider := &Provider{
 		Config:              configConfig,
 		FileService:         fileService,
@@ -118,6 +137,7 @@ func NewProvider() (*Provider, error) {
 		ZoneService:         zoneService,
 		NotificationService: notificationService,
 		RecommendService:    recommendService,
+		ProductService:      productService,
 	}
 	return providerProvider, nil
 }

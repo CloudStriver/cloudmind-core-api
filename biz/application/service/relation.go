@@ -86,10 +86,10 @@ func (s *RelationService) GetFromRelations(ctx context.Context, req *core_api.Ge
 			return resp, err
 		}
 	case core_api.TargetType_PostType:
-		resp.Posts = make([]*core_api.OwnPost, len(getFromRelationsResp.Relations))
+		resp.Posts = make([]*core_api.Post, len(getFromRelationsResp.Relations))
 		if err = mr.Finish(lo.Map[*relation.Relation](getFromRelationsResp.Relations, func(relation *relation.Relation, i int) func() error {
 			return func() error {
-				resp.Posts[i] = &core_api.OwnPost{}
+				resp.Posts[i] = &core_api.Post{}
 				if err = mr.Finish(func() error {
 					post, err := s.CloudMindContent.GetPost(ctx, &content.GetPostReq{
 						PostId: relation.ToId,
@@ -171,7 +171,7 @@ func (s *RelationService) DeleteRelation(ctx context.Context, req *core_api.Dele
 		return resp, consts.ErrNotAuthentication
 	}
 	if _, err = s.PlatFormRelation.DeleteRelation(ctx, &relation.DeleteRelationReq{
-		FromType:     consts.RelationUserType,
+		FromType:     int64(core_api.TargetType_UserType),
 		FromId:       user.UserId,
 		ToType:       req.ToType,
 		ToId:         req.ToId,
@@ -206,7 +206,7 @@ func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.Crea
 	}
 
 	createRelation, err := s.PlatFormRelation.CreateRelation(ctx, &relation.CreateRelationReq{
-		FromType:     consts.RelationUserType,
+		FromType:     int64(core_api.TargetType_UserType),
 		FromId:       user.UserId,
 		ToType:       int64(req.ToType),
 		ToId:         req.ToId,
@@ -237,14 +237,12 @@ func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.Crea
 		//userId = getFileResp.File.UserId
 	case core_api.TargetType_ProductType:
 		getProductResp, err := s.CloudMindContent.GetProduct(ctx, &content.GetProductReq{
-			ProductFilterOptions: &content.ProductFilterOptions{
-				OnlyProductId: lo.ToPtr(req.ToId),
-			},
+			ProductId: req.ToId,
 		})
 		if err != nil {
 			return resp, err
 		}
-		userId = getProductResp.Product.UserId
+		userId = getProductResp.UserId
 	case core_api.TargetType_PostType:
 		getPostResp, err := s.CloudMindContent.GetPost(ctx, &content.GetPostReq{
 			PostId: req.ToId,
