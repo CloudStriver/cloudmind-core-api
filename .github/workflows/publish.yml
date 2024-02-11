@@ -1,0 +1,38 @@
+name: Publish
+
+
+
+on:
+  push:
+    tags:
+      - '*'
+
+env:
+  REGISTRY: docker.io
+  USERNAME: lansongxx
+  IMAGE_NAME: cloudmind-core-api
+
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: ${{ vars.KUBE_VERSION }}
+
+      - name: Deploy
+        run: |
+          mkdir $HOME/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" > $HOME/.kube/config
+          kubectl get deployment ${{ env.IMAGE_NAME }} -n ${{ vars.BASE_NAMESPACE }} -o yaml |\
+          sed 's/^\(      - image: lansongxx\/${{ env.IMAGE_NAME }}:\).*$/\1${{ github.ref }}/' |\
+          kubectl apply -f -
+      - name: Print tag
+        run: echo "Current tag is ${{ github.ref }}"
+
+
