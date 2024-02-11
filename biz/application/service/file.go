@@ -514,6 +514,9 @@ func (s *FileService) CreateShareCode(ctx context.Context, req *core_api.CreateS
 		if file.UserId != userData.UserId {
 			return resp, consts.ErrIllegalOperation
 		}
+		if file.IsDel != consts.NotDel {
+			return resp, consts.ErrIllegalOperation
+		}
 	}
 
 	if res, err = s.CloudMindContent.CreateShareCode(ctx, &content.CreateShareCodeReq{ShareFile: &content.ShareFile{
@@ -591,7 +594,7 @@ func (s *FileService) SaveFileToPrivateSpace(ctx context.Context, req *core_api.
 	}
 
 	var res *content.SaveFileToPrivateSpaceResp
-	if res, err = s.CloudMindContent.SaveFileToPrivateSpace(ctx, &content.SaveFileToPrivateSpaceReq{File: files.Files[0], NewPath: files.Files[1].Path, FatherId: req.FatherId, DocumentType: int64(req.DocumentType)}); err != nil {
+	if res, err = s.CloudMindContent.SaveFileToPrivateSpace(ctx, &content.SaveFileToPrivateSpaceReq{File: files.Files[0], UserId: userData.UserId, NewPath: files.Files[1].Path, FatherId: req.FatherId, DocumentType: int64(req.DocumentType)}); err != nil {
 		return resp, err
 	}
 	resp.FileId = res.FileId
