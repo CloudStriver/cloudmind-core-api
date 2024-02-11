@@ -446,6 +446,31 @@ func _updatenotificationsMw() []app.HandlerFunc {
 	return nil
 }
 
+func _createfeedbackMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getlatestrecommendMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getpopularrecommendMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getrecommendbyitemMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getrecommendbyuserMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
 func _commentMw() []app.HandlerFunc {
 	// your code...
 	return nil
@@ -461,27 +486,12 @@ func _createcommentsubjectMw() []app.HandlerFunc {
 	return nil
 }
 
-func _createobjectMw() []app.HandlerFunc {
-	// your code...
-	return nil
-}
-
-func _createobjectsMw() []app.HandlerFunc {
-	// your code...
-	return nil
-}
-
 func _deletecommentMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
 
 func _deletecommentsubjectMw() []app.HandlerFunc {
-	// your code...
-	return nil
-}
-
-func _deleteobjectMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
@@ -497,11 +507,6 @@ func _getcommentsubjectMw() []app.HandlerFunc {
 }
 
 func _getcommentsMw() []app.HandlerFunc {
-	// your code...
-	return nil
-}
-
-func _getobjectsMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
@@ -536,7 +541,17 @@ func _updatecommentsubjectMw() []app.HandlerFunc {
 	return nil
 }
 
-func _updateobjectMw() []app.HandlerFunc {
+func _createobjectMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _createobjectsMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _deleteobjectMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
@@ -551,27 +566,12 @@ func _getlabelsinbatchMw() []app.HandlerFunc {
 	return nil
 }
 
-func _createfeedbackMw() []app.HandlerFunc {
+func _getobjectsMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
 
-func _getlatestrecommendMw() []app.HandlerFunc {
-	// your code...
-	return nil
-}
-
-func _getpopularrecommendMw() []app.HandlerFunc {
-	// your code...
-	return nil
-}
-
-func _getrecommendbyitemMw() []app.HandlerFunc {
-	// your code...
-	return nil
-}
-
-func _getrecommendbyuserMw() []app.HandlerFunc {
+func _updateobjectMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }

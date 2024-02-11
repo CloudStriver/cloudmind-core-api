@@ -634,8 +634,9 @@ func GetRecommendByUser(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.GetRecommendByUserResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.RecommendService.GetRecommendByUser(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // GetRecommendByItem .
@@ -650,8 +651,9 @@ func GetRecommendByItem(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.GetRecommendByItemResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.RecommendService.GetRecommendByItem(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // CreateFeedBack .
@@ -666,8 +668,9 @@ func CreateFeedBack(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.CreateFeedBackResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.RecommendService.CreateFeedBack(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // GetPopularRecommend .
@@ -682,8 +685,9 @@ func GetPopularRecommend(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.GetPopularRecommendResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.RecommendService.GetPopularRecommend(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // GetLatestRecommend .
@@ -698,6 +702,7 @@ func GetLatestRecommend(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.GetLatestRecommendResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.RecommendService.GetLatestRecommend(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }

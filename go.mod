@@ -3,7 +3,7 @@ module github.com/CloudStriver/cloudmind-core-api
 go 1.20
 
 require (
-	github.com/CloudStriver/cloudmind-mq v0.0.0-20240207031331-4f5b4523b1bb
+	github.com/CloudStriver/cloudmind-mq v0.0.0-20240210145538-659ccf1860bd
 	github.com/CloudStriver/go-pkg v0.0.0-20240206060942-84060a3dd273
 	github.com/CloudStriver/service-idl-gen-go v0.0.0-20240207103956-4877398ec51e
 	github.com/bytedance/sonic v1.10.2

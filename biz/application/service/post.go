@@ -3,9 +3,10 @@ package service
 import (
 	"context"
 	"github.com/CloudStriver/cloudmind-core-api/biz/adaptor"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
+	"github.com/CloudStriver/cloudmind-mq/app/util/message"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/basic"
 
-	//"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/basic"
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/CloudStriver/cloudmind-core-api/biz/domain/service"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
@@ -36,6 +37,9 @@ type PostService struct {
 	Config            *config.Config
 	CloudMindContent  cloudmind_content.ICloudMindContent
 	PostDomainService service.IPostDomainService
+	CreateItemsKq     *kq.CreateItemsKq
+	UpdateItemKq      *kq.UpdateItemKq
+	DeleteItemKq      *kq.DeleteItemKq
 }
 
 func (s *PostService) CreatePost(ctx context.Context, req *core_api.CreatePostReq) (resp *core_api.CreatePostResp, err error) {
@@ -44,13 +48,26 @@ func (s *PostService) CreatePost(ctx context.Context, req *core_api.CreatePostRe
 		return resp, consts.ErrNotAuthentication
 	}
 
-	if _, err = s.CloudMindContent.CreatePost(ctx, &content.CreatePostReq{
+	createPostResp, err := s.CloudMindContent.CreatePost(ctx, &content.CreatePostReq{
 		UserId: userData.UserId,
 		Title:  req.Title,
 		Text:   req.Text,
 		Tags:   req.Tags,
 		Status: req.Status,
 		Url:    req.Url,
+	})
+	if err != nil {
+		return resp, err
+	}
+
+	if err = s.CreateItemsKq.Add(userData.UserId, &message.CreateItemsMessage{
+		Item: &content.Item{
+			ItemId:   createPostResp.PostId,
+			IsHidden: req.Status == consts.PostPrivateStatus,
+			Labels:   req.Tags,
+			Category: core_api.Category_name[int32(core_api.Category_PostCategory)],
+			Comment:  req.Title,
+		},
 	}); err != nil {
 		return resp, err
 	}
@@ -78,6 +95,20 @@ func (s *PostService) UpdatePost(ctx context.Context, req *core_api.UpdatePostRe
 		return resp, err
 	}
 
+	if req.Status != 0 || req.Tags != nil || req.Title != "" {
+		var isHidden *bool
+		if req.Status != 0 {
+			isHidden = lo.ToPtr(req.Status == consts.PostPrivateStatus)
+		}
+		if err = s.UpdateItemKq.Add(userData.UserId, &message.UpdateItemMessage{
+			ItemId:   req.PostId,
+			IsHidden: isHidden,
+			Labels:   req.Tags,
+			Comment:  lo.ToPtr(req.Title),
+		}); err != nil {
+			return resp, err
+		}
+	}
 	return resp, nil
 }
 
@@ -97,6 +128,13 @@ func (s *PostService) DeletePost(ctx context.Context, req *core_api.DeletePostRe
 	}); err != nil {
 		return resp, err
 	}
+
+	if err = s.DeleteItemKq.Add(userData.UserId, &message.DeleteItemMessage{
+		ItemId: req.PostId,
+	}); err != nil {
+		return resp, err
+	}
+
 	return resp, nil
 }
 

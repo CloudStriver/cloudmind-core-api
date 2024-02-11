@@ -36,6 +36,7 @@ type Provider struct {
 	NotificationService service.INotificationService
 	CommentService      service.ICommentService
 	LabelService        service.ILabelService
+	RecommendService    service.IRecommendService
 }
 
 func Get() *Provider {
@@ -58,6 +59,7 @@ var ApplicationSet = wire.NewSet(
 	service.UserServiceSet,
 	service.ZoneServiceSet,
 	service.NotificationServiceSet,
+	service.RecommendServiceSet,
 	service.LabelServiceSet,
 	service.CommentServiceSet,
 )
@@ -73,6 +75,10 @@ var InfrastructureSet = wire.NewSet(
 	kq.NewCreateNotificationsKq,
 	kq.NewDeleteNotificationsKq,
 	kq.NewUpdateNotificationsKq,
+	kq.NewCreateItemsKq,
+	kq.NewCreateFeedBacksKq,
+	kq.NewDeleteItemKq,
+	kq.NewUpdateItemKq,
 	RPCSet,
 )
 
