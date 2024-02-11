@@ -15,6 +15,7 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_system"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_trade"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_comment"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/store/redis"
 )
@@ -42,11 +43,16 @@ func NewProvider() (*Provider, error) {
 		CloudMindUser:    cloudMindContent,
 		PlatformRelation: platFormRelation,
 	}
+	commentserviceClient := platform_comment.NewPlatFormComment(configConfig)
+	platFormComment := &platform_comment.PlatFormComment{
+		Client: commentserviceClient,
+	}
 	fileService := &service2.FileService{
 		Config:            configConfig,
 		PlatformSts:       cloudMindSts,
 		CloudMindContent:  cloudMindContent,
 		FileDomainService: fileDomainService,
+		PlatformComment:   platFormComment,
 	}
 	postDomainService := &service.PostDomainService{
 		CloudMindUser:    cloudMindContent,
@@ -103,6 +109,14 @@ func NewProvider() (*Provider, error) {
 		DeleteNotificationsKq: deleteNotificationsKq,
 		Redis:                 redisRedis,
 	}
+	commentService := &service2.CommentService{
+		Config:          configConfig,
+		PlatformComment: platFormComment,
+	}
+	labelService := &service2.LabelService{
+		Config:          configConfig,
+		PlatformComment: platFormComment,
+	}
 	recommendService := &service2.RecommendService{
 		Config:            configConfig,
 		CloudMindContent:  cloudMindContent,
@@ -136,6 +150,8 @@ func NewProvider() (*Provider, error) {
 		UserService:         userService,
 		ZoneService:         zoneService,
 		NotificationService: notificationService,
+		CommentService:      commentService,
+		LabelService:        labelService,
 		RecommendService:    recommendService,
 		ProductService:      productService,
 	}

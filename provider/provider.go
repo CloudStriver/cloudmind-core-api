@@ -9,6 +9,7 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_system"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_trade"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_comment"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/store/redis"
 	"github.com/google/wire"
@@ -34,6 +35,8 @@ type Provider struct {
 	UserService         service.IUserService
 	ZoneService         service.IZoneService
 	NotificationService service.INotificationService
+	CommentService      service.ICommentService
+	LabelService        service.ILabelService
 	RecommendService    service.IRecommendService
 	ProductService      service.IProductService
 }
@@ -47,6 +50,7 @@ var RPCSet = wire.NewSet(
 	cloudmind_sts.CloudMindStsSet,
 	platform_relation.PlatFormRelationSet,
 	cloudmind_system.CloudMindSystemSet,
+	platform_comment.PlatFormCommentSet,
 	cloudmind_trade.CloudMindTradeSet,
 )
 
@@ -59,6 +63,8 @@ var ApplicationSet = wire.NewSet(
 	service.ZoneServiceSet,
 	service.NotificationServiceSet,
 	service.RecommendServiceSet,
+	service.LabelServiceSet,
+	service.CommentServiceSet,
 	service.ProductServiceSet,
 )
 

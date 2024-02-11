@@ -4,6 +4,8 @@ package core_api
 
 import (
 	"context"
+	"github.com/CloudStriver/cloudmind-core-api/biz/adaptor"
+	"github.com/CloudStriver/cloudmind-core-api/provider"
 
 	core_api "github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/cloudwego/hertz/pkg/app"
@@ -22,8 +24,9 @@ func CreateLabel(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.CreateLabelResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.LabelService.CreateLabel(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // DeleteLabel .
@@ -38,8 +41,9 @@ func DeleteLabel(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.DeleteLabelResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.LabelService.DeleteLabel(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // UpdateLabel .
@@ -54,8 +58,9 @@ func UpdateLabel(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.UpdateLabelResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.LabelService.UpdateLabel(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // GetLabels .
@@ -70,8 +75,9 @@ func GetLabels(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.GetLabelsResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.LabelService.GetLabels(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // GetLabel .
@@ -86,8 +92,9 @@ func GetLabel(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.GetLabelResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.LabelService.GetLabel(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // GetLabelsInBatch .
@@ -102,8 +109,9 @@ func GetLabelsInBatch(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.GetLabelsInBatchResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.LabelService.GetLabelsInBatch(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // CreateObject .
@@ -118,8 +126,9 @@ func CreateObject(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.CreateObjectResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.LabelService.CreateObject(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // CreateObjects .
@@ -134,8 +143,9 @@ func CreateObjects(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.CreateObjectsResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.LabelService.CreateObjects(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // DeleteObject .
@@ -150,8 +160,9 @@ func DeleteObject(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.DeleteObjectResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.LabelService.DeleteObject(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // GetObjects .
@@ -166,8 +177,9 @@ func GetObjects(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.GetObjectsResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.LabelService.GetObjects(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // UpdateObject .
@@ -182,6 +194,7 @@ func UpdateObject(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.UpdateObjectResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.LabelService.UpdateObject(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
