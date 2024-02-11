@@ -12,9 +12,10 @@ import (
 var config *Config
 
 type Auth struct {
-	SecretKey    string
-	PublicKey    string
-	AccessExpire int64
+	SecretKey        string
+	PublicKey        string
+	ShortTokenExpire int64
+	LongTokenExpire  int64
 }
 
 type OauthConf struct {

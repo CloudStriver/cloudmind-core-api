@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
@@ -45,12 +44,12 @@ func (s *PostDomainService) LoadLikeCount(ctx context.Context, likeCount *int64,
 	getRelationCountResp, err := s.PlatformRelation.GetRelationCount(ctx, &relation.GetRelationCountReq{
 		RelationFilterOptions: &relation.GetRelationCountReq_ToFilterOptions{
 			ToFilterOptions: &relation.ToFilterOptions{
-				ToType:   consts.RelationPostType,
+				ToType:   int64(core_api.TargetType_PostType),
 				ToId:     postId,
-				FromType: consts.RelationUserType,
+				FromType: int64(core_api.TargetType_UserType),
 			},
 		},
-		RelationType: consts.RelationLikeType,
+		RelationType: int64(core_api.RelationType_LikeType),
 	})
 	if err == nil {
 		*likeCount = getRelationCountResp.Total
@@ -61,12 +60,12 @@ func (s *PostDomainService) LoadViewCount(ctx context.Context, viewCount *int64,
 	getRelationCountResp, err := s.PlatformRelation.GetRelationCount(ctx, &relation.GetRelationCountReq{
 		RelationFilterOptions: &relation.GetRelationCountReq_ToFilterOptions{
 			ToFilterOptions: &relation.ToFilterOptions{
-				ToType:   consts.RelationPostType,
+				ToType:   int64(core_api.TargetType_PostType),
 				ToId:     postId,
-				FromType: consts.RelationUserType,
+				FromType: int64(core_api.TargetType_UserType),
 			},
 		},
-		RelationType: consts.RelationViewType,
+		RelationType: int64(core_api.RelationType_ViewType),
 	})
 	if err == nil {
 		*viewCount = getRelationCountResp.Total
@@ -77,12 +76,12 @@ func (s *PostDomainService) LoadCollectCount(ctx context.Context, collectCount *
 	getRelationCountResp, err := s.PlatformRelation.GetRelationCount(ctx, &relation.GetRelationCountReq{
 		RelationFilterOptions: &relation.GetRelationCountReq_ToFilterOptions{
 			ToFilterOptions: &relation.ToFilterOptions{
-				ToType:   consts.RelationPostType,
+				ToType:   int64(core_api.TargetType_PostType),
 				ToId:     postId,
-				FromType: consts.RelationUserType,
+				FromType: int64(core_api.TargetType_UserType),
 			},
 		},
-		RelationType: consts.RelationCollectType,
+		RelationType: int64(core_api.RelationType_CollectType),
 	})
 	if err == nil {
 		*collectCount = getRelationCountResp.Total
@@ -91,11 +90,11 @@ func (s *PostDomainService) LoadCollectCount(ctx context.Context, collectCount *
 
 func (s *PostDomainService) LoadLiked(ctx context.Context, liked *bool, userId, postId string) {
 	getRelationResp, err := s.PlatformRelation.GetRelation(ctx, &relation.GetRelationReq{
-		FromType:     consts.RelationUserType,
+		FromType:     int64(core_api.TargetType_UserType),
 		FromId:       userId,
-		ToType:       consts.RelationPostType,
+		ToType:       int64(core_api.TargetType_PostType),
 		ToId:         postId,
-		RelationType: consts.RelationLikeType,
+		RelationType: int64(core_api.RelationType_LikeType),
 	})
 	if err == nil {
 		*liked = getRelationResp.Ok
@@ -104,11 +103,11 @@ func (s *PostDomainService) LoadLiked(ctx context.Context, liked *bool, userId, 
 
 func (s *PostDomainService) LoadCollected(ctx context.Context, collected *bool, userId, postId string) {
 	getRelationResp, err := s.PlatformRelation.GetRelation(ctx, &relation.GetRelationReq{
-		FromType:     consts.RelationUserType,
+		FromType:     int64(core_api.TargetType_UserType),
 		FromId:       userId,
-		ToType:       consts.RelationPostType,
+		ToType:       int64(core_api.TargetType_PostType),
 		ToId:         postId,
-		RelationType: consts.RelationCollectType,
+		RelationType: int64(core_api.RelationType_CollectType),
 	})
 	if err == nil {
 		*collected = getRelationResp.Ok
