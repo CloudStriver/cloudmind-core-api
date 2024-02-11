@@ -27,10 +27,11 @@ jobs:
 
       - name: Deploy
         run: |
+          TAG_NAME="${GITHUB_REF#refs/tags/}"
           mkdir $HOME/.kube
           echo "${{ secrets.KUBE_CONFIG }}" > $HOME/.kube/config
           kubectl get deployment ${{ env.IMAGE_NAME }} -n ${{ vars.BASE_NAMESPACE }} -o yaml |\
-          sed 's/^\(      - image: lansongxx\/${{ env.IMAGE_NAME }}:\).*$/\1${{ github.ref }}/' |\
+          sed 's/^\(      - image: lansongxx\/${{ env.IMAGE_NAME }}:\).*$/\1${{ TAG_NAME }}/' |\
           kubectl apply -f -
       - name: Print tag
         run: echo "Current tag is ${{ github.ref }}"
