@@ -13,7 +13,6 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_comment"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/sts"
-	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/comment"
 	"github.com/google/wire"
 	"github.com/samber/lo"
 	"github.com/zeromicro/go-zero/core/mr"
@@ -300,18 +299,9 @@ func (s *FileService) GetRecycleBinFiles(ctx context.Context, req *core_api.GetR
 		return resp, consts.ErrNotAuthentication
 	}
 
-	var res *content.GetFileListResp
+	var res *content.GetRecycleBinFilesResp
 	p := convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward)
-	filter := &content.FileFilterOptions{
-		OnlyUserId:   lo.ToPtr(userData.UserId),
-		OnlyFatherId: lo.ToPtr(userData.UserId),
-		OnlyIsDel:    lo.ToPtr(consts.SoftDel),
-	}
-	sort := lo.ToPtr(content.SortOptions_SortOptions_createAtDesc)
-	if req.SortType != nil {
-		sort = lo.ToPtr(content.SortOptions(*req.SortType))
-	}
-	if res, err = s.CloudMindContent.GetFileList(ctx, &content.GetFileListReq{FilterOptions: filter, PaginationOptions: p, SortOptions: sort}); err != nil {
+	if res, err = s.CloudMindContent.GetRecycleBinFiles(ctx, &content.GetRecycleBinFilesReq{FilterOptions: &content.FileFilterOptions{OnlyUserId: lo.ToPtr(userData.UserId), OnlyIsDel: lo.ToPtr(consts.SoftDel)}, PaginationOptions: p}); err != nil {
 		return resp, err
 	}
 	resp.Files = lo.Map[*content.FileInfo, *core_api.PrivateFile](res.Files, func(item *content.FileInfo, _ int) *core_api.PrivateFile {
@@ -463,7 +453,7 @@ func (s *FileService) DeleteFile(ctx context.Context, req *core_api.DeleteFileRe
 		}
 	}
 
-	if _, err = s.CloudMindContent.DeleteFile(ctx, &content.DeleteFileReq{DeleteType: int64(req.DeleteType), ClearCommunity: req.ClearCommunity}); err != nil {
+	if _, err = s.CloudMindContent.DeleteFile(ctx, &content.DeleteFileReq{DeleteType: int64(req.DeleteType), ClearCommunity: req.ClearCommunity, File: res.File}); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -631,23 +621,22 @@ func (s *FileService) AddFileToPublicSpace(ctx context.Context, req *core_api.Ad
 	file.File.SubZone = req.SubZone
 	file.File.Description = req.Description
 	file.File.Labels = req.Labels
-
-	var res *content.AddFileToPublicSpaceResp
-	if res, err = s.CloudMindContent.AddFileToPublicSpace(ctx, &content.AddFileToPublicSpaceReq{File: file.File}); err != nil {
+	//var res *content.AddFileToPublicSpaceResp
+	if _, err = s.CloudMindContent.AddFileToPublicSpace(ctx, &content.AddFileToPublicSpaceReq{File: file.File}); err != nil {
 		return resp, err
 	}
 
-	objects := lo.Map(res.FileIds, func(item string, _ int) *comment.LabelEntity {
-		return &comment.LabelEntity{
-			ObjectId:   item,
-			ObjectType: consts.ObjectFile,
-			Labels:     req.Labels,
-		}
-
-	})
-	if _, err = s.PlatformComment.CreateObjects(ctx, &comment.CreateObjectsReq{Objects: objects}); err != nil {
-		return resp, err
-	}
+	//objects := lo.Map(res.FileIds, func(item string, _ int) *comment.LabelEntity {
+	//	return &comment.LabelEntity{
+	//		ObjectId:   item,
+	//		ObjectType: consts.ObjectFile,
+	//		Labels:     req.Labels,
+	//	}
+	//
+	//})
+	//if _, err = s.PlatformComment.CreateObjects(ctx, &comment.CreateObjectsReq{Objects: objects}); err != nil {
+	//	return resp, err
+	//}
 
 	return resp, nil
 }

@@ -621,3 +621,83 @@ func GetOwnPost(ctx context.Context, c *app.RequestContext) {
 	resp, err = p.PostService.GetOwnPost(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
+
+// GetRecommendByUser .
+// @router /content/getRecommendByUser [GET]
+func GetRecommendByUser(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.GetRecommendByUserReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.GetRecommendByUserResp)
+
+	c.JSON(consts.StatusOK, resp)
+}
+
+// GetRecommendByItem .
+// @router /content/getRecommendByItem [GET]
+func GetRecommendByItem(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.GetRecommendByItemReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.GetRecommendByItemResp)
+
+	c.JSON(consts.StatusOK, resp)
+}
+
+// CreateFeedBack .
+// @router /content/createFeedBack [POST]
+func CreateFeedBack(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.CreateFeedBackReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.CreateFeedBackResp)
+
+	c.JSON(consts.StatusOK, resp)
+}
+
+// GetPopularRecommend .
+// @router /content/getPopularRecommend [GET]
+func GetPopularRecommend(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.GetPopularRecommendReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.GetPopularRecommendResp)
+
+	c.JSON(consts.StatusOK, resp)
+}
+
+// GetLatestRecommend .
+// @router /content/getLatestRecommend [GET]
+func GetLatestRecommend(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.GetLatestRecommendReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.GetLatestRecommendResp)
+
+	c.JSON(consts.StatusOK, resp)
+}

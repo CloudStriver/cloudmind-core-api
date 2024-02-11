@@ -185,13 +185,11 @@ func (s *RelationService) DeleteRelation(ctx context.Context, req *core_api.Dele
 func (s *RelationService) GetRelation(ctx context.Context, req *core_api.GetRelationReq) (resp *core_api.GetRelationResp, err error) {
 	resp = new(core_api.GetRelationResp)
 	getRelationResp, err := s.PlatFormRelation.GetRelation(ctx, &relation.GetRelationReq{
-		Relation: &relation.Relation{
-			FromType:     req.FromType,
-			FromId:       req.FromId,
-			ToType:       req.ToType,
-			ToId:         req.ToId,
-			RelationType: req.RelationType,
-		},
+		FromType:     req.FromType,
+		FromId:       req.FromId,
+		ToType:       req.ToType,
+		ToId:         req.ToId,
+		RelationType: req.RelationType,
 	})
 	if err != nil {
 		return resp, err
@@ -222,12 +220,7 @@ func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.Crea
 	case core_api.TargetType_UserType:
 		userId = req.ToId
 	case core_api.TargetType_FileType:
-		getFileResp, err := s.CloudMindContent.GetFile(ctx, &content.GetFileReq{
-			FilterOptions: &content.FileFilterOptions{
-				OnlyFileId: lo.ToPtr(req.ToId),
-			},
-			IsGetSize: false,
-		})
+		getFileResp, err := s.CloudMindContent.GetFile(ctx, &content.GetFileReq{FileId: req.ToId, IsGetSize: false})
 		if err != nil {
 			return resp, err
 		}

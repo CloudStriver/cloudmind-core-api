@@ -13,8 +13,8 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_comment"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_system"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_comment"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/store/redis"
 )
@@ -99,6 +99,14 @@ func NewProvider() (*Provider, error) {
 		DeleteNotificationsKq: deleteNotificationsKq,
 		Redis:                 redisRedis,
 	}
+	commentService := &service2.CommentService{
+		Config:          configConfig,
+		PlatformComment: platFormComment,
+	}
+	labelService := &service2.LabelService{
+		Config:          configConfig,
+		PlatformComment: platFormComment,
+	}
 	providerProvider := &Provider{
 		Config:              configConfig,
 		FileService:         fileService,
@@ -108,6 +116,8 @@ func NewProvider() (*Provider, error) {
 		UserService:         userService,
 		ZoneService:         zoneService,
 		NotificationService: notificationService,
+		CommentService:      commentService,
+		LabelService:        labelService,
 	}
 	return providerProvider, nil
 }
