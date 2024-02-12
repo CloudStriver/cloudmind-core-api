@@ -10,10 +10,12 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_trade"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/utils/oauth"
 	"github.com/CloudStriver/cloudmind-mq/app/util/message"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/sts"
+	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/trade"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/google/wire"
 	"github.com/samber/lo"
@@ -43,6 +45,7 @@ type AuthService struct {
 	Config           *config.Config
 	CloudMindContent cloudmind_content.ICloudMindContent
 	CloudMindSts     cloudmind_sts.ICloudMindSts
+	CloudMindTrade   cloudmind_trade.ICloudMindTrade
 	CreateItemsKq    *kq.CreateItemsKq
 	Redis            *redis.Redis
 }
@@ -208,6 +211,12 @@ func (s *AuthService) Register(ctx context.Context, req *core_api.RegisterReq) (
 		return resp, err
 	}
 
+	if _, err = s.CloudMindTrade.CreateBalance(ctx, &trade.CreateBalanceReq{
+		UserId: createAuthResp.UserId,
+	}); err != nil {
+		return resp, err
+	}
+
 	resp.ShortToken, resp.LongToken, err = generateShortLongToken(s.Config.Auth.SecretKey, createAuthResp.UserId, s.Config.Auth.ShortTokenExpire, s.Config.Auth.LongTokenExpire)
 	if err != nil {
 		return resp, consts.ErrAuthentication
@@ -217,8 +226,6 @@ func (s *AuthService) Register(ctx context.Context, req *core_api.RegisterReq) (
 	if err = s.CreateItemsKq.Add(createAuthResp.UserId, &message.CreateItemsMessage{
 		Item: &content.Item{
 			ItemId:   createAuthResp.UserId,
-			IsHidden: false,
-			Labels:   nil,
 			Category: core_api.Category_name[int32(core_api.Category_UserCategory)],
 			Comment:  req.Name,
 		},

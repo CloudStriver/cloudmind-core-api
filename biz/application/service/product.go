@@ -44,21 +44,57 @@ type ProductService struct {
 }
 
 func (s *ProductService) CreateProduct(ctx context.Context, req *core_api.CreateProductReq) (resp *core_api.CreateProductResp, err error) {
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	user := adaptor.ExtractUserMeta(ctx)
+	if user.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 
+	switch req.Type {
+	case core_api.Product_Type_Flow_Type:
+		updateBalanceResp, err := s.CloudMindTrade.UpdateBalance(ctx, &trade.UpdateBalanceReq{
+			UserId: user.UserId,
+			Flow:   lo.ToPtr(-req.ProductSize),
+		})
+		if err != nil {
+			return resp, err
+		}
+		if !updateBalanceResp.Ok {
+			return resp, consts.ErrFlowNotEnough
+		}
+	case core_api.Product_Type_Memory_Type:
+		updateBalanceResp, err := s.CloudMindTrade.UpdateBalance(ctx, &trade.UpdateBalanceReq{
+			UserId: user.UserId,
+			Memory: lo.ToPtr(-req.ProductSize),
+		})
+		if err != nil {
+			return resp, err
+		}
+		if !updateBalanceResp.Ok {
+			return resp, consts.ErrFlowNotEnough
+		}
+	case core_api.Product_Type_File_Type:
+		getFileResp, err := s.CloudMindContent.GetFile(ctx, &content.GetFileReq{
+			FileId: req.ObjectId,
+		})
+		if err != nil {
+			return resp, err
+		}
+		if getFileResp.File.UserId != user.UserId {
+			return resp, consts.ErrForbidden
+		}
+	}
+
 	createProductResp, err := s.CloudMindContent.CreateProduct(ctx, &content.CreateProductReq{
-		UserId:      userData.UserId,
+		UserId:      user.UserId,
 		Name:        req.Name,
 		Description: req.Description,
 		Status:      req.Status,
 		Urls:        req.Urls,
 		Tags:        req.Tags,
-		Type:        req.Type,
+		Type:        int64(req.Type),
 		Price:       req.Price,
 		ProductSize: req.ProductSize,
+		ObjectId:    req.ObjectId,
 	})
 	if err != nil {
 		return resp, err
@@ -70,7 +106,7 @@ func (s *ProductService) CreateProduct(ctx context.Context, req *core_api.Create
 		return resp, err
 	}
 
-	if err = s.CreateItemsKq.Add(userData.UserId, &message.CreateItemsMessage{
+	if err = s.CreateItemsKq.Add(user.UserId, &message.CreateItemsMessage{
 		Item: &content.Item{
 			ItemId:   createProductResp.ProductId,
 			IsHidden: req.Status == int64(core_api.ProductStatus_PrivateProductStatus),
@@ -85,13 +121,66 @@ func (s *ProductService) CreateProduct(ctx context.Context, req *core_api.Create
 }
 
 func (s *ProductService) UpdateProduct(ctx context.Context, req *core_api.UpdateProductReq) (resp *core_api.UpdateProductResp, err error) {
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	user := adaptor.ExtractUserMeta(ctx)
+	if user.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 
-	if err = s.CheckIsMyProduct(ctx, req.ProductId, userData.UserId); err != nil {
+	product, err := s.CloudMindContent.GetProduct(ctx, &content.GetProductReq{
+		ProductId: req.ProductId,
+	})
+	if err != nil {
 		return resp, err
+	}
+	if product.UserId != user.UserId {
+		return resp, consts.ErrForbidden
+	}
+
+	if req.Stock != nil || req.ProductSize != 0 {
+		getStock, err := s.CloudMindTrade.GetStock(ctx, &trade.GetStockReq{
+			ProductId: req.ProductId,
+		})
+		if err != nil {
+			return resp, err
+		}
+
+		// 扣减库存
+		if req.Stock != nil {
+			if _, err = s.CloudMindTrade.AddStock(ctx, &trade.AddStockReq{
+				ProductId: req.ProductId,
+				Amount:    req.GetStock() - getStock.Stock,
+			}); err != nil {
+				return resp, err
+			}
+		} else {
+			req.Stock = lo.ToPtr(getStock.Stock)
+		}
+
+		// 扣减流量或内存
+		switch product.Type {
+		case int64(core_api.Product_Type_Flow_Type):
+			updateBalanceResp, err := s.CloudMindTrade.UpdateBalance(ctx, &trade.UpdateBalanceReq{
+				UserId: user.UserId,
+				Flow:   lo.ToPtr(-(req.ProductSize - product.ProductSize) * (req.GetStock() - getStock.Stock)),
+			})
+			if err != nil {
+				return resp, err
+			}
+			if !updateBalanceResp.Ok {
+				return resp, consts.ErrFlowNotEnough
+			}
+		case int64(core_api.Product_Type_Memory_Type):
+			updateBalanceResp, err := s.CloudMindTrade.UpdateBalance(ctx, &trade.UpdateBalanceReq{
+				UserId: user.UserId,
+				Memory: lo.ToPtr(-(req.ProductSize - product.ProductSize) * (req.GetStock() - getStock.Stock)),
+			})
+			if err != nil {
+				return resp, err
+			}
+			if !updateBalanceResp.Ok {
+				return resp, consts.ErrFlowNotEnough
+			}
+		}
 	}
 
 	if _, err = s.CloudMindContent.UpdateProduct(ctx, &content.UpdateProductReq{
@@ -112,7 +201,7 @@ func (s *ProductService) UpdateProduct(ctx context.Context, req *core_api.Update
 		if req.Status != 0 {
 			isHidden = lo.ToPtr(req.Status == int64(core_api.ProductStatus_PrivateProductStatus))
 		}
-		if err = s.UpdateItemKq.Add(userData.UserId, &message.UpdateItemMessage{
+		if err = s.UpdateItemKq.Add(user.UserId, &message.UpdateItemMessage{
 			ItemId:   req.ProductId,
 			IsHidden: isHidden,
 			Labels:   req.Tags,
@@ -131,9 +220,9 @@ func (s *ProductService) DeleteProduct(ctx context.Context, req *core_api.Delete
 	}
 
 	// 只能删除自己的帖子
-	//if err = s.CheckIsMyProduct(ctx, req.ProductId, userData.UserId); err != nil {
-	//	return resp, err
-	//}
+	if err = s.CheckIsMyProduct(ctx, req.ProductId, userData.UserId); err != nil {
+		return resp, err
+	}
 
 	if _, err = s.CloudMindContent.DeleteProduct(ctx, &content.DeleteProductReq{
 		ProductId: req.ProductId,

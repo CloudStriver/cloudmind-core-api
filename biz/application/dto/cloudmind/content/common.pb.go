@@ -75,6 +75,254 @@ func (SortOptions) EnumDescriptor() ([]byte, []int) {
 	return file_cloudmind_content_common_proto_rawDescGZIP(), []int{0}
 }
 
+type Deletion int32
+
+const (
+	Deletion_Deletion_null    Deletion = 0
+	Deletion_Deletion_notDel  Deletion = 1 // 未删除
+	Deletion_Deletion_softDel Deletion = 2 // 软删除
+	Deletion_Deletion_hardDel Deletion = 3 // 彻底删除
+)
+
+// Enum value maps for Deletion.
+var (
+	Deletion_name = map[int32]string{
+		0: "Deletion_null",
+		1: "Deletion_notDel",
+		2: "Deletion_softDel",
+		3: "Deletion_hardDel",
+	}
+	Deletion_value = map[string]int32{
+		"Deletion_null":    0,
+		"Deletion_notDel":  1,
+		"Deletion_softDel": 2,
+		"Deletion_hardDel": 3,
+	}
+)
+
+func (x Deletion) Enum() *Deletion {
+	p := new(Deletion)
+	*p = x
+	return p
+}
+
+func (x Deletion) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (Deletion) Descriptor() protoreflect.EnumDescriptor {
+	return file_cloudmind_content_common_proto_enumTypes[1].Descriptor()
+}
+
+func (Deletion) Type() protoreflect.EnumType {
+	return &file_cloudmind_content_common_proto_enumTypes[1]
+}
+
+func (x Deletion) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use Deletion.Descriptor instead.
+func (Deletion) EnumDescriptor() ([]byte, []int) {
+	return file_cloudmind_content_common_proto_rawDescGZIP(), []int{1}
+}
+
+type Space int32
+
+const (
+	Space_Space_null    Space = 0
+	Space_Space_private Space = 1 // 个人空间
+	Space_Space_public  Space = 2 // 社区空间
+)
+
+// Enum value maps for Space.
+var (
+	Space_name = map[int32]string{
+		0: "Space_null",
+		1: "Space_private",
+		2: "Space_public",
+	}
+	Space_value = map[string]int32{
+		"Space_null":    0,
+		"Space_private": 1,
+		"Space_public":  2,
+	}
+)
+
+func (x Space) Enum() *Space {
+	p := new(Space)
+	*p = x
+	return p
+}
+
+func (x Space) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (Space) Descriptor() protoreflect.EnumDescriptor {
+	return file_cloudmind_content_common_proto_enumTypes[2].Descriptor()
+}
+
+func (Space) Type() protoreflect.EnumType {
+	return &file_cloudmind_content_common_proto_enumTypes[2]
+}
+
+func (x Space) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use Space.Descriptor instead.
+func (Space) EnumDescriptor() ([]byte, []int) {
+	return file_cloudmind_content_common_proto_rawDescGZIP(), []int{2}
+}
+
+type SetRelation int32
+
+const (
+	SetRelation_Set_null         SetRelation = 0
+	SetRelation_Set_intersection SetRelation = 1 // 交集
+	SetRelation_Set_unionSet     SetRelation = 2 // 并集
+)
+
+// Enum value maps for SetRelation.
+var (
+	SetRelation_name = map[int32]string{
+		0: "Set_null",
+		1: "Set_intersection",
+		2: "Set_unionSet",
+	}
+	SetRelation_value = map[string]int32{
+		"Set_null":         0,
+		"Set_intersection": 1,
+		"Set_unionSet":     2,
+	}
+)
+
+func (x SetRelation) Enum() *SetRelation {
+	p := new(SetRelation)
+	*p = x
+	return p
+}
+
+func (x SetRelation) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (SetRelation) Descriptor() protoreflect.EnumDescriptor {
+	return file_cloudmind_content_common_proto_enumTypes[3].Descriptor()
+}
+
+func (SetRelation) Type() protoreflect.EnumType {
+	return &file_cloudmind_content_common_proto_enumTypes[3]
+}
+
+func (x SetRelation) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use SetRelation.Descriptor instead.
+func (SetRelation) EnumDescriptor() ([]byte, []int) {
+	return file_cloudmind_content_common_proto_rawDescGZIP(), []int{3}
+}
+
+type Validity int32
+
+const (
+	Validity_Validity_null       Validity = 0
+	Validity_Validity_perpetuity Validity = 1
+	Validity_Validity_temporary  Validity = 2
+	Validity_Validity_expired    Validity = 3
+)
+
+// Enum value maps for Validity.
+var (
+	Validity_name = map[int32]string{
+		0: "Validity_null",
+		1: "Validity_perpetuity",
+		2: "Validity_temporary",
+		3: "Validity_expired",
+	}
+	Validity_value = map[string]int32{
+		"Validity_null":       0,
+		"Validity_perpetuity": 1,
+		"Validity_temporary":  2,
+		"Validity_expired":    3,
+	}
+)
+
+func (x Validity) Enum() *Validity {
+	p := new(Validity)
+	*p = x
+	return p
+}
+
+func (x Validity) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (Validity) Descriptor() protoreflect.EnumDescriptor {
+	return file_cloudmind_content_common_proto_enumTypes[4].Descriptor()
+}
+
+func (Validity) Type() protoreflect.EnumType {
+	return &file_cloudmind_content_common_proto_enumTypes[4]
+}
+
+func (x Validity) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use Validity.Descriptor instead.
+func (Validity) EnumDescriptor() ([]byte, []int) {
+	return file_cloudmind_content_common_proto_rawDescGZIP(), []int{4}
+}
+
+type Folder int32
+
+const (
+	Folder_Folder_null Folder = 0
+	Folder_Folder_Size Folder = -1
+)
+
+// Enum value maps for Folder.
+var (
+	Folder_name = map[int32]string{
+		0:  "Folder_null",
+		-1: "Folder_Size",
+	}
+	Folder_value = map[string]int32{
+		"Folder_null": 0,
+		"Folder_Size": -1,
+	}
+)
+
+func (x Folder) Enum() *Folder {
+	p := new(Folder)
+	*p = x
+	return p
+}
+
+func (x Folder) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (Folder) Descriptor() protoreflect.EnumDescriptor {
+	return file_cloudmind_content_common_proto_enumTypes[5].Descriptor()
+}
+
+func (Folder) Type() protoreflect.EnumType {
+	return &file_cloudmind_content_common_proto_enumTypes[5]
+}
+
+func (x Folder) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use Folder.Descriptor instead.
+func (Folder) EnumDescriptor() ([]byte, []int) {
+	return file_cloudmind_content_common_proto_rawDescGZIP(), []int{5}
+}
+
 type File struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -2469,13 +2717,37 @@ var file_cloudmind_content_common_proto_rawDesc = []byte{
 	0x10, 0x02, 0x12, 0x1c, 0x0a, 0x18, 0x53, 0x6f, 0x72, 0x74, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e,
 	0x73, 0x5f, 0x75, 0x70, 0x64, 0x61, 0x74, 0x65, 0x41, 0x74, 0x44, 0x65, 0x73, 0x63, 0x10, 0x03,
 	0x12, 0x1b, 0x0a, 0x17, 0x53, 0x6f, 0x72, 0x74, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x5f,
-	0x75, 0x70, 0x64, 0x61, 0x74, 0x65, 0x41, 0x74, 0x41, 0x73, 0x63, 0x10, 0x04, 0x42, 0x52, 0x5a,
-	0x50, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x43, 0x6c, 0x6f, 0x75,
-	0x64, 0x53, 0x74, 0x72, 0x69, 0x76, 0x65, 0x72, 0x2f, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69,
-	0x6e, 0x64, 0x2d, 0x63, 0x6f, 0x72, 0x65, 0x2d, 0x61, 0x70, 0x69, 0x2f, 0x62, 0x69, 0x7a, 0x2f,
-	0x61, 0x70, 0x70, 0x6c, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2f, 0x64, 0x74, 0x6f, 0x2f,
-	0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2f, 0x63, 0x6f, 0x6e, 0x74, 0x65, 0x6e,
-	0x74, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x75, 0x70, 0x64, 0x61, 0x74, 0x65, 0x41, 0x74, 0x41, 0x73, 0x63, 0x10, 0x04, 0x2a, 0x5e, 0x0a,
+	0x08, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x11, 0x0a, 0x0d, 0x44, 0x65, 0x6c,
+	0x65, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x6e, 0x75, 0x6c, 0x6c, 0x10, 0x00, 0x12, 0x13, 0x0a, 0x0f,
+	0x44, 0x65, 0x6c, 0x65, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x6e, 0x6f, 0x74, 0x44, 0x65, 0x6c, 0x10,
+	0x01, 0x12, 0x14, 0x0a, 0x10, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x73, 0x6f,
+	0x66, 0x74, 0x44, 0x65, 0x6c, 0x10, 0x02, 0x12, 0x14, 0x0a, 0x10, 0x44, 0x65, 0x6c, 0x65, 0x74,
+	0x69, 0x6f, 0x6e, 0x5f, 0x68, 0x61, 0x72, 0x64, 0x44, 0x65, 0x6c, 0x10, 0x03, 0x2a, 0x3c, 0x0a,
+	0x05, 0x53, 0x70, 0x61, 0x63, 0x65, 0x12, 0x0e, 0x0a, 0x0a, 0x53, 0x70, 0x61, 0x63, 0x65, 0x5f,
+	0x6e, 0x75, 0x6c, 0x6c, 0x10, 0x00, 0x12, 0x11, 0x0a, 0x0d, 0x53, 0x70, 0x61, 0x63, 0x65, 0x5f,
+	0x70, 0x72, 0x69, 0x76, 0x61, 0x74, 0x65, 0x10, 0x01, 0x12, 0x10, 0x0a, 0x0c, 0x53, 0x70, 0x61,
+	0x63, 0x65, 0x5f, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x10, 0x02, 0x2a, 0x43, 0x0a, 0x0b, 0x53,
+	0x65, 0x74, 0x52, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x0c, 0x0a, 0x08, 0x53, 0x65,
+	0x74, 0x5f, 0x6e, 0x75, 0x6c, 0x6c, 0x10, 0x00, 0x12, 0x14, 0x0a, 0x10, 0x53, 0x65, 0x74, 0x5f,
+	0x69, 0x6e, 0x74, 0x65, 0x72, 0x73, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x10, 0x01, 0x12, 0x10,
+	0x0a, 0x0c, 0x53, 0x65, 0x74, 0x5f, 0x75, 0x6e, 0x69, 0x6f, 0x6e, 0x53, 0x65, 0x74, 0x10, 0x02,
+	0x2a, 0x64, 0x0a, 0x08, 0x56, 0x61, 0x6c, 0x69, 0x64, 0x69, 0x74, 0x79, 0x12, 0x11, 0x0a, 0x0d,
+	0x56, 0x61, 0x6c, 0x69, 0x64, 0x69, 0x74, 0x79, 0x5f, 0x6e, 0x75, 0x6c, 0x6c, 0x10, 0x00, 0x12,
+	0x17, 0x0a, 0x13, 0x56, 0x61, 0x6c, 0x69, 0x64, 0x69, 0x74, 0x79, 0x5f, 0x70, 0x65, 0x72, 0x70,
+	0x65, 0x74, 0x75, 0x69, 0x74, 0x79, 0x10, 0x01, 0x12, 0x16, 0x0a, 0x12, 0x56, 0x61, 0x6c, 0x69,
+	0x64, 0x69, 0x74, 0x79, 0x5f, 0x74, 0x65, 0x6d, 0x70, 0x6f, 0x72, 0x61, 0x72, 0x79, 0x10, 0x02,
+	0x12, 0x14, 0x0a, 0x10, 0x56, 0x61, 0x6c, 0x69, 0x64, 0x69, 0x74, 0x79, 0x5f, 0x65, 0x78, 0x70,
+	0x69, 0x72, 0x65, 0x64, 0x10, 0x03, 0x2a, 0x33, 0x0a, 0x06, 0x46, 0x6f, 0x6c, 0x64, 0x65, 0x72,
+	0x12, 0x0f, 0x0a, 0x0b, 0x46, 0x6f, 0x6c, 0x64, 0x65, 0x72, 0x5f, 0x6e, 0x75, 0x6c, 0x6c, 0x10,
+	0x00, 0x12, 0x18, 0x0a, 0x0b, 0x46, 0x6f, 0x6c, 0x64, 0x65, 0x72, 0x5f, 0x53, 0x69, 0x7a, 0x65,
+	0x10, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x01, 0x42, 0x52, 0x5a, 0x50, 0x67,
+	0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x43, 0x6c, 0x6f, 0x75, 0x64, 0x53,
+	0x74, 0x72, 0x69, 0x76, 0x65, 0x72, 0x2f, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64,
+	0x2d, 0x63, 0x6f, 0x72, 0x65, 0x2d, 0x61, 0x70, 0x69, 0x2f, 0x62, 0x69, 0x7a, 0x2f, 0x61, 0x70,
+	0x70, 0x6c, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2f, 0x64, 0x74, 0x6f, 0x2f, 0x63, 0x6c,
+	0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2f, 0x63, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x62,
+	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -2490,40 +2762,45 @@ func file_cloudmind_content_common_proto_rawDescGZIP() []byte {
 	return file_cloudmind_content_common_proto_rawDescData
 }
 
-var file_cloudmind_content_common_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_cloudmind_content_common_proto_enumTypes = make([]protoimpl.EnumInfo, 6)
 var file_cloudmind_content_common_proto_msgTypes = make([]protoimpl.MessageInfo, 22)
 var file_cloudmind_content_common_proto_goTypes = []interface{}{
 	(SortOptions)(0),               // 0: cloudmind.content.SortOptions
-	(*File)(nil),                   // 1: cloudmind.content.File
-	(*FileInfo)(nil),               // 2: cloudmind.content.FileInfo
-	(*Zone)(nil),                   // 3: cloudmind.content.Zone
-	(*ShareFile)(nil),              // 4: cloudmind.content.ShareFile
-	(*ShareCode)(nil),              // 5: cloudmind.content.ShareCode
-	(*SearchField)(nil),            // 6: cloudmind.content.SearchField
-	(*SearchOptions)(nil),          // 7: cloudmind.content.SearchOptions
-	(*FileFilterOptions)(nil),      // 8: cloudmind.content.FileFilterOptions
-	(*ShareFileFilterOptions)(nil), // 9: cloudmind.content.ShareFileFilterOptions
-	(*User)(nil),                   // 10: cloudmind.content.User
-	(*Post)(nil),                   // 11: cloudmind.content.Post
-	(*PostFilterOptions)(nil),      // 12: cloudmind.content.PostFilterOptions
-	(*Product)(nil),                // 13: cloudmind.content.Product
-	(*ProductFilterOptions)(nil),   // 14: cloudmind.content.ProductFilterOptions
-	(*Order)(nil),                  // 15: cloudmind.content.Order
-	(*OrderFilterOptions)(nil),     // 16: cloudmind.content.OrderFilterOptions
-	(*Coupon)(nil),                 // 17: cloudmind.content.Coupon
-	(*CouponFilterOptions)(nil),    // 18: cloudmind.content.CouponFilterOptions
-	(*LabelFilterOptions)(nil),     // 19: cloudmind.content.LabelFilterOptions
-	(*Item)(nil),                   // 20: cloudmind.content.Item
-	(*FeedBack)(nil),               // 21: cloudmind.content.FeedBack
-	(*UserFilterOptions)(nil),      // 22: cloudmind.content.UserFilterOptions
+	(Deletion)(0),                  // 1: cloudmind.content.Deletion
+	(Space)(0),                     // 2: cloudmind.content.Space
+	(SetRelation)(0),               // 3: cloudmind.content.SetRelation
+	(Validity)(0),                  // 4: cloudmind.content.Validity
+	(Folder)(0),                    // 5: cloudmind.content.Folder
+	(*File)(nil),                   // 6: cloudmind.content.File
+	(*FileInfo)(nil),               // 7: cloudmind.content.FileInfo
+	(*Zone)(nil),                   // 8: cloudmind.content.Zone
+	(*ShareFile)(nil),              // 9: cloudmind.content.ShareFile
+	(*ShareCode)(nil),              // 10: cloudmind.content.ShareCode
+	(*SearchField)(nil),            // 11: cloudmind.content.SearchField
+	(*SearchOptions)(nil),          // 12: cloudmind.content.SearchOptions
+	(*FileFilterOptions)(nil),      // 13: cloudmind.content.FileFilterOptions
+	(*ShareFileFilterOptions)(nil), // 14: cloudmind.content.ShareFileFilterOptions
+	(*User)(nil),                   // 15: cloudmind.content.User
+	(*Post)(nil),                   // 16: cloudmind.content.Post
+	(*PostFilterOptions)(nil),      // 17: cloudmind.content.PostFilterOptions
+	(*Product)(nil),                // 18: cloudmind.content.Product
+	(*ProductFilterOptions)(nil),   // 19: cloudmind.content.ProductFilterOptions
+	(*Order)(nil),                  // 20: cloudmind.content.Order
+	(*OrderFilterOptions)(nil),     // 21: cloudmind.content.OrderFilterOptions
+	(*Coupon)(nil),                 // 22: cloudmind.content.Coupon
+	(*CouponFilterOptions)(nil),    // 23: cloudmind.content.CouponFilterOptions
+	(*LabelFilterOptions)(nil),     // 24: cloudmind.content.LabelFilterOptions
+	(*Item)(nil),                   // 25: cloudmind.content.Item
+	(*FeedBack)(nil),               // 26: cloudmind.content.FeedBack
+	(*UserFilterOptions)(nil),      // 27: cloudmind.content.UserFilterOptions
 }
 var file_cloudmind_content_common_proto_depIdxs = []int32{
-	6, // 0: cloudmind.content.SearchOptions.multiFieldsKey:type_name -> cloudmind.content.SearchField
-	1, // [1:1] is the sub-list for method output_type
-	1, // [1:1] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	11, // 0: cloudmind.content.SearchOptions.multiFieldsKey:type_name -> cloudmind.content.SearchField
+	1,  // [1:1] is the sub-list for method output_type
+	1,  // [1:1] is the sub-list for method input_type
+	1,  // [1:1] is the sub-list for extension type_name
+	1,  // [1:1] is the sub-list for extension extendee
+	0,  // [0:1] is the sub-list for field type_name
 }
 
 
@@ -2815,7 +3092,7 @@ func file_cloudmind_content_common_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_cloudmind_content_common_proto_rawDesc,
-			NumEnums:      1,
+			NumEnums:      6,
 			NumMessages:   22,
 			NumExtensions: 0,
 			NumServices:   0,
