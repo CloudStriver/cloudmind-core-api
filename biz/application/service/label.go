@@ -2,10 +2,15 @@ package service
 
 import (
 	"context"
+	"github.com/CloudStriver/cloudmind-core-api/biz/adaptor"
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/convertor"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_comment"
+	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/comment"
 	"github.com/google/wire"
+	"github.com/samber/lo"
 )
 
 type ILabelService interface {
@@ -15,11 +20,6 @@ type ILabelService interface {
 	GetLabelsInBatch(ctx context.Context, req *core_api.GetLabelsInBatchReq) (resp *core_api.GetLabelsInBatchResp, err error)
 	UpdateLabel(ctx context.Context, req *core_api.UpdateLabelReq) (resp *core_api.UpdateLabelResp, err error)
 	GetLabels(ctx context.Context, req *core_api.GetLabelsReq) (resp *core_api.GetLabelsResp, err error)
-	CreateObject(ctx context.Context, req *core_api.CreateObjectReq) (resp *core_api.CreateObjectResp, err error)
-	CreateObjects(ctx context.Context, req *core_api.CreateObjectsReq) (resp *core_api.CreateObjectsResp, err error)
-	DeleteObject(ctx context.Context, req *core_api.DeleteObjectReq) (resp *core_api.DeleteObjectResp, err error)
-	GetObjects(ctx context.Context, req *core_api.GetObjectsReq) (resp *core_api.GetObjectsResp, err error)
-	UpdateObject(ctx context.Context, req *core_api.UpdateObjectReq) (resp *core_api.UpdateObjectResp, err error)
 }
 
 var LabelServiceSet = wire.NewSet(
@@ -33,45 +33,76 @@ type LabelService struct {
 }
 
 func (s *LabelService) CreateLabel(ctx context.Context, req *core_api.CreateLabelReq) (resp *core_api.CreateLabelResp, err error) {
-	return
+	resp = new(core_api.CreateLabelResp)
+	userData := adaptor.ExtractUserMeta(ctx)
+	if userData.GetUserId() == "" {
+		return resp, consts.ErrNotAuthentication
+	}
+	var res *comment.CreateLabelResp
+	if res, err = s.PlatformComment.CreateLabel(ctx, &comment.CreateLabelReq{Label: convertor.CoreLabelToLabel(req.Label)}); err != nil {
+		return resp, err
+	}
+	resp.LabelId = res.Id
+	return resp, nil
 }
 
 func (s *LabelService) DeleteLabel(ctx context.Context, req *core_api.DeleteLabelReq) (resp *core_api.DeleteLabelResp, err error) {
-	return
+	resp = new(core_api.DeleteLabelResp)
+	userData := adaptor.ExtractUserMeta(ctx)
+	if userData.GetUserId() == "" {
+		return resp, consts.ErrNotAuthentication
+	}
+	if _, err = s.PlatformComment.DeleteLabel(ctx, &comment.DeleteLabelReq{Id: req.LabelId}); err != nil {
+		return resp, err
+	}
+	return resp, nil
 }
 
 func (s *LabelService) GetLabel(ctx context.Context, req *core_api.GetLabelReq) (resp *core_api.GetLabelResp, err error) {
-	return
+	resp = new(core_api.GetLabelResp)
+	var res *comment.GetLabelResp
+	if res, err = s.PlatformComment.GetLabel(ctx, &comment.GetLabelReq{Id: req.LabelId}); err != nil {
+		return resp, err
+	}
+	resp.Label = convertor.LabelToCoreLabel(res.Label)
+	return resp, nil
 }
 
 func (s *LabelService) GetLabelsInBatch(ctx context.Context, req *core_api.GetLabelsInBatchReq) (resp *core_api.GetLabelsInBatchResp, err error) {
-	return
+	resp = new(core_api.GetLabelsInBatchResp)
+	var res *comment.GetLabelsInBatchResp
+	if res, err = s.PlatformComment.GetLabelsInBatch(ctx, &comment.GetLabelsInBatchReq{LabelIds: req.LabelIds}); err != nil {
+		return resp, err
+	}
+	resp.Labels = lo.Map(res.Labels, func(item *comment.Label, _ int) *core_api.Label {
+		return convertor.LabelToCoreLabel(item)
+	})
+	return resp, nil
 }
 
 func (s *LabelService) UpdateLabel(ctx context.Context, req *core_api.UpdateLabelReq) (resp *core_api.UpdateLabelResp, err error) {
-	return
+	resp = new(core_api.UpdateLabelResp)
+	userData := adaptor.ExtractUserMeta(ctx)
+	if userData.GetUserId() == "" {
+		return resp, consts.ErrNotAuthentication
+	}
+	if _, err = s.PlatformComment.UpdateLabel(ctx, &comment.UpdateLabelReq{Label: convertor.CoreLabelToLabel(req.Label)}); err != nil {
+		return resp, err
+	}
+	return resp, nil
 }
 
 func (s *LabelService) GetLabels(ctx context.Context, req *core_api.GetLabelsReq) (resp *core_api.GetLabelsResp, err error) {
-	return
-}
-
-func (s *LabelService) CreateObject(ctx context.Context, req *core_api.CreateObjectReq) (resp *core_api.CreateObjectResp, err error) {
-	return
-}
-
-func (s *LabelService) CreateObjects(ctx context.Context, req *core_api.CreateObjectsReq) (resp *core_api.CreateObjectsResp, err error) {
-	return
-}
-
-func (s *LabelService) DeleteObject(ctx context.Context, req *core_api.DeleteObjectReq) (resp *core_api.DeleteObjectResp, err error) {
-	return
-}
-
-func (s *LabelService) GetObjects(ctx context.Context, req *core_api.GetObjectsReq) (resp *core_api.GetObjectsResp, err error) {
-	return
-}
-
-func (s *LabelService) UpdateObject(ctx context.Context, req *core_api.UpdateObjectReq) (resp *core_api.UpdateObjectResp, err error) {
-	return
+	resp = new(core_api.GetLabelsResp)
+	var res *comment.GetLabelsResp
+	p := convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward)
+	if res, err = s.PlatformComment.GetLabels(ctx, &comment.GetLabelsReq{Key: req.Key, Pagination: p}); err != nil {
+		return resp, err
+	}
+	resp.Labels = lo.Map(res.Labels, func(item *comment.Label, _ int) *core_api.Label {
+		return convertor.LabelToCoreLabel(item)
+	})
+	resp.Total = res.Total
+	resp.Token = res.Token
+	return resp, nil
 }

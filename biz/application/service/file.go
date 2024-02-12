@@ -320,7 +320,7 @@ func (s *FileService) GetFileBySharingCode(ctx context.Context, req *core_api.Ge
 		return resp, err
 	}
 	p := convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward)
-	if res, err = s.CloudMindContent.GetFileBySharingCode(ctx, &content.GetFileBySharingCodeReq{FileIds: shareFile.ShareFile.FileList, OnlyFileId: req.OnlyFileId, OnlyFatherId: req.OnlyFatherId, PaginationOptions: p}); err != nil {
+	if res, err = s.CloudMindContent.GetFileBySharingCode(ctx, &content.GetFileBySharingCodeReq{FileIds: shareFile.ShareFile.FileList, OnlyFatherId: req.OnlyFatherId, PaginationOptions: p}); err != nil {
 		return resp, err
 	}
 	resp.Files = lo.Map[*content.FileInfo, *core_api.PrivateFile](res.Files, func(item *content.FileInfo, _ int) *core_api.PrivateFile {

@@ -22,7 +22,7 @@ require (
 	google.golang.org/protobuf v1.32.0
 )
 
-//replace github.com/CloudStriver/service-idl-gen-go => ../service-idl-gen-go
+replace github.com/CloudStriver/service-idl-gen-go => ../service-idl-gen-go
 
 require (
 	github.com/andeya/ameda v1.5.3 // indirect
