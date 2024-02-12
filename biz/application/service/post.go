@@ -19,6 +19,8 @@ type IPostService interface {
 	CreatePost(ctx context.Context, req *core_api.CreatePostReq) (resp *core_api.CreatePostResp, err error)
 	UpdatePost(ctx context.Context, req *core_api.UpdatePostReq) (resp *core_api.UpdatePostResp, err error)
 	DeletePost(ctx context.Context, req *core_api.DeletePostReq) (resp *core_api.DeletePostResp, err error)
+	GetPosts(ctx context.Context, c *core_api.GetPostsReq) (*core_api.GetPostsResp, error)
+	GetPost(ctx context.Context, c *core_api.GetPostReq) (*core_api.GetPostResp, error)
 }
 
 var PostServiceSet = wire.NewSet(
@@ -56,7 +58,7 @@ func (s *PostService) CreatePost(ctx context.Context, req *core_api.CreatePostRe
 	if err = s.CreateItemsKq.Add(userData.UserId, &message.CreateItemsMessage{
 		Item: &content.Item{
 			ItemId:   createPostResp.PostId,
-			IsHidden: req.Status == consts.PostPrivateStatus,
+			IsHidden: req.Status == int64(core_api.PostStatus_PrivatePostStatus),
 			Labels:   req.Tags,
 			Category: core_api.Category_name[int32(core_api.Category_PostCategory)],
 			Comment:  req.Title,
@@ -91,7 +93,7 @@ func (s *PostService) UpdatePost(ctx context.Context, req *core_api.UpdatePostRe
 	if req.Status != 0 || req.Tags != nil || req.Title != "" {
 		var isHidden *bool
 		if req.Status != 0 {
-			isHidden = lo.ToPtr(req.Status == consts.PostPrivateStatus)
+			isHidden = lo.ToPtr(req.Status == int64(core_api.PostStatus_PrivatePostStatus))
 		}
 		if err = s.UpdateItemKq.Add(userData.UserId, &message.UpdateItemMessage{
 			ItemId:   req.PostId,
@@ -128,6 +130,142 @@ func (s *PostService) DeletePost(ctx context.Context, req *core_api.DeletePostRe
 		return resp, err
 	}
 
+	return resp, nil
+}
+
+func (s *PostService) GetPost(ctx context.Context, req *core_api.GetPostReq) (resp *core_api.GetPostResp, err error) {
+	userData := adaptor.ExtractUserMeta(ctx)
+	var res *content.GetPostResp
+	if res, err = s.CloudMindContent.GetPost(ctx, &content.GetPostReq{
+		PostId: req.PostId,
+	}); err != nil {
+		return resp, err
+	}
+
+	// 如果该帖子非公开，并且不是他的，那么他没有权限查看
+	if res.Status != int64(core_api.PostStatus_PrivatePostStatus) && res.UserId != userData.GetUserId() {
+		return resp, consts.ErrForbidden
+	}
+
+	resp = &core_api.GetPostResp{
+		Title:      res.Title,
+		Text:       res.Text,
+		Url:        res.Url,
+		Tags:       res.Tags,
+		CreateTime: res.CreateTime,
+		UpdateTime: res.UpdateTime,
+		Author:     &core_api.User{},
+	}
+	if err = mr.Finish(func() error {
+		s.PostDomainService.LoadAuthor(ctx, resp.Author, res.UserId) // 作者
+		return nil
+	}, func() error {
+		s.PostDomainService.LoadLikeCount(ctx, &resp.LikeCount, req.PostId) // 点赞量
+		return nil
+	}, func() error {
+		s.PostDomainService.LoadViewCount(ctx, &resp.ViewCount, req.PostId) // 浏览量
+		return nil
+	}, func() error {
+		s.PostDomainService.LoadCollectCount(ctx, &resp.CollectCount, req.PostId) // 收藏量
+		return nil
+	}, func() error {
+		s.PostDomainService.LoadLiked(ctx, &resp.Liked, userData.GetUserId(), req.PostId) // 是否点赞
+		return nil
+	}, func() error {
+		s.PostDomainService.LoadCollected(ctx, &resp.Collected, userData.GetUserId(), req.PostId) // 是否收藏
+		return nil
+	}); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (resp *core_api.GetPostsResp, err error) {
+	resp = new(core_api.GetPostsResp)
+	userData := adaptor.ExtractUserMeta(ctx)
+	var (
+		getPostsResp  *content.GetPostsResp
+		searchOptions *content.SearchOptions
+	)
+
+	if req.AllFieldsKey != nil {
+		searchOptions = &content.SearchOptions{
+			Type: &content.SearchOptions_AllFieldsKey{
+				AllFieldsKey: *req.AllFieldsKey,
+			},
+		}
+	}
+	if req.Text != nil || req.Title != nil || req.Tag != nil {
+		searchOptions = &content.SearchOptions{
+			Type: &content.SearchOptions_MultiFieldsKey{
+				MultiFieldsKey: &content.SearchField{
+					Tag:   req.Tag,
+					Text:  req.Text,
+					Title: req.Title,
+				},
+			},
+		}
+	}
+
+	filter := &content.PostFilterOptions{
+		OnlyUserId:      req.OnlyUserId,
+		OnlyTags:        req.OnlyTags,
+		OnlySetRelation: req.OnlySetRelation,
+	}
+
+	if req.OnlyUserId == nil || req.GetOnlyUserId() != userData.GetUserId() {
+		filter.OnlyStatus = lo.ToPtr(int64(core_api.PostStatus_PublicPostStatus))
+	}
+
+	if getPostsResp, err = s.CloudMindContent.GetPosts(ctx, &content.GetPostsReq{
+		SearchOptions:     searchOptions,
+		PostFilterOptions: filter,
+		PaginationOptions: &basic.PaginationOptions{
+			Limit:     req.Limit,
+			LastToken: req.LastToken,
+			Backward:  req.Backward,
+			Offset:    req.Offset,
+		},
+	}); err != nil {
+		return resp, err
+	}
+
+	resp.Posts = make([]*core_api.Post, len(getPostsResp.Posts))
+	if err = mr.Finish(lo.Map(getPostsResp.Posts, func(item *content.Post, i int) func() error {
+		return func() error {
+			resp.Posts[i] = &core_api.Post{
+				PostId: item.PostId,
+				Title:  item.Title,
+				Text:   item.Text,
+				Url:    item.Url,
+				Tags:   item.Tags,
+			}
+			author := &core_api.User{}
+			if err = mr.Finish(func() error {
+				s.PostDomainService.LoadLikeCount(ctx, &resp.Posts[i].LikeCount, item.PostId) // 点赞量
+				return nil
+			}, func() error {
+				// 加载评论量
+				return nil
+			}, func() error {
+				if userData.GetUserId() != "" {
+					s.PostDomainService.LoadLiked(ctx, &resp.Posts[i].Liked, userData.GetUserId(), item.PostId)
+				}
+				return nil
+			}, func() error {
+				s.PostDomainService.LoadAuthor(ctx, author, item.UserId)
+				resp.Posts[i].UserName = author.Name
+				return nil
+			}); err != nil {
+				return err
+			}
+			return nil
+		}
+	})...); err != nil {
+		return resp, err
+	}
+	resp.Total = getPostsResp.Total
+	resp.Token = getPostsResp.Token
 	return resp, nil
 }
 

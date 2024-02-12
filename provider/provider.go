@@ -8,6 +8,7 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_system"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_trade"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_comment"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/store/redis"
@@ -37,6 +38,7 @@ type Provider struct {
 	CommentService      service.ICommentService
 	LabelService        service.ILabelService
 	RecommendService    service.IRecommendService
+	ProductService      service.IProductService
 }
 
 func Get() *Provider {
@@ -49,6 +51,7 @@ var RPCSet = wire.NewSet(
 	platform_relation.PlatFormRelationSet,
 	cloudmind_system.CloudMindSystemSet,
 	platform_comment.PlatFormCommentSet,
+	cloudmind_trade.CloudMindTradeSet,
 )
 
 var ApplicationSet = wire.NewSet(
@@ -62,11 +65,13 @@ var ApplicationSet = wire.NewSet(
 	service.RecommendServiceSet,
 	service.LabelServiceSet,
 	service.CommentServiceSet,
+	service.ProductServiceSet,
 )
 
 var DomainSet = wire.NewSet(
 	domainservice.PostDomainServiceSet,
 	domainservice.FileDomainServiceSet,
+	domainservice.ProductDomainServiceSet,
 )
 
 var InfrastructureSet = wire.NewSet(

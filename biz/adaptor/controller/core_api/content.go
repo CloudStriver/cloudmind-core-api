@@ -316,6 +316,39 @@ func UpdatePost(ctx context.Context, c *app.RequestContext) {
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
+// GetPosts .
+// @router /content/getPosts [GET]
+func GetPosts(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.GetPostsReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.GetPostsResp)
+	p := provider.Get()
+	resp, err = p.PostService.GetPosts(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
+}
+
+// GetPost .
+// @router /content/getPost [GET]
+func GetPost(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.GetPostReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	resp := new(core_api.GetPostResp)
+	p := provider.Get()
+	resp, err = p.PostService.GetPost(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
+}
+
 // CreateFile .
 // @router /content/createFile [POST]
 func CreateFile(ctx context.Context, c *app.RequestContext) {
@@ -639,38 +672,6 @@ func GetLatestRecommend(ctx context.Context, c *app.RequestContext) {
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
-// GetPosts .
-// @router /content/getPosts [GET]
-func GetPosts(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.GetPostsReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(core_api.GetPostsResp)
-
-	c.JSON(consts.StatusOK, resp)
-}
-
-// GetPost .
-// @router /content/getPost [GET]
-func GetPost(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.GetPostReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(core_api.GetPostResp)
-
-	c.JSON(consts.StatusOK, resp)
-}
-
 // CreateProduct .
 // @router /content/createProduct [POST]
 func CreateProduct(ctx context.Context, c *app.RequestContext) {
@@ -683,8 +684,9 @@ func CreateProduct(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.CreateProductResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.ProductService.CreateProduct(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // GetProduct .
@@ -699,8 +701,9 @@ func GetProduct(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.GetProductResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.ProductService.GetProduct(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // GetProducts .
@@ -715,8 +718,9 @@ func GetProducts(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.GetProductsResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.ProductService.GetProducts(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // UpdateProduct .
@@ -731,8 +735,9 @@ func UpdateProduct(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.UpdateProductResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.ProductService.UpdateProduct(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // DeleteProduct .
@@ -747,6 +752,7 @@ func DeleteProduct(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.DeleteProductResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.ProductService.DeleteProduct(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }

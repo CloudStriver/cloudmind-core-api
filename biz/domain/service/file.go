@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
@@ -31,11 +30,11 @@ var FileDomainServiceSet = wire.NewSet(
 
 func (s *FileDomainService) LoadCollected(ctx context.Context, file *core_api.PublicFile, userId string) {
 	getRelationResp, err := s.PlatformRelation.GetRelation(ctx, &relation.GetRelationReq{
-		FromType:     consts.RelationUserType,
+		FromType:     int64(core_api.TargetType_UserType),
 		FromId:       userId,
-		ToType:       consts.RelationFileType,
+		ToType:       int64(core_api.TargetType_FileType),
 		ToId:         file.FileId,
-		RelationType: consts.RelationCollectType,
+		RelationType: int64(core_api.RelationType_CollectType),
 	})
 	if err == nil {
 		file.FileRelation.Collected = getRelationResp.Ok
@@ -46,12 +45,12 @@ func (s *FileDomainService) LoadViewCount(ctx context.Context, file *core_api.Pu
 	getRelationCountResp, err := s.PlatformRelation.GetRelationCount(ctx, &relation.GetRelationCountReq{
 		RelationFilterOptions: &relation.GetRelationCountReq_ToFilterOptions{
 			ToFilterOptions: &relation.ToFilterOptions{
-				ToType:   consts.RelationFileType,
+				ToType:   int64(core_api.TargetType_FileType),
 				ToId:     file.FileId,
-				FromType: consts.RelationUserType,
+				FromType: int64(core_api.TargetType_UserType),
 			},
 		},
-		RelationType: consts.RelationViewType,
+		RelationType: int64(core_api.RelationType_ViewType),
 	})
 	if err == nil {
 		file.FileCount.ViewCount = getRelationCountResp.Total
@@ -78,12 +77,12 @@ func (s *FileDomainService) LoadLikeCount(ctx context.Context, file *core_api.Pu
 	getRelationCountResp, err := s.PlatformRelation.GetRelationCount(ctx, &relation.GetRelationCountReq{
 		RelationFilterOptions: &relation.GetRelationCountReq_ToFilterOptions{
 			ToFilterOptions: &relation.ToFilterOptions{
-				ToType:   consts.RelationFileType,
+				ToType:   int64(core_api.TargetType_FileType),
 				ToId:     file.FileId,
-				FromType: consts.RelationUserType,
+				FromType: int64(core_api.TargetType_UserType),
 			},
 		},
-		RelationType: consts.RelationLikeType,
+		RelationType: int64(core_api.RelationType_LikeType),
 	})
 	if err == nil {
 		file.FileCount.LikeCount = getRelationCountResp.Total
@@ -95,11 +94,11 @@ func (s *FileDomainService) LoadLiked(ctx context.Context, file *core_api.Public
 		return
 	}
 	getRelationResp, err := s.PlatformRelation.GetRelation(ctx, &relation.GetRelationReq{
-		FromType:     consts.RelationUserType,
+		FromType:     int64(core_api.TargetType_UserType),
 		FromId:       userId,
-		ToType:       consts.RelationFileType,
+		ToType:       int64(core_api.TargetType_FileType),
 		ToId:         file.FileId,
-		RelationType: consts.RelationLikeType,
+		RelationType: int64(core_api.RelationType_LikeType),
 	})
 	if err == nil {
 		file.FileRelation.Liked = getRelationResp.Ok
@@ -113,12 +112,12 @@ func (s *FileDomainService) LoadCollectCount(ctx context.Context, file *core_api
 	getRelationCountResp, err := s.PlatformRelation.GetRelationCount(ctx, &relation.GetRelationCountReq{
 		RelationFilterOptions: &relation.GetRelationCountReq_ToFilterOptions{
 			ToFilterOptions: &relation.ToFilterOptions{
-				ToType:   consts.RelationFileType,
+				ToType:   int64(core_api.TargetType_FileType),
 				ToId:     file.FileId,
-				FromType: consts.RelationUserType,
+				FromType: int64(core_api.TargetType_UserType),
 			},
 		},
-		RelationType: consts.RelationCollectType,
+		RelationType: int64(core_api.RelationType_CollectType),
 	})
 	if err == nil {
 		file.FileCount.CollectCount = getRelationCountResp.Total

@@ -82,7 +82,7 @@ func (s *AuthService) EmailLogin(ctx context.Context, req *core_api.EmailLoginRe
 		return resp, consts.ErrEmailNotFound
 	}
 
-	resp.ShortToken, resp.LongToken, err = generateShortLongToken(s.Config.Auth.SecretKey, loginResp.UserId, s.Config.Auth.AccessExpire)
+	resp.ShortToken, resp.LongToken, err = generateShortLongToken(s.Config.Auth.SecretKey, loginResp.UserId, s.Config.Auth.ShortTokenExpire, s.Config.Auth.LongTokenExpire)
 	if err != nil {
 		return resp, consts.ErrAuthentication
 	}
@@ -142,7 +142,7 @@ func (s *AuthService) ThirdLogin(ctx context.Context, code string, authType sts.
 	} else {
 		userId = loginResp.UserId
 	}
-	shortToken, longToken, err = generateShortLongToken(s.Config.Auth.SecretKey, userId, s.Config.Auth.AccessExpire)
+	shortToken, longToken, err = generateShortLongToken(s.Config.Auth.SecretKey, userId, s.Config.Auth.ShortTokenExpire, s.Config.Auth.LongTokenExpire)
 	if err != nil {
 		return "", "", "", consts.ErrAuthentication
 	}
@@ -165,11 +165,11 @@ func (s *AuthService) RefreshToken(_ context.Context, req *core_api.RefreshToken
 	if !ok {
 		return resp, consts.ErrNotAuthentication
 	}
-	if claims["expireTime"].(float64) <= float64(s.Config.Auth.AccessExpire) {
+	if claims["expireTime"].(float64) <= float64(s.Config.Auth.ShortTokenExpire) {
 		return resp, consts.ErrNotLongToken
 	}
 
-	resp.ShortToken, resp.LongToken, err = generateShortLongToken(s.Config.Auth.SecretKey, userId, s.Config.Auth.AccessExpire)
+	resp.ShortToken, resp.LongToken, err = generateShortLongToken(s.Config.Auth.SecretKey, userId, s.Config.Auth.ShortTokenExpire, s.Config.Auth.LongTokenExpire)
 	if err != nil {
 		return resp, consts.ErrAuthentication
 	}
@@ -208,7 +208,7 @@ func (s *AuthService) Register(ctx context.Context, req *core_api.RegisterReq) (
 		return resp, err
 	}
 
-	resp.ShortToken, resp.LongToken, err = generateShortLongToken(s.Config.Auth.SecretKey, createAuthResp.UserId, s.Config.Auth.AccessExpire)
+	resp.ShortToken, resp.LongToken, err = generateShortLongToken(s.Config.Auth.SecretKey, createAuthResp.UserId, s.Config.Auth.ShortTokenExpire, s.Config.Auth.LongTokenExpire)
 	if err != nil {
 		return resp, consts.ErrAuthentication
 	}
@@ -229,12 +229,12 @@ func (s *AuthService) Register(ctx context.Context, req *core_api.RegisterReq) (
 	return resp, nil
 }
 
-func generateShortLongToken(secretKey, userId string, accessExpire int64) (shortToken, longToken string, err error) {
-	shortToken, _, err = generateJwtToken(userId, secretKey, accessExpire)
+func generateShortLongToken(secretKey, userId string, shortTokenExpire, longTokenExpire int64) (shortToken, longToken string, err error) {
+	shortToken, _, err = generateJwtToken(userId, secretKey, shortTokenExpire)
 	if err != nil {
 		return "", "", err
 	}
-	longToken, _, err = generateJwtToken(userId, secretKey, 24*30*accessExpire)
+	longToken, _, err = generateJwtToken(userId, secretKey, longTokenExpire)
 	if err != nil {
 		return "", "", err
 	}
