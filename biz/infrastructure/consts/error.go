@@ -18,6 +18,7 @@ var (
 var (
 	ErrNotEmailCheck = status.Error(20006, "请先通过邮箱验证")
 	ErrEmailNotFound = status.Error(20007, "邮箱不存在")
+	ErrFlowNotEnough = status.Error(20008, "流量不足")
 )
 
 var (

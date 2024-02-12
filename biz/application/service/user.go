@@ -9,9 +9,12 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/convertor"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_trade"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/sts"
+	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/trade"
 	"github.com/google/wire"
+	"github.com/zeromicro/go-zero/core/mr"
 )
 
 type IUserService interface {
@@ -30,6 +33,7 @@ var UserServiceSet = wire.NewSet(
 type UserService struct {
 	Config           *config.Config
 	CloudMindContent cloudmind_content.ICloudMindContent
+	CloudMindTrade   cloudmind_trade.ICloudMindTrade
 	PlatformSts      cloudmind_sts.ICloudMindSts
 }
 
@@ -93,16 +97,32 @@ func (s *UserService) UpdateUser(ctx context.Context, req *core_api.UpdateUserRe
 	return resp, nil
 }
 
-func (s *UserService) GetUserDetail(ctx context.Context, req *core_api.GetUserDetailReq) (resp *core_api.GetUserDetailResp, err error) {
+func (s *UserService) GetUserDetail(ctx context.Context, _ *core_api.GetUserDetailReq) (resp *core_api.GetUserDetailResp, err error) {
 	userData := adaptor.ExtractUserMeta(ctx)
 	if userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
+	var (
+		err1, err2     error
+		getUserResp    *content.GetUserResp
+		getBalanceResp *trade.GetBalanceResp
+	)
 
-	getUserResp, err := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{
-		UserId: userData.GetUserId(),
-	})
-	if err != nil {
+	if err = mr.Finish(func() error {
+		if getUserResp, err1 = s.CloudMindContent.GetUser(ctx, &content.GetUserReq{
+			UserId: userData.UserId,
+		}); err1 != nil {
+			return err1
+		}
+		return nil
+	}, func() error {
+		if getBalanceResp, err2 = s.CloudMindTrade.GetBalance(ctx, &trade.GetBalanceReq{
+			UserId: userData.UserId,
+		}); err2 != nil {
+			return err2
+		}
+		return nil
+	}); err != nil {
 		return resp, err
 	}
 
@@ -113,6 +133,9 @@ func (s *UserService) GetUserDetail(ctx context.Context, req *core_api.GetUserDe
 		IdCard:      getUserResp.IdCard,
 		Description: getUserResp.Description,
 		Url:         getUserResp.Url,
+		Flow:        getBalanceResp.Flow,
+		Momery:      getBalanceResp.Memory,
+		Point:       getBalanceResp.Point,
 	}, nil
 }
 
