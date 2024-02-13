@@ -315,14 +315,14 @@ func (s *FileService) GetRecycleBinFiles(ctx context.Context, req *core_api.GetR
 func (s *FileService) GetFileBySharingCode(ctx context.Context, req *core_api.GetFileBySharingCodeReq) (resp *core_api.GetFileBySharingCodeResp, err error) {
 	resp = new(core_api.GetFileBySharingCodeResp)
 	var res *content.GetFileBySharingCodeResp
-	var shareFile *content.ParsingShareCodeResp
-	if shareFile, err = s.CloudMindContent.ParsingShareCode(ctx, &content.ParsingShareCodeReq{Code: req.SharingCode, Key: req.Key}); err != nil {
-		return resp, err
-	}
-	p := convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward)
-	if res, err = s.CloudMindContent.GetFileBySharingCode(ctx, &content.GetFileBySharingCodeReq{FileIds: shareFile.ShareFile.FileList, OnlyFileId: req.OnlyFileId, OnlyFatherId: req.OnlyFatherId, PaginationOptions: p}); err != nil {
-		return resp, err
-	}
+	//var shareFile *content.ParsingShareCodeResp
+	//if shareFile, err = s.CloudMindContent.ParsingShareCode(ctx, &content.ParsingShareCodeReq{Code: req.SharingCode, Key: req.Key}); err != nil {
+	//	return resp, err
+	//}
+	//p := convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward)
+	//if res, err = s.CloudMindContent.GetFileBySharingCode(ctx, &content.GetFileBySharingCodeReq{FileIds: shareFile.ShareFile.FileList, OnlyFileId: req.OnlyFileId, OnlyFatherId: req.OnlyFatherId, PaginationOptions: p}); err != nil {
+	//	return resp, err
+	//}
 	resp.Files = lo.Map[*content.FileInfo, *core_api.PrivateFile](res.Files, func(item *content.FileInfo, _ int) *core_api.PrivateFile {
 		return convertor.FileToCorePrivateFile(item)
 	})
@@ -421,9 +421,9 @@ func (s *FileService) MoveFile(ctx context.Context, req *core_api.MoveFileReq) (
 		return resp, consts.ErrIllegalOperation
 	}
 
-	if _, err = s.CloudMindContent.MoveFile(ctx, &content.MoveFileReq{FatherId: req.FatherId, NewPath: res.Files[1].Path, File: res.Files[0]}); err != nil {
-		return resp, err
-	}
+	//if _, err = s.CloudMindContent.MoveFile(ctx, &content.MoveFileReq{FatherId: req.FatherId, NewPath: res.Files[1].Path, File: res.Files[0]}); err != nil {
+	//	return resp, err
+	//}
 	return resp, nil
 }
 
@@ -453,9 +453,9 @@ func (s *FileService) DeleteFile(ctx context.Context, req *core_api.DeleteFileRe
 		}
 	}
 
-	if _, err = s.CloudMindContent.DeleteFile(ctx, &content.DeleteFileReq{DeleteType: int64(req.DeleteType), ClearCommunity: req.ClearCommunity, File: res.File}); err != nil {
-		return resp, err
-	}
+	//if _, err = s.CloudMindContent.DeleteFile(ctx, &content.DeleteFileReq{DeleteType: int64(req.DeleteType), ClearCommunity: req.ClearCommunity, File: res.File}); err != nil {
+	//	return resp, err
+	//}
 	return resp, nil
 }
 
@@ -594,9 +594,9 @@ func (s *FileService) SaveFileToPrivateSpace(ctx context.Context, req *core_api.
 	}
 
 	var res *content.SaveFileToPrivateSpaceResp
-	if res, err = s.CloudMindContent.SaveFileToPrivateSpace(ctx, &content.SaveFileToPrivateSpaceReq{File: files.Files[0], UserId: userData.UserId, NewPath: files.Files[1].Path, FatherId: req.FatherId, DocumentType: int64(req.DocumentType)}); err != nil {
-		return resp, err
-	}
+	//if res, err = s.CloudMindContent.SaveFileToPrivateSpace(ctx, &content.SaveFileToPrivateSpaceReq{File: files.Files[0], UserId: userData.UserId, NewPath: files.Files[1].Path, FatherId: req.FatherId, DocumentType: int64(req.DocumentType)}); err != nil {
+	//	return resp, err
+	//}
 	resp.FileId = res.FileId
 	return resp, nil
 }
@@ -625,9 +625,9 @@ func (s *FileService) AddFileToPublicSpace(ctx context.Context, req *core_api.Ad
 	file.File.Description = req.Description
 	file.File.Labels = req.Labels
 	//var res *content.AddFileToPublicSpaceResp
-	if _, err = s.CloudMindContent.AddFileToPublicSpace(ctx, &content.AddFileToPublicSpaceReq{File: file.File}); err != nil {
-		return resp, err
-	}
+	//if _, err = s.CloudMindContent.AddFileToPublicSpace(ctx, &content.AddFileToPublicSpaceReq{File: file.File}); err != nil {
+	//	return resp, err
+	//}
 
 	//objects := lo.Map(res.FileIds, func(item string, _ int) *comment.LabelEntity {
 	//	return &comment.LabelEntity{
@@ -662,8 +662,8 @@ func (s *FileService) RecoverRecycleBinFile(ctx context.Context, req *core_api.R
 		return resp, consts.ErrFileNotExist
 	}
 
-	if _, err = s.CloudMindContent.RecoverRecycleBinFile(ctx, &content.RecoverRecycleBinFileReq{File: res.File}); err != nil {
-		return resp, err
-	}
+	//if _, err = s.CloudMindContent.RecoverRecycleBinFile(ctx, &content.RecoverRecycleBinFileReq{File: res.File}); err != nil {
+	//	return resp, err
+	//}
 	return resp, nil
 }

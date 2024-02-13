@@ -46,22 +46,6 @@ func GetNotificationCount(ctx context.Context, c *app.RequestContext) {
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
-// DeleteNotifications .
-// @router /system/deleteNotifications [POST]
-func DeleteNotifications(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.DeleteNotificationsReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-	resp := new(core_api.DeleteNotificationsResp)
-	p := provider.Get()
-	resp, err = p.NotificationService.DeleteNotifications(ctx, &req)
-	adaptor.PostProcess(ctx, c, &req, resp, err)
-}
-
 // UpdateNotifications .
 // @router /system/updateNotifications [POST]
 func UpdateNotifications(ctx context.Context, c *app.RequestContext) {

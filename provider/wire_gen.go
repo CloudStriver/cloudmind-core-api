@@ -69,11 +69,16 @@ func NewProvider() (*Provider, error) {
 		UpdateItemKq:      updateItemKq,
 		DeleteItemKq:      deleteItemKq,
 	}
+	tradeserviceClient := cloudmind_trade.NewCloudMindTrade(configConfig)
+	cloudMindTrade := &cloudmind_trade.CloudMindTrade{
+		Client: tradeserviceClient,
+	}
 	redisRedis := redis.NewRedis(configConfig)
 	authService := &service2.AuthService{
 		Config:           configConfig,
 		CloudMindContent: cloudMindContent,
 		CloudMindSts:     cloudMindSts,
+		CloudMindTrade:   cloudMindTrade,
 		CreateItemsKq:    createItemsKq,
 		Redis:            redisRedis,
 	}
@@ -90,6 +95,7 @@ func NewProvider() (*Provider, error) {
 	userService := &service2.UserService{
 		Config:           configConfig,
 		CloudMindContent: cloudMindContent,
+		CloudMindTrade:   cloudMindTrade,
 		PlatformSts:      cloudMindSts,
 	}
 	zoneService := &service2.ZoneService{
@@ -101,12 +107,10 @@ func NewProvider() (*Provider, error) {
 		Client: systemserviceClient,
 	}
 	updateNotificationsKq := kq.NewUpdateNotificationsKq(configConfig)
-	deleteNotificationsKq := kq.NewDeleteNotificationsKq(configConfig)
 	notificationService := &service2.NotificationService{
 		Config:                configConfig,
 		CloudMindSystem:       cloudMindSystem,
 		UpdateNotificationsKq: updateNotificationsKq,
-		DeleteNotificationsKq: deleteNotificationsKq,
 		Redis:                 redisRedis,
 	}
 	commentService := &service2.CommentService{
@@ -117,15 +121,16 @@ func NewProvider() (*Provider, error) {
 		Config:          configConfig,
 		PlatformComment: platFormComment,
 	}
+	userDomainService := &service.UserDomainService{
+		Config:           configConfig,
+		PlatFormRelation: platFormRelation,
+	}
 	recommendService := &service2.RecommendService{
 		Config:            configConfig,
 		CloudMindContent:  cloudMindContent,
 		PostDomainService: postDomainService,
 		CreateFeedBacks:   createFeedBacksKq,
-	}
-	tradeserviceClient := cloudmind_trade.NewCloudMindTrade(configConfig)
-	cloudMindTrade := &cloudmind_trade.CloudMindTrade{
-		Client: tradeserviceClient,
+		UserDomainService: userDomainService,
 	}
 	productDomainService := &service.ProductDomainService{
 		CloudMindUser:    cloudMindContent,

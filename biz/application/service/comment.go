@@ -20,8 +20,8 @@ type ICommentService interface {
 	CreateCommentSubject(ctx context.Context, req *core_api.CreateCommentSubjectReq) (resp *core_api.CreateCommentSubjectResp, err error)
 	UpdateCommentSubject(ctx context.Context, req *core_api.UpdateCommentSubjectReq) (resp *core_api.UpdateCommentSubjectResp, err error)
 	DeleteCommentSubject(ctx context.Context, req *core_api.DeleteCommentSubjectReq) (resp *core_api.DeleteCommentSubjectResp, err error)
-	SetCommentSubjectState(ctx context.Context, req *core_api.SetCommentSubjectStateReq) (resp *core_api.SetCommentSubjectStateResp, err error)
-	SetCommentSubjectAttrs(ctx context.Context, req *core_api.SetCommentSubjectAttrsReq) (resp *core_api.SetCommentSubjectAttrsResp, err error)
+	//SetCommentSubjectState(ctx context.Context, req *core_api.SetCommentSubjectStateReq) (resp *core_api.SetCommentSubjectStateResp, err error)
+	//SetCommentSubjectAttrs(ctx context.Context, req *core_api.SetCommentSubjectAttrsReq) (resp *core_api.SetCommentSubjectAttrsResp, err error)
 }
 
 var CommentServiceSet = wire.NewSet(
@@ -78,10 +78,10 @@ func (s *CommentService) DeleteCommentSubject(ctx context.Context, req *core_api
 	return
 }
 
-func (s *CommentService) SetCommentSubjectState(ctx context.Context, req *core_api.SetCommentSubjectStateReq) (resp *core_api.SetCommentSubjectStateResp, err error) {
-	return
-}
-
-func (s *CommentService) SetCommentSubjectAttrs(ctx context.Context, req *core_api.SetCommentSubjectAttrsReq) (resp *core_api.SetCommentSubjectAttrsResp, err error) {
-	return
-}
+//func (s *CommentService) SetCommentSubjectState(ctx context.Context, req *core_api.SetCommentSubjectStateReq) (resp *core_api.SetCommentSubjectStateResp, err error) {
+//	return
+//}
+//
+//func (s *CommentService) SetCommentSubjectAttrs(ctx context.Context, req *core_api.SetCommentSubjectAttrsReq) (resp *core_api.SetCommentSubjectAttrsResp, err error) {
+//	return
+//}

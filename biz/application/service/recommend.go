@@ -34,6 +34,7 @@ type RecommendService struct {
 	CloudMindContent  cloudmind_content.ICloudMindContent
 	PostDomainService service.IPostDomainService
 	CreateFeedBacks   *kq.CreateFeedBacksKq
+	UserDomainService service.IUserDomainService
 }
 
 func (s *RecommendService) GetLatestRecommend(ctx context.Context, req *core_api.GetLatestRecommendReq) (resp *core_api.GetLatestRecommendResp, err error) {
@@ -158,14 +159,16 @@ func (s *RecommendService) GetItemByItemId(ctx context.Context, userId string, c
 		if err != nil {
 			return err
 		}
-		recommends.Users = make([]*core_api.User, len(getUsersResp.Users))
+		recommends.Users = make([]*core_api.RecommendUser, len(getUsersResp.Users))
 		if err = mr.Finish(lo.Map(getUsersResp.Users, func(user *content.User, i int) func() error {
 			return func() error {
-				recommends.Users[i] = &core_api.User{
-					UserId: user.UserId,
-					Name:   user.Name,
-					Url:    user.Url,
+				recommends.Users[i] = &core_api.RecommendUser{
+					UserId:      user.UserId,
+					Name:        user.Name,
+					Url:         user.Url,
+					Description: user.Description,
 				}
+				s.UserDomainService.LoadFollowCount(ctx, &recommends.Users[i].FollowCount, user.UserId)
 				return nil
 			}
 		})...); err != nil {
