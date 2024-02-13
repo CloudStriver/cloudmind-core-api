@@ -107,12 +107,10 @@ func NewProvider() (*Provider, error) {
 		Client: systemserviceClient,
 	}
 	updateNotificationsKq := kq.NewUpdateNotificationsKq(configConfig)
-	deleteNotificationsKq := kq.NewDeleteNotificationsKq(configConfig)
 	notificationService := &service2.NotificationService{
 		Config:                configConfig,
 		CloudMindSystem:       cloudMindSystem,
 		UpdateNotificationsKq: updateNotificationsKq,
-		DeleteNotificationsKq: deleteNotificationsKq,
 		Redis:                 redisRedis,
 	}
 	commentService := &service2.CommentService{
@@ -123,11 +121,16 @@ func NewProvider() (*Provider, error) {
 		Config:          configConfig,
 		PlatformComment: platFormComment,
 	}
+	userDomainService := &service.UserDomainService{
+		Config:           configConfig,
+		PlatFormRelation: platFormRelation,
+	}
 	recommendService := &service2.RecommendService{
 		Config:            configConfig,
 		CloudMindContent:  cloudMindContent,
 		PostDomainService: postDomainService,
 		CreateFeedBacks:   createFeedBacksKq,
+		UserDomainService: userDomainService,
 	}
 	productDomainService := &service.ProductDomainService{
 		CloudMindUser:    cloudMindContent,

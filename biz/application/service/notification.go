@@ -10,8 +10,10 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_system"
 	"github.com/CloudStriver/cloudmind-mq/app/util/message"
+	"github.com/CloudStriver/go-pkg/utils/pconvertor"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/basic"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/system"
+	"github.com/bytedance/sonic"
 	"github.com/google/wire"
 	"github.com/samber/lo"
 	"github.com/zeromicro/go-zero/core/stores/redis"
@@ -20,7 +22,6 @@ import (
 type INotificationService interface {
 	GetNotifications(ctx context.Context, req *core_api.GetNotificationsReq) (resp *core_api.GetNotificationsResp, err error)
 	GetNotificationCount(ctx context.Context, req *core_api.GetNotificationCountReq) (resp *core_api.GetNotificationCountResp, err error)
-	DeleteNotifications(ctx context.Context, req *core_api.DeleteNotificationsReq) (resp *core_api.DeleteNotificationsResp, err error)
 	UpdateNotifications(ctx context.Context, req *core_api.UpdateNotificationsReq) (resp *core_api.UpdateNotificationsResp, err error)
 }
 
@@ -33,7 +34,6 @@ type NotificationService struct {
 	Config                *config.Config
 	CloudMindSystem       cloudmind_system.ICloudMindSystem
 	UpdateNotificationsKq *kq.UpdateNotificationsKq
-	DeleteNotificationsKq *kq.DeleteNotificationsKq
 	Redis                 *redis.Redis
 }
 
@@ -45,9 +45,8 @@ func (s *NotificationService) GetNotifications(ctx context.Context, req *core_ap
 	}
 
 	getNotificationsResp, err := s.CloudMindSystem.GetNotifications(ctx, &system.GetNotificationsReq{
-		OnlyUserId: lo.ToPtr(user.UserId),
-		OnlyType:   req.OnlyType,
-		OnlyIsRead: req.OnlyIsRead,
+		UserId:   user.UserId,
+		OnlyType: req.OnlyType,
 		PaginationOptions: &basic.PaginationOptions{
 			Limit:     req.Limit,
 			LastToken: req.LastToken,
@@ -62,7 +61,6 @@ func (s *NotificationService) GetNotifications(ctx context.Context, req *core_ap
 	resp.Notifications = lo.Map[*system.Notification, *core_api.Notification](getNotificationsResp.Notifications, func(item *system.Notification, index int) *core_api.Notification {
 		return convertor.NotificationToCoreNotification(item)
 	})
-	resp.Total = getNotificationsResp.Total
 	resp.Token = getNotificationsResp.Token
 	return resp, nil
 }
@@ -72,9 +70,8 @@ func (s *NotificationService) GetNotificationCount(ctx context.Context, req *cor
 	user := adaptor.ExtractUserMeta(ctx)
 	if user.GetUserId() != "" {
 		getNotificationCountResp, err := s.CloudMindSystem.GetNotificationCount(ctx, &system.GetNotificationCountReq{
-			OnlyUserId: lo.ToPtr(user.UserId),
-			OnlyType:   req.OnlyType,
-			OnlyIsRead: req.OnlyIsRead,
+			UserId:   user.UserId,
+			OnlyType: req.OnlyType,
 		})
 		if err != nil {
 			return resp, err
@@ -85,35 +82,20 @@ func (s *NotificationService) GetNotificationCount(ctx context.Context, req *cor
 	return resp, nil
 }
 
-func (s *NotificationService) DeleteNotifications(ctx context.Context, req *core_api.DeleteNotificationsReq) (resp *core_api.DeleteNotificationsResp, err error) {
-	user := adaptor.ExtractUserMeta(ctx)
-	if user.GetUserId() == "" {
-		return resp, consts.ErrNotAuthentication
-	}
-	if err = s.DeleteNotificationsKq.Add(user.UserId, &message.DeleteNotificationsMessage{
-		OnlyNotificationIds: req.OnlyNotificationIds,
-		OnlyUserId:          lo.ToPtr(user.UserId),
-		OnlyType:            req.OnlyType,
-		OnlyIsRead:          req.OnlyIsRead,
-	}); err != nil {
-		return resp, err
-	}
-	return resp, nil
-}
-
 func (s *NotificationService) UpdateNotifications(ctx context.Context, req *core_api.UpdateNotificationsReq) (resp *core_api.UpdateNotificationsResp, err error) {
+	resp = new(core_api.UpdateNotificationsResp)
 	user := adaptor.ExtractUserMeta(ctx)
 	if user.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
-	if err = s.UpdateNotificationsKq.Add(user.UserId, &message.UpdateNotificationsMessage{
-		OnlyNotificationIds: req.OnlyNotificationIds,
-		OnlyUserId:          lo.ToPtr(user.UserId),
-		OnlyType:            req.OnlyType,
-		OnlyIsRead:          lo.ToPtr(consts.NotificationNotRead),
-		IsRead:              consts.NotificationRead,
-	}); err != nil {
+
+	data, _ := sonic.Marshal(&message.UpdateNotificationsMessage{
+		UserId:   user.UserId,
+		OnlyType: req.OnlyType,
+	})
+	if err = s.UpdateNotificationsKq.Push(pconvertor.Bytes2String(data)); err != nil {
 		return resp, err
 	}
+
 	return resp, nil
 }
