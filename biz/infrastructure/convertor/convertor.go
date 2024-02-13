@@ -9,20 +9,20 @@ import (
 
 func FileToCorePublicFile(req *content.FileInfo) *core_api.PublicFile {
 	return &core_api.PublicFile{
-		FileId:       req.FileId,
-		UserId:       req.UserId,
-		Name:         req.Name,
-		Type:         req.Type,
-		Path:         req.Path,
-		FatherId:     req.FatherId,
-		SpaceSize:    req.SpaceSize,
-		IsDel:        req.IsDel,
-		Zone:         req.Zone,
-		SubZone:      req.SubZone,
-		Description:  req.Description,
-		CreateAt:     req.CreateAt,
-		UpdateAt:     req.UpdateAt,
-		Labels:       req.Labels,
+		FileId:      req.FileId,
+		UserId:      req.UserId,
+		Name:        req.Name,
+		Type:        req.Type,
+		Path:        req.Path,
+		FatherId:    req.FatherId,
+		SpaceSize:   req.SpaceSize,
+		IsDel:       req.IsDel,
+		Zone:        req.Zone,
+		SubZone:     req.SubZone,
+		Description: req.Description,
+		CreateAt:    req.CreateAt,
+		UpdateAt:    req.UpdateAt,
+		//Labels:       req.Labels,
 		Author:       &core_api.User{},
 		FileCount:    &core_api.PostCount{},
 		FileRelation: &core_api.PostRelation{},
@@ -100,12 +100,8 @@ func ShareFileToCoreShareFile(opts *content.ShareFile) *core_api.ShareFile {
 
 func NotificationToCoreNotification(in *system.Notification) *core_api.Notification {
 	return &core_api.Notification{
-		NotificationId:  in.NotificationId,
-		SourceUserId:    in.SourceUserId,
-		SourceContentId: in.SourceContentId,
-		Type:            in.Type,
-		Text:            in.Text,
-		IsRead:          in.IsRead,
-		CreateTime:      in.CreateTime,
+		Type:       in.Type,
+		Text:       in.Text,
+		CreateTime: in.CreateTime,
 	}
 }

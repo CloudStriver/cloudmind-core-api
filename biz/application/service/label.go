@@ -15,11 +15,11 @@ type ILabelService interface {
 	GetLabelsInBatch(ctx context.Context, req *core_api.GetLabelsInBatchReq) (resp *core_api.GetLabelsInBatchResp, err error)
 	UpdateLabel(ctx context.Context, req *core_api.UpdateLabelReq) (resp *core_api.UpdateLabelResp, err error)
 	GetLabels(ctx context.Context, req *core_api.GetLabelsReq) (resp *core_api.GetLabelsResp, err error)
-	CreateObject(ctx context.Context, req *core_api.CreateObjectReq) (resp *core_api.CreateObjectResp, err error)
-	CreateObjects(ctx context.Context, req *core_api.CreateObjectsReq) (resp *core_api.CreateObjectsResp, err error)
-	DeleteObject(ctx context.Context, req *core_api.DeleteObjectReq) (resp *core_api.DeleteObjectResp, err error)
-	GetObjects(ctx context.Context, req *core_api.GetObjectsReq) (resp *core_api.GetObjectsResp, err error)
-	UpdateObject(ctx context.Context, req *core_api.UpdateObjectReq) (resp *core_api.UpdateObjectResp, err error)
+	//CreateObject(ctx context.Context, req *core_api.CreateObjectReq) (resp *core_api.CreateObjectResp, err error)
+	//CreateObjects(ctx context.Context, req *core_api.CreateObjectsReq) (resp *core_api.CreateObjectsResp, err error)
+	//DeleteObject(ctx context.Context, req *core_api.DeleteObjectReq) (resp *core_api.DeleteObjectResp, err error)
+	//GetObjects(ctx context.Context, req *core_api.GetObjectsReq) (resp *core_api.GetObjectsResp, err error)
+	//UpdateObject(ctx context.Context, req *core_api.UpdateObjectReq) (resp *core_api.UpdateObjectResp, err error)
 }
 
 var LabelServiceSet = wire.NewSet(
@@ -56,22 +56,22 @@ func (s *LabelService) GetLabels(ctx context.Context, req *core_api.GetLabelsReq
 	return
 }
 
-func (s *LabelService) CreateObject(ctx context.Context, req *core_api.CreateObjectReq) (resp *core_api.CreateObjectResp, err error) {
-	return
-}
-
-func (s *LabelService) CreateObjects(ctx context.Context, req *core_api.CreateObjectsReq) (resp *core_api.CreateObjectsResp, err error) {
-	return
-}
-
-func (s *LabelService) DeleteObject(ctx context.Context, req *core_api.DeleteObjectReq) (resp *core_api.DeleteObjectResp, err error) {
-	return
-}
-
-func (s *LabelService) GetObjects(ctx context.Context, req *core_api.GetObjectsReq) (resp *core_api.GetObjectsResp, err error) {
-	return
-}
-
-func (s *LabelService) UpdateObject(ctx context.Context, req *core_api.UpdateObjectReq) (resp *core_api.UpdateObjectResp, err error) {
-	return
-}
+//func (s *LabelService) CreateObject(ctx context.Context, req *core_api.CreateObjectReq) (resp *core_api.CreateObjectResp, err error) {
+//	return
+//}
+//
+//func (s *LabelService) CreateObjects(ctx context.Context, req *core_api.CreateObjectsReq) (resp *core_api.CreateObjectsResp, err error) {
+//	return
+//}
+//
+//func (s *LabelService) DeleteObject(ctx context.Context, req *core_api.DeleteObjectReq) (resp *core_api.DeleteObjectResp, err error) {
+//	return
+//}
+//
+//func (s *LabelService) GetObjects(ctx context.Context, req *core_api.GetObjectsReq) (resp *core_api.GetObjectsResp, err error) {
+//	return
+//}
+//
+//func (s *LabelService) UpdateObject(ctx context.Context, req *core_api.UpdateObjectReq) (resp *core_api.UpdateObjectResp, err error) {
+//	return
+//}

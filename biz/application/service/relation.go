@@ -11,10 +11,11 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
 	"github.com/CloudStriver/cloudmind-mq/app/util/message"
+	"github.com/CloudStriver/go-pkg/utils/pconvertor"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/basic"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
-	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/system"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/relation"
+	"github.com/bytedance/sonic"
 	"github.com/google/wire"
 	"github.com/samber/lo"
 	"github.com/zeromicro/go-zero/core/mr"
@@ -252,17 +253,16 @@ func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.Crea
 		}
 		userId = getPostResp.UserId
 	}
-	if err = s.CreateNotificationKq.Add(req.ToId, &message.CreateNotificationsMessage{
-		Notification: &system.NotificationInfo{
-			TargetUserId:    userId,
-			SourceUserId:    user.UserId,
-			SourceContentId: req.ToId,
-			TargetType:      int64(req.ToType),
-			Type:            int64(req.RelationType),
-			Text:            getNotificationText(req.RelationType, req.ToType),
-			IsRead:          false,
-		},
-	}); err != nil {
+
+	data, _ := sonic.Marshal(&message.CreateNotificationsMessage{
+		TargetUserId:    userId,
+		SourceUserId:    user.UserId,
+		SourceContentId: req.ToId,
+		TargetType:      int64(req.ToType),
+		Type:            int64(req.RelationType),
+		Text:            getNotificationText(req.RelationType, req.ToType),
+	})
+	if err = s.CreateNotificationKq.Push(pconvertor.Bytes2String(data)); err != nil {
 		return resp, err
 	}
 
