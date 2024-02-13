@@ -109,7 +109,6 @@ func Register(r *server.Hertz) {
 	}
 	{
 		_system := root.Group("/system", _systemMw()...)
-		_system.POST("/deleteNotifications", append(_deletenotificationsMw(), core_api.DeleteNotifications)...)
 		_system.GET("/getNotificationCount", append(_getnotificationcountMw(), core_api.GetNotificationCount)...)
 		_system.GET("/getNotifications", append(_getnotificationsMw(), core_api.GetNotifications)...)
 		_system.POST("/updateNotifications", append(_updatenotificationsMw(), core_api.UpdateNotifications)...)
