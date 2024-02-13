@@ -23,7 +23,6 @@ func FileToCorePublicFile(req *content.FileInfo) *core_api.PublicFile {
 		Description:  req.Description,
 		CreateAt:     req.CreateAt,
 		UpdateAt:     req.UpdateAt,
-		Labels:       req.Labels,
 		Author:       &core_api.User{},
 		FileCount:    &core_api.PostCount{},
 		FileRelation: &core_api.PostRelation{},
