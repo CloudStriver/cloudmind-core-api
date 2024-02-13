@@ -10,9 +10,11 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-mq/app/util/message"
+	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/basic"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
 	"github.com/google/wire"
 	"github.com/samber/lo"
+	"github.com/zeromicro/go-zero/core/mr"
 )
 
 type IPostService interface {

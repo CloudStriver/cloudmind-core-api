@@ -198,37 +198,3 @@ func DeleteCommentSubject(ctx context.Context, c *app.RequestContext) {
 	resp, err = p.CommentService.DeleteCommentSubject(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
-
-// SetCommentSubjectState .
-// @router /comment/setCommentSubjectState [POST]
-func SetCommentSubjectState(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.SetCommentSubjectStateReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(core_api.SetCommentSubjectStateResp)
-	p := provider.Get()
-	resp, err = p.CommentService.SetCommentSubjectState(ctx, &req)
-	adaptor.PostProcess(ctx, c, &req, resp, err)
-}
-
-// SetCommentSubjectAttrs .
-// @router /comment/setCommentSubjectAttrs [POST]
-func SetCommentSubjectAttrs(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.SetCommentSubjectAttrsReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(core_api.SetCommentSubjectAttrsResp)
-	p := provider.Get()
-	resp, err = p.CommentService.SetCommentSubjectAttrs(ctx, &req)
-	adaptor.PostProcess(ctx, c, &req, resp, err)
-}

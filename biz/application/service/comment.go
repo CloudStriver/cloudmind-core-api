@@ -25,8 +25,6 @@ type ICommentService interface {
 	CreateCommentSubject(ctx context.Context, req *core_api.CreateCommentSubjectReq) (resp *core_api.CreateCommentSubjectResp, err error)
 	UpdateCommentSubject(ctx context.Context, req *core_api.UpdateCommentSubjectReq) (resp *core_api.UpdateCommentSubjectResp, err error)
 	DeleteCommentSubject(ctx context.Context, req *core_api.DeleteCommentSubjectReq) (resp *core_api.DeleteCommentSubjectResp, err error)
-	SetCommentSubjectState(ctx context.Context, req *core_api.SetCommentSubjectStateReq) (resp *core_api.SetCommentSubjectStateResp, err error)
-	SetCommentSubjectAttrs(ctx context.Context, req *core_api.SetCommentSubjectAttrsReq) (resp *core_api.SetCommentSubjectAttrsResp, err error)
 }
 
 var CommentServiceSet = wire.NewSet(
@@ -133,7 +131,7 @@ func (s *CommentService) GetCommentSubject(ctx context.Context, req *core_api.Ge
 		return resp, consts.ErrNotAuthentication
 	}
 	var res *comment.GetCommentSubjectResp
-	if res, err = s.PlatformComment.GetCommentSubject(ctx, &comment.GetCommentSubjectReq{FilterOptions: &comment.SubjectFilterOptions{OnlyUserId: lo.ToPtr(userData.UserId), OnlySubjectId: lo.ToPtr(req.SubjectId)}}); err != nil {
+	if res, err = s.PlatformComment.GetCommentSubject(ctx, &comment.GetCommentSubjectReq{Id: req.SubjectId}); err != nil {
 		return resp, err
 	}
 	resp.Subject = convertor.SubjectDetailsToCoreSubjectDetails(res.Subject)
@@ -175,30 +173,6 @@ func (s *CommentService) DeleteCommentSubject(ctx context.Context, req *core_api
 		return resp, consts.ErrNotAuthentication
 	}
 	if _, err = s.PlatformComment.DeleteCommentSubject(ctx, &comment.DeleteCommentSubjectReq{Id: req.Id, UserId: userData.UserId}); err != nil {
-		return resp, err
-	}
-	return resp, nil
-}
-
-func (s *CommentService) SetCommentSubjectState(ctx context.Context, req *core_api.SetCommentSubjectStateReq) (resp *core_api.SetCommentSubjectStateResp, err error) {
-	resp = new(core_api.SetCommentSubjectStateResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
-		return resp, consts.ErrNotAuthentication
-	}
-	if _, err = s.PlatformComment.SetCommentState(ctx, &comment.SetCommentStateReq{Id: req.Id, UserId: userData.UserId, State: int64(req.State)}); err != nil {
-		return resp, err
-	}
-	return resp, nil
-}
-
-func (s *CommentService) SetCommentSubjectAttrs(ctx context.Context, req *core_api.SetCommentSubjectAttrsReq) (resp *core_api.SetCommentSubjectAttrsResp, err error) {
-	resp = new(core_api.SetCommentSubjectAttrsResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
-		return resp, consts.ErrNotAuthentication
-	}
-	if _, err = s.PlatformComment.SetCommentSubjectAttrs(ctx, &comment.SetCommentSubjectAttrsReq{Id: req.Id, UserId: userData.UserId, Attrs: int64(req.Attrs)}); err != nil {
 		return resp, err
 	}
 	return resp, nil
