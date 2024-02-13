@@ -69,11 +69,16 @@ func NewProvider() (*Provider, error) {
 		UpdateItemKq:      updateItemKq,
 		DeleteItemKq:      deleteItemKq,
 	}
+	tradeserviceClient := cloudmind_trade.NewCloudMindTrade(configConfig)
+	cloudMindTrade := &cloudmind_trade.CloudMindTrade{
+		Client: tradeserviceClient,
+	}
 	redisRedis := redis.NewRedis(configConfig)
 	authService := &service2.AuthService{
 		Config:           configConfig,
 		CloudMindContent: cloudMindContent,
 		CloudMindSts:     cloudMindSts,
+		CloudMindTrade:   cloudMindTrade,
 		CreateItemsKq:    createItemsKq,
 		Redis:            redisRedis,
 	}
@@ -90,6 +95,7 @@ func NewProvider() (*Provider, error) {
 	userService := &service2.UserService{
 		Config:           configConfig,
 		CloudMindContent: cloudMindContent,
+		CloudMindTrade:   cloudMindTrade,
 		PlatformSts:      cloudMindSts,
 	}
 	zoneService := &service2.ZoneService{
@@ -122,10 +128,6 @@ func NewProvider() (*Provider, error) {
 		CloudMindContent:  cloudMindContent,
 		PostDomainService: postDomainService,
 		CreateFeedBacks:   createFeedBacksKq,
-	}
-	tradeserviceClient := cloudmind_trade.NewCloudMindTrade(configConfig)
-	cloudMindTrade := &cloudmind_trade.CloudMindTrade{
-		Client: tradeserviceClient,
 	}
 	productDomainService := &service.ProductDomainService{
 		CloudMindUser:    cloudMindContent,

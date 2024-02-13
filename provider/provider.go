@@ -72,13 +72,13 @@ var DomainSet = wire.NewSet(
 	domainservice.PostDomainServiceSet,
 	domainservice.FileDomainServiceSet,
 	domainservice.ProductDomainServiceSet,
+	domainservice.UserDomainServiceSet,
 )
 
 var InfrastructureSet = wire.NewSet(
 	config.NewConfig,
 	redis.NewRedis,
 	kq.NewCreateNotificationsKq,
-	kq.NewDeleteNotificationsKq,
 	kq.NewUpdateNotificationsKq,
 	kq.NewCreateItemsKq,
 	kq.NewCreateFeedBacksKq,
