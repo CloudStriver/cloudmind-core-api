@@ -5,6 +5,7 @@ import (
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/basic"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/system"
+	"github.com/bytedance/sonic"
 )
 
 func FileToCorePublicFile(req *content.FileInfo) *core_api.PublicFile {
@@ -99,9 +100,20 @@ func ShareFileToCoreShareFile(opts *content.ShareFile) *core_api.ShareFile {
 }
 
 func NotificationToCoreNotification(in *system.Notification) *core_api.Notification {
+	msg := &Msg{}
+	_ = sonic.UnmarshalString(in.Text, msg)
 	return &core_api.Notification{
+		FromName:   msg.FromName,
+		FromId:     in.SourceUserId,
+		ToName:     msg.ToName,
+		ToId:       in.TargetUserId,
+		ToType:     in.TargetType,
 		Type:       in.Type,
-		Text:       in.Text,
 		CreateTime: in.CreateTime,
 	}
+}
+
+type Msg struct {
+	FromName string
+	ToName   string
 }

@@ -206,7 +206,7 @@ func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.Crea
 		return resp, consts.ErrNotAuthentication
 	}
 
-	createRelation, err := s.PlatFormRelation.CreateRelation(ctx, &relation.CreateRelationReq{
+	ok, err := s.PlatFormRelation.CreateRelation(ctx, &relation.CreateRelationReq{
 		FromType:     int64(core_api.TargetType_UserType),
 		FromId:       user.UserId,
 		ToType:       int64(req.ToType),
@@ -215,27 +215,19 @@ func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.Crea
 	})
 	if err != nil {
 		return resp, err
+
 	}
 
-	if !createRelation.Ok {
+	if !ok.Ok {
 		return resp, nil
 	}
 
 	userId := ""
+	toName := ""
 	switch req.ToType {
 	case core_api.TargetType_UserType:
 		userId = req.ToId
 	case core_api.TargetType_FileType:
-		//getFileResp, err := s.CloudMindContent.GetFile(ctx, &content.GetFileReq{
-		//	FilterOptions: &content.FileFilterOptions{
-		//		OnlyFileId: lo.ToPtr(req.ToId),
-		//	},
-		//	IsGetSize: false,
-		//})
-		//if err != nil {
-		//	return resp, err
-		//}
-		//userId = getFileResp.File.UserId
 	case core_api.TargetType_ProductType:
 		getProductResp, err := s.CloudMindContent.GetProduct(ctx, &content.GetProductReq{
 			ProductId: req.ToId,
@@ -243,6 +235,7 @@ func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.Crea
 		if err != nil {
 			return resp, err
 		}
+		toName = getProductResp.Name
 		userId = getProductResp.UserId
 	case core_api.TargetType_PostType:
 		getPostResp, err := s.CloudMindContent.GetPost(ctx, &content.GetPostReq{
@@ -251,16 +244,28 @@ func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.Crea
 		if err != nil {
 			return resp, err
 		}
+		toName = getPostResp.Title
 		userId = getPostResp.UserId
 	}
 
+	userinfo, err := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{
+		UserId: userId,
+	})
+	if err != nil {
+		return resp, err
+	}
+
+	msg, _ := sonic.Marshal(&Msg{
+		FromName: userinfo.Name,
+		ToName:   toName,
+	})
 	data, _ := sonic.Marshal(&message.CreateNotificationsMessage{
 		TargetUserId:    userId,
 		SourceUserId:    user.UserId,
 		SourceContentId: req.ToId,
 		TargetType:      int64(req.ToType),
 		Type:            int64(req.RelationType),
-		Text:            getNotificationText(req.RelationType, req.ToType),
+		Text:            pconvertor.Bytes2String(msg),
 	})
 	if err = s.CreateNotificationKq.Push(pconvertor.Bytes2String(data)); err != nil {
 		return resp, err
@@ -278,32 +283,7 @@ func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.Crea
 	return resp, nil
 }
 
-func getNotificationText(relationType core_api.RelationType, targetType core_api.TargetType) (s string) {
-	switch relationType {
-	case core_api.RelationType_FollowType:
-		s += "关注了"
-	case core_api.RelationType_CollectType:
-		s += "收藏了"
-	case core_api.RelationType_LikeType:
-		s += "点赞了"
-	case core_api.RelationType_ShareType:
-		s += "分享了"
-	case core_api.RelationType_CommentType:
-		s += "评论了"
-	case core_api.RelationType_ViewType:
-		s += "查看了"
-	default:
-		return s
-	}
-	switch targetType {
-	case core_api.TargetType_UserType:
-		s += "你"
-	case core_api.TargetType_FileType:
-		s += "你的文件"
-	case core_api.TargetType_ProductType:
-		s += "你的商品"
-	case core_api.TargetType_PostType:
-		s += "你的帖子"
-	}
-	return s
+type Msg struct {
+	FromName string
+	ToName   string
 }
