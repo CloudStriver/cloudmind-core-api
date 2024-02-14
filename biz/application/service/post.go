@@ -3,15 +3,14 @@ package service
 import (
 	"context"
 	"github.com/CloudStriver/cloudmind-core-api/biz/adaptor"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
-	"github.com/CloudStriver/cloudmind-mq/app/util/message"
-	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/basic"
-
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/CloudStriver/cloudmind-core-api/biz/domain/service"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
+	"github.com/CloudStriver/cloudmind-mq/app/util/message"
+	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/basic"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
 	"github.com/google/wire"
 	"github.com/samber/lo"

@@ -5,24 +5,24 @@ import (
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/basic"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/system"
+	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/comment"
 )
 
 func FileToCorePublicFile(req *content.FileInfo) *core_api.PublicFile {
 	return &core_api.PublicFile{
-		FileId:      req.FileId,
-		UserId:      req.UserId,
-		Name:        req.Name,
-		Type:        req.Type,
-		Path:        req.Path,
-		FatherId:    req.FatherId,
-		SpaceSize:   req.SpaceSize,
-		IsDel:       req.IsDel,
-		Zone:        req.Zone,
-		SubZone:     req.SubZone,
-		Description: req.Description,
-		CreateAt:    req.CreateAt,
-		UpdateAt:    req.UpdateAt,
-		//Labels:       req.Labels,
+		FileId:       req.FileId,
+		UserId:       req.UserId,
+		Name:         req.Name,
+		Type:         req.Type,
+		Path:         req.Path,
+		FatherId:     req.FatherId,
+		SpaceSize:    req.SpaceSize,
+		IsDel:        req.IsDel,
+		Zone:         req.Zone,
+		SubZone:      req.SubZone,
+		Description:  req.Description,
+		CreateAt:     req.CreateAt,
+		UpdateAt:     req.UpdateAt,
 		Author:       &core_api.User{},
 		FileCount:    &core_api.PostCount{},
 		FileRelation: &core_api.PostRelation{},
@@ -41,6 +41,79 @@ func FileToCorePrivateFile(req *content.FileInfo) *core_api.PrivateFile {
 		IsDel:     req.IsDel,
 		CreateAt:  req.CreateAt,
 		UpdateAt:  req.UpdateAt,
+	}
+}
+
+func CommentInfoToCoreCommentInfo(req *comment.CommentInfo) *core_api.CommentInfo {
+	return &core_api.CommentInfo{
+		Id:         req.Id,
+		SubjectId:  req.SubjectId,
+		RootId:     req.RootId,
+		FatherId:   req.FatherId,
+		Count:      req.Count,
+		State:      req.State,
+		Attrs:      req.Attrs,
+		Tags:       req.Tags,
+		UserId:     req.UserId,
+		AtUserId:   req.AtUserId,
+		Content:    req.Content,
+		Meta:       req.Meta,
+		CreateTime: req.CreateTime,
+	}
+}
+
+func CoreCommentToComment(req *core_api.Comment) *comment.Comment {
+	return &comment.Comment{
+		Id:        req.Id,
+		SubjectId: req.SubjectId,
+		RootId:    req.RootId,
+		FatherId:  req.FatherId,
+		Count:     req.Count,
+		State:     int64(req.State),
+		Attrs:     int64(req.Attrs),
+		Tags:      req.Tags,
+		UserId:    req.UserId,
+		AtUserId:  req.AtUserId,
+		Content:   req.Content,
+		Meta:      req.Meta,
+	}
+}
+
+func CoreLabelToLabel(req *core_api.Label) *comment.Label {
+	return &comment.Label{
+		LabelId: req.LabelId,
+		Value:   req.Value,
+	}
+}
+
+func LabelToCoreLabel(req *comment.Label) *core_api.Label {
+	return &core_api.Label{
+		LabelId: req.LabelId,
+		Value:   req.Value,
+	}
+}
+
+func SubjectDetailsToCoreSubjectDetails(req *comment.SubjectDetails) *core_api.SubjectDetails {
+	return &core_api.SubjectDetails{
+		Id:           req.Id,
+		UserId:       req.UserId,
+		TopCommentId: req.TopCommentId,
+		RootCount:    req.RootCount,
+		AllCount:     req.AllCount,
+		State:        req.State,
+		Attrs:        req.Attrs,
+	}
+}
+
+func CoreSubjectToSubject(req *core_api.Subject) *comment.Subject {
+	return &comment.Subject{
+		Id:           req.Id,
+		UserId:       req.UserId,
+		TopCommentId: req.TopCommentId,
+		RootCount:    req.RootCount,
+		AllCount:     req.AllCount,
+		State:        int64(req.State),
+		Attrs:        int64(req.Attrs),
 	}
 }
 
