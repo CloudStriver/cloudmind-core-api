@@ -65,6 +65,7 @@ func NewProvider() (*Provider, error) {
 		Config:            configConfig,
 		CloudMindContent:  cloudMindContent,
 		PostDomainService: postDomainService,
+		PLatFromRelation:  platFormRelation,
 		CreateItemsKq:     createItemsKq,
 		UpdateItemKq:      updateItemKq,
 		DeleteItemKq:      deleteItemKq,

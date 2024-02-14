@@ -9,9 +9,11 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
 	"github.com/CloudStriver/cloudmind-mq/app/util/message"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/basic"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
+	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/relation"
 	"github.com/google/wire"
 	"github.com/samber/lo"
 	"github.com/zeromicro/go-zero/core/mr"
@@ -34,6 +36,7 @@ type PostService struct {
 	Config            *config.Config
 	CloudMindContent  cloudmind_content.ICloudMindContent
 	PostDomainService service.IPostDomainService
+	PLatFromRelation  platform_relation.IPlatFormRelation
 	CreateItemsKq     *kq.CreateItemsKq
 	UpdateItemKq      *kq.UpdateItemKq
 	DeleteItemKq      *kq.DeleteItemKq
@@ -175,6 +178,17 @@ func (s *PostService) GetPost(ctx context.Context, req *core_api.GetPostReq) (re
 		return nil
 	}, func() error {
 		s.PostDomainService.LoadCollected(ctx, &resp.Collected, userData.GetUserId(), req.PostId) // 是否收藏
+		return nil
+	}, func() error {
+		if userData.GetUserId() != "" {
+			_, _ = s.PLatFromRelation.CreateRelation(ctx, &relation.CreateRelationReq{
+				FromType:     int64(core_api.TargetType_UserType),
+				FromId:       userData.UserId,
+				ToType:       int64(core_api.TargetType_PostType),
+				ToId:         req.PostId,
+				RelationType: int64(core_api.RelationType_ViewType),
+			})
+		}
 		return nil
 	}); err != nil {
 		return resp, err
