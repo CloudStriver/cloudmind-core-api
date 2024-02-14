@@ -249,7 +249,7 @@ func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.Crea
 	}
 
 	userinfo, err := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{
-		UserId: userId,
+		UserId: user.UserId,
 	})
 	if err != nil {
 		return resp, err
