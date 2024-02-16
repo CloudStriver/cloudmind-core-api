@@ -112,7 +112,6 @@ func (s *ProductService) CreateProduct(ctx context.Context, req *core_api.Create
 			IsHidden: req.Status == int64(core_api.ProductStatus_PrivateProductStatus),
 			Labels:   req.Tags,
 			Category: core_api.Category_name[int32(core_api.Category_ProductCategory)],
-			Comment:  req.Name,
 		},
 	}); err != nil {
 		return resp, err
@@ -196,7 +195,7 @@ func (s *ProductService) UpdateProduct(ctx context.Context, req *core_api.Update
 		return resp, err
 	}
 
-	if req.Status != 0 || req.Tags != nil || req.Name != "" {
+	if req.Status != 0 || req.Tags != nil {
 		var isHidden *bool
 		if req.Status != 0 {
 			isHidden = lo.ToPtr(req.Status == int64(core_api.ProductStatus_PrivateProductStatus))
@@ -205,7 +204,6 @@ func (s *ProductService) UpdateProduct(ctx context.Context, req *core_api.Update
 			ItemId:   req.ProductId,
 			IsHidden: isHidden,
 			Labels:   req.Tags,
-			Comment:  lo.ToPtr(req.Name),
 		}); err != nil {
 			return resp, err
 		}

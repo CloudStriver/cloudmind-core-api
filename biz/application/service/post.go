@@ -66,7 +66,6 @@ func (s *PostService) CreatePost(ctx context.Context, req *core_api.CreatePostRe
 			IsHidden: req.Status == int64(core_api.PostStatus_PrivatePostStatus),
 			Labels:   req.Tags,
 			Category: core_api.Category_name[int32(core_api.Category_PostCategory)],
-			Comment:  req.Title,
 		},
 	}); err != nil {
 		return resp, err
@@ -95,7 +94,7 @@ func (s *PostService) UpdatePost(ctx context.Context, req *core_api.UpdatePostRe
 		return resp, err
 	}
 
-	if req.Status != 0 || req.Tags != nil || req.Title != "" {
+	if req.Status != 0 || req.Tags != nil {
 		var isHidden *bool
 		if req.Status != 0 {
 			isHidden = lo.ToPtr(req.Status == int64(core_api.PostStatus_PrivatePostStatus))
@@ -104,7 +103,6 @@ func (s *PostService) UpdatePost(ctx context.Context, req *core_api.UpdatePostRe
 			ItemId:   req.PostId,
 			IsHidden: isHidden,
 			Labels:   req.Tags,
-			Comment:  lo.ToPtr(req.Title),
 		}); err != nil {
 			return resp, err
 		}

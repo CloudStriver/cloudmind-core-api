@@ -47,7 +47,8 @@ type AuthService struct {
 	CloudMindSts     cloudmind_sts.ICloudMindSts
 	CloudMindTrade   cloudmind_trade.ICloudMindTrade
 	CreateItemsKq    *kq.CreateItemsKq
-	Redis            *redis.Redis
+
+	Redis *redis.Redis
 }
 
 func (s *AuthService) CheckEmail(ctx context.Context, req *core_api.CheckEmailReq) (resp *core_api.CheckEmailResp, err error) {
@@ -227,7 +228,6 @@ func (s *AuthService) Register(ctx context.Context, req *core_api.RegisterReq) (
 		Item: &content.Item{
 			ItemId:   createAuthResp.UserId,
 			Category: core_api.Category_name[int32(core_api.Category_UserCategory)],
-			Comment:  req.Name,
 		},
 	}); err != nil {
 		return resp, err

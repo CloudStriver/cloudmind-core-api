@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"github.com/CloudStriver/cloudmind-core-api/biz/adaptor"
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/CloudStriver/cloudmind-core-api/biz/domain/service"
@@ -75,7 +76,6 @@ func (s *RecommendService) GetPopularRecommend(ctx context.Context, req *core_ap
 	if err != nil {
 		return resp, err
 	}
-
 	if err = s.GetItemByItemId(ctx, userId, req.Category, getPopularRecommendResp.ItemIds, resp.Recommends); err != nil {
 		return resp, err
 	}
@@ -148,6 +148,7 @@ func (s *RecommendService) GetRecommendByUser(ctx context.Context, req *core_api
 func (s *RecommendService) GetItemByItemId(ctx context.Context, userId string, category core_api.Category, itemIds []string, recommends *core_api.Recommends) (err error) {
 	switch category {
 	case core_api.Category_UserCategory:
+		fmt.Println(itemIds)
 		getUsersResp, err := s.CloudMindContent.GetUsers(ctx, &content.GetUsersReq{
 			UserFilterOptions: &content.UserFilterOptions{
 				UserIds: itemIds,
@@ -159,6 +160,7 @@ func (s *RecommendService) GetItemByItemId(ctx context.Context, userId string, c
 		if err != nil {
 			return err
 		}
+		fmt.Println(getUsersResp.Users)
 		recommends.Users = make([]*core_api.RecommendUser, len(getUsersResp.Users))
 		if err = mr.Finish(lo.Map(getUsersResp.Users, func(user *content.User, i int) func() error {
 			return func() error {
@@ -167,8 +169,15 @@ func (s *RecommendService) GetItemByItemId(ctx context.Context, userId string, c
 					Name:        user.Name,
 					Url:         user.Url,
 					Description: user.Description,
+					Labels:      user.Labels,
 				}
-				s.UserDomainService.LoadFollowCount(ctx, &recommends.Users[i].FollowCount, user.UserId)
+				_ = mr.Finish(func() error {
+					s.UserDomainService.LoadFollowCount(ctx, &recommends.Users[i].FollowCount, user.UserId)
+					return nil
+				}, func() error {
+					s.UserDomainService.LoadLabel(ctx, recommends.Users[i].Labels)
+					return nil
+				})
 				return nil
 			}
 		})...); err != nil {

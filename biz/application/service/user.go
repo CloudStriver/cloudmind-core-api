@@ -4,16 +4,20 @@ import (
 	"context"
 	"github.com/CloudStriver/cloudmind-core-api/biz/adaptor"
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
+	domainservice "github.com/CloudStriver/cloudmind-core-api/biz/domain/service"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/convertor"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_trade"
+	"github.com/CloudStriver/cloudmind-mq/app/util/message"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/sts"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/trade"
 	"github.com/google/wire"
+	"github.com/samber/lo"
 	"github.com/zeromicro/go-zero/core/mr"
 )
 
@@ -31,10 +35,12 @@ var UserServiceSet = wire.NewSet(
 )
 
 type UserService struct {
-	Config           *config.Config
-	CloudMindContent cloudmind_content.ICloudMindContent
-	CloudMindTrade   cloudmind_trade.ICloudMindTrade
-	PlatformSts      cloudmind_sts.ICloudMindSts
+	Config            *config.Config
+	CloudMindContent  cloudmind_content.ICloudMindContent
+	CloudMindTrade    cloudmind_trade.ICloudMindTrade
+	UserDomainService domainservice.IUserDomainService
+	PlatformSts       cloudmind_sts.ICloudMindSts
+	UpdateItemKq      *kq.UpdateItemKq
 }
 
 func (s *UserService) AskUploadAvatar(ctx context.Context, req *core_api.AskUploadAvatarReq) (resp *core_api.AskUploadAvatarResp, err error) {
@@ -91,8 +97,17 @@ func (s *UserService) UpdateUser(ctx context.Context, req *core_api.UpdateUserRe
 		FullName:    req.FullName,
 		IdCard:      req.IdCard,
 		Description: req.Description,
+		Labels:      req.Labels,
 	}); err != nil {
 		return resp, err
+	}
+	if len(req.Labels) != 0 {
+		if err = s.UpdateItemKq.Add(userData.UserId, &message.UpdateItemMessage{
+			ItemId: userData.UserId,
+			Labels: req.Labels,
+		}); err != nil {
+			return resp, err
+		}
 	}
 	return resp, nil
 }
@@ -114,6 +129,7 @@ func (s *UserService) GetUserDetail(ctx context.Context, _ *core_api.GetUserDeta
 		}); err1 != nil {
 			return err1
 		}
+		s.UserDomainService.LoadLabel(ctx, getUserResp.Labels)
 		return nil
 	}, func() error {
 		if getBalanceResp, err2 = s.CloudMindTrade.GetBalance(ctx, &trade.GetBalanceReq{
@@ -136,6 +152,7 @@ func (s *UserService) GetUserDetail(ctx context.Context, _ *core_api.GetUserDeta
 		Flow:        getBalanceResp.Flow,
 		Momery:      getBalanceResp.Memory,
 		Point:       getBalanceResp.Point,
+		Labels:      getUserResp.Labels,
 	}, nil
 }
 
@@ -168,10 +185,9 @@ func (s *UserService) SearchUser(ctx context.Context, req *core_api.SearchUserRe
 	if err != nil {
 		return resp, err
 	}
-	resp.Users = make([]*core_api.User, 0, len(users.Users))
-	for _, user := range users.Users {
-		resp.Users = append(resp.Users, convertor.UserDetailToUser(user))
-	}
+	resp.Users = lo.Map[*content.User, *core_api.User](users.Users, func(user *content.User, _ int) *core_api.User {
+		return convertor.UserDetailToUser(user)
+	})
 	resp.Total = users.Total
 	resp.LastToken = users.LastToken
 	return resp, nil
