@@ -600,7 +600,7 @@ func (s *FileService) SaveFileToPrivateSpace(ctx context.Context, req *core_api.
 		switch {
 		case err != nil:
 			return resp, err
-		case ok.Ok == false:
+		case !ok.Ok:
 			return resp, consts.ErrNoAccessFile
 		}
 	}
@@ -694,8 +694,7 @@ func (s *FileService) AddFileToPublicSpace(ctx context.Context, req *core_api.Ad
 		}})
 		return err1
 	})
-
-	return resp, nil
+	return resp, err
 }
 
 func (s *FileService) RecoverRecycleBinFile(ctx context.Context, req *core_api.RecoverRecycleBinFileReq) (resp *core_api.RecoverRecycleBinFileResp, err error) {
