@@ -94,11 +94,18 @@ func NewProvider() (*Provider, error) {
 		CreateNotificationKq: createNotificationsKq,
 		CreateFeedBacksKq:    createFeedBacksKq,
 	}
-	userService := &service2.UserService{
+	userDomainService := &service.UserDomainService{
 		Config:           configConfig,
-		CloudMindContent: cloudMindContent,
-		CloudMindTrade:   cloudMindTrade,
-		PlatformSts:      cloudMindSts,
+		PlatFormRelation: platFormRelation,
+		PlatFormComment:  platFormComment,
+	}
+	userService := &service2.UserService{
+		Config:            configConfig,
+		CloudMindContent:  cloudMindContent,
+		CloudMindTrade:    cloudMindTrade,
+		UserDomainService: userDomainService,
+		PlatformSts:       cloudMindSts,
+		UpdateItemKq:      updateItemKq,
 	}
 	zoneService := &service2.ZoneService{
 		Config:           configConfig,
@@ -122,10 +129,6 @@ func NewProvider() (*Provider, error) {
 	labelService := &service2.LabelService{
 		Config:          configConfig,
 		PlatformComment: platFormComment,
-	}
-	userDomainService := &service.UserDomainService{
-		Config:           configConfig,
-		PlatFormRelation: platFormRelation,
 	}
 	recommendService := &service2.RecommendService{
 		Config:            configConfig,
