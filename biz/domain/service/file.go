@@ -4,10 +4,13 @@ import (
 	"context"
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_comment"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
+	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/comment"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/relation"
 	"github.com/google/wire"
+	"github.com/samber/lo"
 )
 
 type IFileDomainService interface {
@@ -17,10 +20,12 @@ type IFileDomainService interface {
 	LoadLiked(ctx context.Context, file *core_api.PublicFile, userId string)
 	LoadCollectCount(ctx context.Context, file *core_api.PublicFile)
 	LoadCollected(ctx context.Context, file *core_api.PublicFile, userId string)
+	LoadLabels(ctx context.Context, file *core_api.PublicFile, labelIds []string)
 }
 type FileDomainService struct {
 	CloudMindUser    cloudmind_content.ICloudMindContent
 	PlatformRelation platform_relation.IPlatFormRelation
+	PlatformComment  platform_comment.IPlatFormComment
 }
 
 var FileDomainServiceSet = wire.NewSet(
@@ -122,4 +127,15 @@ func (s *FileDomainService) LoadCollectCount(ctx context.Context, file *core_api
 	if err == nil {
 		file.FileCount.CollectCount = getRelationCountResp.Total
 	}
+}
+
+func (s *FileDomainService) LoadLabels(ctx context.Context, file *core_api.PublicFile, labelIds []string) {
+	if file.Zone == "" || file.SubZone == "" {
+		return
+	}
+	var labels *comment.GetLabelsInBatchResp
+	labels, _ = s.PlatformComment.GetLabelsInBatch(ctx, &comment.GetLabelsInBatchReq{LabelIds: labelIds})
+	file.Labels = lo.Map(labels.Labels, func(item *comment.Label, _ int) *core_api.Label {
+		return &core_api.Label{LabelId: item.LabelId, Value: item.Value}
+	})
 }

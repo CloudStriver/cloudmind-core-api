@@ -10,7 +10,7 @@ var NotContent = codes.Code(204)
 var NotDel int64 = 1
 var SoftDel int64 = 2
 var HardDel int64 = 3
-var InitBrowseNumber int64 = 0
+var InitNumber int64 = 0
 
 const (
 	PassCheckEmail      = "PassCheckEmail"

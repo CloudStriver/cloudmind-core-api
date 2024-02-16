@@ -39,13 +39,14 @@ func NewProvider() (*Provider, error) {
 	platFormRelation := &platform_relation.PlatFormRelation{
 		Client: relationserviceClient,
 	}
-	fileDomainService := &service.FileDomainService{
-		CloudMindUser:    cloudMindContent,
-		PlatformRelation: platFormRelation,
-	}
 	commentserviceClient := platform_comment.NewPlatFormComment(configConfig)
 	platFormComment := &platform_comment.PlatFormComment{
 		Client: commentserviceClient,
+	}
+	fileDomainService := &service.FileDomainService{
+		CloudMindUser:    cloudMindContent,
+		PlatformRelation: platFormRelation,
+		PlatformComment:  platFormComment,
 	}
 	fileService := &service2.FileService{
 		Config:            configConfig,

@@ -2599,16 +2599,16 @@ type CommentInfo struct {
 	SubjectId  string   `protobuf:"bytes,2,opt,name=subjectId,proto3" json:"subjectId" form:"subjectId" query:"subjectId"`
 	RootId     string   `protobuf:"bytes,3,opt,name=rootId,proto3" json:"rootId" form:"rootId" query:"rootId"`
 	FatherId   string   `protobuf:"bytes,4,opt,name=fatherId,proto3" json:"fatherId" form:"fatherId" query:"fatherId"`
-	Count      int64    `protobuf:"varint,5,opt,name=count,proto3" json:"count" form:"count" query:"count"`             // 回复数
-	State      int64    `protobuf:"varint,6,opt,name=state,proto3" json:"state" form:"state" query:"state"`             // 1: 正常, 2: 删除
-	Attrs      int64    `protobuf:"varint,7,opt,name=attrs,proto3" json:"attrs" form:"attrs" query:"attrs"`             // 1: 无, 2: 置顶, 3: 精华, 4: 置顶+精华
-	Tags       []string `protobuf:"bytes,8,rep,name=tags,proto3" json:"tags" form:"tags" query:"tags"`                  // 标签：作者点赞，作者回复等
-	UserId     string   `protobuf:"bytes,9,opt,name=userId,proto3" json:"userId" form:"userId" query:"userId"`          // 评论者
-	AtUserId   string   `protobuf:"bytes,10,opt,name=atUserId,proto3" json:"atUserId" form:"atUserId" query:"atUserId"` // @谁
-	Content    string   `protobuf:"bytes,11,opt,name=content,proto3" json:"content" form:"content" query:"content"`     // 内容
-	Meta       string   `protobuf:"bytes,12,opt,name=meta,proto3" json:"meta" form:"meta" query:"meta"`                 // 皮肤，字体等
-	CreateTime int64    `protobuf:"varint,13,opt,name=createTime,proto3" json:"createTime" form:"createTime" query:"createTime"`
-	Like       int64    `protobuf:"varint,14,opt,name=like,proto3" json:"like" form:"like" query:"like"`
+	Count      int64    `protobuf:"varint,5,opt,name=count,proto3" json:"count" form:"count" query:"count"`                      // 回复数
+	State      int64    `protobuf:"varint,6,opt,name=state,proto3" json:"state" form:"state" query:"state"`                      // 1: 正常, 2: 删除
+	Attrs      int64    `protobuf:"varint,7,opt,name=attrs,proto3" json:"attrs" form:"attrs" query:"attrs"`                      // 1: 无, 2: 置顶, 3: 精华, 4: 置顶+精华
+	Tags       []string `protobuf:"bytes,8,rep,name=tags,proto3" json:"tags" form:"tags" query:"tags"`                           // 标签：作者点赞，作者回复等
+	UserId     string   `protobuf:"bytes,9,opt,name=userId,proto3" json:"userId" form:"userId" query:"userId"`                   // 评论者
+	AtUserId   string   `protobuf:"bytes,10,opt,name=atUserId,proto3" json:"atUserId" form:"atUserId" query:"atUserId"`          // @谁
+	Content    string   `protobuf:"bytes,11,opt,name=content,proto3" json:"content" form:"content" query:"content"`              // 内容
+	Meta       string   `protobuf:"bytes,12,opt,name=meta,proto3" json:"meta" form:"meta" query:"meta"`                          // 皮肤，字体等
+	CreateTime int64    `protobuf:"varint,13,opt,name=createTime,proto3" json:"createTime" form:"createTime" query:"createTime"` // 创建时间
+	Like       int64    `protobuf:"varint,14,opt,name=like,proto3" json:"like" form:"like" query:"like"`                         // 点赞数
 }
 
 func (x *CommentInfo) Reset() {

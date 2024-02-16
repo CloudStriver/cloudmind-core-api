@@ -160,7 +160,6 @@ func (s *FileService) GetPublicFile(ctx context.Context, req *core_api.GetPublic
 	}
 
 	var res *content.GetFileResp
-	var labels *comment.GetLabelsInBatchResp
 	if res, err = s.CloudMindContent.GetFile(ctx, &content.GetFileReq{FileId: req.FileId, IsGetSize: req.IsGetSize}); err != nil {
 		return resp, err
 	}
@@ -171,12 +170,6 @@ func (s *FileService) GetPublicFile(ctx context.Context, req *core_api.GetPublic
 		return resp, consts.ErrFileNotExist
 	}
 	resp.File = convertor.FileToCorePublicFile(res.File)
-	if labels, err = s.PlatformComment.GetLabelsInBatch(ctx, &comment.GetLabelsInBatchReq{LabelIds: res.File.Labels}); err != nil {
-		return resp, err
-	}
-	resp.File.Labels = lo.Map(labels.Labels, func(item *comment.Label, _ int) *core_api.Label {
-		return &core_api.Label{LabelId: item.LabelId, Value: item.Value}
-	})
 	if err = mr.Finish(func() error {
 		s.FileDomainService.LoadLikeCount(ctx, resp.File) // 点赞量
 		return nil
@@ -194,6 +187,9 @@ func (s *FileService) GetPublicFile(ctx context.Context, req *core_api.GetPublic
 		return nil
 	}, func() error {
 		s.FileDomainService.LoadCollectCount(ctx, resp.File) // 收藏量
+		return nil
+	}, func() error {
+		s.FileDomainService.LoadLabels(ctx, resp.File, res.File.Labels) // 标签集
 		return nil
 	}); err != nil {
 		return resp, err
@@ -325,11 +321,15 @@ func (s *FileService) GetFileBySharingCode(ctx context.Context, req *core_api.Ge
 	resp = new(core_api.GetFileBySharingCodeResp)
 	var res *content.GetFileBySharingCodeResp
 	var shareFile *content.ParsingShareCodeResp
-	if shareFile, err = s.CloudMindContent.ParsingShareCode(ctx, &content.ParsingShareCodeReq{Code: req.SharingCode, Key: req.Key}); err != nil {
+	if shareFile, err = s.CloudMindContent.ParsingShareCode(ctx, &content.ParsingShareCodeReq{Code: req.Code, Key: req.Key}); err != nil {
 		return resp, err
 	}
 	p := convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward)
-	if res, err = s.CloudMindContent.GetFileBySharingCode(ctx, &content.GetFileBySharingCodeReq{FileIds: shareFile.ShareFile.FileList, OnlyFatherId: req.OnlyFatherId, PaginationOptions: p}); err != nil {
+	sort := lo.ToPtr(content.SortOptions_SortOptions_createAtDesc)
+	if req.SortType != nil {
+		sort = lo.ToPtr(content.SortOptions(*req.SortType))
+	}
+	if res, err = s.CloudMindContent.GetFileBySharingCode(ctx, &content.GetFileBySharingCodeReq{FileIds: shareFile.ShareFile.FileList, OnlyFatherId: req.OnlyFatherId, PaginationOptions: p, SortOptions: sort}); err != nil {
 		return resp, err
 	}
 	resp.Files = lo.Map[*content.FileInfo, *core_api.PrivateFile](res.Files, func(item *content.FileInfo, _ int) *core_api.PrivateFile {
@@ -436,6 +436,7 @@ func (s *FileService) MoveFile(ctx context.Context, req *core_api.MoveFileReq) (
 		FileId:    res.Files[0].FileId,
 		OldPath:   res.Files[0].Path,
 		SpaceSize: res.Files[0].SpaceSize,
+		UserId:    userData.UserId,
 	}); err != nil {
 		return resp, err
 	}
@@ -545,7 +546,7 @@ func (s *FileService) CreateShareCode(ctx context.Context, req *core_api.CreateS
 		UserId:        userData.UserId,
 		Name:          req.Name,
 		EffectiveTime: req.EffectiveTime,
-		BrowseNumber:  consts.InitBrowseNumber,
+		BrowseNumber:  consts.InitNumber,
 		FileList:      req.FileList,
 	}}); err != nil {
 		return resp, err
@@ -562,7 +563,7 @@ func (s *FileService) DeleteShareCode(ctx context.Context, req *core_api.DeleteS
 		return resp, consts.ErrNotAuthentication
 	}
 
-	if _, err = s.CloudMindContent.DeleteShareCode(ctx, &content.DeleteShareCodeReq{ShareFileFilterOptions: &content.ShareFileFilterOptions{OnlyCode: lo.ToPtr(req.OnlyCode), OnlyUserId: lo.ToPtr(userData.UserId)}}); err != nil {
+	if _, err = s.CloudMindContent.DeleteShareCode(ctx, &content.DeleteShareCodeReq{Code: req.OnlyCode, UserId: userData.UserId}); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -589,10 +590,24 @@ func (s *FileService) SaveFileToPrivateSpace(ctx context.Context, req *core_api.
 		return resp, consts.ErrNotAuthentication
 	}
 
+	if req.DocumentType == core_api.DocumentType_DocumentType_personal {
+		var ok *content.CheckShareFileResp
+		var res *content.ParsingShareCodeResp
+		if res, err = s.CloudMindContent.ParsingShareCode(ctx, &content.ParsingShareCodeReq{Code: *req.Code, Key: *req.Key}); err != nil {
+			return resp, err
+		}
+		ok, err = s.CloudMindContent.CheckShareFile(ctx, &content.CheckShareFileReq{FileIds: res.ShareFile.FileList, FileId: req.FileId})
+		switch {
+		case err != nil:
+			return resp, err
+		case !ok.Ok:
+			return resp, consts.ErrNoAccessFile
+		}
+	}
+
 	if req.FileId == req.FatherId {
 		return resp, consts.ErrIllegalOperation
 	} // 如果目标文件和要保存的文件是同一个用户的，则返回错误
-
 	var files *content.GetFilesByIdsResp
 	if files, err = s.CloudMindContent.GetFilesByIds(ctx, &content.GetFilesByIdsReq{FileIds: []string{req.FileId, req.FatherId}}); err != nil {
 		return resp, err
@@ -656,20 +671,30 @@ func (s *FileService) AddFileToPublicSpace(ctx context.Context, req *core_api.Ad
 	file.File.SubZone = req.SubZone
 	file.File.Description = req.Description
 	file.File.Labels = req.Labels
-	if _, err = s.CloudMindContent.AddFileToPublicSpace(ctx, &content.AddFileToPublicSpaceReq{
-		FileId:      file.File.FileId,
-		UserId:      file.File.UserId,
-		Path:        file.File.Path,
-		SpaceSize:   file.File.SpaceSize,
-		Zone:        file.File.Zone,
-		SubZone:     file.File.SubZone,
-		Description: file.File.Description,
-		Labels:      file.File.Labels,
-	}); err != nil {
-		return resp, err
-	}
-
-	return resp, nil
+	err = mr.Finish(func() error {
+		_, err1 := s.CloudMindContent.AddFileToPublicSpace(ctx, &content.AddFileToPublicSpaceReq{
+			FileId:      file.File.FileId,
+			UserId:      file.File.UserId,
+			Path:        file.File.Path,
+			SpaceSize:   file.File.SpaceSize,
+			Zone:        file.File.Zone,
+			SubZone:     file.File.SubZone,
+			Description: file.File.Description,
+			Labels:      file.File.Labels,
+		})
+		return err1
+	}, func() error {
+		_, err1 := s.PlatformComment.CreateCommentSubject(ctx, &comment.CreateCommentSubjectReq{Subject: &comment.Subject{
+			Id:        file.File.FileId,
+			UserId:    file.File.UserId,
+			RootCount: lo.ToPtr(consts.InitNumber),
+			AllCount:  lo.ToPtr(consts.InitNumber),
+			State:     int64(core_api.State_Normal),
+			Attrs:     int64(core_api.Attrs_None),
+		}})
+		return err1
+	})
+	return resp, err
 }
 
 func (s *FileService) RecoverRecycleBinFile(ctx context.Context, req *core_api.RecoverRecycleBinFileReq) (resp *core_api.RecoverRecycleBinFileResp, err error) {

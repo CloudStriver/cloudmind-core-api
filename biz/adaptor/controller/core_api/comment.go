@@ -97,23 +97,6 @@ func UpdateComment(ctx context.Context, c *app.RequestContext) {
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
-// SetCommentState .
-// @router /comment/setCommentState [POST]
-func SetCommentState(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.SetCommentStateReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(core_api.SetCommentStateResp)
-	p := provider.Get()
-	resp, err = p.CommentService.SetCommentState(ctx, &req)
-	adaptor.PostProcess(ctx, c, &req, resp, err)
-}
-
 // SetCommentAttrs .
 // @router /comment/setCommentAttrs [POST]
 func SetCommentAttrs(ctx context.Context, c *app.RequestContext) {
@@ -145,23 +128,6 @@ func GetCommentSubject(ctx context.Context, c *app.RequestContext) {
 	resp := new(core_api.GetCommentSubjectResp)
 	p := provider.Get()
 	resp, err = p.CommentService.GetCommentSubject(ctx, &req)
-	adaptor.PostProcess(ctx, c, &req, resp, err)
-}
-
-// CreateCommentSubject .
-// @router /comment/createCommentSubject [POST]
-func CreateCommentSubject(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.CreateCommentSubjectReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(core_api.CreateCommentSubjectResp)
-	p := provider.Get()
-	resp, err = p.CommentService.CreateCommentSubject(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
