@@ -59,7 +59,7 @@ func NewProvider() (*Provider, error) {
 		CloudMindUser:    cloudMindContent,
 		PlatformRelation: platFormRelation,
 	}
-	createItemsKq := kq.NewCreateItemsKq(configConfig)
+	createItemKq := kq.NewCreateItemKq(configConfig)
 	updateItemKq := kq.NewUpdateItemKq(configConfig)
 	deleteItemKq := kq.NewDeleteItemKq(configConfig)
 	postService := &service2.PostService{
@@ -67,7 +67,7 @@ func NewProvider() (*Provider, error) {
 		CloudMindContent:  cloudMindContent,
 		PostDomainService: postDomainService,
 		PLatFromRelation:  platFormRelation,
-		CreateItemsKq:     createItemsKq,
+		CreateItemKq:      createItemKq,
 		UpdateItemKq:      updateItemKq,
 		DeleteItemKq:      deleteItemKq,
 	}
@@ -81,24 +81,31 @@ func NewProvider() (*Provider, error) {
 		CloudMindContent: cloudMindContent,
 		CloudMindSts:     cloudMindSts,
 		CloudMindTrade:   cloudMindTrade,
-		CreateItemsKq:    createItemsKq,
+		CreateItemKq:     createItemKq,
 		Redis:            redisRedis,
 	}
 	createNotificationsKq := kq.NewCreateNotificationsKq(configConfig)
-	createFeedBacksKq := kq.NewCreateFeedBacksKq(configConfig)
+	createFeedBackKq := kq.NewCreateFeedBackKq(configConfig)
 	relationService := &service2.RelationService{
 		Config:               configConfig,
 		PlatFormRelation:     platFormRelation,
 		CloudMindContent:     cloudMindContent,
 		PostDomainService:    postDomainService,
 		CreateNotificationKq: createNotificationsKq,
-		CreateFeedBacksKq:    createFeedBacksKq,
+		CreateFeedBackKq:     createFeedBackKq,
+	}
+	userDomainService := &service.UserDomainService{
+		Config:           configConfig,
+		PlatFormRelation: platFormRelation,
+		PlatFormComment:  platFormComment,
 	}
 	userService := &service2.UserService{
-		Config:           configConfig,
-		CloudMindContent: cloudMindContent,
-		CloudMindTrade:   cloudMindTrade,
-		PlatformSts:      cloudMindSts,
+		Config:            configConfig,
+		CloudMindContent:  cloudMindContent,
+		CloudMindTrade:    cloudMindTrade,
+		UserDomainService: userDomainService,
+		PlatformSts:       cloudMindSts,
+		UpdateItemKq:      updateItemKq,
 	}
 	zoneService := &service2.ZoneService{
 		Config:           configConfig,
@@ -123,15 +130,11 @@ func NewProvider() (*Provider, error) {
 		Config:          configConfig,
 		PlatformComment: platFormComment,
 	}
-	userDomainService := &service.UserDomainService{
-		Config:           configConfig,
-		PlatFormRelation: platFormRelation,
-	}
 	recommendService := &service2.RecommendService{
 		Config:            configConfig,
 		CloudMindContent:  cloudMindContent,
 		PostDomainService: postDomainService,
-		CreateFeedBacks:   createFeedBacksKq,
+		CreateFeedBackKq:  createFeedBackKq,
 		UserDomainService: userDomainService,
 	}
 	productDomainService := &service.ProductDomainService{
@@ -144,7 +147,7 @@ func NewProvider() (*Provider, error) {
 		CloudMindContent:     cloudMindContent,
 		ProductDomainService: productDomainService,
 		CloudMindTrade:       cloudMindTrade,
-		CreateItemsKq:        createItemsKq,
+		CreateItemKq:         createItemKq,
 		UpdateItemKq:         updateItemKq,
 		DeleteItemKq:         deleteItemKq,
 	}

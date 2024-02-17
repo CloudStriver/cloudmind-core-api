@@ -38,8 +38,8 @@ type Config struct {
 	Redis                 redis.RedisConf
 	CreateNotificationsKq KqConfig
 	UpdateNotificationsKq KqConfig
-	CreateItemsKq         KqConfig
-	CreateFeedBacksKq     KqConfig
+	CreateItemKq          KqConfig
+	CreateFeedBackKq      KqConfig
 	UpdateItemKq          KqConfig
 	DeleteItemKq          KqConfig
 	BaseUrl               string

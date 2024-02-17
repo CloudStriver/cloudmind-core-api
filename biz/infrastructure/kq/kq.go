@@ -1,16 +1,8 @@
 package kq
 
 import (
-	"context"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
-	"github.com/CloudStriver/cloudmind-mq/app/util/message"
-	"github.com/CloudStriver/go-pkg/utils/pconvertor"
-	"github.com/CloudStriver/go-pkg/utils/util/batcher"
-	"github.com/bytedance/sonic"
 	"github.com/zeromicro/go-queue/kq"
-	"github.com/zeromicro/go-zero/core/logx"
-	"hash/crc32"
 )
 
 type CreateNotificationsKq struct {
@@ -21,24 +13,20 @@ type UpdateNotificationsKq struct {
 	*kq.Pusher
 }
 
-type CreateItemsKq struct {
+type CreateItemKq struct {
 	*kq.Pusher
-	*batcher.Batcher
 }
 
-type CreateFeedBacksKq struct {
+type CreateFeedBackKq struct {
 	*kq.Pusher
-	*batcher.Batcher
 }
 
 type UpdateItemKq struct {
 	*kq.Pusher
-	*batcher.Batcher
 }
 
 type DeleteItemKq struct {
 	*kq.Pusher
-	*batcher.Batcher
 }
 
 func NewCreateNotificationsKq(c *config.Config) *CreateNotificationsKq {
@@ -54,142 +42,30 @@ func NewUpdateNotificationsKq(c *config.Config) *UpdateNotificationsKq {
 		Pusher: pusher,
 	}
 }
-func NewCreateItemsKq(c *config.Config) *CreateItemsKq {
-	crc := crc32.MakeTable(0xD5828281)
-	pusher := kq.NewPusher(c.CreateItemsKq.Brokers, c.CreateItemsKq.Topic)
-	b := batcher.New(
-		batcher.WithSize(consts.BatcherSize),
-		batcher.WithBuffer(consts.BatcherBuffer),
-		batcher.WithWorker(consts.BatcherWorker),
-		batcher.WithInterval(consts.BatcherInterval),
-	)
-	b.Sharding = func(key string) int {
-		pid := crc32.Checksum(pconvertor.String2Bytes(key), crc)
-		return int(pid) % consts.BatcherWorker
-	}
-	b.Do = func(ctx context.Context, val map[string][]interface{}) {
-		var msgs []*message.CreateItemsMessage
-		for _, vs := range val {
-			for _, v := range vs {
-				msgs = append(msgs, v.(*message.CreateItemsMessage))
-			}
-		}
-		kd, err := sonic.Marshal(msgs)
-		if err != nil {
-			logx.Errorf("Batcher.Do json.Marshal msgs: %v error: %v", msgs, err)
-		}
-		if err = pusher.Push(pconvertor.Bytes2String(kd)); err != nil {
-			logx.Errorf("KafkaPusher.Push kd: %s error: %v", pconvertor.Bytes2String(kd), err)
-		}
-	}
-	b.Start()
-	return &CreateItemsKq{
-		Pusher:  pusher,
-		Batcher: b,
+func NewCreateItemKq(c *config.Config) *CreateItemKq {
+	pusher := kq.NewPusher(c.CreateItemKq.Brokers, c.CreateItemKq.Topic)
+	return &CreateItemKq{
+		Pusher: pusher,
 	}
 }
 
-func NewCreateFeedBacksKq(c *config.Config) *CreateFeedBacksKq {
-	crc := crc32.MakeTable(0xD5828281)
-	pusher := kq.NewPusher(c.CreateFeedBacksKq.Brokers, c.CreateFeedBacksKq.Topic)
-	b := batcher.New(
-		batcher.WithSize(consts.BatcherSize),
-		batcher.WithBuffer(consts.BatcherBuffer),
-		batcher.WithWorker(consts.BatcherWorker),
-		batcher.WithInterval(consts.BatcherInterval),
-	)
-	b.Sharding = func(key string) int {
-		pid := crc32.Checksum(pconvertor.String2Bytes(key), crc)
-		return int(pid) % consts.BatcherWorker
-	}
-	b.Do = func(ctx context.Context, val map[string][]interface{}) {
-		var msgs []*message.CreateFeedBacksMessage
-		for _, vs := range val {
-			for _, v := range vs {
-				msgs = append(msgs, v.(*message.CreateFeedBacksMessage))
-			}
-		}
-		kd, err := sonic.Marshal(msgs)
-		if err != nil {
-			logx.Errorf("Batcher.Do json.Marshal msgs: %v error: %v", msgs, err)
-		}
-		if err = pusher.Push(pconvertor.Bytes2String(kd)); err != nil {
-			logx.Errorf("KafkaPusher.Push kd: %s error: %v", pconvertor.Bytes2String(kd), err)
-		}
-	}
-	b.Start()
-	return &CreateFeedBacksKq{
-		Pusher:  pusher,
-		Batcher: b,
+func NewCreateFeedBackKq(c *config.Config) *CreateFeedBackKq {
+	pusher := kq.NewPusher(c.CreateFeedBackKq.Brokers, c.CreateFeedBackKq.Topic)
+	return &CreateFeedBackKq{
+		Pusher: pusher,
 	}
 }
 
 func NewUpdateItemKq(c *config.Config) *UpdateItemKq {
-	crc := crc32.MakeTable(0xD5828281)
 	pusher := kq.NewPusher(c.UpdateItemKq.Brokers, c.UpdateItemKq.Topic)
-	b := batcher.New(
-		batcher.WithSize(consts.BatcherSize),
-		batcher.WithBuffer(consts.BatcherBuffer),
-		batcher.WithWorker(consts.BatcherWorker),
-		batcher.WithInterval(consts.BatcherInterval),
-	)
-	b.Sharding = func(key string) int {
-		pid := crc32.Checksum(pconvertor.String2Bytes(key), crc)
-		return int(pid) % consts.BatcherWorker
-	}
-	b.Do = func(ctx context.Context, val map[string][]interface{}) {
-		var msgs []*message.UpdateItemMessage
-		for _, vs := range val {
-			for _, v := range vs {
-				msgs = append(msgs, v.(*message.UpdateItemMessage))
-			}
-		}
-		kd, err := sonic.Marshal(msgs)
-		if err != nil {
-			logx.Errorf("Batcher.Do json.Marshal msgs: %v error: %v", msgs, err)
-		}
-		if err = pusher.Push(pconvertor.Bytes2String(kd)); err != nil {
-			logx.Errorf("KafkaPusher.Push kd: %s error: %v", pconvertor.Bytes2String(kd), err)
-		}
-	}
-	b.Start()
 	return &UpdateItemKq{
-		Pusher:  pusher,
-		Batcher: b,
+		Pusher: pusher,
 	}
 }
 
 func NewDeleteItemKq(c *config.Config) *DeleteItemKq {
-	crc := crc32.MakeTable(0xD5828281)
 	pusher := kq.NewPusher(c.DeleteItemKq.Brokers, c.DeleteItemKq.Topic)
-	b := batcher.New(
-		batcher.WithSize(consts.BatcherSize),
-		batcher.WithBuffer(consts.BatcherBuffer),
-		batcher.WithWorker(consts.BatcherWorker),
-		batcher.WithInterval(consts.BatcherInterval),
-	)
-	b.Sharding = func(key string) int {
-		pid := crc32.Checksum(pconvertor.String2Bytes(key), crc)
-		return int(pid) % consts.BatcherWorker
-	}
-	b.Do = func(ctx context.Context, val map[string][]interface{}) {
-		var msgs []*message.DeleteItemMessage
-		for _, vs := range val {
-			for _, v := range vs {
-				msgs = append(msgs, v.(*message.DeleteItemMessage))
-			}
-		}
-		kd, err := sonic.Marshal(msgs)
-		if err != nil {
-			logx.Errorf("Batcher.Do json.Marshal msgs: %v error: %v", msgs, err)
-		}
-		if err = pusher.Push(pconvertor.Bytes2String(kd)); err != nil {
-			logx.Errorf("KafkaPusher.Push kd: %s error: %v", pconvertor.Bytes2String(kd), err)
-		}
-	}
-	b.Start()
 	return &DeleteItemKq{
-		Pusher:  pusher,
-		Batcher: b,
+		Pusher: pusher,
 	}
 }

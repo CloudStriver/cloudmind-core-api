@@ -7,8 +7,10 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_trade"
 	"github.com/CloudStriver/cloudmind-mq/app/util/message"
+	"github.com/CloudStriver/go-pkg/utils/pconvertor"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/basic"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/trade"
+	"github.com/bytedance/sonic"
 
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
@@ -38,7 +40,7 @@ type ProductService struct {
 	CloudMindContent     cloudmind_content.ICloudMindContent
 	ProductDomainService service.IProductDomainService
 	CloudMindTrade       cloudmind_trade.ICloudMindTrade
-	CreateItemsKq        *kq.CreateItemsKq
+	CreateItemKq         *kq.CreateItemKq
 	UpdateItemKq         *kq.UpdateItemKq
 	DeleteItemKq         *kq.DeleteItemKq
 }
@@ -106,15 +108,13 @@ func (s *ProductService) CreateProduct(ctx context.Context, req *core_api.Create
 		return resp, err
 	}
 
-	if err = s.CreateItemsKq.Add(user.UserId, &message.CreateItemsMessage{
-		Item: &content.Item{
-			ItemId:   createProductResp.ProductId,
-			IsHidden: req.Status == int64(core_api.ProductStatus_PrivateProductStatus),
-			Labels:   req.Tags,
-			Category: core_api.Category_name[int32(core_api.Category_ProductCategory)],
-			Comment:  req.Name,
-		},
-	}); err != nil {
+	data, _ := sonic.Marshal(&message.CreateItemMessage{
+		ItemId:   createProductResp.ProductId,
+		IsHidden: req.Status == int64(core_api.ProductStatus_PrivateProductStatus),
+		Labels:   req.Tags,
+		Category: core_api.Category_name[int32(core_api.Category_ProductCategory)],
+	})
+	if err = s.CreateItemKq.Push(pconvertor.Bytes2String(data)); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -196,17 +196,18 @@ func (s *ProductService) UpdateProduct(ctx context.Context, req *core_api.Update
 		return resp, err
 	}
 
-	if req.Status != 0 || req.Tags != nil || req.Name != "" {
+	if req.Status != 0 || req.Tags != nil {
 		var isHidden *bool
 		if req.Status != 0 {
 			isHidden = lo.ToPtr(req.Status == int64(core_api.ProductStatus_PrivateProductStatus))
 		}
-		if err = s.UpdateItemKq.Add(user.UserId, &message.UpdateItemMessage{
+
+		data, _ := sonic.Marshal(&message.UpdateItemMessage{
 			ItemId:   req.ProductId,
 			IsHidden: isHidden,
 			Labels:   req.Tags,
-			Comment:  lo.ToPtr(req.Name),
-		}); err != nil {
+		})
+		if err = s.UpdateItemKq.Push(pconvertor.Bytes2String(data)); err != nil {
 			return resp, err
 		}
 	}
@@ -230,9 +231,10 @@ func (s *ProductService) DeleteProduct(ctx context.Context, req *core_api.Delete
 		return resp, err
 	}
 
-	if err = s.DeleteItemKq.Add(userData.UserId, &message.DeleteItemMessage{
+	data, _ := sonic.Marshal(&message.DeleteItemMessage{
 		ItemId: req.ProductId,
-	}); err != nil {
+	})
+	if err = s.DeleteItemKq.Push(pconvertor.Bytes2String(data)); err != nil {
 		return resp, err
 	}
 
