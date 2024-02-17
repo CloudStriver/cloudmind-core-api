@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"github.com/CloudStriver/cloudmind-core-api/biz/adaptor"
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/CloudStriver/cloudmind-core-api/biz/domain/service"
@@ -11,7 +10,6 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-mq/app/util/message"
 	"github.com/CloudStriver/go-pkg/utils/pconvertor"
-	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/basic"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
 	"github.com/bytedance/sonic"
 	"github.com/google/wire"
@@ -149,19 +147,12 @@ func (s *RecommendService) GetRecommendByUser(ctx context.Context, req *core_api
 func (s *RecommendService) GetItemByItemId(ctx context.Context, userId string, category core_api.Category, itemIds []string, recommends *core_api.Recommends) (err error) {
 	switch category {
 	case core_api.Category_UserCategory:
-		fmt.Println(itemIds)
-		getUsersResp, err := s.CloudMindContent.GetUsers(ctx, &content.GetUsersReq{
-			UserFilterOptions: &content.UserFilterOptions{
-				UserIds: itemIds,
-			},
-			PaginationOptions: &basic.PaginationOptions{
-				Limit: lo.ToPtr(int64(len(itemIds))),
-			},
+		getUsersResp, err := s.CloudMindContent.GetUsersByUserIds(ctx, &content.GetUsersByUserIdsReq{
+			UserIds: itemIds,
 		})
 		if err != nil {
 			return err
 		}
-		fmt.Println(getUsersResp.Users)
 		recommends.Users = make([]*core_api.RecommendUser, len(getUsersResp.Users))
 		if err = mr.Finish(lo.Map(getUsersResp.Users, func(user *content.User, i int) func() error {
 			return func() error {
@@ -187,13 +178,8 @@ func (s *RecommendService) GetItemByItemId(ctx context.Context, userId string, c
 	case core_api.Category_FileCategory:
 	case core_api.Category_ProductCategory:
 	case core_api.Category_PostCategory:
-		getPostsResp, err := s.CloudMindContent.GetPosts(ctx, &content.GetPostsReq{
-			PostFilterOptions: &content.PostFilterOptions{
-				OnlyPostIds: itemIds,
-			},
-			PaginationOptions: &basic.PaginationOptions{
-				Limit: lo.ToPtr(int64(len(itemIds))),
-			},
+		getPostsResp, err := s.CloudMindContent.GetPostsByPostIds(ctx, &content.GetPostsByPostIdsReq{
+			PostIds: itemIds,
 		})
 		if err != nil {
 			return err

@@ -385,6 +385,10 @@ github.com/CloudStriver/service-idl-gen-go v0.0.0-20240216034153-d1b5d05e4bc4 h1
 github.com/CloudStriver/service-idl-gen-go v0.0.0-20240216034153-d1b5d05e4bc4/go.mod h1:chtR82RvfrjUujTGWROSCNAwF9Lh/U959k34bXIDvBI=
 github.com/CloudStriver/service-idl-gen-go v0.0.0-20240217020757-af1570b246dc h1:dNH83A+pRHSQNV7xfROtcFSuNJqxylhpPAmHw9abuTA=
 github.com/CloudStriver/service-idl-gen-go v0.0.0-20240217020757-af1570b246dc/go.mod h1:chtR82RvfrjUujTGWROSCNAwF9Lh/U959k34bXIDvBI=
+github.com/CloudStriver/service-idl-gen-go v0.0.0-20240217031415-a5bd5496cc27 h1:l87gE+ctothfoCCtiS9DKNtcMTPUAUhIDsxwa/WS6BI=
+github.com/CloudStriver/service-idl-gen-go v0.0.0-20240217031415-a5bd5496cc27/go.mod h1:chtR82RvfrjUujTGWROSCNAwF9Lh/U959k34bXIDvBI=
+github.com/CloudStriver/service-idl-gen-go v0.0.0-20240217034102-8561f3df92ca h1:ybV/UvI8myzQYALWYrvtpvH4AAUoLxLNscOm5KLh7YA=
+github.com/CloudStriver/service-idl-gen-go v0.0.0-20240217034102-8561f3df92ca/go.mod h1:chtR82RvfrjUujTGWROSCNAwF9Lh/U959k34bXIDvBI=
 github.com/DATA-DOG/go-sqlmock v1.5.0/go.mod h1:f/Ixk793poVmq4qj/V1dPUg2JEAKC73Q5eFN3EC/SaM=
 github.com/NYTimes/gziphandler v0.0.0-20170623195520-56545f4a5d46/go.mod h1:3wb06e3pkSAbeQ52E9H9iFoQsEEwGN64994WTCIhntQ=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
