@@ -10,8 +10,10 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-mq/app/util/message"
+	"github.com/CloudStriver/go-pkg/utils/pconvertor"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/basic"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
+	"github.com/bytedance/sonic"
 	"github.com/google/wire"
 	"github.com/samber/lo"
 	"github.com/zeromicro/go-zero/core/mr"
@@ -34,7 +36,7 @@ type RecommendService struct {
 	Config            *config.Config
 	CloudMindContent  cloudmind_content.ICloudMindContent
 	PostDomainService service.IPostDomainService
-	CreateFeedBacks   *kq.CreateFeedBacksKq
+	CreateFeedBackKq  *kq.CreateFeedBackKq
 	UserDomainService service.IUserDomainService
 }
 
@@ -85,13 +87,12 @@ func (s *RecommendService) GetPopularRecommend(ctx context.Context, req *core_ap
 
 func (s *RecommendService) CreateFeedBack(ctx context.Context, req *core_api.CreateFeedBackReq) (resp *core_api.CreateFeedBackResp, err error) {
 	user := adaptor.ExtractUserMeta(ctx)
-	if err = s.CreateFeedBacks.Add(req.ItemId, &message.CreateFeedBacksMessage{
-		FeedBack: &content.FeedBack{
-			FeedbackType: req.FeedbackType,
-			UserId:       user.GetUserId(),
-			ItemId:       req.ItemId,
-		},
-	}); err != nil {
+	data, _ := sonic.Marshal(&message.CreateFeedBackMessage{
+		FeedbackType: req.FeedbackType,
+		UserId:       user.GetUserId(),
+		ItemId:       req.ItemId,
+	})
+	if err = s.CreateFeedBackKq.Push(pconvertor.Bytes2String(data)); err != nil {
 		return resp, err
 	}
 	return resp, nil

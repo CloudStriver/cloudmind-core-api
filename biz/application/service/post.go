@@ -11,9 +11,11 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
 	"github.com/CloudStriver/cloudmind-mq/app/util/message"
+	"github.com/CloudStriver/go-pkg/utils/pconvertor"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/basic"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/relation"
+	"github.com/bytedance/sonic"
 	"github.com/google/wire"
 	"github.com/samber/lo"
 	"github.com/zeromicro/go-zero/core/mr"
@@ -37,7 +39,7 @@ type PostService struct {
 	CloudMindContent  cloudmind_content.ICloudMindContent
 	PostDomainService service.IPostDomainService
 	PLatFromRelation  platform_relation.IPlatFormRelation
-	CreateItemsKq     *kq.CreateItemsKq
+	CreateItemKq      *kq.CreateItemKq
 	UpdateItemKq      *kq.UpdateItemKq
 	DeleteItemKq      *kq.DeleteItemKq
 }
@@ -60,14 +62,13 @@ func (s *PostService) CreatePost(ctx context.Context, req *core_api.CreatePostRe
 		return resp, err
 	}
 
-	if err = s.CreateItemsKq.Add(userData.UserId, &message.CreateItemsMessage{
-		Item: &content.Item{
-			ItemId:   createPostResp.PostId,
-			IsHidden: req.Status == int64(core_api.PostStatus_PrivatePostStatus),
-			Labels:   req.Tags,
-			Category: core_api.Category_name[int32(core_api.Category_PostCategory)],
-		},
-	}); err != nil {
+	data, _ := sonic.Marshal(&message.CreateItemMessage{
+		ItemId:   createPostResp.PostId,
+		IsHidden: req.Status == int64(core_api.PostStatus_PrivatePostStatus),
+		Labels:   req.Tags,
+		Category: core_api.Category_name[int32(core_api.Category_PostCategory)],
+	})
+	if err = s.CreateItemKq.Push(pconvertor.Bytes2String(data)); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -99,11 +100,13 @@ func (s *PostService) UpdatePost(ctx context.Context, req *core_api.UpdatePostRe
 		if req.Status != 0 {
 			isHidden = lo.ToPtr(req.Status == int64(core_api.PostStatus_PrivatePostStatus))
 		}
-		if err = s.UpdateItemKq.Add(userData.UserId, &message.UpdateItemMessage{
+
+		data, _ := sonic.Marshal(&message.UpdateItemMessage{
 			ItemId:   req.PostId,
 			IsHidden: isHidden,
 			Labels:   req.Tags,
-		}); err != nil {
+		})
+		if err = s.UpdateItemKq.Push(pconvertor.Bytes2String(data)); err != nil {
 			return resp, err
 		}
 	}
@@ -127,9 +130,10 @@ func (s *PostService) DeletePost(ctx context.Context, req *core_api.DeletePostRe
 		return resp, err
 	}
 
-	if err = s.DeleteItemKq.Add(userData.UserId, &message.DeleteItemMessage{
+	data, _ := sonic.Marshal(&message.DeleteItemMessage{
 		ItemId: req.PostId,
-	}); err != nil {
+	})
+	if err = s.DeleteItemKq.Push(pconvertor.Bytes2String(data)); err != nil {
 		return resp, err
 	}
 
