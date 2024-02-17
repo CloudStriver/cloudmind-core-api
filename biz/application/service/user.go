@@ -13,9 +13,11 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_trade"
 	"github.com/CloudStriver/cloudmind-mq/app/util/message"
+	"github.com/CloudStriver/go-pkg/utils/pconvertor"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/sts"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/trade"
+	"github.com/bytedance/sonic"
 	"github.com/google/wire"
 	"github.com/samber/lo"
 	"github.com/zeromicro/go-zero/core/mr"
@@ -102,10 +104,11 @@ func (s *UserService) UpdateUser(ctx context.Context, req *core_api.UpdateUserRe
 		return resp, err
 	}
 	if len(req.Labels) != 0 {
-		if err = s.UpdateItemKq.Add(userData.UserId, &message.UpdateItemMessage{
+		data, _ := sonic.Marshal(&message.UpdateItemMessage{
 			ItemId: userData.UserId,
 			Labels: req.Labels,
-		}); err != nil {
+		})
+		if err = s.UpdateItemKq.Push(pconvertor.Bytes2String(data)); err != nil {
 			return resp, err
 		}
 	}
@@ -188,7 +191,6 @@ func (s *UserService) SearchUser(ctx context.Context, req *core_api.SearchUserRe
 	resp.Users = lo.Map[*content.User, *core_api.User](users.Users, func(user *content.User, _ int) *core_api.User {
 		return convertor.UserDetailToUser(user)
 	})
-	resp.Total = users.Total
 	resp.LastToken = users.LastToken
 	return resp, nil
 }

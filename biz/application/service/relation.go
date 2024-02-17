@@ -40,7 +40,7 @@ type RelationService struct {
 	CloudMindContent     cloudmind_content.ICloudMindContent
 	PostDomainService    service.IPostDomainService
 	CreateNotificationKq *kq.CreateNotificationsKq
-	CreateFeedBacksKq    *kq.CreateFeedBacksKq
+	CreateFeedBackKq     *kq.CreateFeedBackKq
 }
 
 func (s *RelationService) GetFromRelations(ctx context.Context, req *core_api.GetFromRelationsReq) (resp *core_api.GetFromRelationsResp, err error) {
@@ -259,7 +259,7 @@ func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.Crea
 		FromName: userinfo.Name,
 		ToName:   toName,
 	})
-	data, _ := sonic.Marshal(&message.CreateNotificationsMessage{
+	data, _ := sonic.Marshal(&message.CreateNotificationMessage{
 		TargetUserId:    userId,
 		SourceUserId:    user.UserId,
 		SourceContentId: req.ToId,
@@ -271,13 +271,12 @@ func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.Crea
 		return resp, err
 	}
 
-	if err = s.CreateFeedBacksKq.Add(user.UserId, &message.CreateFeedBacksMessage{
-		FeedBack: &content.FeedBack{
-			FeedbackType: core_api.RelationType_name[int32(req.RelationType)],
-			UserId:       user.UserId,
-			ItemId:       req.ToId,
-		},
-	}); err != nil {
+	data, _ = sonic.Marshal(&message.CreateFeedBackMessage{
+		FeedbackType: core_api.RelationType_name[int32(req.RelationType)],
+		UserId:       user.UserId,
+		ItemId:       req.ToId,
+	})
+	if err = s.CreateFeedBackKq.Push(pconvertor.Bytes2String(data)); err != nil {
 		return resp, err
 	}
 	return resp, nil

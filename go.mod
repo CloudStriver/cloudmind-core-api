@@ -3,9 +3,9 @@ module github.com/CloudStriver/cloudmind-core-api
 go 1.20
 
 require (
-	github.com/CloudStriver/cloudmind-mq v1.0.9-0.20240213140001-4dd8ffaa4f15
+	github.com/CloudStriver/cloudmind-mq v1.0.10-0.20240217023738-37ac8dda8c0e
 	github.com/CloudStriver/go-pkg v0.0.0-20240206060942-84060a3dd273
-	github.com/CloudStriver/service-idl-gen-go v0.0.0-20240216034153-d1b5d05e4bc4
+	github.com/CloudStriver/service-idl-gen-go v0.0.0-20240217020757-af1570b246dc
 	github.com/bytedance/sonic v1.10.2
 	github.com/cloudwego/hertz v0.7.3
 	github.com/golang-jwt/jwt/v4 v4.5.0

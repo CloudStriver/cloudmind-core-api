@@ -13,9 +13,11 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_trade"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/utils/oauth"
 	"github.com/CloudStriver/cloudmind-mq/app/util/message"
+	"github.com/CloudStriver/go-pkg/utils/pconvertor"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/sts"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/trade"
+	"github.com/bytedance/sonic"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/google/wire"
 	"github.com/samber/lo"
@@ -46,7 +48,7 @@ type AuthService struct {
 	CloudMindContent cloudmind_content.ICloudMindContent
 	CloudMindSts     cloudmind_sts.ICloudMindSts
 	CloudMindTrade   cloudmind_trade.ICloudMindTrade
-	CreateItemsKq    *kq.CreateItemsKq
+	CreateItemKq     *kq.CreateItemKq
 
 	Redis *redis.Redis
 }
@@ -224,12 +226,11 @@ func (s *AuthService) Register(ctx context.Context, req *core_api.RegisterReq) (
 	}
 	resp.UserId = createAuthResp.UserId
 
-	if err = s.CreateItemsKq.Add(createAuthResp.UserId, &message.CreateItemsMessage{
-		Item: &content.Item{
-			ItemId:   createAuthResp.UserId,
-			Category: core_api.Category_name[int32(core_api.Category_UserCategory)],
-		},
-	}); err != nil {
+	data, _ := sonic.Marshal(&message.CreateItemMessage{
+		ItemId:   createAuthResp.UserId,
+		Category: core_api.Category_name[int32(core_api.Category_UserCategory)],
+	})
+	if err = s.CreateItemKq.Push(pconvertor.Bytes2String(data)); err != nil {
 		return resp, err
 	}
 
