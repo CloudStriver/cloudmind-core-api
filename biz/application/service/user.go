@@ -172,7 +172,6 @@ func (s *UserService) SearchUser(ctx context.Context, req *core_api.SearchUserRe
 	for _, user := range users.Users {
 		resp.Users = append(resp.Users, convertor.UserDetailToUser(user))
 	}
-	resp.Total = users.Total
 	resp.LastToken = users.LastToken
 	return resp, nil
 }

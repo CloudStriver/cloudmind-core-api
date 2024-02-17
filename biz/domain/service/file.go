@@ -135,7 +135,7 @@ func (s *FileDomainService) LoadLabels(ctx context.Context, file *core_api.Publi
 	}
 	var labels *comment.GetLabelsInBatchResp
 	labels, _ = s.PlatformComment.GetLabelsInBatch(ctx, &comment.GetLabelsInBatchReq{LabelIds: labelIds})
-	file.Labels = lo.Map(labels.Labels, func(item *comment.Label, _ int) *core_api.Label {
-		return &core_api.Label{LabelId: item.LabelId, Value: item.Value}
+	file.Labels = lo.Map(labels.Labels, func(item string, index int) *core_api.Label {
+		return &core_api.Label{LabelId: labelIds[index], Value: item}
 	})
 }
