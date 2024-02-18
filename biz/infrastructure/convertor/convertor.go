@@ -54,7 +54,6 @@ func CommentInfoToCoreCommentInfo(req *comment.CommentInfo) *core_api.CommentInf
 		Count:      req.Count,
 		State:      req.State,
 		Attrs:      req.Attrs,
-		Labels:     req.Labels,
 		UserId:     req.UserId,
 		AtUserId:   req.AtUserId,
 		Content:    req.Content,
