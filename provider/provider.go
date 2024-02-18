@@ -73,6 +73,7 @@ var DomainSet = wire.NewSet(
 	domainservice.FileDomainServiceSet,
 	domainservice.ProductDomainServiceSet,
 	domainservice.UserDomainServiceSet,
+	domainservice.CommentDomainServiceSet,
 )
 
 var InfrastructureSet = wire.NewSet(

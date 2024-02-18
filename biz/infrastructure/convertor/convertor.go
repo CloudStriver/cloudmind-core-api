@@ -5,8 +5,8 @@ import (
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/basic"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/system"
-	"github.com/bytedance/sonic"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/comment"
+	"github.com/bytedance/sonic"
 )
 
 func FileToCorePublicFile(req *content.FileInfo) *core_api.PublicFile {
@@ -54,7 +54,6 @@ func CommentInfoToCoreCommentInfo(req *comment.CommentInfo) *core_api.CommentInf
 		Count:      req.Count,
 		State:      req.State,
 		Attrs:      req.Attrs,
-		Tags:       req.Tags,
 		UserId:     req.UserId,
 		AtUserId:   req.AtUserId,
 		Content:    req.Content,
@@ -72,7 +71,7 @@ func CoreCommentToComment(req *core_api.Comment) *comment.Comment {
 		Count:     req.Count,
 		State:     int64(req.State),
 		Attrs:     int64(req.Attrs),
-		Tags:      req.Tags,
+		Labels:    req.Labels,
 		UserId:    req.UserId,
 		AtUserId:  req.AtUserId,
 		Content:   req.Content,

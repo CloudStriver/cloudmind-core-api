@@ -64,7 +64,7 @@ func (s *LabelService) GetLabel(ctx context.Context, req *core_api.GetLabelReq) 
 	if res, err = s.PlatformComment.GetLabel(ctx, &comment.GetLabelReq{Id: req.LabelId}); err != nil {
 		return resp, err
 	}
-	resp.Label = convertor.LabelToCoreLabel(res.Label)
+	resp.Label = res.Label
 	return resp, nil
 }
 
@@ -74,8 +74,8 @@ func (s *LabelService) GetLabelsInBatch(ctx context.Context, req *core_api.GetLa
 	if res, err = s.PlatformComment.GetLabelsInBatch(ctx, &comment.GetLabelsInBatchReq{LabelIds: req.LabelIds}); err != nil {
 		return resp, err
 	}
-	resp.Labels = lo.Map(res.Labels, func(item *comment.Label, _ int) *core_api.Label {
-		return convertor.LabelToCoreLabel(item)
+	resp.Labels = lo.Map(res.Labels, func(item string, _ int) string {
+		return item
 	})
 	return resp, nil
 }
