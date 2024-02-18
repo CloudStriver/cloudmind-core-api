@@ -192,6 +192,9 @@ func (s *PostService) GetPost(ctx context.Context, req *core_api.GetPostReq) (re
 			})
 		}
 		return nil
+	}, func() error {
+		s.PostDomainService.LoadLabels(ctx, resp.Tags)
+		return nil
 	}); err != nil {
 		return resp, err
 	}
@@ -273,6 +276,9 @@ func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (
 			}, func() error {
 				s.PostDomainService.LoadAuthor(ctx, author, item.UserId)
 				resp.Posts[i].UserName = author.Name
+				return nil
+			}, func() error {
+				s.PostDomainService.LoadLabels(ctx, resp.Posts[i].Tags)
 				return nil
 			}); err != nil {
 				return err

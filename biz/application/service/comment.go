@@ -97,9 +97,9 @@ func (s *CommentService) DeleteComment(ctx context.Context, req *core_api.Delete
 	if userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
-	if _, err = s.PlatformComment.DeleteCommentWithUserId(ctx, &comment.DeleteCommentWithUserIdReq{Id: req.CommentId, UserId: userData.UserId}); err != nil {
-		return resp, err
-	}
+	//if _, err = s.PlatformComment.DeleteCommentWithUserId(ctx, &comment.DeleteCommentWithUserIdReq{Id: req.CommentId, UserId: userData.UserId}); err != nil {
+	//	return resp, err
+	//}
 	return resp, nil
 }
 
@@ -109,9 +109,9 @@ func (s *CommentService) SetCommentAttrs(ctx context.Context, req *core_api.SetC
 	if userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
-	if _, err = s.PlatformComment.SetCommentAttrs(ctx, &comment.SetCommentAttrsReq{Id: req.CommentId, UserId: userData.UserId, Attrs: int64(req.Attrs), SubjectId: req.SubjectId, SortTime: req.SortTime}); err != nil {
-		return resp, err
-	}
+	//if _, err = s.PlatformComment.SetCommentAttrs(ctx, &comment.SetCommentAttrsReq{Id: req.CommentId, UserId: userData.UserId, Attrs: int64(req.Attrs), SubjectId: req.SubjectId, SortTime: req.SortTime}); err != nil {
+	//	return resp, err
+	//}
 	return resp, nil
 }
 
@@ -149,8 +149,8 @@ func (s *CommentService) DeleteCommentSubject(ctx context.Context, req *core_api
 	if userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
-	if _, err = s.PlatformComment.DeleteCommentSubject(ctx, &comment.DeleteCommentSubjectReq{Id: req.Id, UserId: userData.UserId}); err != nil {
-		return resp, err
-	}
+	//if _, err = s.PlatformComment.DeleteCommentSubject(ctx, &comment.DeleteCommentSubjectReq{Id: req.Id, UserId: userData.UserId}); err != nil {
+	//	return resp, err
+	//}
 	return resp, nil
 }

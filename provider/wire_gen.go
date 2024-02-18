@@ -56,8 +56,9 @@ func NewProvider() (*Provider, error) {
 		PlatformComment:   platFormComment,
 	}
 	postDomainService := &service.PostDomainService{
-		CloudMindUser:    cloudMindContent,
+		CloudMindContent: cloudMindContent,
 		PlatformRelation: platFormRelation,
+		PlatFormComment:  platFormComment,
 	}
 	createItemKq := kq.NewCreateItemKq(configConfig)
 	updateItemKq := kq.NewUpdateItemKq(configConfig)
