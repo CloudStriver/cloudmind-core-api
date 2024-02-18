@@ -32,8 +32,8 @@ func (s *UserDomainService) LoadLabel(ctx context.Context, labels []string) {
 		LabelIds: labels,
 	})
 	if err == nil {
-		lo.ForEach(getLabelsResp.Labels, func(value string, i int) {
-			labels[i] = value
+		lo.ForEach(getLabelsResp.Labels, func(label string, i int) {
+			labels[i] = label
 		})
 	}
 }

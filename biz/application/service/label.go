@@ -60,6 +60,7 @@ func (s *LabelService) DeleteLabel(ctx context.Context, req *core_api.DeleteLabe
 
 func (s *LabelService) GetLabel(ctx context.Context, req *core_api.GetLabelReq) (resp *core_api.GetLabelResp, err error) {
 	resp = new(core_api.GetLabelResp)
+
 	var res *comment.GetLabelResp
 	if res, err = s.PlatformComment.GetLabel(ctx, &comment.GetLabelReq{Id: req.LabelId}); err != nil {
 		return resp, err
@@ -70,6 +71,7 @@ func (s *LabelService) GetLabel(ctx context.Context, req *core_api.GetLabelReq) 
 
 func (s *LabelService) GetLabelsInBatch(ctx context.Context, req *core_api.GetLabelsInBatchReq) (resp *core_api.GetLabelsInBatchResp, err error) {
 	resp = new(core_api.GetLabelsInBatchResp)
+
 	var res *comment.GetLabelsInBatchResp
 	if res, err = s.PlatformComment.GetLabelsInBatch(ctx, &comment.GetLabelsInBatchReq{LabelIds: req.LabelIds}); err != nil {
 		return resp, err

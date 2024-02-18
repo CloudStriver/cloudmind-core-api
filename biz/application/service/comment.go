@@ -141,7 +141,6 @@ func (s *CommentService) DeleteComment(ctx context.Context, req *core_api.Delete
 	if userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
-
 	var ok bool
 	var res *comment.GetCommentResp
 	if res, err = s.PlatformComment.GetComment(ctx, &comment.GetCommentReq{CommentId: req.CommentId}); err != nil {
@@ -171,6 +170,7 @@ func (s *CommentService) SetCommentAttrs(ctx context.Context, req *core_api.SetC
 	if userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
+
 
 	var res *comment.GetCommentResp
 	if res, err = s.PlatformComment.GetComment(ctx, &comment.GetCommentReq{CommentId: req.CommentId}); err != nil {
