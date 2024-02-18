@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/CloudStriver/cloudmind-core-api/biz/adaptor"
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
+	"github.com/CloudStriver/cloudmind-core-api/biz/domain/service"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/convertor"
@@ -11,6 +12,7 @@ import (
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/comment"
 	"github.com/google/wire"
 	"github.com/samber/lo"
+	"github.com/zeromicro/go-zero/core/mr"
 )
 
 type ICommentService interface {
@@ -31,29 +33,65 @@ var CommentServiceSet = wire.NewSet(
 )
 
 type CommentService struct {
-	Config          *config.Config
-	PlatformComment platform_comment.IPlatFormComment
+	Config               *config.Config
+	PlatformComment      platform_comment.IPlatFormComment
+	CommentDomainService service.ICommentDomainService
 }
 
 func (s *CommentService) GetComment(ctx context.Context, req *core_api.GetCommentReq) (resp *core_api.GetCommentResp, err error) {
 	resp = new(core_api.GetCommentResp)
+	userData := adaptor.ExtractUserMeta(ctx)
 	var res *comment.GetCommentResp
 	if res, err = s.PlatformComment.GetComment(ctx, &comment.GetCommentReq{CommentId: req.CommentId}); err != nil {
 		return resp, err
 	}
 	resp.Comment = convertor.CommentInfoToCoreCommentInfo(res.Comment)
+	_ = mr.Finish(func() error {
+		s.CommentDomainService.LoadLikeCount(ctx, resp.Comment) // 点赞量
+		return nil
+	}, func() error {
+		s.CommentDomainService.LoadAuthor(ctx, resp.Comment, userData.GetUserId()) // 作者
+		return nil
+	}, func() error {
+		s.CommentDomainService.LoadLiked(ctx, resp.Comment, userData.GetUserId()) // 是否点赞
+		return nil
+	}, func() error {
+		s.CommentDomainService.LoadHated(ctx, resp.Comment, userData.GetUserId()) // 是否点踩
+		return nil
+	}, func() error {
+		s.CommentDomainService.LoadLabels(ctx, resp.Comment, res.Comment.Labels) // 标签集
+		return nil
+	})
 	return resp, nil
 }
 
 func (s *CommentService) GetComments(ctx context.Context, req *core_api.GetCommentsReq) (resp *core_api.GetCommentsResp, err error) {
 	resp = new(core_api.GetCommentsResp)
+	userData := adaptor.ExtractUserMeta(ctx)
 	var res *comment.GetCommentListResp
 	p := convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward)
 	if res, err = s.PlatformComment.GetCommentList(ctx, &comment.GetCommentListReq{FilterOptions: &comment.CommentFilterOptions{OnlyUserId: req.OnlyUserId, OnlyAtUserId: req.OnlyAtUserId, OnlyCommentId: req.OnlyCommentId, OnlySubjectId: req.OnlySubjectId, OnlyRootId: req.OnlyRootId, OnlyFatherId: req.OnlyFatherId, OnlyState: req.OnlyState, OnlyAttrs: req.OnlyAttrs}, Pagination: p}); err != nil {
 		return resp, err
 	}
 	resp.Comments = lo.Map(res.Comments, func(item *comment.CommentInfo, _ int) *core_api.CommentInfo {
-		return convertor.CommentInfoToCoreCommentInfo(item)
+		c := convertor.CommentInfoToCoreCommentInfo(item)
+		_ = mr.Finish(func() error {
+			s.CommentDomainService.LoadLikeCount(ctx, c) // 点赞量
+			return nil
+		}, func() error {
+			s.CommentDomainService.LoadAuthor(ctx, c, userData.GetUserId()) // 作者
+			return nil
+		}, func() error {
+			s.CommentDomainService.LoadLiked(ctx, c, userData.GetUserId()) // 是否点赞
+			return nil
+		}, func() error {
+			s.CommentDomainService.LoadHated(ctx, c, userData.GetUserId()) // 是否点踩
+			return nil
+		}, func() error {
+			s.CommentDomainService.LoadLabels(ctx, c, item.Labels) // 标签集
+			return nil
+		})
+		return c
 	})
 	resp.Token = res.Token
 	resp.Total = res.Total
@@ -84,9 +122,15 @@ func (s *CommentService) UpdateComment(ctx context.Context, req *core_api.Update
 	if userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
-	req.Comment.UserId = userData.UserId
-	if _, err = s.PlatformComment.UpdateComment(ctx, &comment.UpdateCommentReq{Comment: convertor.CoreCommentToComment(req.Comment)}); err != nil {
+
+	var res *comment.GetCommentResp
+	if res, err = s.PlatformComment.GetComment(ctx, &comment.GetCommentReq{CommentId: req.Comment.Id}); err != nil {
 		return resp, err
+	}
+	if res.Comment.UserId == userData.UserId {
+		if _, err = s.PlatformComment.UpdateComment(ctx, &comment.UpdateCommentReq{Comment: convertor.CoreCommentToComment(req.Comment)}); err != nil {
+			return resp, err
+		}
 	}
 	return resp, nil
 }
@@ -97,9 +141,26 @@ func (s *CommentService) DeleteComment(ctx context.Context, req *core_api.Delete
 	if userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
-	//if _, err = s.PlatformComment.DeleteCommentWithUserId(ctx, &comment.DeleteCommentWithUserIdReq{Id: req.CommentId, UserId: userData.UserId}); err != nil {
-	//	return resp, err
-	//}
+	var ok bool
+	var res *comment.GetCommentResp
+	if res, err = s.PlatformComment.GetComment(ctx, &comment.GetCommentReq{CommentId: req.CommentId}); err != nil {
+		return resp, err
+	}
+	switch {
+	case res.Comment.UserId == userData.UserId:
+		ok = true
+	default:
+		var result *comment.GetCommentSubjectResp
+		if result, err = s.PlatformComment.GetCommentSubject(ctx, &comment.GetCommentSubjectReq{Id: res.Comment.SubjectId}); err != nil {
+			return resp, err
+		}
+		ok = result.Subject.UserId == userData.UserId
+	}
+	if ok {
+		if _, err = s.PlatformComment.DeleteComment(ctx, &comment.DeleteCommentReq{Id: req.CommentId}); err != nil {
+			return resp, err
+		}
+	}
 	return resp, nil
 }
 
@@ -109,9 +170,17 @@ func (s *CommentService) SetCommentAttrs(ctx context.Context, req *core_api.SetC
 	if userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
-	//if _, err = s.PlatformComment.SetCommentAttrs(ctx, &comment.SetCommentAttrsReq{Id: req.CommentId, UserId: userData.UserId, Attrs: int64(req.Attrs), SubjectId: req.SubjectId, SortTime: req.SortTime}); err != nil {
-	//	return resp, err
-	//}
+
+
+	var res *comment.GetCommentResp
+	if res, err = s.PlatformComment.GetComment(ctx, &comment.GetCommentReq{CommentId: req.CommentId}); err != nil {
+		return resp, err
+	}
+	if res.Comment.UserId == userData.UserId {
+		if _, err = s.PlatformComment.SetCommentAttrs(ctx, &comment.SetCommentAttrsReq{Id: req.CommentId, Attrs: int64(req.Attrs), SubjectId: res.Comment.SubjectId, SortTime: res.Comment.CreateTime}); err != nil {
+			return resp, err
+		}
+	}
 	return resp, nil
 }
 
@@ -135,10 +204,16 @@ func (s *CommentService) UpdateCommentSubject(ctx context.Context, req *core_api
 	if userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
-	req.Subject.UserId = userData.UserId
-	subject := convertor.CoreSubjectToSubject(req.Subject)
-	if _, err = s.PlatformComment.UpdateCommentSubject(ctx, &comment.UpdateCommentSubjectReq{Subject: subject}); err != nil {
+
+	var res *comment.GetCommentSubjectResp
+	if res, err = s.PlatformComment.GetCommentSubject(ctx, &comment.GetCommentSubjectReq{Id: req.Subject.Id}); err != nil {
 		return resp, err
+	}
+	if res.Subject.UserId == userData.UserId {
+		subject := convertor.CoreSubjectToSubject(req.Subject)
+		if _, err = s.PlatformComment.UpdateCommentSubject(ctx, &comment.UpdateCommentSubjectReq{Subject: subject}); err != nil {
+			return resp, err
+		}
 	}
 	return resp, nil
 }
@@ -149,8 +224,15 @@ func (s *CommentService) DeleteCommentSubject(ctx context.Context, req *core_api
 	if userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
-	//if _, err = s.PlatformComment.DeleteCommentSubject(ctx, &comment.DeleteCommentSubjectReq{Id: req.Id, UserId: userData.UserId}); err != nil {
-	//	return resp, err
-	//}
+
+	var res *comment.GetCommentSubjectResp
+	if res, err = s.PlatformComment.GetCommentSubject(ctx, &comment.GetCommentSubjectReq{Id: req.Id}); err != nil {
+		return resp, err
+	}
+	if res.Subject.UserId == userData.UserId {
+		if _, err = s.PlatformComment.DeleteCommentSubject(ctx, &comment.DeleteCommentSubjectReq{Id: req.Id}); err != nil {
+			return resp, err
+		}
+	}
 	return resp, nil
 }
