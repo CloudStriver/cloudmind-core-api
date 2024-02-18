@@ -7,8 +7,10 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_comment"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
+	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/comment"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/relation"
 	"github.com/google/wire"
+	"github.com/samber/lo"
 )
 
 type IFileDomainService interface {
