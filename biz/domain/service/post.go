@@ -4,10 +4,13 @@ import (
 	"context"
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_comment"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
+	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/comment"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/relation"
 	"github.com/google/wire"
+	"github.com/samber/lo"
 )
 
 type IPostDomainService interface {
@@ -17,10 +20,12 @@ type IPostDomainService interface {
 	LoadCollectCount(ctx context.Context, collectCount *int64, postId string)
 	LoadLiked(ctx context.Context, liked *bool, userId, postId string)
 	LoadCollected(ctx context.Context, collected *bool, userId, postId string)
+	LoadLabels(ctx context.Context, labels []string)
 }
 type PostDomainService struct {
-	CloudMindUser    cloudmind_content.ICloudMindContent
+	CloudMindContent cloudmind_content.ICloudMindContent
 	PlatformRelation platform_relation.IPlatFormRelation
+	PlatFormComment  platform_comment.IPlatFormComment
 }
 
 var PostDomainServiceSet = wire.NewSet(
@@ -28,11 +33,21 @@ var PostDomainServiceSet = wire.NewSet(
 	wire.Bind(new(IPostDomainService), new(*PostDomainService)),
 )
 
+func (s *PostDomainService) LoadLabels(ctx context.Context, labels []string) {
+	getLabelsInBatchResp, err := s.PlatFormComment.GetLabelsInBatch(ctx, &comment.GetLabelsInBatchReq{
+		LabelIds: labels,
+	})
+	if err == nil {
+		lo.ForEach(getLabelsInBatchResp.Labels, func(label string, i int) {
+			labels[i] = label
+		})
+	}
+}
 func (s *PostDomainService) LoadAuthor(ctx context.Context, user *core_api.User, userId string) {
 	if userId == "" {
 		return
 	}
-	getUserResp, err := s.CloudMindUser.GetUser(ctx, &content.GetUserReq{UserId: userId})
+	getUserResp, err := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{UserId: userId})
 	if err == nil {
 		user.Name = getUserResp.Name
 		user.Url = getUserResp.Url
