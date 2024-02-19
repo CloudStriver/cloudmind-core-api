@@ -150,7 +150,7 @@ func (s *PostService) GetPost(ctx context.Context, req *core_api.GetPostReq) (re
 	}
 
 	// 如果该帖子非公开，并且不是他的，那么他没有权限查看
-	if res.Status != int64(core_api.PostStatus_PrivatePostStatus) && res.UserId != userData.GetUserId() {
+	if res.Status != int64(core_api.PostStatus_PublicPostStatus) && res.UserId != userData.GetUserId() {
 		return resp, consts.ErrForbidden
 	}
 
