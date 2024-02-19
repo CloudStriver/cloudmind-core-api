@@ -321,8 +321,11 @@ func (s *FileService) GetFileBySharingCode(ctx context.Context, req *core_api.Ge
 	resp = new(core_api.GetFileBySharingCodeResp)
 	var res *content.GetFileBySharingCodeResp
 	var shareFile *content.ParsingShareCodeResp
-	if shareFile, err = s.CloudMindContent.ParsingShareCode(ctx, &content.ParsingShareCodeReq{Code: req.Code, Key: req.Key}); err != nil {
+	if shareFile, err = s.CloudMindContent.ParsingShareCode(ctx, &content.ParsingShareCodeReq{Code: req.Code}); err != nil {
 		return resp, err
+	}
+	if shareFile.ShareFile.Key != req.Key {
+		return resp, consts.ErrShareFileKey
 	}
 	p := convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward)
 	sort := lo.ToPtr(content.SortOptions_SortOptions_createAtDesc)
@@ -436,7 +439,6 @@ func (s *FileService) MoveFile(ctx context.Context, req *core_api.MoveFileReq) (
 		FileId:    res.Files[0].FileId,
 		OldPath:   res.Files[0].Path,
 		SpaceSize: res.Files[0].SpaceSize,
-		UserId:    userData.UserId,
 	}); err != nil {
 		return resp, err
 	}
@@ -453,11 +455,9 @@ func (s *FileService) DeleteFile(ctx context.Context, req *core_api.DeleteFileRe
 	if res, err = s.CloudMindContent.GetFile(ctx, &content.GetFileReq{FileId: req.FileId, IsGetSize: false}); err != nil {
 		return resp, err
 	}
-
 	if res.File.UserId != userData.UserId {
 		return resp, consts.ErrNoAccessFile
 	}
-
 	switch req.DeleteType {
 	case core_api.IsDel_Is_soft:
 		if res.File.IsDel != consts.NotDel {
@@ -473,7 +473,6 @@ func (s *FileService) DeleteFile(ctx context.Context, req *core_api.DeleteFileRe
 		DeleteType:     int64(req.DeleteType),
 		ClearCommunity: req.ClearCommunity,
 		FileId:         res.File.FileId,
-		UserId:         res.File.UserId,
 		Path:           res.File.Path,
 		SpaceSize:      res.File.SpaceSize,
 	}); err != nil {
@@ -488,8 +487,14 @@ func (s *FileService) CompletelyRemoveFile(ctx context.Context, req *core_api.Co
 	if userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
-
-	if _, err = s.CloudMindContent.CompletelyRemoveFile(ctx, &content.CompletelyRemoveFileReq{UserId: userData.UserId, FileId: req.FileId}); err != nil {
+	var res *content.GetFileResp
+	if res, err = s.CloudMindContent.GetFile(ctx, &content.GetFileReq{FileId: req.FileId, IsGetSize: false}); err != nil {
+		return resp, err
+	}
+	if res.File.UserId != userData.UserId {
+		return resp, consts.ErrNoAccessFile
+	}
+	if _, err = s.CloudMindContent.CompletelyRemoveFile(ctx, &content.CompletelyRemoveFileReq{FileId: req.FileId, SpaceSize: res.File.SpaceSize, Path: res.File.Path}); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -562,8 +567,7 @@ func (s *FileService) DeleteShareCode(ctx context.Context, req *core_api.DeleteS
 	if userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
-
-	if _, err = s.CloudMindContent.DeleteShareCode(ctx, &content.DeleteShareCodeReq{Code: req.OnlyCode, UserId: userData.UserId}); err != nil {
+	if _, err = s.CloudMindContent.DeleteShareCode(ctx, &content.DeleteShareCodeReq{Code: req.OnlyCode}); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -572,8 +576,14 @@ func (s *FileService) DeleteShareCode(ctx context.Context, req *core_api.DeleteS
 func (s *FileService) ParsingShareCode(ctx context.Context, req *core_api.ParsingShareCodeReq) (resp *core_api.ParsingShareCodeResp, err error) {
 	resp = new(core_api.ParsingShareCodeResp)
 	var res *content.ParsingShareCodeResp
-	if res, err = s.CloudMindContent.ParsingShareCode(ctx, &content.ParsingShareCodeReq{Code: req.Code, Key: req.Key}); err != nil {
+	if res, err = s.CloudMindContent.ParsingShareCode(ctx, &content.ParsingShareCodeReq{Code: req.Code}); err != nil {
 		return resp, err
+	}
+	switch {
+	case res.ShareFile.Key != req.Key:
+		return resp, consts.ErrShareFileKey
+	case res.ShareFile.Status == int64(content.Validity_Validity_expired):
+		return resp, nil
 	}
 	res.ShareFile.BrowseNumber++
 	if _, err = s.CloudMindContent.UpdateShareCode(ctx, &content.UpdateShareCodeReq{ShareFile: res.ShareFile}); err != nil {
@@ -593,8 +603,11 @@ func (s *FileService) SaveFileToPrivateSpace(ctx context.Context, req *core_api.
 	if req.DocumentType == core_api.DocumentType_DocumentType_personal {
 		var ok *content.CheckShareFileResp
 		var res *content.ParsingShareCodeResp
-		if res, err = s.CloudMindContent.ParsingShareCode(ctx, &content.ParsingShareCodeReq{Code: *req.Code, Key: *req.Key}); err != nil {
+		if res, err = s.CloudMindContent.ParsingShareCode(ctx, &content.ParsingShareCodeReq{Code: *req.Code}); err != nil {
 			return resp, err
+		}
+		if res.ShareFile.Key != *req.Key {
+			return resp, consts.ErrShareFileKey
 		}
 		ok, err = s.CloudMindContent.CheckShareFile(ctx, &content.CheckShareFileReq{FileIds: res.ShareFile.FileList, FileId: req.FileId})
 		switch {
@@ -674,7 +687,6 @@ func (s *FileService) AddFileToPublicSpace(ctx context.Context, req *core_api.Ad
 	err = mr.Finish(func() error {
 		_, err1 := s.CloudMindContent.AddFileToPublicSpace(ctx, &content.AddFileToPublicSpaceReq{
 			FileId:      file.File.FileId,
-			UserId:      file.File.UserId,
 			Path:        file.File.Path,
 			SpaceSize:   file.File.SpaceSize,
 			Zone:        file.File.Zone,
@@ -716,7 +728,6 @@ func (s *FileService) RecoverRecycleBinFile(ctx context.Context, req *core_api.R
 	}
 
 	if _, err = s.CloudMindContent.RecoverRecycleBinFile(ctx, &content.RecoverRecycleBinFileReq{
-		UserId:    res.File.UserId,
 		Path:      res.File.Path,
 		SpaceSize: res.File.SpaceSize,
 	}); err != nil {
