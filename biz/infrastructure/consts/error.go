@@ -26,4 +26,5 @@ var (
 	ErrNoAccessFile     = status.Error(30002, "您无权访问该文件")
 	ErrFileNotExist     = status.Error(30003, "查询的文件不存在")
 	ErrIllegalOperation = status.Error(30004, "非法操作")
+	ErrShareFileKey     = status.Error(10110, "分享文件提取码错误")
 )
