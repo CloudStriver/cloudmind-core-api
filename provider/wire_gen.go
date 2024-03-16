@@ -116,16 +116,20 @@ func NewProvider() (*Provider, error) {
 	cloudMindSystem := &cloudmind_system.CloudMindSystem{
 		Client: systemserviceClient,
 	}
-	updateNotificationsKq := kq.NewUpdateNotificationsKq(configConfig)
 	notificationService := &service2.NotificationService{
-		Config:                configConfig,
-		CloudMindSystem:       cloudMindSystem,
-		UpdateNotificationsKq: updateNotificationsKq,
-		Redis:                 redisRedis,
+		Config:          configConfig,
+		CloudMindSystem: cloudMindSystem,
+		Redis:           redisRedis,
+	}
+	commentDomainService := &service.CommentDomainService{
+		CloudMindUser:    cloudMindContent,
+		PlatformRelation: platFormRelation,
+		PlatformComment:  platFormComment,
 	}
 	commentService := &service2.CommentService{
-		Config:          configConfig,
-		PlatformComment: platFormComment,
+		Config:               configConfig,
+		PlatformComment:      platFormComment,
+		CommentDomainService: commentDomainService,
 	}
 	labelService := &service2.LabelService{
 		Config:          configConfig,

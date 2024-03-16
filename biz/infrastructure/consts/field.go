@@ -22,4 +22,6 @@ const (
 	NotificationNotRead = false
 	ObjectFile          = int64(1)
 	FolderSize          = int64(-1)
+	PublicSlider        = 1
+	PrivateSlider       = 2
 )

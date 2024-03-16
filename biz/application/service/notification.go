@@ -7,13 +7,9 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/convertor"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_system"
-	"github.com/CloudStriver/cloudmind-mq/app/util/message"
-	"github.com/CloudStriver/go-pkg/utils/pconvertor"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/basic"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/system"
-	"github.com/bytedance/sonic"
 	"github.com/google/wire"
 	"github.com/samber/lo"
 	"github.com/zeromicro/go-zero/core/stores/redis"
@@ -22,7 +18,6 @@ import (
 type INotificationService interface {
 	GetNotifications(ctx context.Context, req *core_api.GetNotificationsReq) (resp *core_api.GetNotificationsResp, err error)
 	GetNotificationCount(ctx context.Context, req *core_api.GetNotificationCountReq) (resp *core_api.GetNotificationCountResp, err error)
-	UpdateNotifications(ctx context.Context, req *core_api.UpdateNotificationsReq) (resp *core_api.UpdateNotificationsResp, err error)
 }
 
 var NotificationServiceSet = wire.NewSet(
@@ -31,10 +26,9 @@ var NotificationServiceSet = wire.NewSet(
 )
 
 type NotificationService struct {
-	Config                *config.Config
-	CloudMindSystem       cloudmind_system.ICloudMindSystem
-	UpdateNotificationsKq *kq.UpdateNotificationsKq
-	Redis                 *redis.Redis
+	Config          *config.Config
+	CloudMindSystem cloudmind_system.ICloudMindSystem
+	Redis           *redis.Redis
 }
 
 func (s *NotificationService) GetNotifications(ctx context.Context, req *core_api.GetNotificationsReq) (resp *core_api.GetNotificationsResp, err error) {
@@ -70,32 +64,12 @@ func (s *NotificationService) GetNotificationCount(ctx context.Context, req *cor
 	user := adaptor.ExtractUserMeta(ctx)
 	if user.GetUserId() != "" {
 		getNotificationCountResp, err := s.CloudMindSystem.GetNotificationCount(ctx, &system.GetNotificationCountReq{
-			UserId:   user.UserId,
-			OnlyType: req.OnlyType,
+			UserId: user.UserId,
 		})
 		if err != nil {
 			return resp, err
 		}
 		resp.Total = getNotificationCountResp.Total
 	}
-
-	return resp, nil
-}
-
-func (s *NotificationService) UpdateNotifications(ctx context.Context, req *core_api.UpdateNotificationsReq) (resp *core_api.UpdateNotificationsResp, err error) {
-	resp = new(core_api.UpdateNotificationsResp)
-	user := adaptor.ExtractUserMeta(ctx)
-	if user.GetUserId() == "" {
-		return resp, consts.ErrNotAuthentication
-	}
-
-	data, _ := sonic.Marshal(&message.UpdateNotificationsMessage{
-		UserId:   user.UserId,
-		OnlyType: req.OnlyType,
-	})
-	if err = s.UpdateNotificationsKq.Push(pconvertor.Bytes2String(data)); err != nil {
-		return resp, err
-	}
-
 	return resp, nil
 }

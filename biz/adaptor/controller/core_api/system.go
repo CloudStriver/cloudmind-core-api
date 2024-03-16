@@ -46,19 +46,66 @@ func GetNotificationCount(ctx context.Context, c *app.RequestContext) {
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
-// UpdateNotifications .
-// @router /system/updateNotifications [POST]
-func UpdateNotifications(ctx context.Context, c *app.RequestContext) {
+// UpdateSlider .
+// @router /system/updateSlider [POST]
+func UpdateSlider(ctx context.Context, c *app.RequestContext) {
 	var err error
-	var req core_api.UpdateNotificationsReq
+	var req core_api.UpdateSliderReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
 
-	resp := new(core_api.UpdateNotificationsResp)
-	p := provider.Get()
-	resp, err = p.NotificationService.UpdateNotifications(ctx, &req)
-	adaptor.PostProcess(ctx, c, &req, resp, err)
+	resp := new(core_api.UpdateSliderResp)
+
+	c.JSON(consts.StatusOK, resp)
+}
+
+// DeleteSlider .
+// @router system/deleteSlider [POST]
+func DeleteSlider(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.DeleteSliderReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.DeleteSliderResp)
+
+	c.JSON(consts.StatusOK, resp)
+}
+
+// CreateSlider .
+// @router system/createSlider [POST]
+func CreateSlider(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.CreateSliderReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.CreateSliderResp)
+
+	c.JSON(consts.StatusOK, resp)
+}
+
+// GetSliders .
+// @router system/getSliders [GET]
+func GetSliders(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.GetSlidersReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.GetSlidersResp)
+
+	c.JSON(consts.StatusOK, resp)
 }
