@@ -76,12 +76,17 @@ func NewProvider() (*Provider, error) {
 	cloudMindTrade := &cloudmind_trade.CloudMindTrade{
 		Client: tradeserviceClient,
 	}
+	systemserviceClient := cloudmind_system.NewCloudMindSystem(configConfig)
+	cloudMindSystem := &cloudmind_system.CloudMindSystem{
+		Client: systemserviceClient,
+	}
 	redisRedis := redis.NewRedis(configConfig)
 	authService := &service2.AuthService{
 		Config:           configConfig,
 		CloudMindContent: cloudMindContent,
 		CloudMindSts:     cloudMindSts,
 		CloudMindTrade:   cloudMindTrade,
+		CloudMindSystem:  cloudMindSystem,
 		CreateItemKq:     createItemKq,
 		Redis:            redisRedis,
 	}
@@ -111,10 +116,6 @@ func NewProvider() (*Provider, error) {
 	zoneService := &service2.ZoneService{
 		Config:           configConfig,
 		CloudMindContent: cloudMindContent,
-	}
-	systemserviceClient := cloudmind_system.NewCloudMindSystem(configConfig)
-	cloudMindSystem := &cloudmind_system.CloudMindSystem{
-		Client: systemserviceClient,
 	}
 	notificationService := &service2.NotificationService{
 		Config:          configConfig,
@@ -156,6 +157,11 @@ func NewProvider() (*Provider, error) {
 		UpdateItemKq:         updateItemKq,
 		DeleteItemKq:         deleteItemKq,
 	}
+	sliderService := &service2.SliderService{
+		Config:           configConfig,
+		CloudMindSystem:  cloudMindSystem,
+		PLatFromRelation: platFormRelation,
+	}
 	providerProvider := &Provider{
 		Config:              configConfig,
 		FileService:         fileService,
@@ -169,6 +175,7 @@ func NewProvider() (*Provider, error) {
 		LabelService:        labelService,
 		RecommendService:    recommendService,
 		ProductService:      productService,
+		SliderService:       sliderService,
 	}
 	return providerProvider, nil
 }

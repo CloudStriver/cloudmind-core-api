@@ -36,7 +36,6 @@ func (s *SliderService) CreateSlider(ctx context.Context, req *core_api.CreateSl
 	if _, err := s.CloudMindSystem.CreateSlider(ctx, &system.CreateSliderReq{
 		ImageUrl: req.ImageUrl,
 		LinkUrl:  req.LinkUrl,
-		Type:     req.Type,
 		IsPublic: req.IsPublic,
 	}); err != nil {
 		return resp, err
@@ -50,7 +49,6 @@ func (s *SliderService) UpdateSlider(ctx context.Context, req *core_api.UpdateSl
 		SliderId: req.SliderId,
 		ImageUrl: req.ImageUrl,
 		LinkUrl:  req.LinkUrl,
-		Type:     req.Type,
 		IsPublic: req.IsPublic,
 	}); err != nil {
 		return resp, err
@@ -72,13 +70,8 @@ func (s *SliderService) GetSliders(ctx context.Context, req *core_api.GetSliders
 	resp = new(core_api.GetSlidersResp)
 
 	getSlidersResp, err := s.CloudMindSystem.GetSliders(ctx, &system.GetSlidersReq{
-		OnlyIsPublic: lo.ToPtr(int64(consts.PublicSlider)),
-		PaginationOptions: &basic.PaginationOptions{
-			Limit:     req.Limit,
-			LastToken: req.LastToken,
-			Backward:  req.Backward,
-			Offset:    req.Offset,
-		},
+		OnlyIsPublic:      lo.ToPtr(int64(consts.PublicSlider)),
+		PaginationOptions: &basic.PaginationOptions{},
 	})
 
 	resp.Sliders = lo.Map[*system.Slider, *core_api.Slider](getSlidersResp.Sliders, func(item *system.Slider, _ int) *core_api.Slider {
@@ -86,6 +79,5 @@ func (s *SliderService) GetSliders(ctx context.Context, req *core_api.GetSliders
 	})
 
 	resp.Total = getSlidersResp.Total
-	resp.Token = getSlidersResp.Token
 	return resp, nil
 }

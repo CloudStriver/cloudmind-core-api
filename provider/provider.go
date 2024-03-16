@@ -39,6 +39,7 @@ type Provider struct {
 	LabelService        service.ILabelService
 	RecommendService    service.IRecommendService
 	ProductService      service.IProductService
+	SliderService       service.ISliderService
 }
 
 func Get() *Provider {

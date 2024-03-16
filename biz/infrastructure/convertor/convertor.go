@@ -192,12 +192,9 @@ type Msg struct {
 
 func SystemSliderToSlider(in *system.Slider) *core_api.Slider {
 	return &core_api.Slider{
-		SliderId:   in.SliderId,
-		ImageUrl:   in.ImageUrl,
-		LinkUrl:    in.LinkUrl,
-		Type:       in.Type,
-		IsPublic:   in.IsPublic,
-		CreateTime: in.CreateTime,
-		UpdateTime: in.UpdateTime,
+		SliderId: in.SliderId,
+		ImageUrl: in.ImageUrl,
+		LinkUrl:  in.LinkUrl,
+		IsPublic: in.IsPublic,
 	}
 }
