@@ -380,6 +380,7 @@ func (s *FileService) CreateFile(ctx context.Context, req *core_api.CreateFileRe
 		return resp, err
 	}
 	resp.FileId = res.FileId
+	resp.Name = res.Name
 	return resp, nil
 }
 
@@ -665,6 +666,7 @@ func (s *FileService) SaveFileToPrivateSpace(ctx context.Context, req *core_api.
 		return resp, err
 	}
 	resp.FileId = res.FileId
+	resp.Name = res.Name
 	return resp, nil
 }
 
