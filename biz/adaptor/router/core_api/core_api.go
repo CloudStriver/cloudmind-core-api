@@ -19,6 +19,7 @@ func Register(r *server.Hertz) {
 	root := r.Group("/", rootMw()...)
 	{
 		_auth := root.Group("/auth", _authMw()...)
+		_auth.POST("/askUploadAvatar", append(_askuploadavatarMw(), core_api.AskUploadAvatar)...)
 		_auth.GET("/checkEmail", append(_checkemailMw(), core_api.CheckEmail)...)
 		_auth.POST("/emailLogin", append(_emailloginMw(), core_api.EmailLogin)...)
 		_auth.GET("/giteeLogin", append(_giteeloginMw(), core_api.GiteeLogin)...)
@@ -45,7 +46,6 @@ func Register(r *server.Hertz) {
 		_content := root.Group("/content", _contentMw()...)
 		_content.POST("/addFileToPublicSpace", append(_addfiletopublicspaceMw(), core_api.AddFileToPublicSpace)...)
 		_content.POST("/askDownloadFile", append(_askdownloadfileMw(), core_api.AskDownloadFile)...)
-		_content.POST("/askUploadAvatar", append(_askuploadavatarMw(), core_api.AskUploadAvatar)...)
 		_content.POST("/askUploadFile", append(_askuploadfileMw(), core_api.AskUploadFile)...)
 		_content.POST("/completelyRemoveFile", append(_completelyremovefileMw(), core_api.CompletelyRemoveFile)...)
 		_content.POST("/createFeedBack", append(_createfeedbackMw(), core_api.CreateFeedBack)...)
