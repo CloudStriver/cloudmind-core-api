@@ -68,6 +68,7 @@ func (s *UserService) UpdateUser(ctx context.Context, req *core_api.UpdateUserRe
 		IdCard:      req.IdCard,
 		Description: req.Description,
 		Labels:      req.Labels,
+		Url:         req.Url,
 	}); err != nil {
 		return resp, err
 	}
