@@ -451,30 +451,37 @@ func (s *FileService) DeleteFile(ctx context.Context, req *core_api.DeleteFileRe
 	if userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
-	var res *content.GetFileResp
-	if res, err = s.CloudMindContent.GetFile(ctx, &content.GetFileReq{FileId: req.FileId, IsGetSize: false}); err != nil {
+	var res *content.GetFilesByIdsResp
+	if res, err = s.CloudMindContent.GetFilesByIds(ctx, &content.GetFilesByIdsReq{FileIds: req.FileIds}); err != nil {
 		return resp, err
 	}
-	if res.File.UserId != userData.UserId {
-		return resp, consts.ErrNoAccessFile
-	}
-	switch req.DeleteType {
-	case core_api.IsDel_Is_soft:
-		if res.File.IsDel != consts.NotDel {
-			return resp, consts.ErrIllegalOperation
+
+	files := make([]*content.FileParameter, len(req.FileIds))
+	for i, file := range res.Files {
+		if file.UserId != userData.UserId {
+			return resp, consts.ErrNoAccessFile
 		}
-	case core_api.IsDel_Is_hard:
-		if res.File.IsDel != consts.SoftDel {
-			return resp, consts.ErrIllegalOperation
+		switch req.DeleteType {
+		case core_api.IsDel_Is_soft:
+			if file.IsDel != consts.NotDel {
+				return resp, consts.ErrIllegalOperation
+			}
+		case core_api.IsDel_Is_hard:
+			if file.IsDel != consts.SoftDel {
+				return resp, consts.ErrIllegalOperation
+			}
+		}
+		files[i] = &content.FileParameter{
+			FileId:    file.FileId,
+			Path:      file.Path,
+			SpaceSize: file.SpaceSize,
 		}
 	}
 
 	if _, err = s.CloudMindContent.DeleteFile(ctx, &content.DeleteFileReq{
 		DeleteType:     int64(req.DeleteType),
 		ClearCommunity: req.ClearCommunity,
-		FileId:         res.File.FileId,
-		Path:           res.File.Path,
-		SpaceSize:      res.File.SpaceSize,
+		Files:          files,
 	}); err != nil {
 		return resp, err
 	}
@@ -715,22 +722,27 @@ func (s *FileService) RecoverRecycleBinFile(ctx context.Context, req *core_api.R
 	if userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
-	var res *content.GetFileResp
-	if res, err = s.CloudMindContent.GetFile(ctx, &content.GetFileReq{FileId: req.FileId, IsGetSize: false}); err != nil {
+	var res *content.GetFilesByIdsResp
+	if res, err = s.CloudMindContent.GetFilesByIds(ctx, &content.GetFilesByIdsReq{FileIds: req.FileIds}); err != nil {
 		return resp, err
 	}
 
-	switch {
-	case res.File.UserId != userData.UserId:
-		return resp, consts.ErrNoAccessFile
-	case res.File.IsDel != consts.SoftDel:
-		return resp, consts.ErrFileNotExist
+	files := make([]*content.FileParameter, len(req.FileIds))
+	for i, file := range res.Files {
+		switch {
+		case file.UserId != userData.UserId:
+			return resp, consts.ErrNoAccessFile
+		case file.IsDel != consts.SoftDel:
+			return resp, consts.ErrFileNotExist
+		}
+		files[i] = &content.FileParameter{
+			FileId:    file.FileId,
+			Path:      file.Path,
+			SpaceSize: file.SpaceSize,
+		}
 	}
 
-	if _, err = s.CloudMindContent.RecoverRecycleBinFile(ctx, &content.RecoverRecycleBinFileReq{
-		Path:      res.File.Path,
-		SpaceSize: res.File.SpaceSize,
-	}); err != nil {
+	if _, err = s.CloudMindContent.RecoverRecycleBinFile(ctx, &content.RecoverRecycleBinFileReq{Files: files}); err != nil {
 		return resp, err
 	}
 	return resp, nil
