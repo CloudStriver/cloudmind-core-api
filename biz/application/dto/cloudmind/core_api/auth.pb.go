@@ -24,6 +24,58 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type UploadType int32
+
+const (
+	UploadType_UnknowUploadType        UploadType = 0
+	UploadType_UserAvatarUploadType    UploadType = 1
+	UploadType_PostAvatarUploadType    UploadType = 2
+	UploadType_ProductAvatarUploadType UploadType = 3
+)
+
+// Enum value maps for UploadType.
+var (
+	UploadType_name = map[int32]string{
+		0: "UnknowUploadType",
+		1: "UserAvatarUploadType",
+		2: "PostAvatarUploadType",
+		3: "ProductAvatarUploadType",
+	}
+	UploadType_value = map[string]int32{
+		"UnknowUploadType":        0,
+		"UserAvatarUploadType":    1,
+		"PostAvatarUploadType":    2,
+		"ProductAvatarUploadType": 3,
+	}
+)
+
+func (x UploadType) Enum() *UploadType {
+	p := new(UploadType)
+	*p = x
+	return p
+}
+
+func (x UploadType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (UploadType) Descriptor() protoreflect.EnumDescriptor {
+	return file_cloudmind_core_api_auth_proto_enumTypes[0].Descriptor()
+}
+
+func (UploadType) Type() protoreflect.EnumType {
+	return &file_cloudmind_core_api_auth_proto_enumTypes[0]
+}
+
+func (x UploadType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use UploadType.Descriptor instead.
+func (UploadType) EnumDescriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{0}
+}
+
 type RegisterReq struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1080,6 +1132,148 @@ func (x *CheckEmailResp) GetOk() bool {
 	return false
 }
 
+type AskUploadAvatarReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Name       string     `protobuf:"bytes,1,opt,name=name,proto3" json:"name" form:"name" query:"name"`
+	AvatarSize int64      `protobuf:"varint,2,opt,name=avatarSize,proto3" json:"avatarSize" form:"avatarSize" query:"avatarSize"`
+	Type       UploadType `protobuf:"varint,3,opt,name=type,proto3,enum=cloudmind.core_api.UploadType" json:"type" form:"type" query:"type"` // 头像，帖子封面，商品图片
+}
+
+func (x *AskUploadAvatarReq) Reset() {
+	*x = AskUploadAvatarReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_auth_proto_msgTypes[20]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AskUploadAvatarReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AskUploadAvatarReq) ProtoMessage() {}
+
+func (x *AskUploadAvatarReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_auth_proto_msgTypes[20]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AskUploadAvatarReq.ProtoReflect.Descriptor instead.
+func (*AskUploadAvatarReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *AskUploadAvatarReq) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *AskUploadAvatarReq) GetAvatarSize() int64 {
+	if x != nil {
+		return x.AvatarSize
+	}
+	return 0
+}
+
+func (x *AskUploadAvatarReq) GetType() UploadType {
+	if x != nil {
+		return x.Type
+	}
+	return UploadType_UnknowUploadType
+}
+
+type AskUploadAvatarResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	TmpSecretId  string `protobuf:"bytes,1,opt,name=tmpSecretId,proto3" json:"tmpSecretId" form:"tmpSecretId" query:"tmpSecretId"`
+	TmpSecretKey string `protobuf:"bytes,2,opt,name=tmpSecretKey,proto3" json:"tmpSecretKey" form:"tmpSecretKey" query:"tmpSecretKey"`
+	StartTime    int64  `protobuf:"varint,3,opt,name=startTime,proto3" json:"startTime" form:"startTime" query:"startTime"`
+	ExpiredTime  int64  `protobuf:"varint,4,opt,name=expiredTime,proto3" json:"expiredTime" form:"expiredTime" query:"expiredTime"`
+	SessionToken string `protobuf:"bytes,5,opt,name=sessionToken,proto3" json:"sessionToken" form:"sessionToken" query:"sessionToken"`
+}
+
+func (x *AskUploadAvatarResp) Reset() {
+	*x = AskUploadAvatarResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_auth_proto_msgTypes[21]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AskUploadAvatarResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AskUploadAvatarResp) ProtoMessage() {}
+
+func (x *AskUploadAvatarResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_auth_proto_msgTypes[21]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AskUploadAvatarResp.ProtoReflect.Descriptor instead.
+func (*AskUploadAvatarResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{21}
+}
+
+func (x *AskUploadAvatarResp) GetTmpSecretId() string {
+	if x != nil {
+		return x.TmpSecretId
+	}
+	return ""
+}
+
+func (x *AskUploadAvatarResp) GetTmpSecretKey() string {
+	if x != nil {
+		return x.TmpSecretKey
+	}
+	return ""
+}
+
+func (x *AskUploadAvatarResp) GetStartTime() int64 {
+	if x != nil {
+		return x.StartTime
+	}
+	return 0
+}
+
+func (x *AskUploadAvatarResp) GetExpiredTime() int64 {
+	if x != nil {
+		return x.ExpiredTime
+	}
+	return 0
+}
+
+func (x *AskUploadAvatarResp) GetSessionToken() string {
+	if x != nil {
+		return x.SessionToken
+	}
+	return ""
+}
+
 var File_cloudmind_core_api_auth_proto protoreflect.FileDescriptor
 
 var file_cloudmind_core_api_auth_proto_rawDesc = []byte{
@@ -1175,13 +1369,41 @@ var file_cloudmind_core_api_auth_proto_rawDesc = []byte{
 	0x28, 0x09, 0x52, 0x05, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f, 0x64,
 	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x22, 0x20, 0x0a,
 	0x0e, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x45, 0x6d, 0x61, 0x69, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x12,
-	0x0e, 0x0a, 0x02, 0x6f, 0x6b, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x02, 0x6f, 0x6b, 0x42,
-	0x53, 0x5a, 0x51, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x43, 0x6c,
-	0x6f, 0x75, 0x64, 0x53, 0x74, 0x72, 0x69, 0x76, 0x65, 0x72, 0x2f, 0x63, 0x6c, 0x6f, 0x75, 0x64,
-	0x6d, 0x69, 0x6e, 0x64, 0x2d, 0x63, 0x6f, 0x72, 0x65, 0x2d, 0x61, 0x70, 0x69, 0x2f, 0x62, 0x69,
-	0x7a, 0x2f, 0x61, 0x70, 0x70, 0x6c, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2f, 0x64, 0x74,
-	0x6f, 0x2f, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2f, 0x63, 0x6f, 0x72, 0x65,
-	0x5f, 0x61, 0x70, 0x69, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x0e, 0x0a, 0x02, 0x6f, 0x6b, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x02, 0x6f, 0x6b, 0x22,
+	0x7c, 0x0a, 0x12, 0x41, 0x73, 0x6b, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x41, 0x76, 0x61, 0x74,
+	0x61, 0x72, 0x52, 0x65, 0x71, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x1e, 0x0a, 0x0a, 0x61, 0x76, 0x61,
+	0x74, 0x61, 0x72, 0x53, 0x69, 0x7a, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0a, 0x61,
+	0x76, 0x61, 0x74, 0x61, 0x72, 0x53, 0x69, 0x7a, 0x65, 0x12, 0x32, 0x0a, 0x04, 0x74, 0x79, 0x70,
+	0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x1e, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d,
+	0x69, 0x6e, 0x64, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x55, 0x70, 0x6c,
+	0x6f, 0x61, 0x64, 0x54, 0x79, 0x70, 0x65, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x22, 0xbf, 0x01,
+	0x0a, 0x13, 0x41, 0x73, 0x6b, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x41, 0x76, 0x61, 0x74, 0x61,
+	0x72, 0x52, 0x65, 0x73, 0x70, 0x12, 0x20, 0x0a, 0x0b, 0x74, 0x6d, 0x70, 0x53, 0x65, 0x63, 0x72,
+	0x65, 0x74, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x74, 0x6d, 0x70, 0x53,
+	0x65, 0x63, 0x72, 0x65, 0x74, 0x49, 0x64, 0x12, 0x22, 0x0a, 0x0c, 0x74, 0x6d, 0x70, 0x53, 0x65,
+	0x63, 0x72, 0x65, 0x74, 0x4b, 0x65, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x74,
+	0x6d, 0x70, 0x53, 0x65, 0x63, 0x72, 0x65, 0x74, 0x4b, 0x65, 0x79, 0x12, 0x1c, 0x0a, 0x09, 0x73,
+	0x74, 0x61, 0x72, 0x74, 0x54, 0x69, 0x6d, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x03, 0x52, 0x09,
+	0x73, 0x74, 0x61, 0x72, 0x74, 0x54, 0x69, 0x6d, 0x65, 0x12, 0x20, 0x0a, 0x0b, 0x65, 0x78, 0x70,
+	0x69, 0x72, 0x65, 0x64, 0x54, 0x69, 0x6d, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0b,
+	0x65, 0x78, 0x70, 0x69, 0x72, 0x65, 0x64, 0x54, 0x69, 0x6d, 0x65, 0x12, 0x22, 0x0a, 0x0c, 0x73,
+	0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x18, 0x05, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x0c, 0x73, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x2a,
+	0x73, 0x0a, 0x0a, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x54, 0x79, 0x70, 0x65, 0x12, 0x14, 0x0a,
+	0x10, 0x55, 0x6e, 0x6b, 0x6e, 0x6f, 0x77, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x54, 0x79, 0x70,
+	0x65, 0x10, 0x00, 0x12, 0x18, 0x0a, 0x14, 0x55, 0x73, 0x65, 0x72, 0x41, 0x76, 0x61, 0x74, 0x61,
+	0x72, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x54, 0x79, 0x70, 0x65, 0x10, 0x01, 0x12, 0x18, 0x0a,
+	0x14, 0x50, 0x6f, 0x73, 0x74, 0x41, 0x76, 0x61, 0x74, 0x61, 0x72, 0x55, 0x70, 0x6c, 0x6f, 0x61,
+	0x64, 0x54, 0x79, 0x70, 0x65, 0x10, 0x02, 0x12, 0x1b, 0x0a, 0x17, 0x50, 0x72, 0x6f, 0x64, 0x75,
+	0x63, 0x74, 0x41, 0x76, 0x61, 0x74, 0x61, 0x72, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x54, 0x79,
+	0x70, 0x65, 0x10, 0x03, 0x42, 0x53, 0x5a, 0x51, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63,
+	0x6f, 0x6d, 0x2f, 0x43, 0x6c, 0x6f, 0x75, 0x64, 0x53, 0x74, 0x72, 0x69, 0x76, 0x65, 0x72, 0x2f,
+	0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2d, 0x63, 0x6f, 0x72, 0x65, 0x2d, 0x61,
+	0x70, 0x69, 0x2f, 0x62, 0x69, 0x7a, 0x2f, 0x61, 0x70, 0x70, 0x6c, 0x69, 0x63, 0x61, 0x74, 0x69,
+	0x6f, 0x6e, 0x2f, 0x64, 0x74, 0x6f, 0x2f, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64,
+	0x2f, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x33,
 }
 
 var (
@@ -1196,35 +1418,40 @@ func file_cloudmind_core_api_auth_proto_rawDescGZIP() []byte {
 	return file_cloudmind_core_api_auth_proto_rawDescData
 }
 
-var file_cloudmind_core_api_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 20)
+var file_cloudmind_core_api_auth_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_cloudmind_core_api_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 22)
 var file_cloudmind_core_api_auth_proto_goTypes = []interface{}{
-	(*RegisterReq)(nil),               // 0: cloudmind.core_api.RegisterReq
-	(*RegisterResp)(nil),              // 1: cloudmind.core_api.RegisterResp
-	(*EmailLoginReq)(nil),             // 2: cloudmind.core_api.EmailLoginReq
-	(*EmailLoginResp)(nil),            // 3: cloudmind.core_api.EmailLoginResp
-	(*GithubLoginReq)(nil),            // 4: cloudmind.core_api.GithubLoginReq
-	(*GithubLoginResp)(nil),           // 5: cloudmind.core_api.GithubLoginResp
-	(*GiteeLoginReq)(nil),             // 6: cloudmind.core_api.GiteeLoginReq
-	(*GiteeLoginResp)(nil),            // 7: cloudmind.core_api.GiteeLoginResp
-	(*RefreshTokenReq)(nil),           // 8: cloudmind.core_api.RefreshTokenReq
-	(*RefreshTokenResp)(nil),          // 9: cloudmind.core_api.RefreshTokenResp
-	(*SendEmailReq)(nil),              // 10: cloudmind.core_api.SendEmailReq
-	(*SendEmailResp)(nil),             // 11: cloudmind.core_api.SendEmailResp
-	(*GetCaptchaReq)(nil),             // 12: cloudmind.core_api.GetCaptchaReq
-	(*GetCaptchaResp)(nil),            // 13: cloudmind.core_api.GetCaptchaResp
-	(*SetPasswordByEmailReq)(nil),     // 14: cloudmind.core_api.SetPasswordByEmailReq
-	(*SetPasswordByEmailResp)(nil),    // 15: cloudmind.core_api.SetPasswordByEmailResp
-	(*SetPasswordByPasswordReq)(nil),  // 16: cloudmind.core_api.SetPasswordByPasswordReq
-	(*SetPasswordByPasswordResp)(nil), // 17: cloudmind.core_api.SetPasswordByPasswordResp
-	(*CheckEmailReq)(nil),             // 18: cloudmind.core_api.CheckEmailReq
-	(*CheckEmailResp)(nil),            // 19: cloudmind.core_api.CheckEmailResp
+	(UploadType)(0),                   // 0: cloudmind.core_api.UploadType
+	(*RegisterReq)(nil),               // 1: cloudmind.core_api.RegisterReq
+	(*RegisterResp)(nil),              // 2: cloudmind.core_api.RegisterResp
+	(*EmailLoginReq)(nil),             // 3: cloudmind.core_api.EmailLoginReq
+	(*EmailLoginResp)(nil),            // 4: cloudmind.core_api.EmailLoginResp
+	(*GithubLoginReq)(nil),            // 5: cloudmind.core_api.GithubLoginReq
+	(*GithubLoginResp)(nil),           // 6: cloudmind.core_api.GithubLoginResp
+	(*GiteeLoginReq)(nil),             // 7: cloudmind.core_api.GiteeLoginReq
+	(*GiteeLoginResp)(nil),            // 8: cloudmind.core_api.GiteeLoginResp
+	(*RefreshTokenReq)(nil),           // 9: cloudmind.core_api.RefreshTokenReq
+	(*RefreshTokenResp)(nil),          // 10: cloudmind.core_api.RefreshTokenResp
+	(*SendEmailReq)(nil),              // 11: cloudmind.core_api.SendEmailReq
+	(*SendEmailResp)(nil),             // 12: cloudmind.core_api.SendEmailResp
+	(*GetCaptchaReq)(nil),             // 13: cloudmind.core_api.GetCaptchaReq
+	(*GetCaptchaResp)(nil),            // 14: cloudmind.core_api.GetCaptchaResp
+	(*SetPasswordByEmailReq)(nil),     // 15: cloudmind.core_api.SetPasswordByEmailReq
+	(*SetPasswordByEmailResp)(nil),    // 16: cloudmind.core_api.SetPasswordByEmailResp
+	(*SetPasswordByPasswordReq)(nil),  // 17: cloudmind.core_api.SetPasswordByPasswordReq
+	(*SetPasswordByPasswordResp)(nil), // 18: cloudmind.core_api.SetPasswordByPasswordResp
+	(*CheckEmailReq)(nil),             // 19: cloudmind.core_api.CheckEmailReq
+	(*CheckEmailResp)(nil),            // 20: cloudmind.core_api.CheckEmailResp
+	(*AskUploadAvatarReq)(nil),        // 21: cloudmind.core_api.AskUploadAvatarReq
+	(*AskUploadAvatarResp)(nil),       // 22: cloudmind.core_api.AskUploadAvatarResp
 }
 var file_cloudmind_core_api_auth_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	0, // 0: cloudmind.core_api.AskUploadAvatarReq.type:type_name -> cloudmind.core_api.UploadType
+	1, // [1:1] is the sub-list for method output_type
+	1, // [1:1] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 
@@ -1473,19 +1700,44 @@ func file_cloudmind_core_api_auth_proto_init() {
 				return nil
 			}
 		}
+		file_cloudmind_core_api_auth_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AskUploadAvatarReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_auth_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AskUploadAvatarResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_cloudmind_core_api_auth_proto_rawDesc,
-			NumEnums:      0,
-			NumMessages:   20,
+			NumEnums:      1,
+			NumMessages:   22,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_cloudmind_core_api_auth_proto_goTypes,
 		DependencyIndexes: file_cloudmind_core_api_auth_proto_depIdxs,
+		EnumInfos:         file_cloudmind_core_api_auth_proto_enumTypes,
 		MessageInfos:      file_cloudmind_core_api_auth_proto_msgTypes,
 	}.Build()
 	File_cloudmind_core_api_auth_proto = out.File
