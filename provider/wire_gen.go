@@ -110,7 +110,7 @@ func NewProvider() (*Provider, error) {
 		CloudMindContent:  cloudMindContent,
 		CloudMindTrade:    cloudMindTrade,
 		UserDomainService: userDomainService,
-		PlatformSts:       cloudMindSts,
+		CloudMindSts:      cloudMindSts,
 		UpdateItemKq:      updateItemKq,
 	}
 	zoneService := &service2.ZoneService{

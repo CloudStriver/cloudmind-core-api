@@ -158,3 +158,20 @@ func CheckEmail(ctx context.Context, c *app.RequestContext) {
 	resp, err = p.AuthService.CheckEmail(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
+
+// AskUploadAvatar .
+// @router /auth/askUploadAvatar [POST]
+func AskUploadAvatar(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.AskUploadAvatarReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.AskUploadAvatarResp)
+	p := provider.Get()
+	resp, err = p.AuthService.AskUploadAvatar(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
+}

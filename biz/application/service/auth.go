@@ -38,6 +38,7 @@ type IAuthService interface {
 	GithubLogin(ctx context.Context, req *core_api.GithubLoginReq) (resp *core_api.GithubLoginResp, err error)
 	GiteeLogin(ctx context.Context, req *core_api.GiteeLoginReq) (resp *core_api.GiteeLoginResp, err error)
 	CheckEmail(ctx context.Context, c *core_api.CheckEmailReq) (resp *core_api.CheckEmailResp, err error)
+	AskUploadAvatar(ctx context.Context, req *core_api.AskUploadAvatarReq) (resp *core_api.AskUploadAvatarResp, err error)
 }
 
 var AuthServiceSet = wire.NewSet(
@@ -52,8 +53,7 @@ type AuthService struct {
 	CloudMindTrade   cloudmind_trade.ICloudMindTrade
 	CloudMindSystem  cloudmind_system.ICloudMindSystem
 	CreateItemKq     *kq.CreateItemKq
-
-	Redis *redis.Redis
+	Redis            *redis.Redis
 }
 
 func (s *AuthService) CheckEmail(ctx context.Context, req *core_api.CheckEmailReq) (resp *core_api.CheckEmailResp, err error) {
@@ -321,5 +321,27 @@ func (s *AuthService) SetPasswordByPassword(ctx context.Context, req *core_api.S
 	}); err != nil {
 		return resp, err
 	}
+	return resp, nil
+}
+
+func (s *AuthService) AskUploadAvatar(ctx context.Context, req *core_api.AskUploadAvatarReq) (resp *core_api.AskUploadAvatarResp, err error) {
+	resp = new(core_api.AskUploadAvatarResp)
+	user := adaptor.ExtractUserMeta(ctx)
+	if user.GetUserId() == "" {
+		return resp, consts.ErrNotAuthentication
+	}
+	genCosStsResp, err := s.CloudMindSts.GenCosSts(ctx, &sts.GenCosStsReq{
+		Path:   "users/" + req.Name,
+		IsFile: false,
+		Time:   req.AvatarSize / (1024 * 1024),
+	})
+	if err != nil {
+		return resp, err
+	}
+	resp.SessionToken = genCosStsResp.SessionToken
+	resp.TmpSecretId = genCosStsResp.SecretId
+	resp.TmpSecretKey = genCosStsResp.SecretKey
+	resp.StartTime = genCosStsResp.StartTime
+	resp.ExpiredTime = genCosStsResp.ExpiredTime
 	return resp, nil
 }
