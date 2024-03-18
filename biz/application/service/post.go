@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"github.com/CloudStriver/cloudmind-core-api/biz/adaptor"
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/CloudStriver/cloudmind-core-api/biz/domain/service"
@@ -64,7 +65,7 @@ func (s *PostService) CreatePost(ctx context.Context, req *core_api.CreatePostRe
 
 	data, _ := sonic.Marshal(&message.CreateItemMessage{
 		ItemId:   createPostResp.PostId,
-		IsHidden: req.Status == int64(core_api.PostStatus_PrivatePostStatus),
+		IsHidden: req.Status == int64(core_api.PostStatus_DraftPostStatus),
 		Labels:   req.Tags,
 		Category: core_api.Category_name[int32(core_api.Category_PostCategory)],
 	})
@@ -98,7 +99,7 @@ func (s *PostService) UpdatePost(ctx context.Context, req *core_api.UpdatePostRe
 	if req.Status != 0 || req.Tags != nil {
 		var isHidden *bool
 		if req.Status != 0 {
-			isHidden = lo.ToPtr(req.Status == int64(core_api.PostStatus_PrivatePostStatus))
+			isHidden = lo.ToPtr(req.Status != int64(core_api.PostStatus_PublicPostStatus))
 		}
 
 		data, _ := sonic.Marshal(&message.UpdateItemMessage{
@@ -234,8 +235,16 @@ func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (
 		OnlySetRelation: req.OnlySetRelation,
 	}
 
+	// 查看所有人的，或者查看的不是自己的
 	if req.OnlyUserId == nil || req.GetOnlyUserId() != userData.GetUserId() {
 		filter.OnlyStatus = lo.ToPtr(int64(core_api.PostStatus_PublicPostStatus))
+	}
+
+	// 查看的自己的
+	fmt.Println(req.GetOnlyUserId(), userData.GetUserId())
+	if req.GetOnlyUserId() == userData.GetUserId() {
+		fmt.Println("!")
+		filter.OnlyStatus = req.OnlyStatus
 	}
 
 	if getPostsResp, err = s.CloudMindContent.GetPosts(ctx, &content.GetPostsReq{

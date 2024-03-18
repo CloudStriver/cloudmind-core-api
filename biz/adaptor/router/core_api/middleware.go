@@ -600,3 +600,28 @@ func _updateproductMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _readnotificationsMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _createsliderMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _deletesliderMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getslidersMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _updatesliderMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}

@@ -189,3 +189,12 @@ type Msg struct {
 	FromName string
 	ToName   string
 }
+
+func SystemSliderToSlider(in *system.Slider) *core_api.Slider {
+	return &core_api.Slider{
+		SliderId: in.SliderId,
+		ImageUrl: in.ImageUrl,
+		LinkUrl:  in.LinkUrl,
+		IsPublic: in.IsPublic,
+	}
+}

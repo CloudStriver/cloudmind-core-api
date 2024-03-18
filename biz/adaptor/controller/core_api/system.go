@@ -46,19 +46,70 @@ func GetNotificationCount(ctx context.Context, c *app.RequestContext) {
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
-// UpdateNotifications .
-// @router /system/updateNotifications [POST]
-func UpdateNotifications(ctx context.Context, c *app.RequestContext) {
+// UpdateSlider .
+// @router /system/updateSlider [POST]
+func UpdateSlider(ctx context.Context, c *app.RequestContext) {
 	var err error
-	var req core_api.UpdateNotificationsReq
+	var req core_api.UpdateSliderReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
 
-	resp := new(core_api.UpdateNotificationsResp)
+	resp := new(core_api.UpdateSliderResp)
 	p := provider.Get()
-	resp, err = p.NotificationService.UpdateNotifications(ctx, &req)
+	resp, err = p.SliderService.UpdateSlider(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
+}
+
+// DeleteSlider .
+// @router system/deleteSlider [POST]
+func DeleteSlider(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.DeleteSliderReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.DeleteSliderResp)
+	p := provider.Get()
+	resp, err = p.SliderService.DeleteSlider(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
+}
+
+// CreateSlider .
+// @router system/createSlider [POST]
+func CreateSlider(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.CreateSliderReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.CreateSliderResp)
+	p := provider.Get()
+	resp, err = p.SliderService.CreateSlider(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
+}
+
+// GetSliders .
+// @router system/getSliders [GET]
+func GetSliders(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.GetSlidersReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.GetSlidersResp)
+	p := provider.Get()
+	resp, err = p.SliderService.GetSliders(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }

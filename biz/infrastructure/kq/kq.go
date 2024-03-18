@@ -9,10 +9,6 @@ type CreateNotificationsKq struct {
 	*kq.Pusher
 }
 
-type UpdateNotificationsKq struct {
-	*kq.Pusher
-}
-
 type CreateItemKq struct {
 	*kq.Pusher
 }
@@ -36,12 +32,6 @@ func NewCreateNotificationsKq(c *config.Config) *CreateNotificationsKq {
 	}
 }
 
-func NewUpdateNotificationsKq(c *config.Config) *UpdateNotificationsKq {
-	pusher := kq.NewPusher(c.UpdateNotificationsKq.Brokers, c.UpdateNotificationsKq.Topic)
-	return &UpdateNotificationsKq{
-		Pusher: pusher,
-	}
-}
 func NewCreateItemKq(c *config.Config) *CreateItemKq {
 	pusher := kq.NewPusher(c.CreateItemKq.Brokers, c.CreateItemKq.Topic)
 	return &CreateItemKq{

@@ -10,12 +10,14 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_system"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_trade"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/utils/oauth"
 	"github.com/CloudStriver/cloudmind-mq/app/util/message"
 	"github.com/CloudStriver/go-pkg/utils/pconvertor"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/sts"
+	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/system"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/trade"
 	"github.com/bytedance/sonic"
 	"github.com/golang-jwt/jwt/v4"
@@ -48,6 +50,7 @@ type AuthService struct {
 	CloudMindContent cloudmind_content.ICloudMindContent
 	CloudMindSts     cloudmind_sts.ICloudMindSts
 	CloudMindTrade   cloudmind_trade.ICloudMindTrade
+	CloudMindSystem  cloudmind_system.ICloudMindSystem
 	CreateItemKq     *kq.CreateItemKq
 
 	Redis *redis.Redis
@@ -206,8 +209,10 @@ func (s *AuthService) Register(ctx context.Context, req *core_api.RegisterReq) (
 		return resp, err
 	}
 
+	userId := createAuthResp.UserId
+
 	if _, err = s.CloudMindContent.CreateUser(ctx, &content.CreateUserReq{
-		UserId: createAuthResp.UserId,
+		UserId: userId,
 		Name:   req.Name,
 		Sex:    req.Sex,
 	}); err != nil {
@@ -215,16 +220,22 @@ func (s *AuthService) Register(ctx context.Context, req *core_api.RegisterReq) (
 	}
 
 	if _, err = s.CloudMindTrade.CreateBalance(ctx, &trade.CreateBalanceReq{
-		UserId: createAuthResp.UserId,
+		UserId: userId,
 	}); err != nil {
 		return resp, err
 	}
 
-	resp.ShortToken, resp.LongToken, err = generateShortLongToken(s.Config.Auth.SecretKey, createAuthResp.UserId, s.Config.Auth.ShortTokenExpire, s.Config.Auth.LongTokenExpire)
+	if _, err = s.CloudMindSystem.CreateNotificationCount(ctx, &system.CreateNotificationCountReq{
+		UserId: userId,
+	}); err != nil {
+		return resp, err
+	}
+
+	resp.ShortToken, resp.LongToken, err = generateShortLongToken(s.Config.Auth.SecretKey, userId, s.Config.Auth.ShortTokenExpire, s.Config.Auth.LongTokenExpire)
 	if err != nil {
 		return resp, consts.ErrAuthentication
 	}
-	resp.UserId = createAuthResp.UserId
+	resp.UserId = userId
 
 	data, _ := sonic.Marshal(&message.CreateItemMessage{
 		ItemId:   createAuthResp.UserId,

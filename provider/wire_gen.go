@@ -76,12 +76,17 @@ func NewProvider() (*Provider, error) {
 	cloudMindTrade := &cloudmind_trade.CloudMindTrade{
 		Client: tradeserviceClient,
 	}
+	systemserviceClient := cloudmind_system.NewCloudMindSystem(configConfig)
+	cloudMindSystem := &cloudmind_system.CloudMindSystem{
+		Client: systemserviceClient,
+	}
 	redisRedis := redis.NewRedis(configConfig)
 	authService := &service2.AuthService{
 		Config:           configConfig,
 		CloudMindContent: cloudMindContent,
 		CloudMindSts:     cloudMindSts,
 		CloudMindTrade:   cloudMindTrade,
+		CloudMindSystem:  cloudMindSystem,
 		CreateItemKq:     createItemKq,
 		Redis:            redisRedis,
 	}
@@ -112,20 +117,20 @@ func NewProvider() (*Provider, error) {
 		Config:           configConfig,
 		CloudMindContent: cloudMindContent,
 	}
-	systemserviceClient := cloudmind_system.NewCloudMindSystem(configConfig)
-	cloudMindSystem := &cloudmind_system.CloudMindSystem{
-		Client: systemserviceClient,
-	}
-	updateNotificationsKq := kq.NewUpdateNotificationsKq(configConfig)
 	notificationService := &service2.NotificationService{
-		Config:                configConfig,
-		CloudMindSystem:       cloudMindSystem,
-		UpdateNotificationsKq: updateNotificationsKq,
-		Redis:                 redisRedis,
+		Config:          configConfig,
+		CloudMindSystem: cloudMindSystem,
+		Redis:           redisRedis,
+	}
+	commentDomainService := &service.CommentDomainService{
+		CloudMindUser:    cloudMindContent,
+		PlatformRelation: platFormRelation,
+		PlatformComment:  platFormComment,
 	}
 	commentService := &service2.CommentService{
-		Config:          configConfig,
-		PlatformComment: platFormComment,
+		Config:               configConfig,
+		PlatformComment:      platFormComment,
+		CommentDomainService: commentDomainService,
 	}
 	labelService := &service2.LabelService{
 		Config:          configConfig,
@@ -152,6 +157,11 @@ func NewProvider() (*Provider, error) {
 		UpdateItemKq:         updateItemKq,
 		DeleteItemKq:         deleteItemKq,
 	}
+	sliderService := &service2.SliderService{
+		Config:           configConfig,
+		CloudMindSystem:  cloudMindSystem,
+		PLatFromRelation: platFormRelation,
+	}
 	providerProvider := &Provider{
 		Config:              configConfig,
 		FileService:         fileService,
@@ -165,6 +175,7 @@ func NewProvider() (*Provider, error) {
 		LabelService:        labelService,
 		RecommendService:    recommendService,
 		ProductService:      productService,
+		SliderService:       sliderService,
 	}
 	return providerProvider, nil
 }
