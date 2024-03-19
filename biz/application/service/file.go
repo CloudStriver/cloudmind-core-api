@@ -11,6 +11,7 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_comment"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/utils"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/sts"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/comment"
@@ -77,7 +78,7 @@ func (s *FileService) AskDownloadFile(ctx context.Context, req *core_api.AskDown
 				return consts.ErrNoAccessFile
 			}
 			genSignedUrlResp, err1 := s.PlatformSts.GenSignedUrl(ctx, &sts.GenSignedUrlReq{
-				Path: item,
+				Path: getFileResp.File.Md5 + utils.GetFileNameSuffix(getFileResp.File.Name),
 				Ttl:  getFileResp.File.SpaceSize,
 			})
 			if err1 != nil {
