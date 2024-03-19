@@ -195,6 +195,10 @@ func (s *AuthService) Register(ctx context.Context, req *core_api.RegisterReq) (
 		return resp, consts.ErrNotEmailCheck
 	}
 
+	if _, err = s.Redis.DelCtx(ctx, fmt.Sprintf("%s:%s", consts.PassCheckEmail, req.Email)); err != nil {
+		return resp, err
+	}
+
 	createAuthResp, err := s.CloudMindSts.CreateAuth(ctx, &sts.CreateAuthReq{
 		AuthInfo: &sts.AuthInfo{
 			AuthType: sts.AuthType_email,

@@ -452,9 +452,9 @@ func (s *FileService) DeleteFile(ctx context.Context, req *core_api.DeleteFileRe
 		return resp, consts.ErrNotAuthentication
 	}
 	var res *content.GetFileResp
-	if res, err = s.CloudMindContent.GetFile(ctx, &content.GetFileReq{FileId: req.FileId, IsGetSize: false}); err != nil {
-		return resp, err
-	}
+	//if res, err = s.CloudMindContent.GetFile(ctx, &content.GetFileReq{FileId: req.FileId, IsGetSize: false}); err != nil {
+	//	return resp, err
+	//}
 	if res.File.UserId != userData.UserId {
 		return resp, consts.ErrNoAccessFile
 	}
@@ -472,9 +472,9 @@ func (s *FileService) DeleteFile(ctx context.Context, req *core_api.DeleteFileRe
 	if _, err = s.CloudMindContent.DeleteFile(ctx, &content.DeleteFileReq{
 		DeleteType:     int64(req.DeleteType),
 		ClearCommunity: req.ClearCommunity,
-		FileId:         res.File.FileId,
-		Path:           res.File.Path,
-		SpaceSize:      res.File.SpaceSize,
+		//FileId:         res.File.FileId,
+		//Path:           res.File.Path,
+		//SpaceSize:      res.File.SpaceSize,
 	}); err != nil {
 		return resp, err
 	}
@@ -716,9 +716,9 @@ func (s *FileService) RecoverRecycleBinFile(ctx context.Context, req *core_api.R
 		return resp, consts.ErrNotAuthentication
 	}
 	var res *content.GetFileResp
-	if res, err = s.CloudMindContent.GetFile(ctx, &content.GetFileReq{FileId: req.FileId, IsGetSize: false}); err != nil {
-		return resp, err
-	}
+	//if res, err = s.CloudMindContent.GetFile(ctx, &content.GetFileReq{FileId: req.FileId, IsGetSize: false}); err != nil {
+	//	return resp, err
+	//}
 
 	switch {
 	case res.File.UserId != userData.UserId:
@@ -728,8 +728,8 @@ func (s *FileService) RecoverRecycleBinFile(ctx context.Context, req *core_api.R
 	}
 
 	if _, err = s.CloudMindContent.RecoverRecycleBinFile(ctx, &content.RecoverRecycleBinFileReq{
-		Path:      res.File.Path,
-		SpaceSize: res.File.SpaceSize,
+		//Path:      res.File.Path,
+		//SpaceSize: res.File.SpaceSize,
 	}); err != nil {
 		return resp, err
 	}

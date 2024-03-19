@@ -215,7 +215,6 @@ func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.Crea
 	})
 	if err != nil {
 		return resp, err
-
 	}
 
 	if !ok.Ok {
