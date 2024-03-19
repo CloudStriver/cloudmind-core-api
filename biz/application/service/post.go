@@ -13,6 +13,7 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
 	"github.com/CloudStriver/cloudmind-mq/app/util/message"
 	"github.com/CloudStriver/go-pkg/utils/pconvertor"
+	"github.com/CloudStriver/go-pkg/utils/util/log"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/basic"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/relation"
@@ -119,25 +120,27 @@ func (s *PostService) DeletePost(ctx context.Context, req *core_api.DeletePostRe
 	if userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
-
 	// 只能删除自己的帖子
-	if err = s.CheckIsMyPost(ctx, req.PostId, userData.UserId); err != nil {
+	if err = s.CheckIsMyPosts(ctx, req.PostIds, userData.UserId); err != nil {
 		return resp, err
 	}
 
 	if _, err = s.CloudMindContent.DeletePost(ctx, &content.DeletePostReq{
-		PostId: req.PostId,
+		PostId: req.PostIds,
 	}); err != nil {
 		return resp, err
 	}
 
-	data, _ := sonic.Marshal(&message.DeleteItemMessage{
-		ItemId: req.PostId,
-	})
-	if err = s.DeleteItemKq.Push(pconvertor.Bytes2String(data)); err != nil {
-		return resp, err
+	for i := range req.PostIds {
+		go func(i int) {
+			data, _ := sonic.Marshal(&message.DeleteItemMessage{
+				ItemId: req.PostIds[i],
+			})
+			if err = s.DeleteItemKq.Push(pconvertor.Bytes2String(data)); err != nil {
+				log.CtxError(ctx, "DeleteItemKq.Push", err)
+			}
+		}(i)
 	}
-
 	return resp, nil
 }
 
@@ -311,6 +314,21 @@ func (s *PostService) CheckIsMyPost(ctx context.Context, postId, userId string) 
 	}
 	if post.UserId != userId {
 		return consts.ErrForbidden
+	}
+	return nil
+}
+
+func (s *PostService) CheckIsMyPosts(ctx context.Context, postIds []string, userId string) (err error) {
+	post, err := s.CloudMindContent.GetPostsByPostIds(ctx, &content.GetPostsByPostIdsReq{
+		PostIds: postIds,
+	})
+	if err != nil {
+		return err
+	}
+	for i := range post.Posts {
+		if post.Posts[i].UserId != userId {
+			return consts.ErrForbidden
+		}
 	}
 	return nil
 }

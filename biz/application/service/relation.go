@@ -215,7 +215,6 @@ func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.Crea
 	})
 	if err != nil {
 		return resp, err
-
 	}
 
 	if !ok.Ok {
@@ -228,6 +227,15 @@ func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.Crea
 	case core_api.TargetType_UserType:
 		userId = req.ToId
 	case core_api.TargetType_FileType:
+		getFileResp, err := s.CloudMindContent.GetFile(ctx, &content.GetFileReq{
+			FileId: req.ToId,
+		})
+		if err != nil {
+			return resp, err
+		}
+
+		toName = getFileResp.File.Name
+		userId = getFileResp.File.UserId
 	case core_api.TargetType_ProductType:
 		getProductResp, err := s.CloudMindContent.GetProduct(ctx, &content.GetProductReq{
 			ProductId: req.ToId,
