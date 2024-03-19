@@ -68,8 +68,7 @@ func (s *SliderService) DeleteSlider(ctx context.Context, req *core_api.DeleteSl
 
 func (s *SliderService) GetSliders(ctx context.Context, req *core_api.GetSlidersReq) (resp *core_api.GetSlidersResp, err error) {
 	resp = new(core_api.GetSlidersResp)
-
-	getSlidersResp, err := s.CloudMindSystem.GetSliders(ctx, &system.GetSlidersReq{
+	getSlidersResp, _ := s.CloudMindSystem.GetSliders(ctx, &system.GetSlidersReq{
 		OnlyIsPublic:      lo.ToPtr(int64(consts.PublicSlider)),
 		PaginationOptions: &basic.PaginationOptions{},
 	})

@@ -113,3 +113,19 @@ func GetSliders(ctx context.Context, c *app.RequestContext) {
 	resp, err = p.SliderService.GetSliders(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
+
+// UpdateNotifications .
+// @router /system/updateNotifications [POST]
+//func UpdateNotifications(ctx context.Context, c *app.RequestContext) {
+//	var err error
+//	var req core_api.UpdateNotificationsReq
+//	err = c.BindAndValidate(&req)
+//	if err != nil {
+//		c.String(consts.StatusBadRequest, err.Error())
+//		return
+//	}
+//
+//	resp := new(core_api.UpdateNotificationsResp)
+//
+//	c.JSON(consts.StatusOK, resp)
+//}
