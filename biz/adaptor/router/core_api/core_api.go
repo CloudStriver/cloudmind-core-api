@@ -59,6 +59,7 @@ func Register(r *server.Hertz) {
 		_content.POST("/deleteProduct", append(_deleteproductMw(), core_api.DeleteProduct)...)
 		_content.POST("/deleteShareCode", append(_deletesharecodeMw(), core_api.DeleteShareCode)...)
 		_content.POST("/deleteZone", append(_deletezoneMw(), core_api.DeleteZone)...)
+		_content.POST("/emptyRecycleBin", append(_emptyrecyclebinMw(), core_api.EmptyRecycleBin)...)
 		_content.GET("/getFileBySharingCode", append(_getfilebysharingcodeMw(), core_api.GetFileBySharingCode)...)
 		_content.GET("/getLatestRecommend", append(_getlatestrecommendMw(), core_api.GetLatestRecommend)...)
 		_content.GET("/getPopularRecommend", append(_getpopularrecommendMw(), core_api.GetPopularRecommend)...)
