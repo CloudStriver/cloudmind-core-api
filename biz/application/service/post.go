@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"github.com/CloudStriver/cloudmind-core-api/biz/adaptor"
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/CloudStriver/cloudmind-core-api/biz/domain/service"
@@ -10,12 +9,14 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_comment"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
 	"github.com/CloudStriver/cloudmind-mq/app/util/message"
 	"github.com/CloudStriver/go-pkg/utils/pconvertor"
 	"github.com/CloudStriver/go-pkg/utils/util/log"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/basic"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
+	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/comment"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/relation"
 	"github.com/bytedance/sonic"
 	"github.com/google/wire"
@@ -40,7 +41,8 @@ type PostService struct {
 	Config            *config.Config
 	CloudMindContent  cloudmind_content.ICloudMindContent
 	PostDomainService service.IPostDomainService
-	PLatFromRelation  platform_relation.IPlatFormRelation
+	PlatFormRelation  platform_relation.IPlatFormRelation
+	PlatFormComment   platform_comment.IPlatFormComment
 	CreateItemKq      *kq.CreateItemKq
 	UpdateItemKq      *kq.UpdateItemKq
 	DeleteItemKq      *kq.DeleteItemKq
@@ -64,6 +66,19 @@ func (s *PostService) CreatePost(ctx context.Context, req *core_api.CreatePostRe
 		return resp, err
 	}
 
+	if _, err = s.PlatFormComment.CreateCommentSubject(ctx, &comment.CreateCommentSubjectReq{
+		Subject: &comment.Subject{
+			Id:        createPostResp.PostId,
+			UserId:    userData.UserId,
+			RootCount: lo.ToPtr(int64(0)),
+			AllCount:  lo.ToPtr(int64(0)),
+			State:     int64(comment.State_Normal),
+			Attrs:     int64(comment.Attrs_None),
+		},
+	}); err != nil {
+		return resp, err
+	}
+
 	data, _ := sonic.Marshal(&message.CreateItemMessage{
 		ItemId:   createPostResp.PostId,
 		IsHidden: req.Status == int64(core_api.PostStatus_DraftPostStatus),
@@ -73,7 +88,9 @@ func (s *PostService) CreatePost(ctx context.Context, req *core_api.CreatePostRe
 	if err = s.CreateItemKq.Push(pconvertor.Bytes2String(data)); err != nil {
 		return resp, err
 	}
-	return resp, nil
+	return &core_api.CreatePostResp{
+		PostId: createPostResp.PostId,
+	}, nil
 }
 
 func (s *PostService) UpdatePost(ctx context.Context, req *core_api.UpdatePostReq) (resp *core_api.UpdatePostResp, err error) {
@@ -187,7 +204,7 @@ func (s *PostService) GetPost(ctx context.Context, req *core_api.GetPostReq) (re
 		return nil
 	}, func() error {
 		if userData.GetUserId() != "" {
-			_, _ = s.PLatFromRelation.CreateRelation(ctx, &relation.CreateRelationReq{
+			_, _ = s.PlatFormRelation.CreateRelation(ctx, &relation.CreateRelationReq{
 				FromType:     int64(core_api.TargetType_UserType),
 				FromId:       userData.UserId,
 				ToType:       int64(core_api.TargetType_PostType),
@@ -244,9 +261,7 @@ func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (
 	}
 
 	// 查看的自己的
-	fmt.Println(req.GetOnlyUserId(), userData.GetUserId())
 	if req.GetOnlyUserId() == userData.GetUserId() {
-		fmt.Println("!")
 		filter.OnlyStatus = req.OnlyStatus
 	}
 
