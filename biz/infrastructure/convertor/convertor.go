@@ -47,18 +47,21 @@ func FileToCorePrivateFile(req *content.FileInfo) *core_api.PrivateFile {
 
 func CommentInfoToCoreCommentInfo(req *comment.CommentInfo) *core_api.CommentInfo {
 	return &core_api.CommentInfo{
-		Id:         req.Id,
-		SubjectId:  req.SubjectId,
-		RootId:     req.RootId,
-		FatherId:   req.FatherId,
-		Count:      req.Count,
-		State:      req.State,
-		Attrs:      req.Attrs,
-		UserId:     req.UserId,
-		AtUserId:   req.AtUserId,
-		Content:    req.Content,
-		Meta:       req.Meta,
-		CreateTime: req.CreateTime,
+		Id:              req.Id,
+		SubjectId:       req.SubjectId,
+		RootId:          req.RootId,
+		FatherId:        req.FatherId,
+		Count:           req.Count,
+		State:           req.State,
+		Attrs:           req.Attrs,
+		UserId:          req.UserId,
+		AtUserId:        req.AtUserId,
+		Content:         req.Content,
+		Meta:            req.Meta,
+		CreateTime:      req.CreateTime,
+		Like:            0,
+		Author:          &core_api.User{},
+		CommentRelation: &core_api.CommentRelation{},
 	}
 }
 

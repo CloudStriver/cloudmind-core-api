@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"github.com/CloudStriver/cloudmind-core-api/biz/adaptor"
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/CloudStriver/cloudmind-core-api/biz/domain/service"
@@ -75,6 +76,7 @@ func (s *CommentService) GetComments(ctx context.Context, req *core_api.GetComme
 	}
 	resp.Comments = lo.Map(res.Comments, func(item *comment.CommentInfo, _ int) *core_api.CommentInfo {
 		c := convertor.CommentInfoToCoreCommentInfo(item)
+		fmt.Printf("[%v]\n", c)
 		_ = mr.Finish(func() error {
 			s.CommentDomainService.LoadLikeCount(ctx, c) // 点赞量
 			return nil
