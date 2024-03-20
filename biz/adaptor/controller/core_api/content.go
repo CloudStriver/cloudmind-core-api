@@ -739,3 +739,20 @@ func DeleteProduct(ctx context.Context, c *app.RequestContext) {
 	resp, err = p.ProductService.DeleteProduct(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
+
+// EmptyRecycleBin .
+// @router /content/emptyRecycleBin [POST]
+func EmptyRecycleBin(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.EmptyRecycleBinReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.EmptyRecycleBinResp)
+	p := provider.Get()
+	resp, err = p.FileService.EmptyRecycleBin(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
+}

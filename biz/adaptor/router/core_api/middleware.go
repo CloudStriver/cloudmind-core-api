@@ -625,3 +625,8 @@ func _updatesliderMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _emptyrecyclebinMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}

@@ -32,6 +32,7 @@ type IFileService interface {
 	UpdateFile(ctx context.Context, req *core_api.UpdateFileReq) (resp *core_api.UpdateFileResp, err error)
 	MoveFile(ctx context.Context, req *core_api.MoveFileReq) (resp *core_api.MoveFileResp, err error)
 	DeleteFile(ctx context.Context, req *core_api.DeleteFileReq) (resp *core_api.DeleteFileResp, err error)
+	EmptyRecycleBin(ctx context.Context, req *core_api.EmptyRecycleBinReq) (resp *core_api.EmptyRecycleBinResp, err error)
 	CompletelyRemoveFile(ctx context.Context, req *core_api.CompletelyRemoveFileReq) (resp *core_api.CompletelyRemoveFileResp, err error)
 	RecoverRecycleBinFile(ctx context.Context, req *core_api.RecoverRecycleBinFileReq) (resp *core_api.RecoverRecycleBinFileResp, err error)
 	GetShareList(ctx context.Context, req *core_api.GetShareListReq) (resp *core_api.GetShareListResp, err error)
@@ -487,6 +488,20 @@ func (s *FileService) DeleteFile(ctx context.Context, req *core_api.DeleteFileRe
 	}); err != nil {
 		return resp, err
 	}
+	return resp, nil
+}
+
+func (s *FileService) EmptyRecycleBin(ctx context.Context, req *core_api.EmptyRecycleBinReq) (resp *core_api.EmptyRecycleBinResp, err error) {
+	resp = new(core_api.EmptyRecycleBinResp)
+	userData := adaptor.ExtractUserMeta(ctx)
+	if userData.GetUserId() == "" {
+		return resp, consts.ErrNotAuthentication
+	}
+
+	if _, err = s.CloudMindContent.EmptyRecycleBin(ctx, &content.EmptyRecycleBinReq{UserId: userData.UserId}); err != nil {
+		return resp, err
+	}
+
 	return resp, nil
 }
 
