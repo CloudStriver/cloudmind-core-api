@@ -24,10 +24,20 @@ type UpdateItemKq struct {
 type DeleteItemKq struct {
 	*kq.Pusher
 }
+type DeleteNotificationsKq struct {
+	*kq.Pusher
+}
 
 func NewCreateNotificationsKq(c *config.Config) *CreateNotificationsKq {
 	pusher := kq.NewPusher(c.CreateNotificationsKq.Brokers, c.CreateNotificationsKq.Topic)
 	return &CreateNotificationsKq{
+		Pusher: pusher,
+	}
+}
+
+func NewDeleteNotificationsKq(c *config.Config) *DeleteNotificationsKq {
+	pusher := kq.NewPusher(c.DeleteNotificationsKq.Brokers, c.DeleteNotificationsKq.Topic)
+	return &DeleteNotificationsKq{
 		Pusher: pusher,
 	}
 }

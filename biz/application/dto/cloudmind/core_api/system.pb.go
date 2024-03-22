@@ -250,6 +250,99 @@ func (x *GetNotificationCountResp) GetTotal() int64 {
 	return 0
 }
 
+type DeleteNotificationsReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	NotificationIds []string `protobuf:"bytes,1,rep,name=notificationIds,proto3" json:"notificationIds" form:"notificationIds" query:"notificationIds"`
+	OnlyType        *int64   `protobuf:"varint,2,opt,name=onlyType,proto3,oneof" json:"onlyType" form:"onlyType" query:"onlyType"`
+}
+
+func (x *DeleteNotificationsReq) Reset() {
+	*x = DeleteNotificationsReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_system_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteNotificationsReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteNotificationsReq) ProtoMessage() {}
+
+func (x *DeleteNotificationsReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_system_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteNotificationsReq.ProtoReflect.Descriptor instead.
+func (*DeleteNotificationsReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_system_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *DeleteNotificationsReq) GetNotificationIds() []string {
+	if x != nil {
+		return x.NotificationIds
+	}
+	return nil
+}
+
+func (x *DeleteNotificationsReq) GetOnlyType() int64 {
+	if x != nil && x.OnlyType != nil {
+		return *x.OnlyType
+	}
+	return 0
+}
+
+type DeleteNotificationsResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *DeleteNotificationsResp) Reset() {
+	*x = DeleteNotificationsResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_system_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteNotificationsResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteNotificationsResp) ProtoMessage() {}
+
+func (x *DeleteNotificationsResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_system_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteNotificationsResp.ProtoReflect.Descriptor instead.
+func (*DeleteNotificationsResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_system_proto_rawDescGZIP(), []int{5}
+}
+
 type CreateSliderReq struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -264,7 +357,7 @@ type CreateSliderReq struct {
 func (x *CreateSliderReq) Reset() {
 	*x = CreateSliderReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cloudmind_core_api_system_proto_msgTypes[4]
+		mi := &file_cloudmind_core_api_system_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -277,7 +370,7 @@ func (x *CreateSliderReq) String() string {
 func (*CreateSliderReq) ProtoMessage() {}
 
 func (x *CreateSliderReq) ProtoReflect() protoreflect.Message {
-	mi := &file_cloudmind_core_api_system_proto_msgTypes[4]
+	mi := &file_cloudmind_core_api_system_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -290,7 +383,7 @@ func (x *CreateSliderReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateSliderReq.ProtoReflect.Descriptor instead.
 func (*CreateSliderReq) Descriptor() ([]byte, []int) {
-	return file_cloudmind_core_api_system_proto_rawDescGZIP(), []int{4}
+	return file_cloudmind_core_api_system_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *CreateSliderReq) GetImageUrl() string {
@@ -330,7 +423,7 @@ type CreateSliderResp struct {
 func (x *CreateSliderResp) Reset() {
 	*x = CreateSliderResp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cloudmind_core_api_system_proto_msgTypes[5]
+		mi := &file_cloudmind_core_api_system_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -343,7 +436,7 @@ func (x *CreateSliderResp) String() string {
 func (*CreateSliderResp) ProtoMessage() {}
 
 func (x *CreateSliderResp) ProtoReflect() protoreflect.Message {
-	mi := &file_cloudmind_core_api_system_proto_msgTypes[5]
+	mi := &file_cloudmind_core_api_system_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -356,7 +449,7 @@ func (x *CreateSliderResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateSliderResp.ProtoReflect.Descriptor instead.
 func (*CreateSliderResp) Descriptor() ([]byte, []int) {
-	return file_cloudmind_core_api_system_proto_rawDescGZIP(), []int{5}
+	return file_cloudmind_core_api_system_proto_rawDescGZIP(), []int{7}
 }
 
 type DeleteSliderReq struct {
@@ -370,7 +463,7 @@ type DeleteSliderReq struct {
 func (x *DeleteSliderReq) Reset() {
 	*x = DeleteSliderReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cloudmind_core_api_system_proto_msgTypes[6]
+		mi := &file_cloudmind_core_api_system_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -383,7 +476,7 @@ func (x *DeleteSliderReq) String() string {
 func (*DeleteSliderReq) ProtoMessage() {}
 
 func (x *DeleteSliderReq) ProtoReflect() protoreflect.Message {
-	mi := &file_cloudmind_core_api_system_proto_msgTypes[6]
+	mi := &file_cloudmind_core_api_system_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -396,7 +489,7 @@ func (x *DeleteSliderReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteSliderReq.ProtoReflect.Descriptor instead.
 func (*DeleteSliderReq) Descriptor() ([]byte, []int) {
-	return file_cloudmind_core_api_system_proto_rawDescGZIP(), []int{6}
+	return file_cloudmind_core_api_system_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *DeleteSliderReq) GetSliderId() string {
@@ -415,7 +508,7 @@ type DeleteSliderResp struct {
 func (x *DeleteSliderResp) Reset() {
 	*x = DeleteSliderResp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cloudmind_core_api_system_proto_msgTypes[7]
+		mi := &file_cloudmind_core_api_system_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -428,7 +521,7 @@ func (x *DeleteSliderResp) String() string {
 func (*DeleteSliderResp) ProtoMessage() {}
 
 func (x *DeleteSliderResp) ProtoReflect() protoreflect.Message {
-	mi := &file_cloudmind_core_api_system_proto_msgTypes[7]
+	mi := &file_cloudmind_core_api_system_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -441,7 +534,7 @@ func (x *DeleteSliderResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteSliderResp.ProtoReflect.Descriptor instead.
 func (*DeleteSliderResp) Descriptor() ([]byte, []int) {
-	return file_cloudmind_core_api_system_proto_rawDescGZIP(), []int{7}
+	return file_cloudmind_core_api_system_proto_rawDescGZIP(), []int{9}
 }
 
 type UpdateSliderReq struct {
@@ -459,7 +552,7 @@ type UpdateSliderReq struct {
 func (x *UpdateSliderReq) Reset() {
 	*x = UpdateSliderReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cloudmind_core_api_system_proto_msgTypes[8]
+		mi := &file_cloudmind_core_api_system_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -472,7 +565,7 @@ func (x *UpdateSliderReq) String() string {
 func (*UpdateSliderReq) ProtoMessage() {}
 
 func (x *UpdateSliderReq) ProtoReflect() protoreflect.Message {
-	mi := &file_cloudmind_core_api_system_proto_msgTypes[8]
+	mi := &file_cloudmind_core_api_system_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -485,7 +578,7 @@ func (x *UpdateSliderReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateSliderReq.ProtoReflect.Descriptor instead.
 func (*UpdateSliderReq) Descriptor() ([]byte, []int) {
-	return file_cloudmind_core_api_system_proto_rawDescGZIP(), []int{8}
+	return file_cloudmind_core_api_system_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *UpdateSliderReq) GetSliderId() string {
@@ -532,7 +625,7 @@ type UpdateSliderResp struct {
 func (x *UpdateSliderResp) Reset() {
 	*x = UpdateSliderResp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cloudmind_core_api_system_proto_msgTypes[9]
+		mi := &file_cloudmind_core_api_system_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -545,7 +638,7 @@ func (x *UpdateSliderResp) String() string {
 func (*UpdateSliderResp) ProtoMessage() {}
 
 func (x *UpdateSliderResp) ProtoReflect() protoreflect.Message {
-	mi := &file_cloudmind_core_api_system_proto_msgTypes[9]
+	mi := &file_cloudmind_core_api_system_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -558,7 +651,7 @@ func (x *UpdateSliderResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateSliderResp.ProtoReflect.Descriptor instead.
 func (*UpdateSliderResp) Descriptor() ([]byte, []int) {
-	return file_cloudmind_core_api_system_proto_rawDescGZIP(), []int{9}
+	return file_cloudmind_core_api_system_proto_rawDescGZIP(), []int{11}
 }
 
 type GetSlidersReq struct {
@@ -570,7 +663,7 @@ type GetSlidersReq struct {
 func (x *GetSlidersReq) Reset() {
 	*x = GetSlidersReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cloudmind_core_api_system_proto_msgTypes[10]
+		mi := &file_cloudmind_core_api_system_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -583,7 +676,7 @@ func (x *GetSlidersReq) String() string {
 func (*GetSlidersReq) ProtoMessage() {}
 
 func (x *GetSlidersReq) ProtoReflect() protoreflect.Message {
-	mi := &file_cloudmind_core_api_system_proto_msgTypes[10]
+	mi := &file_cloudmind_core_api_system_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -596,7 +689,7 @@ func (x *GetSlidersReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetSlidersReq.ProtoReflect.Descriptor instead.
 func (*GetSlidersReq) Descriptor() ([]byte, []int) {
-	return file_cloudmind_core_api_system_proto_rawDescGZIP(), []int{10}
+	return file_cloudmind_core_api_system_proto_rawDescGZIP(), []int{12}
 }
 
 type GetSlidersResp struct {
@@ -611,7 +704,7 @@ type GetSlidersResp struct {
 func (x *GetSlidersResp) Reset() {
 	*x = GetSlidersResp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cloudmind_core_api_system_proto_msgTypes[11]
+		mi := &file_cloudmind_core_api_system_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -624,7 +717,7 @@ func (x *GetSlidersResp) String() string {
 func (*GetSlidersResp) ProtoMessage() {}
 
 func (x *GetSlidersResp) ProtoReflect() protoreflect.Message {
-	mi := &file_cloudmind_core_api_system_proto_msgTypes[11]
+	mi := &file_cloudmind_core_api_system_proto_msgTypes[13]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -637,7 +730,7 @@ func (x *GetSlidersResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetSlidersResp.ProtoReflect.Descriptor instead.
 func (*GetSlidersResp) Descriptor() ([]byte, []int) {
-	return file_cloudmind_core_api_system_proto_rawDescGZIP(), []int{11}
+	return file_cloudmind_core_api_system_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *GetSlidersResp) GetSliders() []*Slider {
@@ -695,43 +788,52 @@ var file_cloudmind_core_api_system_proto_rawDesc = []byte{
 	0x22, 0x30, 0x0a, 0x18, 0x47, 0x65, 0x74, 0x4e, 0x6f, 0x74, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74,
 	0x69, 0x6f, 0x6e, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x12, 0x14, 0x0a, 0x05,
 	0x74, 0x6f, 0x74, 0x61, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x74, 0x6f, 0x74,
-	0x61, 0x6c, 0x22, 0x77, 0x0a, 0x0f, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x53, 0x6c, 0x69, 0x64,
-	0x65, 0x72, 0x52, 0x65, 0x71, 0x12, 0x1a, 0x0a, 0x08, 0x69, 0x6d, 0x61, 0x67, 0x65, 0x55, 0x72,
-	0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x69, 0x6d, 0x61, 0x67, 0x65, 0x55, 0x72,
-	0x6c, 0x12, 0x18, 0x0a, 0x07, 0x6c, 0x69, 0x6e, 0x6b, 0x55, 0x72, 0x6c, 0x18, 0x02, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x07, 0x6c, 0x69, 0x6e, 0x6b, 0x55, 0x72, 0x6c, 0x12, 0x12, 0x0a, 0x04, 0x74,
-	0x79, 0x70, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x03, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x12,
-	0x1a, 0x0a, 0x08, 0x69, 0x73, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x18, 0x04, 0x20, 0x01, 0x28,
-	0x03, 0x52, 0x08, 0x69, 0x73, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x22, 0x12, 0x0a, 0x10, 0x43,
-	0x72, 0x65, 0x61, 0x74, 0x65, 0x53, 0x6c, 0x69, 0x64, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x22,
-	0x2d, 0x0a, 0x0f, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x53, 0x6c, 0x69, 0x64, 0x65, 0x72, 0x52,
-	0x65, 0x71, 0x12, 0x1a, 0x0a, 0x08, 0x73, 0x6c, 0x69, 0x64, 0x65, 0x72, 0x49, 0x64, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x73, 0x6c, 0x69, 0x64, 0x65, 0x72, 0x49, 0x64, 0x22, 0x12,
-	0x0a, 0x10, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x53, 0x6c, 0x69, 0x64, 0x65, 0x72, 0x52, 0x65,
-	0x73, 0x70, 0x22, 0x93, 0x01, 0x0a, 0x0f, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x53, 0x6c, 0x69,
-	0x64, 0x65, 0x72, 0x52, 0x65, 0x71, 0x12, 0x1a, 0x0a, 0x08, 0x73, 0x6c, 0x69, 0x64, 0x65, 0x72,
-	0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x73, 0x6c, 0x69, 0x64, 0x65, 0x72,
-	0x49, 0x64, 0x12, 0x1a, 0x0a, 0x08, 0x69, 0x6d, 0x61, 0x67, 0x65, 0x55, 0x72, 0x6c, 0x18, 0x02,
+	0x61, 0x6c, 0x22, 0x70, 0x0a, 0x16, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x4e, 0x6f, 0x74, 0x69,
+	0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65, 0x71, 0x12, 0x28, 0x0a, 0x0f,
+	0x6e, 0x6f, 0x74, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x64, 0x73, 0x18,
+	0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x0f, 0x6e, 0x6f, 0x74, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74,
+	0x69, 0x6f, 0x6e, 0x49, 0x64, 0x73, 0x12, 0x1f, 0x0a, 0x08, 0x6f, 0x6e, 0x6c, 0x79, 0x54, 0x79,
+	0x70, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x48, 0x00, 0x52, 0x08, 0x6f, 0x6e, 0x6c, 0x79,
+	0x54, 0x79, 0x70, 0x65, 0x88, 0x01, 0x01, 0x42, 0x0b, 0x0a, 0x09, 0x5f, 0x6f, 0x6e, 0x6c, 0x79,
+	0x54, 0x79, 0x70, 0x65, 0x22, 0x19, 0x0a, 0x17, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x4e, 0x6f,
+	0x74, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65, 0x73, 0x70, 0x22,
+	0x77, 0x0a, 0x0f, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x53, 0x6c, 0x69, 0x64, 0x65, 0x72, 0x52,
+	0x65, 0x71, 0x12, 0x1a, 0x0a, 0x08, 0x69, 0x6d, 0x61, 0x67, 0x65, 0x55, 0x72, 0x6c, 0x18, 0x01,
 	0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x69, 0x6d, 0x61, 0x67, 0x65, 0x55, 0x72, 0x6c, 0x12, 0x18,
-	0x0a, 0x07, 0x6c, 0x69, 0x6e, 0x6b, 0x55, 0x72, 0x6c, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x0a, 0x07, 0x6c, 0x69, 0x6e, 0x6b, 0x55, 0x72, 0x6c, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
 	0x07, 0x6c, 0x69, 0x6e, 0x6b, 0x55, 0x72, 0x6c, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65,
-	0x18, 0x04, 0x20, 0x01, 0x28, 0x03, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x12, 0x1a, 0x0a, 0x08,
-	0x69, 0x73, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x18, 0x05, 0x20, 0x01, 0x28, 0x03, 0x52, 0x08,
-	0x69, 0x73, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x22, 0x12, 0x0a, 0x10, 0x55, 0x70, 0x64, 0x61,
-	0x74, 0x65, 0x53, 0x6c, 0x69, 0x64, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x22, 0x0f, 0x0a, 0x0d,
-	0x47, 0x65, 0x74, 0x53, 0x6c, 0x69, 0x64, 0x65, 0x72, 0x73, 0x52, 0x65, 0x71, 0x22, 0x5c, 0x0a,
-	0x0e, 0x47, 0x65, 0x74, 0x53, 0x6c, 0x69, 0x64, 0x65, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x12,
-	0x34, 0x0a, 0x07, 0x73, 0x6c, 0x69, 0x64, 0x65, 0x72, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b,
-	0x32, 0x1a, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2e, 0x63, 0x6f, 0x72,
-	0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x53, 0x6c, 0x69, 0x64, 0x65, 0x72, 0x52, 0x07, 0x73, 0x6c,
-	0x69, 0x64, 0x65, 0x72, 0x73, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x42, 0x53, 0x5a, 0x51, 0x67,
-	0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x43, 0x6c, 0x6f, 0x75, 0x64, 0x53,
-	0x74, 0x72, 0x69, 0x76, 0x65, 0x72, 0x2f, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64,
-	0x2d, 0x63, 0x6f, 0x72, 0x65, 0x2d, 0x61, 0x70, 0x69, 0x2f, 0x62, 0x69, 0x7a, 0x2f, 0x61, 0x70,
-	0x70, 0x6c, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2f, 0x64, 0x74, 0x6f, 0x2f, 0x63, 0x6c,
-	0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69,
-	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x18, 0x03, 0x20, 0x01, 0x28, 0x03, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x12, 0x1a, 0x0a, 0x08,
+	0x69, 0x73, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x18, 0x04, 0x20, 0x01, 0x28, 0x03, 0x52, 0x08,
+	0x69, 0x73, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x22, 0x12, 0x0a, 0x10, 0x43, 0x72, 0x65, 0x61,
+	0x74, 0x65, 0x53, 0x6c, 0x69, 0x64, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x22, 0x2d, 0x0a, 0x0f,
+	0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x53, 0x6c, 0x69, 0x64, 0x65, 0x72, 0x52, 0x65, 0x71, 0x12,
+	0x1a, 0x0a, 0x08, 0x73, 0x6c, 0x69, 0x64, 0x65, 0x72, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x08, 0x73, 0x6c, 0x69, 0x64, 0x65, 0x72, 0x49, 0x64, 0x22, 0x12, 0x0a, 0x10, 0x44,
+	0x65, 0x6c, 0x65, 0x74, 0x65, 0x53, 0x6c, 0x69, 0x64, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x22,
+	0x93, 0x01, 0x0a, 0x0f, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x53, 0x6c, 0x69, 0x64, 0x65, 0x72,
+	0x52, 0x65, 0x71, 0x12, 0x1a, 0x0a, 0x08, 0x73, 0x6c, 0x69, 0x64, 0x65, 0x72, 0x49, 0x64, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x73, 0x6c, 0x69, 0x64, 0x65, 0x72, 0x49, 0x64, 0x12,
+	0x1a, 0x0a, 0x08, 0x69, 0x6d, 0x61, 0x67, 0x65, 0x55, 0x72, 0x6c, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x08, 0x69, 0x6d, 0x61, 0x67, 0x65, 0x55, 0x72, 0x6c, 0x12, 0x18, 0x0a, 0x07, 0x6c,
+	0x69, 0x6e, 0x6b, 0x55, 0x72, 0x6c, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6c, 0x69,
+	0x6e, 0x6b, 0x55, 0x72, 0x6c, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x04, 0x20,
+	0x01, 0x28, 0x03, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x69, 0x73, 0x50,
+	0x75, 0x62, 0x6c, 0x69, 0x63, 0x18, 0x05, 0x20, 0x01, 0x28, 0x03, 0x52, 0x08, 0x69, 0x73, 0x50,
+	0x75, 0x62, 0x6c, 0x69, 0x63, 0x22, 0x12, 0x0a, 0x10, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x53,
+	0x6c, 0x69, 0x64, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x22, 0x0f, 0x0a, 0x0d, 0x47, 0x65, 0x74,
+	0x53, 0x6c, 0x69, 0x64, 0x65, 0x72, 0x73, 0x52, 0x65, 0x71, 0x22, 0x5c, 0x0a, 0x0e, 0x47, 0x65,
+	0x74, 0x53, 0x6c, 0x69, 0x64, 0x65, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x12, 0x34, 0x0a, 0x07,
+	0x73, 0x6c, 0x69, 0x64, 0x65, 0x72, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1a, 0x2e,
+	0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61,
+	0x70, 0x69, 0x2e, 0x53, 0x6c, 0x69, 0x64, 0x65, 0x72, 0x52, 0x07, 0x73, 0x6c, 0x69, 0x64, 0x65,
+	0x72, 0x73, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x03, 0x52, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x42, 0x53, 0x5a, 0x51, 0x67, 0x69, 0x74, 0x68,
+	0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x43, 0x6c, 0x6f, 0x75, 0x64, 0x53, 0x74, 0x72, 0x69,
+	0x76, 0x65, 0x72, 0x2f, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2d, 0x63, 0x6f,
+	0x72, 0x65, 0x2d, 0x61, 0x70, 0x69, 0x2f, 0x62, 0x69, 0x7a, 0x2f, 0x61, 0x70, 0x70, 0x6c, 0x69,
+	0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2f, 0x64, 0x74, 0x6f, 0x2f, 0x63, 0x6c, 0x6f, 0x75, 0x64,
+	0x6d, 0x69, 0x6e, 0x64, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x62, 0x06, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -746,26 +848,28 @@ func file_cloudmind_core_api_system_proto_rawDescGZIP() []byte {
 	return file_cloudmind_core_api_system_proto_rawDescData
 }
 
-var file_cloudmind_core_api_system_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_cloudmind_core_api_system_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
 var file_cloudmind_core_api_system_proto_goTypes = []interface{}{
 	(*GetNotificationsReq)(nil),      // 0: cloudmind.core_api.GetNotificationsReq
 	(*GetNotificationsResp)(nil),     // 1: cloudmind.core_api.GetNotificationsResp
 	(*GetNotificationCountReq)(nil),  // 2: cloudmind.core_api.GetNotificationCountReq
 	(*GetNotificationCountResp)(nil), // 3: cloudmind.core_api.GetNotificationCountResp
-	(*CreateSliderReq)(nil),          // 4: cloudmind.core_api.CreateSliderReq
-	(*CreateSliderResp)(nil),         // 5: cloudmind.core_api.CreateSliderResp
-	(*DeleteSliderReq)(nil),          // 6: cloudmind.core_api.DeleteSliderReq
-	(*DeleteSliderResp)(nil),         // 7: cloudmind.core_api.DeleteSliderResp
-	(*UpdateSliderReq)(nil),          // 8: cloudmind.core_api.UpdateSliderReq
-	(*UpdateSliderResp)(nil),         // 9: cloudmind.core_api.UpdateSliderResp
-	(*GetSlidersReq)(nil),            // 10: cloudmind.core_api.GetSlidersReq
-	(*GetSlidersResp)(nil),           // 11: cloudmind.core_api.GetSlidersResp
-	(*Notification)(nil),             // 12: cloudmind.core_api.Notification
-	(*Slider)(nil),                   // 13: cloudmind.core_api.Slider
+	(*DeleteNotificationsReq)(nil),   // 4: cloudmind.core_api.DeleteNotificationsReq
+	(*DeleteNotificationsResp)(nil),  // 5: cloudmind.core_api.DeleteNotificationsResp
+	(*CreateSliderReq)(nil),          // 6: cloudmind.core_api.CreateSliderReq
+	(*CreateSliderResp)(nil),         // 7: cloudmind.core_api.CreateSliderResp
+	(*DeleteSliderReq)(nil),          // 8: cloudmind.core_api.DeleteSliderReq
+	(*DeleteSliderResp)(nil),         // 9: cloudmind.core_api.DeleteSliderResp
+	(*UpdateSliderReq)(nil),          // 10: cloudmind.core_api.UpdateSliderReq
+	(*UpdateSliderResp)(nil),         // 11: cloudmind.core_api.UpdateSliderResp
+	(*GetSlidersReq)(nil),            // 12: cloudmind.core_api.GetSlidersReq
+	(*GetSlidersResp)(nil),           // 13: cloudmind.core_api.GetSlidersResp
+	(*Notification)(nil),             // 14: cloudmind.core_api.Notification
+	(*Slider)(nil),                   // 15: cloudmind.core_api.Slider
 }
 var file_cloudmind_core_api_system_proto_depIdxs = []int32{
-	12, // 0: cloudmind.core_api.GetNotificationsResp.notifications:type_name -> cloudmind.core_api.Notification
-	13, // 1: cloudmind.core_api.GetSlidersResp.sliders:type_name -> cloudmind.core_api.Slider
+	14, // 0: cloudmind.core_api.GetNotificationsResp.notifications:type_name -> cloudmind.core_api.Notification
+	15, // 1: cloudmind.core_api.GetSlidersResp.sliders:type_name -> cloudmind.core_api.Slider
 	2,  // [2:2] is the sub-list for method output_type
 	2,  // [2:2] is the sub-list for method input_type
 	2,  // [2:2] is the sub-list for extension type_name
@@ -829,7 +933,7 @@ func file_cloudmind_core_api_system_proto_init() {
 			}
 		}
 		file_cloudmind_core_api_system_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CreateSliderReq); i {
+			switch v := v.(*DeleteNotificationsReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -841,7 +945,7 @@ func file_cloudmind_core_api_system_proto_init() {
 			}
 		}
 		file_cloudmind_core_api_system_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CreateSliderResp); i {
+			switch v := v.(*DeleteNotificationsResp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -853,7 +957,7 @@ func file_cloudmind_core_api_system_proto_init() {
 			}
 		}
 		file_cloudmind_core_api_system_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DeleteSliderReq); i {
+			switch v := v.(*CreateSliderReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -865,7 +969,7 @@ func file_cloudmind_core_api_system_proto_init() {
 			}
 		}
 		file_cloudmind_core_api_system_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DeleteSliderResp); i {
+			switch v := v.(*CreateSliderResp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -877,7 +981,7 @@ func file_cloudmind_core_api_system_proto_init() {
 			}
 		}
 		file_cloudmind_core_api_system_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UpdateSliderReq); i {
+			switch v := v.(*DeleteSliderReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -889,7 +993,7 @@ func file_cloudmind_core_api_system_proto_init() {
 			}
 		}
 		file_cloudmind_core_api_system_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UpdateSliderResp); i {
+			switch v := v.(*DeleteSliderResp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -901,7 +1005,7 @@ func file_cloudmind_core_api_system_proto_init() {
 			}
 		}
 		file_cloudmind_core_api_system_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetSlidersReq); i {
+			switch v := v.(*UpdateSliderReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -913,6 +1017,30 @@ func file_cloudmind_core_api_system_proto_init() {
 			}
 		}
 		file_cloudmind_core_api_system_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UpdateSliderResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_system_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetSlidersReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_system_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*GetSlidersResp); i {
 			case 0:
 				return &v.state
@@ -927,13 +1055,14 @@ func file_cloudmind_core_api_system_proto_init() {
 	}
 	file_cloudmind_core_api_system_proto_msgTypes[0].OneofWrappers = []interface{}{}
 	file_cloudmind_core_api_system_proto_msgTypes[2].OneofWrappers = []interface{}{}
+	file_cloudmind_core_api_system_proto_msgTypes[4].OneofWrappers = []interface{}{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_cloudmind_core_api_system_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   12,
+			NumMessages:   14,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

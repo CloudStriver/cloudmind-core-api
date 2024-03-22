@@ -118,10 +118,12 @@ func NewProvider() (*Provider, error) {
 		Config:           configConfig,
 		CloudMindContent: cloudMindContent,
 	}
+	deleteNotificationsKq := kq.NewDeleteNotificationsKq(configConfig)
 	notificationService := &service2.NotificationService{
-		Config:          configConfig,
-		CloudMindSystem: cloudMindSystem,
-		Redis:           redisRedis,
+		Config:                configConfig,
+		CloudMindSystem:       cloudMindSystem,
+		Redis:                 redisRedis,
+		DeleteNotificationsKq: deleteNotificationsKq,
 	}
 	commentDomainService := &service.CommentDomainService{
 		CloudMindUser:    cloudMindContent,
