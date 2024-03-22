@@ -630,3 +630,28 @@ func _emptyrecyclebinMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _zoneMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _createzone0Mw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _deletezone0Mw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getzone0Mw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _updatezone0Mw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
