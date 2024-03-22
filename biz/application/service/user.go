@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"github.com/CloudStriver/cloudmind-core-api/biz/adaptor"
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	domainservice "github.com/CloudStriver/cloudmind-core-api/biz/domain/service"
@@ -48,10 +49,13 @@ func (s *UserService) GetUser(ctx context.Context, req *core_api.GetUserReq) (re
 	if err != nil {
 		return resp, err
 	}
+	s.UserDomainService.LoadLabel(ctx, getUserResp.Labels)
+
 	return &core_api.GetUserResp{
 		UserId: req.UserId,
 		Name:   getUserResp.Name,
 		Url:    getUserResp.Url,
+		Tags:   getUserResp.Labels,
 	}, nil
 }
 
@@ -139,22 +143,23 @@ func (s *UserService) SearchUser(ctx context.Context, req *core_api.SearchUserRe
 			},
 		}
 	}
-	if req.Name != nil || req.Id != nil || req.Description != nil {
+	if req.Name != nil || req.Description != nil {
 		searchOptions = &content.SearchOptions{
 			Type: &content.SearchOptions_MultiFieldsKey{
 				MultiFieldsKey: &content.SearchField{
 					Name:        req.Name,
-					Id:          req.Id,
 					Description: req.Description,
 				},
 			},
 		}
 	}
+
 	users, err := s.CloudMindContent.GetUsers(ctx, &content.GetUsersReq{
 		SearchOptions:     searchOptions,
 		PaginationOptions: convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward),
 	})
 	if err != nil {
+		fmt.Println(err)
 		return resp, err
 	}
 	resp.Users = lo.Map[*content.User, *core_api.User](users.Users, func(user *content.User, _ int) *core_api.User {
