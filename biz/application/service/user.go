@@ -49,10 +49,13 @@ func (s *UserService) GetUser(ctx context.Context, req *core_api.GetUserReq) (re
 	if err != nil {
 		return resp, err
 	}
+	s.UserDomainService.LoadLabel(ctx, getUserResp.Labels)
+
 	return &core_api.GetUserResp{
 		UserId: req.UserId,
 		Name:   getUserResp.Name,
 		Url:    getUserResp.Url,
+		Tags:   getUserResp.Labels,
 	}, nil
 }
 
