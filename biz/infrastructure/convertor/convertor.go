@@ -178,13 +178,14 @@ func NotificationToCoreNotification(in *system.Notification) *core_api.Notificat
 	msg := &Msg{}
 	_ = sonic.UnmarshalString(in.Text, msg)
 	return &core_api.Notification{
-		FromName:   msg.FromName,
-		FromId:     in.SourceUserId,
-		ToName:     msg.ToName,
-		ToId:       in.TargetUserId,
-		ToType:     in.TargetType,
-		Type:       in.Type,
-		CreateTime: in.CreateTime,
+		NotificationId: in.NotificationId,
+		FromName:       msg.FromName,
+		FromId:         in.SourceUserId,
+		ToName:         msg.ToName,
+		ToId:           in.TargetUserId,
+		ToType:         in.TargetType,
+		Type:           in.Type,
+		CreateTime:     in.CreateTime,
 	}
 }
 

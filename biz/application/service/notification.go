@@ -7,9 +7,13 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/convertor"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_system"
+	"github.com/CloudStriver/cloudmind-mq/app/util/message"
+	"github.com/CloudStriver/go-pkg/utils/pconvertor"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/basic"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/system"
+	"github.com/bytedance/sonic"
 	"github.com/google/wire"
 	"github.com/samber/lo"
 	"github.com/zeromicro/go-zero/core/stores/redis"
@@ -18,6 +22,7 @@ import (
 type INotificationService interface {
 	GetNotifications(ctx context.Context, req *core_api.GetNotificationsReq) (resp *core_api.GetNotificationsResp, err error)
 	GetNotificationCount(ctx context.Context, req *core_api.GetNotificationCountReq) (resp *core_api.GetNotificationCountResp, err error)
+	DeleteNotifications(ctx context.Context, c *core_api.DeleteNotificationsReq) (resp *core_api.DeleteNotificationsResp, err error)
 }
 
 var NotificationServiceSet = wire.NewSet(
@@ -26,9 +31,26 @@ var NotificationServiceSet = wire.NewSet(
 )
 
 type NotificationService struct {
-	Config          *config.Config
-	CloudMindSystem cloudmind_system.ICloudMindSystem
-	Redis           *redis.Redis
+	Config                *config.Config
+	CloudMindSystem       cloudmind_system.ICloudMindSystem
+	Redis                 *redis.Redis
+	DeleteNotificationsKq *kq.DeleteNotificationsKq
+}
+
+func (s *NotificationService) DeleteNotifications(ctx context.Context, req *core_api.DeleteNotificationsReq) (resp *core_api.DeleteNotificationsResp, err error) {
+	user := adaptor.ExtractUserMeta(ctx)
+	if user.GetUserId() == "" {
+		return resp, consts.ErrNotAuthentication
+	}
+	data, _ := sonic.Marshal(message.DeleteNotificationsMessage{
+		UserId:          user.UserId,
+		NotificationIds: req.NotificationIds,
+		OnlyType:        req.OnlyType,
+	})
+	if err = s.DeleteNotificationsKq.Push(pconvertor.Bytes2String(data)); err != nil {
+		return resp, err
+	}
+	return resp, nil
 }
 
 func (s *NotificationService) GetNotifications(ctx context.Context, req *core_api.GetNotificationsReq) (resp *core_api.GetNotificationsResp, err error) {
