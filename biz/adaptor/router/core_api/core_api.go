@@ -78,6 +78,7 @@ func Register(r *server.Hertz) {
 		_content.GET("/getUser", append(_getuserMw(), core_api.GetUser)...)
 		_content.GET("/getUserDetail", append(_getuserdetailMw(), core_api.GetUserDetail)...)
 		_content.GET("/getZone", append(_getzoneMw(), core_api.GetZone)...)
+		_content.GET("/getZones", append(_getzonesMw(), core_api.GetZones)...)
 		_content.POST("/moveFile", append(_movefileMw(), core_api.MoveFile)...)
 		_content.GET("/parsingShareCode", append(_parsingsharecodeMw(), core_api.ParsingShareCode)...)
 		_content.POST("/recoverRecycleBinFile", append(_recoverrecyclebinfileMw(), core_api.RecoverRecycleBinFile)...)

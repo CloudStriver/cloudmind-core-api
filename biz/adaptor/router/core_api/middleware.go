@@ -655,3 +655,8 @@ func _updatezone0Mw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _getzonesMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
