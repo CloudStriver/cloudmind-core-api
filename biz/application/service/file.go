@@ -357,6 +357,7 @@ func (s *FileService) CreateFile(ctx context.Context, req *core_api.CreateFileRe
 		UserId:    userData.UserId,
 		Name:      req.Name,
 		Type:      req.Type,
+		Category:  req.Category,
 		FatherId:  req.FatherId,
 		SpaceSize: req.SpaceSize,
 		Md5:       req.Md5,
@@ -721,15 +722,11 @@ func (s *FileService) AddFileToPublicSpace(ctx context.Context, req *core_api.Ad
 		})
 		return err1
 	}, func() error {
-		var err1 error
-		var subject *comment.GetCommentSubjectResp
-		if subject, err1 = s.PlatformComment.GetCommentSubject(ctx, &comment.GetCommentSubjectReq{Id: file.File.FileId}); err1 != nil {
-			return err1
-		}
+		subject, _ := s.PlatformComment.GetCommentSubject(ctx, &comment.GetCommentSubjectReq{Id: file.File.FileId})
 		if subject.GetSubject() != nil {
 			return nil
 		}
-		_, err1 = s.PlatformComment.CreateCommentSubject(ctx, &comment.CreateCommentSubjectReq{Subject: &comment.Subject{
+		_, err2 := s.PlatformComment.CreateCommentSubject(ctx, &comment.CreateCommentSubjectReq{Subject: &comment.Subject{
 			Id:        file.File.FileId,
 			UserId:    file.File.UserId,
 			RootCount: lo.ToPtr(consts.InitNumber),
@@ -737,7 +734,7 @@ func (s *FileService) AddFileToPublicSpace(ctx context.Context, req *core_api.Ad
 			State:     int64(core_api.State_Normal),
 			Attrs:     int64(core_api.Attrs_None),
 		}})
-		return err1
+		return err2
 	})
 	return resp, err
 }
