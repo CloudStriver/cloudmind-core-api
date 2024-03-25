@@ -16,6 +16,7 @@ import (
 	"github.com/CloudStriver/cloudmind-mq/app/util/message"
 	"github.com/CloudStriver/go-pkg/utils/pconvertor"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
+	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/sts"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/trade"
 	"github.com/bytedance/sonic"
 	"github.com/google/wire"
@@ -44,6 +45,44 @@ type UserService struct {
 	UpdateItemKq      *kq.UpdateItemKq
 }
 
+func (s *UserService) FiltetContet(ctx context.Context, IsSure bool, contents []*string) ([]*core_api.Keywords, error) {
+	cts := lo.Map[*string, string](contents, func(item *string, index int) string {
+		return *item
+	})
+	if IsSure {
+		replaceContentResp, err := s.CloudMindSts.ReplaceContent(ctx, &sts.ReplaceContentReq{
+			Contents: cts,
+		})
+		if err != nil {
+			return nil, err
+		}
+		for i, content := range replaceContentResp.Content {
+			*contents[i] = content
+		}
+		return nil, nil
+	} else {
+		// 内容检测
+		findAllContentResp, err := s.CloudMindSts.FindAllContent(ctx, &sts.FindAllContentReq{
+			Contents: cts,
+		})
+		if err != nil {
+			return nil, err
+		}
+		keywords := make([]*core_api.Keywords, 0, len(findAllContentResp.Keywords))
+		for _, keyword := range findAllContentResp.Keywords {
+			if len(keyword.Keywords) != 0 {
+				keywords = append(keywords, &core_api.Keywords{
+					Keywords: keyword.Keywords,
+				})
+			}
+		}
+		if len(keywords) != 0 {
+			return keywords, nil
+		}
+		return nil, nil
+	}
+}
+
 func (s *UserService) GetUser(ctx context.Context, req *core_api.GetUserReq) (resp *core_api.GetUserResp, err error) {
 	getUserResp, err := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{UserId: req.UserId})
 	if err != nil {
@@ -60,10 +99,22 @@ func (s *UserService) GetUser(ctx context.Context, req *core_api.GetUserReq) (re
 }
 
 func (s *UserService) UpdateUser(ctx context.Context, req *core_api.UpdateUserReq) (resp *core_api.UpdateUserResp, err error) {
+	resp = new(core_api.UpdateUserResp)
 	userData := adaptor.ExtractUserMeta(ctx)
 	if userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
+
+	if req.Name != "" || req.FullName != "" || req.Description != "" {
+		resp.Keywords, err = s.FiltetContet(ctx, req.IsSure, []*string{&req.Name, &req.FullName, &req.Description})
+		if err != nil {
+			return resp, err
+		}
+		if resp.Keywords != nil {
+			return resp, nil
+		}
+	}
+
 	if _, err = s.CloudMindContent.UpdateUser(ctx, &content.UpdateUserReq{
 		UserId:      userData.UserId,
 		Name:        req.Name,

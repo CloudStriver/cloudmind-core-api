@@ -185,8 +185,53 @@ func (s *AuthService) RefreshToken(_ context.Context, req *core_api.RefreshToken
 	return resp, nil
 }
 
+func (s *AuthService) FiltetContet(ctx context.Context, IsSure bool, contents []*string) ([]*core_api.Keywords, error) {
+	cts := lo.Map[*string, string](contents, func(item *string, index int) string {
+		return *item
+	})
+	if IsSure {
+		replaceContentResp, err := s.CloudMindSts.ReplaceContent(ctx, &sts.ReplaceContentReq{
+			Contents: cts,
+		})
+		if err != nil {
+			return nil, err
+		}
+		for i, content := range replaceContentResp.Content {
+			*contents[i] = content
+		}
+		return nil, nil
+	} else {
+		// 内容检测
+		findAllContentResp, err := s.CloudMindSts.FindAllContent(ctx, &sts.FindAllContentReq{
+			Contents: cts,
+		})
+		if err != nil {
+			return nil, err
+		}
+		keywords := make([]*core_api.Keywords, 0, len(findAllContentResp.Keywords))
+		for _, keyword := range findAllContentResp.Keywords {
+			if len(keyword.Keywords) != 0 {
+				keywords = append(keywords, &core_api.Keywords{
+					Keywords: keyword.Keywords,
+				})
+			}
+		}
+		if len(keywords) != 0 {
+			return keywords, nil
+		}
+		return nil, nil
+	}
+}
+
 func (s *AuthService) Register(ctx context.Context, req *core_api.RegisterReq) (resp *core_api.RegisterResp, err error) {
 	resp = new(core_api.RegisterResp)
+	resp.Keywords, err = s.FiltetContet(ctx, req.IsSure, []*string{&req.Name})
+	if err != nil {
+		return resp, err
+	}
+	if resp.Keywords != nil {
+		return resp, nil
+	}
 	value := ""
 	if value, err = s.Redis.GetCtx(ctx, fmt.Sprintf("%s:%s", consts.PassCheckEmail, req.Email)); err != nil {
 		return resp, err

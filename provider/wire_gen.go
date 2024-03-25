@@ -69,6 +69,7 @@ func NewProvider() (*Provider, error) {
 		PostDomainService: postDomainService,
 		PlatFormRelation:  platFormRelation,
 		PlatFormComment:   platFormComment,
+		CloudMindSts:      cloudMindSts,
 		CreateItemKq:      createItemKq,
 		UpdateItemKq:      updateItemKq,
 		DeleteItemKq:      deleteItemKq,
