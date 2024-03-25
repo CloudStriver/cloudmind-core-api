@@ -9,6 +9,7 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_comment"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
 	"github.com/CloudStriver/cloudmind-mq/app/util/message"
@@ -16,6 +17,7 @@ import (
 	"github.com/CloudStriver/go-pkg/utils/util/log"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/basic"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
+	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/sts"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/comment"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/relation"
 	"github.com/bytedance/sonic"
@@ -43,15 +45,65 @@ type PostService struct {
 	PostDomainService service.IPostDomainService
 	PlatFormRelation  platform_relation.IPlatFormRelation
 	PlatFormComment   platform_comment.IPlatFormComment
+	CloudMindSts      cloudmind_sts.ICloudMindSts
 	CreateItemKq      *kq.CreateItemKq
 	UpdateItemKq      *kq.UpdateItemKq
 	DeleteItemKq      *kq.DeleteItemKq
 }
 
+func (s *PostService) FiltetContet(ctx context.Context, IsSure bool, contents []*string) ([]*core_api.Keywords, error) {
+	cts := lo.Map[*string, string](contents, func(item *string, index int) string {
+		return *item
+	})
+	if IsSure {
+		replaceContentResp, err := s.CloudMindSts.ReplaceContent(ctx, &sts.ReplaceContentReq{
+			Contents: cts,
+		})
+		if err != nil {
+			return nil, err
+		}
+		for i, content := range replaceContentResp.Content {
+			*contents[i] = content
+		}
+		return nil, nil
+	} else {
+		// 内容检测
+		findAllContentResp, err := s.CloudMindSts.FindAllContent(ctx, &sts.FindAllContentReq{
+			Contents: cts,
+		})
+		if err != nil {
+			return nil, err
+		}
+		keywords := make([]*core_api.Keywords, 0, len(findAllContentResp.Keywords))
+		for _, keyword := range findAllContentResp.Keywords {
+			if len(keyword.Keywords) != 0 {
+				keywords = append(keywords, &core_api.Keywords{
+					Keywords: keyword.Keywords,
+				})
+			}
+		}
+		if len(keywords) != 0 {
+			return keywords, nil
+		}
+		return nil, nil
+	}
+}
+
 func (s *PostService) CreatePost(ctx context.Context, req *core_api.CreatePostReq) (resp *core_api.CreatePostResp, err error) {
+	resp = new(core_api.CreatePostResp)
 	userData := adaptor.ExtractUserMeta(ctx)
 	if userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
+	}
+
+	if req.Status == int64(core_api.PostStatus_PublicPostStatus) {
+		resp.Keywords, err = s.FiltetContet(ctx, req.IsSure, []*string{&req.Title, &req.Text})
+		if err != nil {
+			return resp, err
+		}
+		if resp.Keywords != nil {
+			return resp, nil
+		}
 	}
 
 	createPostResp, err := s.CloudMindContent.CreatePost(ctx, &content.CreatePostReq{
@@ -88,9 +140,9 @@ func (s *PostService) CreatePost(ctx context.Context, req *core_api.CreatePostRe
 	if err = s.CreateItemKq.Push(pconvertor.Bytes2String(data)); err != nil {
 		return resp, err
 	}
-	return &core_api.CreatePostResp{
-		PostId: createPostResp.PostId,
-	}, nil
+
+	resp.PostId = createPostResp.PostId
+	return resp, nil
 }
 
 func (s *PostService) UpdatePost(ctx context.Context, req *core_api.UpdatePostReq) (resp *core_api.UpdatePostResp, err error) {
@@ -99,10 +151,22 @@ func (s *PostService) UpdatePost(ctx context.Context, req *core_api.UpdatePostRe
 		return resp, consts.ErrNotAuthentication
 	}
 
-	if err = s.CheckIsMyPost(ctx, req.PostId, userData.UserId); err != nil {
+	post, err := s.CheckIsMyPost(ctx, req.PostId, userData.UserId)
+	if err != nil {
 		return resp, err
 	}
+	if req.Status == int64(core_api.PostStatus_PublicPostStatus) {
+		req.Title = post.Title
+		req.Text = post.Text
 
+		resp.Keywords, err = s.FiltetContet(ctx, req.IsSure, []*string{&req.Title, &req.Text})
+		if err != nil {
+			return resp, err
+		}
+		if resp.Keywords != nil {
+			return resp, nil
+		}
+	}
 	if _, err = s.CloudMindContent.UpdatePost(ctx, &content.UpdatePostReq{
 		PostId: req.PostId,
 		Title:  req.Title,
@@ -320,17 +384,17 @@ func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (
 	return resp, nil
 }
 
-func (s *PostService) CheckIsMyPost(ctx context.Context, postId, userId string) (err error) {
-	post, err := s.CloudMindContent.GetPost(ctx, &content.GetPostReq{
+func (s *PostService) CheckIsMyPost(ctx context.Context, postId, userId string) (post *content.GetPostResp, err error) {
+	getPostResp, err := s.CloudMindContent.GetPost(ctx, &content.GetPostReq{
 		PostId: postId,
 	})
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if post.UserId != userId {
-		return consts.ErrForbidden
+		return nil, consts.ErrForbidden
 	}
-	return nil
+	return getPostResp, nil
 }
 
 func (s *PostService) CheckIsMyPosts(ctx context.Context, postIds []string, userId string) (err error) {
