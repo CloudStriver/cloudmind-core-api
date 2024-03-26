@@ -18,6 +18,7 @@
 ### 🐛 Bug Fixes | Bug 修复
 
 * 创建文件重命名bug
+* 文件筛选
 
 ### ⚡ Performance Improvements | 优化
 
