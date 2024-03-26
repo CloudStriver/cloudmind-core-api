@@ -1,3 +1,17 @@
+## 2024-03-26
+
+### 🐛 Bug Fixes | Bug 修复
+
+* 修改文件筛选的bug
+
+### ⚡ Performance Improvements | 优化
+
+*
+
+### ✨ Features | 新功能
+
+*
+
 ## 2024-03-25
 
 ### 🐛 Bug Fixes | Bug 修复
