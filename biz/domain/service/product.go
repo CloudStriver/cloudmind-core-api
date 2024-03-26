@@ -8,7 +8,6 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/trade"
-	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/relation"
 	"github.com/google/wire"
 )
 
@@ -40,19 +39,19 @@ func (s *ProductDomainService) LoadStock(ctx context.Context, stock *int64, prod
 	}
 }
 func (s *ProductDomainService) LoadPurchaseCount(ctx context.Context, purchaseCount *int64, productId string) {
-	getRelationCountResp, err := s.PlatformRelation.GetRelationCount(ctx, &relation.GetRelationCountReq{
-		RelationFilterOptions: &relation.GetRelationCountReq_ToFilterOptions{
-			ToFilterOptions: &relation.ToFilterOptions{
-				ToType:   int64(core_api.TargetType_ProductType),
-				ToId:     productId,
-				FromType: int64(core_api.TargetType_UserType),
-			},
-		},
-		RelationType: int64(core_api.RelationType_PurchaseType),
-	})
-	if err == nil {
-		*purchaseCount = getRelationCountResp.Total
-	}
+	//getRelationCountResp, err := s.PlatformRelation.GetRelationCount(ctx, &relation.GetRelationCountReq{
+	//	RelationFilterOptions: &relation.GetRelationCountReq_ToFilterOptions{
+	//		ToFilterOptions: &relation.ToFilterOptions{
+	//			ToType:   int64(core_api.TargetType_ProductType),
+	//			ToId:     productId,
+	//			FromType: int64(core_api.TargetType_UserType),
+	//		},
+	//	},
+	//	RelationType: int64(core_api.RelationType_PurchaseType),
+	//})
+	//if err == nil {
+	//	*purchaseCount = getRelationCountResp.Total
+	//}
 }
 
 func (s *ProductDomainService) LoadAuthor(ctx context.Context, user *core_api.User, userId string) {
@@ -68,75 +67,75 @@ func (s *ProductDomainService) LoadAuthor(ctx context.Context, user *core_api.Us
 }
 
 func (s *ProductDomainService) LoadLikeCount(ctx context.Context, likeCount *int64, productId string) {
-	getRelationCountResp, err := s.PlatformRelation.GetRelationCount(ctx, &relation.GetRelationCountReq{
-		RelationFilterOptions: &relation.GetRelationCountReq_ToFilterOptions{
-			ToFilterOptions: &relation.ToFilterOptions{
-				ToType:   int64(core_api.TargetType_ProductType),
-				ToId:     productId,
-				FromType: int64(core_api.TargetType_UserType),
-			},
-		},
-		RelationType: int64(core_api.RelationType_LikeType),
-	})
-	if err == nil {
-		*likeCount = getRelationCountResp.Total
-	}
+	//getRelationCountResp, err := s.PlatformRelation.GetRelationCount(ctx, &relation.GetRelationCountReq{
+	//	RelationFilterOptions: &relation.GetRelationCountReq_ToFilterOptions{
+	//		ToFilterOptions: &relation.ToFilterOptions{
+	//			ToType:   int64(core_api.TargetType_ProductType),
+	//			ToId:     productId,
+	//			FromType: int64(core_api.TargetType_UserType),
+	//		},
+	//	},
+	//	RelationType: int64(core_api.RelationType_LikeType),
+	//})
+	//if err == nil {
+	//	*likeCount = getRelationCountResp.Total
+	//}
 }
 
 func (s *ProductDomainService) LoadViewCount(ctx context.Context, viewCount *int64, productId string) {
-	getRelationCountResp, err := s.PlatformRelation.GetRelationCount(ctx, &relation.GetRelationCountReq{
-		RelationFilterOptions: &relation.GetRelationCountReq_ToFilterOptions{
-			ToFilterOptions: &relation.ToFilterOptions{
-				ToType:   int64(core_api.TargetType_ProductType),
-				ToId:     productId,
-				FromType: int64(core_api.TargetType_UserType),
-			},
-		},
-		RelationType: int64(core_api.RelationType_ViewType),
-	})
-	if err == nil {
-		*viewCount = getRelationCountResp.Total
-	}
+	//getRelationCountResp, err := s.PlatformRelation.GetRelationCount(ctx, &relation.GetRelationCountReq{
+	//	RelationFilterOptions: &relation.GetRelationCountReq_ToFilterOptions{
+	//		ToFilterOptions: &relation.ToFilterOptions{
+	//			ToType:   int64(core_api.TargetType_ProductType),
+	//			ToId:     productId,
+	//			FromType: int64(core_api.TargetType_UserType),
+	//		},
+	//	},
+	//	RelationType: int64(core_api.RelationType_ViewType),
+	//})
+	//if err == nil {
+	//	*viewCount = getRelationCountResp.Total
+	//}
 }
 
 func (s *ProductDomainService) LoadCollectCount(ctx context.Context, collectCount *int64, productId string) {
-	getRelationCountResp, err := s.PlatformRelation.GetRelationCount(ctx, &relation.GetRelationCountReq{
-		RelationFilterOptions: &relation.GetRelationCountReq_ToFilterOptions{
-			ToFilterOptions: &relation.ToFilterOptions{
-				ToType:   int64(core_api.TargetType_ProductType),
-				ToId:     productId,
-				FromType: int64(core_api.TargetType_UserType),
-			},
-		},
-		RelationType: int64(core_api.RelationType_CollectType),
-	})
-	if err == nil {
-		*collectCount = getRelationCountResp.Total
-	}
+	//getRelationCountResp, err := s.PlatformRelation.GetRelationCount(ctx, &relation.GetRelationCountReq{
+	//	RelationFilterOptions: &relation.GetRelationCountReq_ToFilterOptions{
+	//		ToFilterOptions: &relation.ToFilterOptions{
+	//			ToType:   int64(core_api.TargetType_ProductType),
+	//			ToId:     productId,
+	//			FromType: int64(core_api.TargetType_UserType),
+	//		},
+	//	},
+	//	RelationType: int64(core_api.RelationType_CollectType),
+	//})
+	//if err == nil {
+	//	*collectCount = getRelationCountResp.Total
+	//}
 }
 
 func (s *ProductDomainService) LoadLiked(ctx context.Context, liked *bool, userId, productId string) {
-	getRelationResp, err := s.PlatformRelation.GetRelation(ctx, &relation.GetRelationReq{
-		FromType:     int64(core_api.TargetType_UserType),
-		FromId:       userId,
-		ToType:       int64(core_api.TargetType_ProductType),
-		ToId:         productId,
-		RelationType: int64(core_api.RelationType_LikeType),
-	})
-	if err == nil {
-		*liked = getRelationResp.Ok
-	}
+	//getRelationResp, err := s.PlatformRelation.GetRelation(ctx, &relation.GetRelationReq{
+	//	FromType:     int64(core_api.TargetType_UserType),
+	//	FromId:       userId,
+	//	ToType:       int64(core_api.TargetType_ProductType),
+	//	ToId:         productId,
+	//	RelationType: int64(core_api.RelationType_LikeType),
+	//})
+	//if err == nil {
+	//	*liked = getRelationResp.Ok
+	//}
 }
 
 func (s *ProductDomainService) LoadCollected(ctx context.Context, collected *bool, userId, productId string) {
-	getRelationResp, err := s.PlatformRelation.GetRelation(ctx, &relation.GetRelationReq{
-		FromType:     int64(core_api.TargetType_UserType),
-		FromId:       userId,
-		ToType:       int64(core_api.TargetType_ProductType),
-		ToId:         productId,
-		RelationType: int64(core_api.RelationType_CollectType),
-	})
-	if err == nil {
-		*collected = getRelationResp.Ok
-	}
+	//getRelationResp, err := s.PlatformRelation.GetRelation(ctx, &relation.GetRelationReq{
+	//	FromType:     int64(core_api.TargetType_UserType),
+	//	FromId:       userId,
+	//	ToType:       int64(core_api.TargetType_ProductType),
+	//	ToId:         productId,
+	//	RelationType: int64(core_api.RelationType_CollectType),
+	//})
+	//if err == nil {
+	//	*collected = getRelationResp.Ok
+	//}
 }

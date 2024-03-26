@@ -36,7 +36,7 @@ require (
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20230717121745-296ad89f973d // indirect
 	github.com/chenzhuoyu/iasm v0.9.1 // indirect
-	github.com/choleraehyq/pid v0.0.17 // indirect
+	github.com/choleraehyq/pid v0.0.18 // indirect
 	github.com/cloudwego/configmanager v0.2.0 // indirect
 	github.com/cloudwego/dynamicgo v0.1.6 // indirect
 	github.com/cloudwego/fastpb v0.0.4 // indirect

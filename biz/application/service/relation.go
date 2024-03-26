@@ -236,15 +236,15 @@ func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.Crea
 
 		toName = getFileResp.File.Name
 		userId = getFileResp.File.UserId
-	case core_api.TargetType_ProductType:
-		getProductResp, err := s.CloudMindContent.GetProduct(ctx, &content.GetProductReq{
-			ProductId: req.ToId,
-		})
-		if err != nil {
-			return resp, err
-		}
-		toName = getProductResp.Name
-		userId = getProductResp.UserId
+	//case core_api.TargetType_ProductType:
+	//	getProductResp, err := s.CloudMindContent.GetProduct(ctx, &content.GetProductReq{
+	//		ProductId: req.ToId,
+	//	})
+	//	if err != nil {
+	//		return resp, err
+	//	}
+	//	toName = getProductResp.Name
+	//	userId = getProductResp.UserId
 	case core_api.TargetType_PostType:
 		getPostResp, err := s.CloudMindContent.GetPost(ctx, &content.GetPostReq{
 			PostId: req.ToId,
@@ -263,6 +263,7 @@ func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.Crea
 		return resp, err
 	}
 
+	// 创建通知
 	msg, _ := sonic.Marshal(&Msg{
 		FromName: userinfo.Name,
 		ToName:   toName,
@@ -287,6 +288,9 @@ func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.Crea
 	if err = s.CreateFeedBackKq.Push(pconvertor.Bytes2String(data)); err != nil {
 		return resp, err
 	}
+
+	// 更新热度
+
 	return resp, nil
 }
 

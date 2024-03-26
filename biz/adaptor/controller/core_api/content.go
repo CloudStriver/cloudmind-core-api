@@ -756,3 +756,19 @@ func EmptyRecycleBin(ctx context.Context, c *app.RequestContext) {
 	resp, err = p.FileService.EmptyRecycleBin(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
+
+// GetZones .
+// @router /content/getZones [GET]
+func GetZones(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.GetZonesReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.GetZonesResp)
+
+	c.JSON(consts.StatusOK, resp)
+}
