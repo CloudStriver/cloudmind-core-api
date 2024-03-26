@@ -14,6 +14,7 @@ import (
 
 type IZoneService interface {
 	GetZone(ctx context.Context, req *core_api.GetZoneReq) (resp *core_api.GetZoneResp, err error)
+	GetZones(ctx context.Context, req *core_api.GetZonesReq) (resp *core_api.GetZonesResp, err error)
 	CreateZone(ctx context.Context, req *core_api.CreateZoneReq) (resp *core_api.CreateZoneResp, err error)
 	UpdateZone(ctx context.Context, req *core_api.UpdateZoneReq) (resp *core_api.UpdateZoneResp, err error)
 	DeleteZone(ctx context.Context, req *core_api.DeleteZoneReq) (resp *core_api.DeleteZoneResp, err error)
@@ -41,6 +42,11 @@ func (s *ZoneService) GetZone(ctx context.Context, req *core_api.GetZoneReq) (re
 		return resp, err
 	}
 	resp.Zone = convertor.ZoneToCoreZone(res.Zone)
+	return resp, nil
+}
+
+func (s *ZoneService) GetZones(ctx context.Context, req *core_api.GetZonesReq) (resp *core_api.GetZonesResp, err error) {
+	resp = new(core_api.GetZonesResp)
 	return resp, nil
 }
 

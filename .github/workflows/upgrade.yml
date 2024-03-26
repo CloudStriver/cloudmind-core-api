@@ -64,6 +64,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - name: Send Change Log
+        if: github.event_name == 'push'
         uses: xh-polaris/send-changelog@v1
         with:
           webhook_url: ${{ secrets.Front_WEBHOOK_URL }}

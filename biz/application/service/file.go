@@ -213,11 +213,13 @@ func (s *FileService) GetPrivateFiles(ctx context.Context, req *core_api.GetPriv
 	var res *content.GetFileListResp
 	var searchOptions *content.SearchOptions
 	p := convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward)
+
 	filter := &content.FileFilterOptions{
 		OnlyUserId:   lo.ToPtr(userData.UserId),
 		OnlyFatherId: req.OnlyFatherId,
 		OnlyIsDel:    lo.ToPtr(consts.NotDel),
 		OnlyType:     req.OnlyType,
+		OnlyCategory: req.OnlyCategory,
 	}
 	if req.AllFieldsKey != nil {
 		searchOptions = &content.SearchOptions{Type: &content.SearchOptions_AllFieldsKey{AllFieldsKey: *req.AllFieldsKey}}
@@ -252,6 +254,7 @@ func (s *FileService) GetPublicFiles(ctx context.Context, req *core_api.GetPubli
 		OnlySubZone:      req.OnlySubZone,
 		OnlyIsDel:        lo.ToPtr(consts.NotDel),
 		OnlyType:         req.OnlyType,
+		OnlyCategory:     req.OnlyCategory,
 		OnlyLabelId:      req.OnlyLabelId,
 		OnlyDocumentType: lo.ToPtr(int64(core_api.DocumentType_DocumentType_public)),
 	}
@@ -357,6 +360,7 @@ func (s *FileService) CreateFile(ctx context.Context, req *core_api.CreateFileRe
 		UserId:    userData.UserId,
 		Name:      req.Name,
 		Type:      req.Type,
+		Category:  req.Category,
 		FatherId:  req.FatherId,
 		SpaceSize: req.SpaceSize,
 		Md5:       req.Md5,
@@ -721,15 +725,11 @@ func (s *FileService) AddFileToPublicSpace(ctx context.Context, req *core_api.Ad
 		})
 		return err1
 	}, func() error {
-		var err1 error
-		var subject *comment.GetCommentSubjectResp
-		if subject, err1 = s.PlatformComment.GetCommentSubject(ctx, &comment.GetCommentSubjectReq{Id: file.File.FileId}); err1 != nil {
-			return err1
-		}
+		subject, _ := s.PlatformComment.GetCommentSubject(ctx, &comment.GetCommentSubjectReq{Id: file.File.FileId})
 		if subject.GetSubject() != nil {
 			return nil
 		}
-		_, err1 = s.PlatformComment.CreateCommentSubject(ctx, &comment.CreateCommentSubjectReq{Subject: &comment.Subject{
+		_, err2 := s.PlatformComment.CreateCommentSubject(ctx, &comment.CreateCommentSubjectReq{Subject: &comment.Subject{
 			Id:        file.File.FileId,
 			UserId:    file.File.UserId,
 			RootCount: lo.ToPtr(consts.InitNumber),
@@ -737,7 +737,7 @@ func (s *FileService) AddFileToPublicSpace(ctx context.Context, req *core_api.Ad
 			State:     int64(core_api.State_Normal),
 			Attrs:     int64(core_api.Attrs_None),
 		}})
-		return err1
+		return err2
 	})
 	return resp, err
 }
