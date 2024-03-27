@@ -153,6 +153,7 @@ func (s *PostService) CreatePost(ctx context.Context, req *core_api.CreatePostRe
 }
 
 func (s *PostService) UpdatePost(ctx context.Context, req *core_api.UpdatePostReq) (resp *core_api.UpdatePostResp, err error) {
+	resp = new(core_api.UpdatePostResp)
 	userData := adaptor.ExtractUserMeta(ctx)
 	if userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
