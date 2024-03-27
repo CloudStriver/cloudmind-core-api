@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"github.com/CloudStriver/cloudmind-core-api/biz/adaptor"
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
@@ -10,6 +11,7 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
 	"github.com/google/wire"
+	"github.com/samber/lo"
 )
 
 type IZoneService interface {
@@ -47,6 +49,19 @@ func (s *ZoneService) GetZone(ctx context.Context, req *core_api.GetZoneReq) (re
 
 func (s *ZoneService) GetZones(ctx context.Context, req *core_api.GetZonesReq) (resp *core_api.GetZonesResp, err error) {
 	resp = new(core_api.GetZonesResp)
+	var res *content.GetZonesResp
+
+	p := convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward)
+	if res, err = s.CloudMindContent.GetZones(ctx, &content.GetZonesReq{FatherId: req.FatherId, PaginationOptions: p}); err != nil {
+		return resp, err
+	}
+
+	fmt.Printf("[%v\n]", res.Zones)
+	resp.Zones = lo.Map(res.Zones, func(item *content.Zone, _ int) *core_api.Zone {
+		return convertor.ZoneToCoreZone(item)
+	})
+	resp.Token = res.Token
+	resp.Total = res.Total
 	return resp, nil
 }
 
