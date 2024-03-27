@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"github.com/CloudStriver/cloudmind-core-api/biz/adaptor"
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/CloudStriver/cloudmind-core-api/biz/domain/service"
@@ -331,9 +332,10 @@ func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (
 	}
 
 	// 查看的自己的
-	if req.GetOnlyUserId() == userData.GetUserId() {
+	if req.GetOnlyUserId() != "" && req.GetOnlyUserId() == userData.GetUserId() {
 		filter.OnlyStatus = req.OnlyStatus
 	}
+	fmt.Println(filter.OnlyStatus)
 
 	if getPostsResp, err = s.CloudMindContent.GetPosts(ctx, &content.GetPostsReq{
 		SearchOptions:     searchOptions,
