@@ -738,6 +738,11 @@ func (s *FileService) AddFileToPublicSpace(ctx context.Context, req *core_api.Ad
 			Attrs:     int64(core_api.Attrs_None),
 		}})
 		return err2
+	}, func() error {
+		if _, err = s.CloudMindContent.CreateHot(ctx, &content.CreateHotReq{HotId: file.File.UserId}); err != nil {
+			return err
+		}
+		return nil
 	})
 	return resp, err
 }
