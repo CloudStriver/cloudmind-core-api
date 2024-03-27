@@ -122,15 +122,17 @@ func CoreSubjectToSubject(req *core_api.Subject) *comment.Subject {
 
 func ZoneToCoreZone(req *content.Zone) *core_api.Zone {
 	return &core_api.Zone{
-		Id:    req.Id,
-		Value: req.Value,
+		Id:       req.Id,
+		FatherId: req.FatherId,
+		Value:    req.Value,
 	}
 }
 
 func CoreZoneToZone(req *core_api.Zone) *content.Zone {
 	return &content.Zone{
-		Id:    req.Id,
-		Value: req.Value,
+		Id:       req.Id,
+		FatherId: req.FatherId,
+		Value:    req.Value,
 	}
 }
 
