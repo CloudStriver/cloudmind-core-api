@@ -139,6 +139,7 @@ func UserDetailToUser(req *content.User) *core_api.User {
 		UserId: req.UserId,
 		Name:   req.Name,
 		Url:    req.Url,
+		Tags:   req.Labels,
 	}
 }
 

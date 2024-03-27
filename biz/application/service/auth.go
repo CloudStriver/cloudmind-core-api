@@ -284,6 +284,11 @@ func (s *AuthService) UserInit(ctx context.Context, UserId, Name string) error {
 	}); err != nil {
 		return err
 	}
+	if _, err := s.CloudMindContent.CreateHot(ctx, &content.CreateHotReq{
+		HotId: UserId,
+	}); err != nil {
+		return err
+	}
 
 	data, _ := sonic.Marshal(&message.CreateItemMessage{
 		ItemId:   UserId,

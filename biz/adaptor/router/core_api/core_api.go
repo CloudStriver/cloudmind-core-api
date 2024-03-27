@@ -100,6 +100,10 @@ func Register(r *server.Hertz) {
 		_label.POST("/updateLabel", append(_updatelabelMw(), core_api.UpdateLabel)...)
 	}
 	{
+		_rank := root.Group("/rank", _rankMw()...)
+		_rank.GET("/getHotRanks", append(_gethotranksMw(), core_api.GetHotRanks)...)
+	}
+	{
 		_relation := root.Group("/relation", _relationMw()...)
 		_relation.POST("/createRelation", append(_createrelationMw(), core_api.CreateRelation)...)
 		_relation.POST("/deleteRelation", append(_deleterelationMw(), core_api.DeleteRelation)...)

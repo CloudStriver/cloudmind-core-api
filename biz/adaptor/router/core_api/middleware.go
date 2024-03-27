@@ -660,3 +660,13 @@ func _getzonesMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _rankMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _gethotranksMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}

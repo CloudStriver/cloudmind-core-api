@@ -221,11 +221,21 @@ func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.Crea
 		return resp, nil
 	}
 
+	if req.RelationType == core_api.RelationType_HateType {
+		req.RelationType = core_api.RelationType(content.Action_HateType)
+	}
+
 	userId := ""
 	toName := ""
+	var reqs *content.IncrHotValueReq
 	switch req.ToType {
 	case core_api.TargetType_UserType:
 		userId = req.ToId
+		reqs = &content.IncrHotValueReq{
+			Action:     content.Action(req.RelationType),
+			HotId:      req.ToId,
+			TargetType: content.TargetType_UserType,
+		}
 	case core_api.TargetType_FileType:
 		getFileResp, err := s.CloudMindContent.GetFile(ctx, &content.GetFileReq{
 			FileId: req.ToId,
@@ -236,15 +246,12 @@ func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.Crea
 
 		toName = getFileResp.File.Name
 		userId = getFileResp.File.UserId
-	//case core_api.TargetType_ProductType:
-	//	getProductResp, err := s.CloudMindContent.GetProduct(ctx, &content.GetProductReq{
-	//		ProductId: req.ToId,
-	//	})
-	//	if err != nil {
-	//		return resp, err
-	//	}
-	//	toName = getProductResp.Name
-	//	userId = getProductResp.UserId
+
+		reqs = &content.IncrHotValueReq{
+			Action:     content.Action(req.RelationType),
+			HotId:      req.ToId,
+			TargetType: content.TargetType_FileType,
+		}
 	case core_api.TargetType_PostType:
 		getPostResp, err := s.CloudMindContent.GetPost(ctx, &content.GetPostReq{
 			PostId: req.ToId,
@@ -254,6 +261,14 @@ func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.Crea
 		}
 		toName = getPostResp.Title
 		userId = getPostResp.UserId
+		reqs = &content.IncrHotValueReq{
+			Action:     content.Action(req.RelationType),
+			HotId:      req.ToId,
+			TargetType: content.TargetType_PostType,
+		}
+	}
+	if _, err = s.CloudMindContent.IncrHotValue(ctx, reqs); err != nil {
+		return resp, err
 	}
 
 	userinfo, err := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{
