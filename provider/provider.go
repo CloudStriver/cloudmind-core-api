@@ -40,6 +40,7 @@ type Provider struct {
 	RecommendService    service.IRecommendService
 	ProductService      service.IProductService
 	SliderService       service.ISliderService
+	HotRankService      service.HotRankService
 }
 
 func Get() *Provider {
@@ -68,6 +69,7 @@ var ApplicationSet = wire.NewSet(
 	service.CommentServiceSet,
 	service.ProductServiceSet,
 	service.SliderServiceSet,
+	service.HotRankServiceSet,
 )
 
 var DomainSet = wire.NewSet(

@@ -131,6 +131,12 @@ func (s *PostService) CreatePost(ctx context.Context, req *core_api.CreatePostRe
 		return resp, err
 	}
 
+	if _, err = s.CloudMindContent.CreateHot(ctx, &content.CreateHotReq{
+		HotId: createPostResp.PostId,
+	}); err != nil {
+		return resp, err
+	}
+
 	data, _ := sonic.Marshal(&message.CreateItemMessage{
 		ItemId:   createPostResp.PostId,
 		IsHidden: req.Status == int64(core_api.PostStatus_DraftPostStatus),
@@ -384,14 +390,14 @@ func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (
 	return resp, nil
 }
 
-func (s *PostService) CheckIsMyPost(ctx context.Context, postId, userId string) (post *content.GetPostResp, err error) {
+func (s *PostService) CheckIsMyPost(ctx context.Context, postId, userId string) (*content.GetPostResp, error) {
 	getPostResp, err := s.CloudMindContent.GetPost(ctx, &content.GetPostReq{
 		PostId: postId,
 	})
 	if err != nil {
 		return nil, err
 	}
-	if post.UserId != userId {
+	if getPostResp.UserId != userId {
 		return nil, consts.ErrForbidden
 	}
 	return getPostResp, nil

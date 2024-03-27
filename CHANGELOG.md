@@ -1,30 +1,34 @@
+
+## 2024-03-27
+
+### 🐛 Bug Fixes | Bug 修复
+
+* 修复创建关系参数校验错误的BUG
+
+* 修复修改用户信息参数校验错误的BUG
+
+### ✨ Features | 新功能
+
+* 实现热度排行榜
+
 ## 2024-03-26
 
 ### 🐛 Bug Fixes | Bug 修复
 
+* 修复 relationType参数校验错误
+
+* 修改第三方登陆失败的bug
+
 * 修改文件筛选的bug
 
-### ⚡ Performance Improvements | 优化
-
-*
-
-### ✨ Features | 新功能
-
-*
+* 修复帖子信息修改的bug
 
 ## 2024-03-25
-
-### 🐛 Bug Fixes | Bug 修复
-
-*
-
-### ⚡ Performance Improvements | 优化
-
-* 
 
 ### ✨ Features | 新功能
 
 * 实现敏感词检测功能(注册，修改用户信息，创建帖子，修改帖子)
+
 * 新增文件名/文件类型排序/新增文件类别筛选
 
 ## 2024-03-22
@@ -32,13 +36,15 @@
 ### 🐛 Bug Fixes | Bug 修复
 
 * 创建文件重命名bug
-* 文件筛选
 
 ### ⚡ Performance Improvements | 优化
-
-* 用户，通知，帖子模块添加参数校验
 
 ### ✨ Features | 新功能
 
 * 通知批量删除
+
 * 新增 创建/修改分区API
+
+* 用户，通知，帖子模块添加参数校验
+
+* 文件筛选

@@ -24,4 +24,7 @@ const (
 	FolderSize          = int64(-1)
 	PublicSlider        = 1
 	PrivateSlider       = 2
+	UserRankKey         = "cache:rank:user"
+	FileRankKey         = "cache:rank:file"
+	PostRankKey         = "cache:rank:post"
 )

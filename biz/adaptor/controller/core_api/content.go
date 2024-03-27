@@ -769,7 +769,6 @@ func GetZones(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.GetZonesResp)
-	p := provider.Get()
-	resp, err = p.ZoneService.GetZones(ctx, &req)
-	adaptor.PostProcess(ctx, c, &req, resp, err)
+
+	c.JSON(consts.StatusOK, resp)
 }

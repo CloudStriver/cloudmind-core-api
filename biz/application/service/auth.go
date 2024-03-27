@@ -139,18 +139,14 @@ func (s *AuthService) ThirdLogin(ctx context.Context, code string, authType sts.
 		if err != nil {
 			return "", "", "", err
 		}
-		if _, err = s.CloudMindContent.CreateUser(ctx, &content.CreateUserReq{
-			UserId: createAuthResp.UserId,
-			Name:   data.Name,
-			Sex:    1,
-		}); err != nil {
+		if err = s.UserInit(ctx, createAuthResp.UserId, data.Name); err != nil {
 			return "", "", "", err
 		}
-
 		userId = createAuthResp.UserId
 	} else {
 		userId = loginResp.UserId
 	}
+
 	shortToken, longToken, err = generateShortLongToken(s.Config.Auth.SecretKey, userId, s.Config.Auth.ShortTokenExpire, s.Config.Auth.LongTokenExpire)
 	if err != nil {
 		return "", "", "", consts.ErrAuthentication
@@ -257,44 +253,51 @@ func (s *AuthService) Register(ctx context.Context, req *core_api.RegisterReq) (
 	if err != nil {
 		return resp, err
 	}
-
 	userId := createAuthResp.UserId
-
-	if _, err = s.CloudMindContent.CreateUser(ctx, &content.CreateUserReq{
-		UserId: userId,
-		Name:   req.Name,
-		Sex:    req.Sex,
-	}); err != nil {
+	if err = s.UserInit(ctx, createAuthResp.UserId, req.Name); err != nil {
 		return resp, err
 	}
-
-	if _, err = s.CloudMindTrade.CreateBalance(ctx, &trade.CreateBalanceReq{
-		UserId: userId,
-	}); err != nil {
-		return resp, err
-	}
-
-	if _, err = s.CloudMindSystem.CreateNotificationCount(ctx, &system.CreateNotificationCountReq{
-		UserId: userId,
-	}); err != nil {
-		return resp, err
-	}
-
 	resp.ShortToken, resp.LongToken, err = generateShortLongToken(s.Config.Auth.SecretKey, userId, s.Config.Auth.ShortTokenExpire, s.Config.Auth.LongTokenExpire)
 	if err != nil {
 		return resp, consts.ErrAuthentication
 	}
 	resp.UserId = userId
+	return resp, nil
+}
 
-	data, _ := sonic.Marshal(&message.CreateItemMessage{
-		ItemId:   createAuthResp.UserId,
-		Category: core_api.Category_name[int32(core_api.Category_UserCategory)],
-	})
-	if err = s.CreateItemKq.Push(pconvertor.Bytes2String(data)); err != nil {
-		return resp, err
+func (s *AuthService) UserInit(ctx context.Context, UserId, Name string) error {
+	if _, err := s.CloudMindContent.CreateUser(ctx, &content.CreateUserReq{
+		UserId: UserId,
+		Name:   Name,
+	}); err != nil {
+		return err
 	}
 
-	return resp, nil
+	if _, err := s.CloudMindTrade.CreateBalance(ctx, &trade.CreateBalanceReq{
+		UserId: UserId,
+	}); err != nil {
+		return err
+	}
+
+	if _, err := s.CloudMindSystem.CreateNotificationCount(ctx, &system.CreateNotificationCountReq{
+		UserId: UserId,
+	}); err != nil {
+		return err
+	}
+	if _, err := s.CloudMindContent.CreateHot(ctx, &content.CreateHotReq{
+		HotId: UserId,
+	}); err != nil {
+		return err
+	}
+
+	data, _ := sonic.Marshal(&message.CreateItemMessage{
+		ItemId:   UserId,
+		Category: core_api.Category_name[int32(core_api.Category_UserCategory)],
+	})
+	if err := s.CreateItemKq.Push(pconvertor.Bytes2String(data)); err != nil {
+		return err
+	}
+	return nil
 }
 
 func generateShortLongToken(secretKey, userId string, shortTokenExpire, longTokenExpire int64) (shortToken, longToken string, err error) {
