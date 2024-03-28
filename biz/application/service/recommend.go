@@ -176,7 +176,6 @@ func (s *RecommendService) GetItemByItemId(ctx context.Context, userId string, c
 			return err
 		}
 	case core_api.Category_FileCategory:
-	case core_api.Category_ProductCategory:
 	case core_api.Category_PostCategory:
 		getPostsResp, err := s.CloudMindContent.GetPostsByPostIds(ctx, &content.GetPostsByPostIdsReq{
 			PostIds: itemIds,
@@ -184,6 +183,9 @@ func (s *RecommendService) GetItemByItemId(ctx context.Context, userId string, c
 		if err != nil {
 			return err
 		}
+		getPostsResp.Posts = lo.Filter[*content.Post](getPostsResp.Posts, func(item *content.Post, index int) bool {
+			return item.Status == int64(core_api.PostStatus_PublicPostStatus)
+		})
 		recommends.Posts = make([]*core_api.Post, len(getPostsResp.Posts))
 		if err = mr.Finish(lo.Map(getPostsResp.Posts, func(post *content.Post, i int) func() error {
 			return func() error {
@@ -216,6 +218,7 @@ func (s *RecommendService) GetItemByItemId(ctx context.Context, userId string, c
 		})...); err != nil {
 			return err
 		}
+
 	default:
 	}
 	return nil

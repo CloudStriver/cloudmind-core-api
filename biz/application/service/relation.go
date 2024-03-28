@@ -224,10 +224,38 @@ func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.Crea
 	if req.RelationType == core_api.RelationType_HateType {
 		req.RelationType = core_api.RelationType(content.Action_HateType)
 	}
-
 	userId := ""
 	toName := ""
 	var reqs *content.IncrHotValueReq
+
+	switch req.ToType {
+	case core_api.TargetType_UserType:
+		reqs = &content.IncrHotValueReq{
+			Action:     content.Action(req.RelationType),
+			HotId:      req.ToId,
+			TargetType: content.TargetType_UserType,
+		}
+	case core_api.TargetType_FileType:
+		reqs = &content.IncrHotValueReq{
+			Action:     content.Action(req.RelationType),
+			HotId:      req.ToId,
+			TargetType: content.TargetType_FileType,
+		}
+	case core_api.TargetType_PostType:
+		reqs = &content.IncrHotValueReq{
+			Action:     content.Action(req.RelationType),
+			HotId:      req.ToId,
+			TargetType: content.TargetType_PostType,
+		}
+	}
+	if _, err = s.CloudMindContent.IncrHotValue(ctx, reqs); err != nil {
+		return resp, err
+	}
+
+	if req.ToId == user.GetUserId() {
+		return resp, nil
+	}
+
 	switch req.ToType {
 	case core_api.TargetType_UserType:
 		userId = req.ToId
@@ -267,9 +295,6 @@ func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.Crea
 			TargetType: content.TargetType_PostType,
 		}
 	}
-	if _, err = s.CloudMindContent.IncrHotValue(ctx, reqs); err != nil {
-		return resp, err
-	}
 
 	userinfo, err := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{
 		UserId: user.UserId,
@@ -303,8 +328,6 @@ func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.Crea
 	if err = s.CreateFeedBackKq.Push(pconvertor.Bytes2String(data)); err != nil {
 		return resp, err
 	}
-
-	// 更新热度
 
 	return resp, nil
 }

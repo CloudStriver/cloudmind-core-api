@@ -112,7 +112,7 @@ func (s *ProductService) CreateProduct(ctx context.Context, req *core_api.Create
 		ItemId:   createProductResp.ProductId,
 		IsHidden: req.Status == int64(core_api.ProductStatus_PrivateProductStatus),
 		Labels:   req.Tags,
-		Category: core_api.Category_name[int32(core_api.Category_ProductCategory)],
+		//Category: core_api.Category_name[int32(core_api.Category_ProductCategory)],
 	})
 	if err = s.CreateItemKq.Push(pconvertor.Bytes2String(data)); err != nil {
 		return resp, err
