@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"github.com/CloudStriver/cloudmind-core-api/biz/adaptor"
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/CloudStriver/cloudmind-core-api/biz/domain/service"
@@ -163,10 +162,13 @@ func (s *PostService) UpdatePost(ctx context.Context, req *core_api.UpdatePostRe
 	if err != nil {
 		return resp, err
 	}
-	if req.Status == int64(core_api.PostStatus_PublicPostStatus) {
-		req.Title = post.Title
-		req.Text = post.Text
-
+	if post.Status == int64(core_api.PostStatus_PublicPostStatus) || req.Status == int64(core_api.PostStatus_PublicPostStatus) {
+		if req.Title == "" {
+			req.Title = post.Title
+		}
+		if req.Text == "" {
+			req.Text = post.Text
+		}
 		resp.Keywords, err = s.FiltetContet(ctx, req.IsSure, []*string{&req.Title, &req.Text})
 		if err != nil {
 			return resp, err
@@ -336,7 +338,6 @@ func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (
 	if req.GetOnlyUserId() != "" && req.GetOnlyUserId() == userData.GetUserId() {
 		filter.OnlyStatus = req.OnlyStatus
 	}
-	fmt.Println(filter.OnlyStatus)
 
 	if getPostsResp, err = s.CloudMindContent.GetPosts(ctx, &content.GetPostsReq{
 		SearchOptions:     searchOptions,
