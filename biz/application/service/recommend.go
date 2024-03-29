@@ -6,6 +6,7 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/CloudStriver/cloudmind-core-api/biz/domain/service"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-mq/app/util/message"
@@ -41,7 +42,10 @@ type RecommendService struct {
 func (s *RecommendService) GetLatestRecommend(ctx context.Context, req *core_api.GetLatestRecommendReq) (resp *core_api.GetLatestRecommendResp, err error) {
 	resp = new(core_api.GetLatestRecommendResp)
 	resp.Recommends = new(core_api.Recommends)
-	user := adaptor.ExtractUserMeta(ctx)
+	user, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil {
+		return resp, consts.ErrNotAuthentication
+	}
 	userId := user.GetUserId()
 	if userId == "" {
 		userId = "default"
@@ -63,7 +67,10 @@ func (s *RecommendService) GetLatestRecommend(ctx context.Context, req *core_api
 func (s *RecommendService) GetPopularRecommend(ctx context.Context, req *core_api.GetPopularRecommendReq) (resp *core_api.GetPopularRecommendResp, err error) {
 	resp = new(core_api.GetPopularRecommendResp)
 	resp.Recommends = new(core_api.Recommends)
-	user := adaptor.ExtractUserMeta(ctx)
+	user, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil {
+		return resp, consts.ErrNotAuthentication
+	}
 	userId := user.GetUserId()
 	if userId == "" {
 		userId = "default"
@@ -84,7 +91,10 @@ func (s *RecommendService) GetPopularRecommend(ctx context.Context, req *core_ap
 }
 
 func (s *RecommendService) CreateFeedBack(ctx context.Context, req *core_api.CreateFeedBackReq) (resp *core_api.CreateFeedBackResp, err error) {
-	user := adaptor.ExtractUserMeta(ctx)
+	user, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || user.GetUserId() == "" {
+		return resp, consts.ErrNotAuthentication
+	}
 	data, _ := sonic.Marshal(&message.CreateFeedBackMessage{
 		FeedbackType: req.FeedbackType,
 		UserId:       user.GetUserId(),
@@ -99,7 +109,10 @@ func (s *RecommendService) CreateFeedBack(ctx context.Context, req *core_api.Cre
 func (s *RecommendService) GetRecommendByItem(ctx context.Context, req *core_api.GetRecommendByItemReq) (resp *core_api.GetRecommendByItemResp, err error) {
 	resp = new(core_api.GetRecommendByItemResp)
 	resp.Recommends = new(core_api.Recommends)
-	user := adaptor.ExtractUserMeta(ctx)
+	user, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil {
+		return resp, consts.ErrNotAuthentication
+	}
 	userId := user.GetUserId()
 	if userId == "" {
 		userId = "default"
@@ -123,7 +136,10 @@ func (s *RecommendService) GetRecommendByItem(ctx context.Context, req *core_api
 func (s *RecommendService) GetRecommendByUser(ctx context.Context, req *core_api.GetRecommendByUserReq) (resp *core_api.GetRecommendByUserResp, err error) {
 	resp = new(core_api.GetRecommendByUserResp)
 	resp.Recommends = new(core_api.Recommends)
-	user := adaptor.ExtractUserMeta(ctx)
+	user, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil {
+		return resp, consts.ErrNotAuthentication
+	}
 	userId := user.GetUserId()
 	if userId == "" {
 		userId = "default"
@@ -162,12 +178,16 @@ func (s *RecommendService) GetItemByItemId(ctx context.Context, userId string, c
 					Url:         user.Url,
 					Description: user.Description,
 					Labels:      user.Labels,
+					Followed:    false,
 				}
 				_ = mr.Finish(func() error {
 					s.UserDomainService.LoadFollowCount(ctx, &recommends.Users[i].FollowCount, user.UserId)
 					return nil
 				}, func() error {
 					s.UserDomainService.LoadLabel(ctx, recommends.Users[i].Labels)
+					return nil
+				}, func() error {
+					s.UserDomainService.LoadFollowed(ctx, &recommends.Users[i].Followed, userId, user.UserId)
 					return nil
 				})
 				return nil
@@ -176,7 +196,6 @@ func (s *RecommendService) GetItemByItemId(ctx context.Context, userId string, c
 			return err
 		}
 	case core_api.Category_FileCategory:
-	case core_api.Category_ProductCategory:
 	case core_api.Category_PostCategory:
 		getPostsResp, err := s.CloudMindContent.GetPostsByPostIds(ctx, &content.GetPostsByPostIdsReq{
 			PostIds: itemIds,
@@ -184,6 +203,9 @@ func (s *RecommendService) GetItemByItemId(ctx context.Context, userId string, c
 		if err != nil {
 			return err
 		}
+		getPostsResp.Posts = lo.Filter[*content.Post](getPostsResp.Posts, func(item *content.Post, index int) bool {
+			return item.Status == int64(core_api.PostStatus_PublicPostStatus)
+		})
 		recommends.Posts = make([]*core_api.Post, len(getPostsResp.Posts))
 		if err = mr.Finish(lo.Map(getPostsResp.Posts, func(post *content.Post, i int) func() error {
 			return func() error {
@@ -216,6 +238,7 @@ func (s *RecommendService) GetItemByItemId(ctx context.Context, userId string, c
 		})...); err != nil {
 			return err
 		}
+
 	default:
 	}
 	return nil

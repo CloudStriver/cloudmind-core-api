@@ -38,8 +38,8 @@ type NotificationService struct {
 }
 
 func (s *NotificationService) DeleteNotifications(ctx context.Context, req *core_api.DeleteNotificationsReq) (resp *core_api.DeleteNotificationsResp, err error) {
-	user := adaptor.ExtractUserMeta(ctx)
-	if user.GetUserId() == "" {
+	user, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || user.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 	data, _ := sonic.Marshal(message.DeleteNotificationsMessage{
@@ -55,8 +55,8 @@ func (s *NotificationService) DeleteNotifications(ctx context.Context, req *core
 
 func (s *NotificationService) GetNotifications(ctx context.Context, req *core_api.GetNotificationsReq) (resp *core_api.GetNotificationsResp, err error) {
 	resp = new(core_api.GetNotificationsResp)
-	user := adaptor.ExtractUserMeta(ctx)
-	if user.GetUserId() == "" {
+	user, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || user.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 
@@ -83,7 +83,10 @@ func (s *NotificationService) GetNotifications(ctx context.Context, req *core_ap
 
 func (s *NotificationService) GetNotificationCount(ctx context.Context, req *core_api.GetNotificationCountReq) (resp *core_api.GetNotificationCountResp, err error) {
 	resp = new(core_api.GetNotificationCountResp)
-	user := adaptor.ExtractUserMeta(ctx)
+	user, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil {
+		return resp, consts.ErrNotAuthentication
+	}
 	if user.GetUserId() != "" {
 		getNotificationCountResp, err := s.CloudMindSystem.GetNotificationCount(ctx, &system.GetNotificationCountReq{
 			UserId: user.UserId,

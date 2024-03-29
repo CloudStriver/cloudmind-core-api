@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
+	"github.com/CloudStriver/go-pkg/utils/pconvertor"
 	"github.com/CloudStriver/go-pkg/utils/util"
 	"github.com/CloudStriver/go-pkg/utils/util/log"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/basic"
@@ -28,24 +29,17 @@ func ExtractContext(ctx context.Context) (*app.RequestContext, error) {
 	return c, nil
 }
 
-func ExtractMeta(ctx context.Context) (*basic.UserMeta, *basic.Extra) {
-	return ExtractUserMeta(ctx), ExtractExtra(ctx)
-}
-
-func ExtractUserMeta(ctx context.Context) (user *basic.UserMeta) {
+func ExtractUserMeta(ctx context.Context) (user *basic.UserMeta, err error) {
 	user = new(basic.UserMeta)
-	var err error
-	defer func() {
-		if err != nil {
-			log.CtxInfo(ctx, "extract user meta fail, err=%v", err)
-		}
-	}()
 	c, err := ExtractContext(ctx)
 	if err != nil {
 		return
 	}
 	tokenString := c.GetHeader("Authorization")
-	token, err := jwt.Parse(string(tokenString), func(_ *jwt.Token) (interface{}, error) {
+	if pconvertor.Bytes2String(tokenString) == "" {
+		return
+	}
+	token, err := jwt.Parse(pconvertor.Bytes2String(tokenString), func(_ *jwt.Token) (interface{}, error) {
 		return jwt.ParseECPublicKeyFromPEM([]byte(config.GetConfig().Auth.PublicKey))
 	})
 	if err != nil {

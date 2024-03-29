@@ -60,6 +60,11 @@ func NewProvider() (*Provider, error) {
 		PlatformRelation: platFormRelation,
 		PlatFormComment:  platFormComment,
 	}
+	userDomainService := &service.UserDomainService{
+		Config:           configConfig,
+		PlatFormRelation: platFormRelation,
+		PlatFormComment:  platFormComment,
+	}
 	createItemKq := kq.NewCreateItemKq(configConfig)
 	updateItemKq := kq.NewUpdateItemKq(configConfig)
 	deleteItemKq := kq.NewDeleteItemKq(configConfig)
@@ -70,6 +75,7 @@ func NewProvider() (*Provider, error) {
 		PlatFormRelation:  platFormRelation,
 		PlatFormComment:   platFormComment,
 		CloudMindSts:      cloudMindSts,
+		UserDomainService: userDomainService,
 		CreateItemKq:      createItemKq,
 		UpdateItemKq:      updateItemKq,
 		DeleteItemKq:      deleteItemKq,
@@ -101,11 +107,6 @@ func NewProvider() (*Provider, error) {
 		PostDomainService:    postDomainService,
 		CreateNotificationKq: createNotificationsKq,
 		CreateFeedBackKq:     createFeedBackKq,
-	}
-	userDomainService := &service.UserDomainService{
-		Config:           configConfig,
-		PlatFormRelation: platFormRelation,
-		PlatFormComment:  platFormComment,
 	}
 	userService := &service2.UserService{
 		Config:            configConfig,

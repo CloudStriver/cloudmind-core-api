@@ -46,6 +46,7 @@ type PostService struct {
 	PlatFormRelation  platform_relation.IPlatFormRelation
 	PlatFormComment   platform_comment.IPlatFormComment
 	CloudMindSts      cloudmind_sts.ICloudMindSts
+	UserDomainService service.IUserDomainService
 	CreateItemKq      *kq.CreateItemKq
 	UpdateItemKq      *kq.UpdateItemKq
 	DeleteItemKq      *kq.DeleteItemKq
@@ -91,8 +92,8 @@ func (s *PostService) FiltetContet(ctx context.Context, IsSure bool, contents []
 
 func (s *PostService) CreatePost(ctx context.Context, req *core_api.CreatePostReq) (resp *core_api.CreatePostResp, err error) {
 	resp = new(core_api.CreatePostResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 
@@ -152,8 +153,9 @@ func (s *PostService) CreatePost(ctx context.Context, req *core_api.CreatePostRe
 }
 
 func (s *PostService) UpdatePost(ctx context.Context, req *core_api.UpdatePostReq) (resp *core_api.UpdatePostResp, err error) {
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	resp = new(core_api.UpdatePostResp)
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 
@@ -161,10 +163,13 @@ func (s *PostService) UpdatePost(ctx context.Context, req *core_api.UpdatePostRe
 	if err != nil {
 		return resp, err
 	}
-	if req.Status == int64(core_api.PostStatus_PublicPostStatus) {
-		req.Title = post.Title
-		req.Text = post.Text
-
+	if post.Status == int64(core_api.PostStatus_PublicPostStatus) || req.Status == int64(core_api.PostStatus_PublicPostStatus) {
+		if req.Title == "" {
+			req.Title = post.Title
+		}
+		if req.Text == "" {
+			req.Text = post.Text
+		}
 		resp.Keywords, err = s.FiltetContet(ctx, req.IsSure, []*string{&req.Title, &req.Text})
 		if err != nil {
 			return resp, err
@@ -203,8 +208,8 @@ func (s *PostService) UpdatePost(ctx context.Context, req *core_api.UpdatePostRe
 }
 
 func (s *PostService) DeletePost(ctx context.Context, req *core_api.DeletePostReq) (resp *core_api.DeletePostResp, err error) {
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 	// 只能删除自己的帖子
@@ -232,7 +237,7 @@ func (s *PostService) DeletePost(ctx context.Context, req *core_api.DeletePostRe
 }
 
 func (s *PostService) GetPost(ctx context.Context, req *core_api.GetPostReq) (resp *core_api.GetPostResp, err error) {
-	userData := adaptor.ExtractUserMeta(ctx)
+	userData, err := adaptor.ExtractUserMeta(ctx)
 	var res *content.GetPostResp
 	if res, err = s.CloudMindContent.GetPost(ctx, &content.GetPostReq{
 		PostId: req.PostId,
@@ -286,6 +291,9 @@ func (s *PostService) GetPost(ctx context.Context, req *core_api.GetPostReq) (re
 	}, func() error {
 		s.PostDomainService.LoadLabels(ctx, resp.Tags)
 		return nil
+	}, func() error {
+		s.UserDomainService.LoadFollowed(ctx, &resp.Author.Followed, userData.GetUserId(), res.UserId)
+		return nil
 	}); err != nil {
 		return resp, err
 	}
@@ -294,7 +302,10 @@ func (s *PostService) GetPost(ctx context.Context, req *core_api.GetPostReq) (re
 
 func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (resp *core_api.GetPostsResp, err error) {
 	resp = new(core_api.GetPostsResp)
-	userData := adaptor.ExtractUserMeta(ctx)
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil {
+		return resp, consts.ErrNotAuthentication
+	}
 	var (
 		getPostsResp  *content.GetPostsResp
 		searchOptions *content.SearchOptions
@@ -331,7 +342,7 @@ func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (
 	}
 
 	// 查看的自己的
-	if req.GetOnlyUserId() == userData.GetUserId() {
+	if req.GetOnlyUserId() != "" && req.GetOnlyUserId() == userData.GetUserId() {
 		filter.OnlyStatus = req.OnlyStatus
 	}
 

@@ -46,11 +46,10 @@ type ProductService struct {
 }
 
 func (s *ProductService) CreateProduct(ctx context.Context, req *core_api.CreateProductReq) (resp *core_api.CreateProductResp, err error) {
-	user := adaptor.ExtractUserMeta(ctx)
-	if user.GetUserId() == "" {
+	user, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || user.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
-
 	switch req.Type {
 	case core_api.Product_Type_Flow_Type:
 		updateBalanceResp, err := s.CloudMindTrade.UpdateBalance(ctx, &trade.UpdateBalanceReq{
@@ -112,7 +111,7 @@ func (s *ProductService) CreateProduct(ctx context.Context, req *core_api.Create
 		ItemId:   createProductResp.ProductId,
 		IsHidden: req.Status == int64(core_api.ProductStatus_PrivateProductStatus),
 		Labels:   req.Tags,
-		Category: core_api.Category_name[int32(core_api.Category_ProductCategory)],
+		//Category: core_api.Category_name[int32(core_api.Category_ProductCategory)],
 	})
 	if err = s.CreateItemKq.Push(pconvertor.Bytes2String(data)); err != nil {
 		return resp, err
@@ -121,8 +120,8 @@ func (s *ProductService) CreateProduct(ctx context.Context, req *core_api.Create
 }
 
 func (s *ProductService) UpdateProduct(ctx context.Context, req *core_api.UpdateProductReq) (resp *core_api.UpdateProductResp, err error) {
-	user := adaptor.ExtractUserMeta(ctx)
-	if user.GetUserId() == "" {
+	user, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || user.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 
@@ -215,8 +214,8 @@ func (s *ProductService) UpdateProduct(ctx context.Context, req *core_api.Update
 }
 
 func (s *ProductService) DeleteProduct(ctx context.Context, req *core_api.DeleteProductReq) (resp *core_api.DeleteProductResp, err error) {
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 
@@ -242,7 +241,10 @@ func (s *ProductService) DeleteProduct(ctx context.Context, req *core_api.Delete
 }
 
 func (s *ProductService) GetProduct(ctx context.Context, req *core_api.GetProductReq) (resp *core_api.GetProductResp, err error) {
-	userData := adaptor.ExtractUserMeta(ctx)
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil {
+		return resp, consts.ErrNotAuthentication
+	}
 	var res *content.GetProductResp
 	if res, err = s.CloudMindContent.GetProduct(ctx, &content.GetProductReq{
 		ProductId: req.ProductId,
@@ -289,7 +291,10 @@ func (s *ProductService) GetProduct(ctx context.Context, req *core_api.GetProduc
 
 func (s *ProductService) GetProducts(ctx context.Context, req *core_api.GetProductsReq) (resp *core_api.GetProductsResp, err error) {
 	resp = new(core_api.GetProductsResp)
-	userData := adaptor.ExtractUserMeta(ctx)
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil {
+		return resp, consts.ErrNotAuthentication
+	}
 	var (
 		getProductsResp *content.GetProductsResp
 		searchOptions   *content.SearchOptions

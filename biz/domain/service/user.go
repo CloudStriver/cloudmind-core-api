@@ -15,6 +15,7 @@ import (
 type IUserDomainService interface {
 	LoadFollowCount(ctx context.Context, followCount *int64, userId string)
 	LoadLabel(ctx context.Context, labels []string)
+	LoadFollowed(ctx context.Context, followed *bool, fromUserId string, toUserId string)
 }
 type UserDomainService struct {
 	Config           *config.Config
@@ -27,6 +28,18 @@ var UserDomainServiceSet = wire.NewSet(
 	wire.Bind(new(IUserDomainService), new(*UserDomainService)),
 )
 
+func (s *UserDomainService) LoadFollowed(ctx context.Context, followed *bool, fromUserId string, toUserId string) {
+	getRelationResp, err := s.PlatFormRelation.GetRelation(ctx, &relation.GetRelationReq{
+		FromType:     int64(core_api.TargetType_UserType),
+		FromId:       fromUserId,
+		ToType:       int64(core_api.TargetType_UserType),
+		ToId:         toUserId,
+		RelationType: int64(core_api.RelationType_FollowType),
+	})
+	if err == nil {
+		*followed = getRelationResp.Ok
+	}
+}
 func (s *UserDomainService) LoadLabel(ctx context.Context, labels []string) {
 	getLabelsResp, err := s.PlatFormComment.GetLabelsInBatch(ctx, &comment.GetLabelsInBatchReq{
 		LabelIds: labels,

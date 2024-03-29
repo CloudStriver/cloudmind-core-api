@@ -358,8 +358,8 @@ func (s *AuthService) SetPasswordByEmail(ctx context.Context, req *core_api.SetP
 
 func (s *AuthService) SetPasswordByPassword(ctx context.Context, req *core_api.SetPasswordByPasswordReq) (resp *core_api.SetPasswordByPasswordResp, err error) {
 	resp = new(core_api.SetPasswordByPasswordResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 	if _, err = s.CloudMindSts.SetPassword(ctx, &sts.SetPasswordReq{
@@ -378,8 +378,8 @@ func (s *AuthService) SetPasswordByPassword(ctx context.Context, req *core_api.S
 
 func (s *AuthService) AskUploadAvatar(ctx context.Context, req *core_api.AskUploadAvatarReq) (resp *core_api.AskUploadAvatarResp, err error) {
 	resp = new(core_api.AskUploadAvatarResp)
-	user := adaptor.ExtractUserMeta(ctx)
-	if user.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 	genCosStsResp, err := s.CloudMindSts.GenCosSts(ctx, &sts.GenCosStsReq{

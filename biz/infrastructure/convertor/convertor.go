@@ -189,8 +189,8 @@ func NotificationToCoreNotification(in *system.Notification) *core_api.Notificat
 		FromName:       msg.FromName,
 		FromId:         in.SourceUserId,
 		ToName:         msg.ToName,
-		ToId:           in.TargetUserId,
-		ToType:         in.TargetType,
+		ToId:           in.SourceContentId,
+		ToUserId:       in.TargetUserId,
 		Type:           in.Type,
 		CreateTime:     in.CreateTime,
 	}
