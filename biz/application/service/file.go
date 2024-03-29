@@ -407,9 +407,11 @@ func (s *FileService) UpdateFile(ctx context.Context, req *core_api.UpdateFileRe
 		UserId: userData.UserId,
 		Name:   req.Name,
 	}
-	if _, err = s.CloudMindContent.UpdateFile(ctx, &content.UpdateFileReq{File: file}); err != nil {
+	var res *content.UpdateFileResp
+	if res, err = s.CloudMindContent.UpdateFile(ctx, &content.UpdateFileReq{File: file}); err != nil {
 		return resp, err
 	}
+	resp.Name = res.Name
 	return resp, nil
 }
 

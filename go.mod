@@ -3,8 +3,8 @@ module github.com/CloudStriver/cloudmind-core-api
 go 1.20
 
 require (
-	github.com/CloudStriver/go-pkg v0.0.0-20240206060942-84060a3dd273
-	github.com/CloudStriver/service-idl-gen-go v0.0.0-20240328081708-6b8550b22aa9
+	github.com/CloudStriver/go-pkg v0.0.0-20240329084540-20ca37a52fea
+	github.com/CloudStriver/service-idl-gen-go v0.0.0-20240329123426-c304cb6096e9
 	github.com/bytedance/sonic v1.10.2
 	github.com/cloudwego/hertz v0.7.3
 	github.com/golang-jwt/jwt/v4 v4.5.0
@@ -21,7 +21,7 @@ require (
 	google.golang.org/protobuf v1.32.0
 )
 
-replace github.com/CloudStriver/service-idl-gen-go => ../service-idl-gen-go
+//replace github.com/CloudStriver/service-idl-gen-go => ../service-idl-gen-go
 
 require (
 	github.com/CloudStriver/cloudmind-mq v1.0.12-0.20240322023843-0aabf057d153 // indirect
