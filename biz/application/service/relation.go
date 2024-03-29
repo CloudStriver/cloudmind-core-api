@@ -167,8 +167,8 @@ func (s *RelationService) GetToRelations(ctx context.Context, req *core_api.GetT
 }
 
 func (s *RelationService) DeleteRelation(ctx context.Context, req *core_api.DeleteRelationReq) (resp *core_api.DeleteRelationResp, err error) {
-	user := adaptor.ExtractUserMeta(ctx)
-	if user.GetUserId() == "" {
+	user, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || user.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 	if _, err = s.PlatFormRelation.DeleteRelation(ctx, &relation.DeleteRelationReq{
@@ -201,8 +201,8 @@ func (s *RelationService) GetRelation(ctx context.Context, req *core_api.GetRela
 }
 
 func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.CreateRelationReq) (resp *core_api.CreateRelationResp, err error) {
-	user := adaptor.ExtractUserMeta(ctx)
-	if user.GetUserId() == "" {
+	user, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || user.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 

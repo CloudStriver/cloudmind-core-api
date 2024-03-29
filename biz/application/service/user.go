@@ -99,8 +99,8 @@ func (s *UserService) GetUser(ctx context.Context, req *core_api.GetUserReq) (re
 
 func (s *UserService) UpdateUser(ctx context.Context, req *core_api.UpdateUserReq) (resp *core_api.UpdateUserResp, err error) {
 	resp = new(core_api.UpdateUserResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 
@@ -139,8 +139,8 @@ func (s *UserService) UpdateUser(ctx context.Context, req *core_api.UpdateUserRe
 }
 
 func (s *UserService) GetUserDetail(ctx context.Context, _ *core_api.GetUserDetailReq) (resp *core_api.GetUserDetailResp, err error) {
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 	var (

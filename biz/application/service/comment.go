@@ -41,7 +41,10 @@ type CommentService struct {
 
 func (s *CommentService) GetComment(ctx context.Context, req *core_api.GetCommentReq) (resp *core_api.GetCommentResp, err error) {
 	resp = new(core_api.GetCommentResp)
-	userData := adaptor.ExtractUserMeta(ctx)
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil {
+		return resp, consts.ErrNotAuthentication
+	}
 	var res *comment.GetCommentResp
 	if res, err = s.PlatformComment.GetComment(ctx, &comment.GetCommentReq{CommentId: req.CommentId}); err != nil {
 		return resp, err
@@ -68,7 +71,10 @@ func (s *CommentService) GetComment(ctx context.Context, req *core_api.GetCommen
 
 func (s *CommentService) GetComments(ctx context.Context, req *core_api.GetCommentsReq) (resp *core_api.GetCommentsResp, err error) {
 	resp = new(core_api.GetCommentsResp)
-	userData := adaptor.ExtractUserMeta(ctx)
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil {
+		return resp, consts.ErrNotAuthentication
+	}
 	var res *comment.GetCommentListResp
 	p := convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward)
 	if res, err = s.PlatformComment.GetCommentList(ctx, &comment.GetCommentListReq{FilterOptions: &comment.CommentFilterOptions{OnlyUserId: req.OnlyUserId, OnlyAtUserId: req.OnlyAtUserId, OnlyCommentId: req.OnlyCommentId, OnlySubjectId: req.OnlySubjectId, OnlyRootId: req.OnlyRootId, OnlyFatherId: req.OnlyFatherId, OnlyState: req.OnlyState, OnlyAttrs: req.OnlyAttrs}, Pagination: p}); err != nil {
@@ -102,8 +108,8 @@ func (s *CommentService) GetComments(ctx context.Context, req *core_api.GetComme
 
 func (s *CommentService) CreateComment(ctx context.Context, req *core_api.CreateCommentReq) (resp *core_api.CreateCommentResp, err error) {
 	resp = new(core_api.CreateCommentResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 	var res *comment.CreateCommentResp
@@ -120,8 +126,8 @@ func (s *CommentService) CreateComment(ctx context.Context, req *core_api.Create
 
 func (s *CommentService) UpdateComment(ctx context.Context, req *core_api.UpdateCommentReq) (resp *core_api.UpdateCommentResp, err error) {
 	resp = new(core_api.UpdateCommentResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 
@@ -139,8 +145,8 @@ func (s *CommentService) UpdateComment(ctx context.Context, req *core_api.Update
 
 func (s *CommentService) DeleteComment(ctx context.Context, req *core_api.DeleteCommentReq) (resp *core_api.DeleteCommentResp, err error) {
 	resp = new(core_api.DeleteCommentResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 	var ok bool
@@ -168,8 +174,8 @@ func (s *CommentService) DeleteComment(ctx context.Context, req *core_api.Delete
 
 func (s *CommentService) SetCommentAttrs(ctx context.Context, req *core_api.SetCommentAttrsReq) (resp *core_api.SetCommentAttrsResp, err error) {
 	resp = new(core_api.SetCommentAttrsResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 	var res *comment.GetCommentResp
@@ -186,8 +192,8 @@ func (s *CommentService) SetCommentAttrs(ctx context.Context, req *core_api.SetC
 
 func (s *CommentService) GetCommentSubject(ctx context.Context, req *core_api.GetCommentSubjectReq) (resp *core_api.GetCommentSubjectResp, err error) {
 	resp = new(core_api.GetCommentSubjectResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 	var res *comment.GetCommentSubjectResp
@@ -200,8 +206,8 @@ func (s *CommentService) GetCommentSubject(ctx context.Context, req *core_api.Ge
 
 func (s *CommentService) UpdateCommentSubject(ctx context.Context, req *core_api.UpdateCommentSubjectReq) (resp *core_api.UpdateCommentSubjectResp, err error) {
 	resp = new(core_api.UpdateCommentSubjectResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 	var res *comment.GetCommentSubjectResp
@@ -219,8 +225,8 @@ func (s *CommentService) UpdateCommentSubject(ctx context.Context, req *core_api
 
 func (s *CommentService) DeleteCommentSubject(ctx context.Context, req *core_api.DeleteCommentSubjectReq) (resp *core_api.DeleteCommentSubjectResp, err error) {
 	resp = new(core_api.DeleteCommentSubjectResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 	var res *comment.GetCommentSubjectResp

@@ -6,6 +6,7 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/CloudStriver/cloudmind-core-api/biz/domain/service"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-mq/app/util/message"
@@ -41,7 +42,10 @@ type RecommendService struct {
 func (s *RecommendService) GetLatestRecommend(ctx context.Context, req *core_api.GetLatestRecommendReq) (resp *core_api.GetLatestRecommendResp, err error) {
 	resp = new(core_api.GetLatestRecommendResp)
 	resp.Recommends = new(core_api.Recommends)
-	user := adaptor.ExtractUserMeta(ctx)
+	user, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil {
+		return resp, consts.ErrNotAuthentication
+	}
 	userId := user.GetUserId()
 	if userId == "" {
 		userId = "default"
@@ -63,7 +67,10 @@ func (s *RecommendService) GetLatestRecommend(ctx context.Context, req *core_api
 func (s *RecommendService) GetPopularRecommend(ctx context.Context, req *core_api.GetPopularRecommendReq) (resp *core_api.GetPopularRecommendResp, err error) {
 	resp = new(core_api.GetPopularRecommendResp)
 	resp.Recommends = new(core_api.Recommends)
-	user := adaptor.ExtractUserMeta(ctx)
+	user, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil {
+		return resp, consts.ErrNotAuthentication
+	}
 	userId := user.GetUserId()
 	if userId == "" {
 		userId = "default"
@@ -84,7 +91,10 @@ func (s *RecommendService) GetPopularRecommend(ctx context.Context, req *core_ap
 }
 
 func (s *RecommendService) CreateFeedBack(ctx context.Context, req *core_api.CreateFeedBackReq) (resp *core_api.CreateFeedBackResp, err error) {
-	user := adaptor.ExtractUserMeta(ctx)
+	user, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || user.GetUserId() == "" {
+		return resp, consts.ErrNotAuthentication
+	}
 	data, _ := sonic.Marshal(&message.CreateFeedBackMessage{
 		FeedbackType: req.FeedbackType,
 		UserId:       user.GetUserId(),
@@ -99,7 +109,10 @@ func (s *RecommendService) CreateFeedBack(ctx context.Context, req *core_api.Cre
 func (s *RecommendService) GetRecommendByItem(ctx context.Context, req *core_api.GetRecommendByItemReq) (resp *core_api.GetRecommendByItemResp, err error) {
 	resp = new(core_api.GetRecommendByItemResp)
 	resp.Recommends = new(core_api.Recommends)
-	user := adaptor.ExtractUserMeta(ctx)
+	user, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil {
+		return resp, consts.ErrNotAuthentication
+	}
 	userId := user.GetUserId()
 	if userId == "" {
 		userId = "default"
@@ -123,7 +136,10 @@ func (s *RecommendService) GetRecommendByItem(ctx context.Context, req *core_api
 func (s *RecommendService) GetRecommendByUser(ctx context.Context, req *core_api.GetRecommendByUserReq) (resp *core_api.GetRecommendByUserResp, err error) {
 	resp = new(core_api.GetRecommendByUserResp)
 	resp.Recommends = new(core_api.Recommends)
-	user := adaptor.ExtractUserMeta(ctx)
+	user, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil {
+		return resp, consts.ErrNotAuthentication
+	}
 	userId := user.GetUserId()
 	if userId == "" {
 		userId = "default"

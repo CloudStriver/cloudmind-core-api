@@ -34,8 +34,8 @@ var ZoneServiceSet = wire.NewSet(
 
 func (s *ZoneService) GetZone(ctx context.Context, req *core_api.GetZoneReq) (resp *core_api.GetZoneResp, err error) {
 	resp = new(core_api.GetZoneResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 
@@ -67,8 +67,8 @@ func (s *ZoneService) GetZones(ctx context.Context, req *core_api.GetZonesReq) (
 
 func (s *ZoneService) CreateZone(ctx context.Context, req *core_api.CreateZoneReq) (resp *core_api.CreateZoneResp, err error) {
 	resp = new(core_api.CreateZoneResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 
@@ -86,8 +86,8 @@ func (s *ZoneService) CreateZone(ctx context.Context, req *core_api.CreateZoneRe
 
 func (s *ZoneService) UpdateZone(ctx context.Context, req *core_api.UpdateZoneReq) (resp *core_api.UpdateZoneResp, err error) {
 	resp = new(core_api.UpdateZoneResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 
@@ -100,8 +100,8 @@ func (s *ZoneService) UpdateZone(ctx context.Context, req *core_api.UpdateZoneRe
 
 func (s *ZoneService) DeleteZone(ctx context.Context, req *core_api.DeleteZoneReq) (resp *core_api.DeleteZoneResp, err error) {
 	resp = new(core_api.DeleteZoneResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 

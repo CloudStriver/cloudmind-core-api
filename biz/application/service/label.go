@@ -34,8 +34,8 @@ type LabelService struct {
 
 func (s *LabelService) CreateLabel(ctx context.Context, req *core_api.CreateLabelReq) (resp *core_api.CreateLabelResp, err error) {
 	resp = new(core_api.CreateLabelResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 	var res *comment.CreateLabelResp
@@ -48,8 +48,8 @@ func (s *LabelService) CreateLabel(ctx context.Context, req *core_api.CreateLabe
 
 func (s *LabelService) DeleteLabel(ctx context.Context, req *core_api.DeleteLabelReq) (resp *core_api.DeleteLabelResp, err error) {
 	resp = new(core_api.DeleteLabelResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 	if _, err = s.PlatformComment.DeleteLabel(ctx, &comment.DeleteLabelReq{Id: req.LabelId}); err != nil {
@@ -84,8 +84,8 @@ func (s *LabelService) GetLabelsInBatch(ctx context.Context, req *core_api.GetLa
 
 func (s *LabelService) UpdateLabel(ctx context.Context, req *core_api.UpdateLabelReq) (resp *core_api.UpdateLabelResp, err error) {
 	resp = new(core_api.UpdateLabelResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 	if _, err = s.PlatformComment.UpdateLabel(ctx, &comment.UpdateLabelReq{Label: convertor.CoreLabelToLabel(req.Label)}); err != nil {

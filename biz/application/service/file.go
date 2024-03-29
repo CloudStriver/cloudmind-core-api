@@ -60,8 +60,8 @@ type FileService struct {
 
 func (s *FileService) AskDownloadFile(ctx context.Context, req *core_api.AskDownloadFileReq) (resp *core_api.AskDownloadFileResp, err error) {
 	resp = new(core_api.AskDownloadFileResp)
-	user := adaptor.ExtractUserMeta(ctx)
-	if user.GetUserId() == "" {
+	user, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || user.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 
@@ -96,8 +96,8 @@ func (s *FileService) AskDownloadFile(ctx context.Context, req *core_api.AskDown
 
 func (s *FileService) AskUploadFile(ctx context.Context, req *core_api.AskUploadFileReq) (resp *core_api.AskUploadFileResp, err error) {
 	resp = new(core_api.AskUploadFileResp)
-	user := adaptor.ExtractUserMeta(ctx)
-	if user.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 	//userId := user.GetUserId()
@@ -135,8 +135,8 @@ func (s *FileService) AskUploadFile(ctx context.Context, req *core_api.AskUpload
 
 func (s *FileService) GetPrivateFile(ctx context.Context, req *core_api.GetPrivateFileReq) (resp *core_api.GetPrivateFileResp, err error) {
 	resp = new(core_api.GetPrivateFileResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 
@@ -156,8 +156,8 @@ func (s *FileService) GetPrivateFile(ctx context.Context, req *core_api.GetPriva
 
 func (s *FileService) GetPublicFile(ctx context.Context, req *core_api.GetPublicFileReq) (resp *core_api.GetPublicFileResp, err error) {
 	resp = new(core_api.GetPublicFileResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 
@@ -201,8 +201,8 @@ func (s *FileService) GetPublicFile(ctx context.Context, req *core_api.GetPublic
 
 func (s *FileService) GetPrivateFiles(ctx context.Context, req *core_api.GetPrivateFilesReq) (resp *core_api.GetPrivateFilesResp, err error) {
 	resp = new(core_api.GetPrivateFilesResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 	sort := lo.ToPtr(content.SortOptions_SortOptions_createAtDesc)
@@ -243,7 +243,10 @@ func (s *FileService) GetPrivateFiles(ctx context.Context, req *core_api.GetPriv
 
 func (s *FileService) GetPublicFiles(ctx context.Context, req *core_api.GetPublicFilesReq) (resp *core_api.GetPublicFilesResp, err error) {
 	resp = new(core_api.GetPublicFilesResp)
-	userData := adaptor.ExtractUserMeta(ctx)
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil {
+		return resp, consts.ErrNotAuthentication
+	}
 	var res *content.GetFileListResp
 	var searchOptions *content.SearchOptions
 
@@ -304,8 +307,8 @@ func (s *FileService) GetPublicFiles(ctx context.Context, req *core_api.GetPubli
 
 func (s *FileService) GetRecycleBinFiles(ctx context.Context, req *core_api.GetRecycleBinFilesReq) (resp *core_api.GetRecycleBinFilesResp, err error) {
 	resp = new(core_api.GetRecycleBinFilesResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 
@@ -350,8 +353,8 @@ func (s *FileService) GetFileBySharingCode(ctx context.Context, req *core_api.Ge
 
 func (s *FileService) CreateFile(ctx context.Context, req *core_api.CreateFileReq) (resp *core_api.CreateFileResp, err error) {
 	resp = new(core_api.CreateFileResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 	var res *content.CreateFileResp
@@ -392,8 +395,8 @@ func (s *FileService) CreateFile(ctx context.Context, req *core_api.CreateFileRe
 
 func (s *FileService) UpdateFile(ctx context.Context, req *core_api.UpdateFileReq) (resp *core_api.UpdateFileResp, err error) {
 	resp = new(core_api.UpdateFileResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 	file := &content.File{
@@ -409,8 +412,8 @@ func (s *FileService) UpdateFile(ctx context.Context, req *core_api.UpdateFileRe
 
 func (s *FileService) MoveFile(ctx context.Context, req *core_api.MoveFileReq) (resp *core_api.MoveFileResp, err error) {
 	resp = new(core_api.MoveFileResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 
@@ -454,8 +457,8 @@ func (s *FileService) MoveFile(ctx context.Context, req *core_api.MoveFileReq) (
 
 func (s *FileService) DeleteFile(ctx context.Context, req *core_api.DeleteFileReq) (resp *core_api.DeleteFileResp, err error) {
 	resp = new(core_api.DeleteFileResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 	var res *content.GetFilesByIdsResp
@@ -497,8 +500,8 @@ func (s *FileService) DeleteFile(ctx context.Context, req *core_api.DeleteFileRe
 
 func (s *FileService) EmptyRecycleBin(ctx context.Context, req *core_api.EmptyRecycleBinReq) (resp *core_api.EmptyRecycleBinResp, err error) {
 	resp = new(core_api.EmptyRecycleBinResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 
@@ -511,8 +514,8 @@ func (s *FileService) EmptyRecycleBin(ctx context.Context, req *core_api.EmptyRe
 
 func (s *FileService) CompletelyRemoveFile(ctx context.Context, req *core_api.CompletelyRemoveFileReq) (resp *core_api.CompletelyRemoveFileResp, err error) {
 	resp = new(core_api.CompletelyRemoveFileResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 	var res *content.GetFileResp
@@ -530,8 +533,8 @@ func (s *FileService) CompletelyRemoveFile(ctx context.Context, req *core_api.Co
 
 func (s *FileService) GetShareList(ctx context.Context, req *core_api.GetShareListReq) (resp *core_api.GetShareListResp, err error) {
 	resp = new(core_api.GetShareListResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 
@@ -551,8 +554,8 @@ func (s *FileService) GetShareList(ctx context.Context, req *core_api.GetShareLi
 
 func (s *FileService) CreateShareCode(ctx context.Context, req *core_api.CreateShareCodeReq) (resp *core_api.CreateShareCodeResp, err error) {
 	resp = new(core_api.CreateShareCodeResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 
@@ -591,8 +594,8 @@ func (s *FileService) CreateShareCode(ctx context.Context, req *core_api.CreateS
 
 func (s *FileService) DeleteShareCode(ctx context.Context, req *core_api.DeleteShareCodeReq) (resp *core_api.DeleteShareCodeResp, err error) {
 	resp = new(core_api.DeleteShareCodeResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 	if _, err = s.CloudMindContent.DeleteShareCode(ctx, &content.DeleteShareCodeReq{Code: req.OnlyCode}); err != nil {
@@ -623,8 +626,8 @@ func (s *FileService) ParsingShareCode(ctx context.Context, req *core_api.Parsin
 
 func (s *FileService) SaveFileToPrivateSpace(ctx context.Context, req *core_api.SaveFileToPrivateSpaceReq) (resp *core_api.SaveFileToPrivateSpaceResp, err error) {
 	resp = new(core_api.SaveFileToPrivateSpaceResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 
@@ -692,8 +695,8 @@ func (s *FileService) SaveFileToPrivateSpace(ctx context.Context, req *core_api.
 
 func (s *FileService) AddFileToPublicSpace(ctx context.Context, req *core_api.AddFileToPublicSpaceReq) (resp *core_api.AddFileToPublicSpaceResp, err error) {
 	resp = new(core_api.AddFileToPublicSpaceResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 
@@ -749,8 +752,8 @@ func (s *FileService) AddFileToPublicSpace(ctx context.Context, req *core_api.Ad
 
 func (s *FileService) RecoverRecycleBinFile(ctx context.Context, req *core_api.RecoverRecycleBinFileReq) (resp *core_api.RecoverRecycleBinFileResp, err error) {
 	resp = new(core_api.RecoverRecycleBinFileResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 	var res *content.GetFilesByIdsResp

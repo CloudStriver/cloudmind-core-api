@@ -92,8 +92,8 @@ func (s *PostService) FiltetContet(ctx context.Context, IsSure bool, contents []
 
 func (s *PostService) CreatePost(ctx context.Context, req *core_api.CreatePostReq) (resp *core_api.CreatePostResp, err error) {
 	resp = new(core_api.CreatePostResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 
@@ -154,8 +154,8 @@ func (s *PostService) CreatePost(ctx context.Context, req *core_api.CreatePostRe
 
 func (s *PostService) UpdatePost(ctx context.Context, req *core_api.UpdatePostReq) (resp *core_api.UpdatePostResp, err error) {
 	resp = new(core_api.UpdatePostResp)
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 
@@ -208,8 +208,8 @@ func (s *PostService) UpdatePost(ctx context.Context, req *core_api.UpdatePostRe
 }
 
 func (s *PostService) DeletePost(ctx context.Context, req *core_api.DeletePostReq) (resp *core_api.DeletePostResp, err error) {
-	userData := adaptor.ExtractUserMeta(ctx)
-	if userData.GetUserId() == "" {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
 	// 只能删除自己的帖子
@@ -237,7 +237,7 @@ func (s *PostService) DeletePost(ctx context.Context, req *core_api.DeletePostRe
 }
 
 func (s *PostService) GetPost(ctx context.Context, req *core_api.GetPostReq) (resp *core_api.GetPostResp, err error) {
-	userData := adaptor.ExtractUserMeta(ctx)
+	userData, err := adaptor.ExtractUserMeta(ctx)
 	var res *content.GetPostResp
 	if res, err = s.CloudMindContent.GetPost(ctx, &content.GetPostReq{
 		PostId: req.PostId,
@@ -302,7 +302,10 @@ func (s *PostService) GetPost(ctx context.Context, req *core_api.GetPostReq) (re
 
 func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (resp *core_api.GetPostsResp, err error) {
 	resp = new(core_api.GetPostsResp)
-	userData := adaptor.ExtractUserMeta(ctx)
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil {
+		return resp, consts.ErrNotAuthentication
+	}
 	var (
 		getPostsResp  *content.GetPostsResp
 		searchOptions *content.SearchOptions
