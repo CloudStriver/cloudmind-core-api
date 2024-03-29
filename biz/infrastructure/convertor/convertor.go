@@ -85,6 +85,8 @@ func CoreCommentToComment(req *core_api.Comment) *comment.Comment {
 func CoreLabelToLabel(req *core_api.Label) *comment.Label {
 	return &comment.Label{
 		LabelId: req.LabelId,
+		Zone:    req.Zone,
+		SubZone: req.SubZone,
 		Value:   req.Value,
 	}
 }
@@ -92,6 +94,8 @@ func CoreLabelToLabel(req *core_api.Label) *comment.Label {
 func LabelToCoreLabel(req *comment.Label) *core_api.Label {
 	return &core_api.Label{
 		LabelId: req.LabelId,
+		Zone:    req.Zone,
+		SubZone: req.SubZone,
 		Value:   req.Value,
 	}
 }
