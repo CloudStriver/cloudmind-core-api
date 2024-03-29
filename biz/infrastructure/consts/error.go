@@ -22,9 +22,10 @@ var (
 )
 
 var (
-	ErrFileIsNotDir     = status.Error(30001, "目标文件不是文件夹")
-	ErrNoAccessFile     = status.Error(30002, "您无权访问该文件")
-	ErrFileNotExist     = status.Error(30003, "查询的文件不存在")
-	ErrIllegalOperation = status.Error(30004, "非法操作")
-	ErrShareFileKey     = status.Error(10110, "分享文件提取码错误")
+	ErrFileIsNotDir      = status.Error(30001, "目标文件不是文件夹")
+	ErrNoAccessFile      = status.Error(30002, "您无权访问该文件")
+	ErrFileNotExist      = status.Error(30003, "查询的文件不存在")
+	ErrIllegalOperation  = status.Error(30004, "非法操作")
+	ErrShareFileKey      = status.Error(10110, "分享文件提取码错误")
+	ErrShareCodeNotExist = status.Error(10111, "分享文件链接已失效")
 )

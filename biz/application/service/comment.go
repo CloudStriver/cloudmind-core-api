@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"github.com/CloudStriver/cloudmind-core-api/biz/adaptor"
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/CloudStriver/cloudmind-core-api/biz/domain/service"
@@ -41,7 +40,6 @@ type CommentService struct {
 
 func (s *CommentService) GetComment(ctx context.Context, req *core_api.GetCommentReq) (resp *core_api.GetCommentResp, err error) {
 	resp = new(core_api.GetCommentResp)
-	userData := adaptor.ExtractUserMeta(ctx)
 	var res *comment.GetCommentResp
 	if res, err = s.PlatformComment.GetComment(ctx, &comment.GetCommentReq{CommentId: req.CommentId}); err != nil {
 		return resp, err
@@ -51,13 +49,13 @@ func (s *CommentService) GetComment(ctx context.Context, req *core_api.GetCommen
 		s.CommentDomainService.LoadLikeCount(ctx, resp.Comment) // 点赞量
 		return nil
 	}, func() error {
-		s.CommentDomainService.LoadAuthor(ctx, resp.Comment, userData.GetUserId()) // 作者
+		s.CommentDomainService.LoadAuthor(ctx, resp.Comment, resp.Comment.UserId) // 作者
 		return nil
 	}, func() error {
-		s.CommentDomainService.LoadLiked(ctx, resp.Comment, userData.GetUserId()) // 是否点赞
+		s.CommentDomainService.LoadLiked(ctx, resp.Comment, resp.Comment.UserId) // 是否点赞
 		return nil
 	}, func() error {
-		s.CommentDomainService.LoadHated(ctx, resp.Comment, userData.GetUserId()) // 是否点踩
+		s.CommentDomainService.LoadHated(ctx, resp.Comment, resp.Comment.UserId) // 是否点踩
 		return nil
 	}, func() error {
 		s.CommentDomainService.LoadLabels(ctx, resp.Comment, res.Comment.Labels) // 标签集
@@ -68,7 +66,6 @@ func (s *CommentService) GetComment(ctx context.Context, req *core_api.GetCommen
 
 func (s *CommentService) GetComments(ctx context.Context, req *core_api.GetCommentsReq) (resp *core_api.GetCommentsResp, err error) {
 	resp = new(core_api.GetCommentsResp)
-	userData := adaptor.ExtractUserMeta(ctx)
 	var res *comment.GetCommentListResp
 	p := convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward)
 	if res, err = s.PlatformComment.GetCommentList(ctx, &comment.GetCommentListReq{FilterOptions: &comment.CommentFilterOptions{OnlyUserId: req.OnlyUserId, OnlyAtUserId: req.OnlyAtUserId, OnlyCommentId: req.OnlyCommentId, OnlySubjectId: req.OnlySubjectId, OnlyRootId: req.OnlyRootId, OnlyFatherId: req.OnlyFatherId, OnlyState: req.OnlyState, OnlyAttrs: req.OnlyAttrs}, Pagination: p}); err != nil {
@@ -76,18 +73,17 @@ func (s *CommentService) GetComments(ctx context.Context, req *core_api.GetComme
 	}
 	resp.Comments = lo.Map(res.Comments, func(item *comment.CommentInfo, _ int) *core_api.CommentInfo {
 		c := convertor.CommentInfoToCoreCommentInfo(item)
-		fmt.Printf("[%v]\n", c)
 		_ = mr.Finish(func() error {
 			s.CommentDomainService.LoadLikeCount(ctx, c) // 点赞量
 			return nil
 		}, func() error {
-			s.CommentDomainService.LoadAuthor(ctx, c, userData.GetUserId()) // 作者
+			s.CommentDomainService.LoadAuthor(ctx, c, c.UserId) // 作者
 			return nil
 		}, func() error {
-			s.CommentDomainService.LoadLiked(ctx, c, userData.GetUserId()) // 是否点赞
+			s.CommentDomainService.LoadLiked(ctx, c, c.UserId) // 是否点赞
 			return nil
 		}, func() error {
-			s.CommentDomainService.LoadHated(ctx, c, userData.GetUserId()) // 是否点踩
+			s.CommentDomainService.LoadHated(ctx, c, c.UserId) // 是否点踩
 			return nil
 		}, func() error {
 			s.CommentDomainService.LoadLabels(ctx, c, item.Labels) // 标签集
