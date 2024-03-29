@@ -162,12 +162,16 @@ func (s *RecommendService) GetItemByItemId(ctx context.Context, userId string, c
 					Url:         user.Url,
 					Description: user.Description,
 					Labels:      user.Labels,
+					Followed:    false,
 				}
 				_ = mr.Finish(func() error {
 					s.UserDomainService.LoadFollowCount(ctx, &recommends.Users[i].FollowCount, user.UserId)
 					return nil
 				}, func() error {
 					s.UserDomainService.LoadLabel(ctx, recommends.Users[i].Labels)
+					return nil
+				}, func() error {
+					s.UserDomainService.LoadFollowed(ctx, &recommends.Users[i].Followed, userId, user.UserId)
 					return nil
 				})
 				return nil

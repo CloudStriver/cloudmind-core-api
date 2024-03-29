@@ -46,6 +46,7 @@ type PostService struct {
 	PlatFormRelation  platform_relation.IPlatFormRelation
 	PlatFormComment   platform_comment.IPlatFormComment
 	CloudMindSts      cloudmind_sts.ICloudMindSts
+	UserDomainService service.IUserDomainService
 	CreateItemKq      *kq.CreateItemKq
 	UpdateItemKq      *kq.UpdateItemKq
 	DeleteItemKq      *kq.DeleteItemKq
@@ -289,6 +290,9 @@ func (s *PostService) GetPost(ctx context.Context, req *core_api.GetPostReq) (re
 		return nil
 	}, func() error {
 		s.PostDomainService.LoadLabels(ctx, resp.Tags)
+		return nil
+	}, func() error {
+		s.UserDomainService.LoadFollowed(ctx, &resp.Author.Followed, userData.GetUserId(), res.UserId)
 		return nil
 	}); err != nil {
 		return resp, err
