@@ -181,7 +181,7 @@ func (s *RecommendService) GetItemByItemId(ctx context.Context, userId string, c
 					Followed:    false,
 				}
 				_ = mr.Finish(func() error {
-					s.UserDomainService.LoadFollowCount(ctx, &recommends.Users[i].FollowCount, user.UserId)
+					s.UserDomainService.LoadFollowedCount(ctx, &recommends.Users[i].FollowedCount, user.UserId)
 					return nil
 				}, func() error {
 					s.UserDomainService.LoadLabel(ctx, recommends.Users[i].Labels)

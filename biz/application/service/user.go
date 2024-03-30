@@ -111,6 +111,9 @@ func (s *UserService) GetUser(ctx context.Context, req *core_api.GetUserReq) (re
 	}, func() error {
 		s.UserDomainService.LoadFollowCount(ctx, &resp.FollowCount, req.UserId)
 		return nil
+	}, func() error {
+		s.UserDomainService.LoadFollowedCount(ctx, &resp.FollowedCount, req.UserId)
+		return nil
 	}); err != nil {
 		return resp, err
 	}
