@@ -259,11 +259,6 @@ func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.Crea
 	switch req.ToType {
 	case core_api.TargetType_UserType:
 		userId = req.ToId
-		reqs = &content.IncrHotValueReq{
-			Action:     content.Action(req.RelationType),
-			HotId:      req.ToId,
-			TargetType: content.TargetType_UserType,
-		}
 	case core_api.TargetType_FileType:
 		getFileResp, err := s.CloudMindContent.GetFile(ctx, &content.GetFileReq{
 			FileId: req.ToId,
@@ -275,11 +270,6 @@ func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.Crea
 		toName = getFileResp.File.Name
 		userId = getFileResp.File.UserId
 
-		reqs = &content.IncrHotValueReq{
-			Action:     content.Action(req.RelationType),
-			HotId:      req.ToId,
-			TargetType: content.TargetType_FileType,
-		}
 	case core_api.TargetType_PostType:
 		getPostResp, err := s.CloudMindContent.GetPost(ctx, &content.GetPostReq{
 			PostId: req.ToId,
@@ -289,11 +279,6 @@ func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.Crea
 		}
 		toName = getPostResp.Title
 		userId = getPostResp.UserId
-		reqs = &content.IncrHotValueReq{
-			Action:     content.Action(req.RelationType),
-			HotId:      req.ToId,
-			TargetType: content.TargetType_PostType,
-		}
 	}
 
 	userinfo, err := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{
