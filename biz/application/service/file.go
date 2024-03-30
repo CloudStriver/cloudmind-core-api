@@ -335,6 +335,9 @@ func (s *FileService) GetFileBySharingCode(ctx context.Context, req *core_api.Ge
 	if shareFile.ShareFile.Key != req.Key {
 		return resp, consts.ErrShareFileKey
 	}
+	if shareFile.ShareFile.Status != int64(content.Validity_Validity_expired) {
+		return resp, consts.ErrShareCodeNotExist
+	}
 	p := convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward)
 	sort := lo.ToPtr(content.SortOptions_SortOptions_createAtDesc)
 	if req.SortType != nil {
@@ -404,9 +407,11 @@ func (s *FileService) UpdateFile(ctx context.Context, req *core_api.UpdateFileRe
 		UserId: userData.UserId,
 		Name:   req.Name,
 	}
-	if _, err = s.CloudMindContent.UpdateFile(ctx, &content.UpdateFileReq{File: file}); err != nil {
+	var res *content.UpdateFileResp
+	if res, err = s.CloudMindContent.UpdateFile(ctx, &content.UpdateFileReq{File: file}); err != nil {
 		return resp, err
 	}
+	resp.Name = res.Name
 	return resp, nil
 }
 
@@ -518,14 +523,23 @@ func (s *FileService) CompletelyRemoveFile(ctx context.Context, req *core_api.Co
 	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
-	var res *content.GetFileResp
-	if res, err = s.CloudMindContent.GetFile(ctx, &content.GetFileReq{FileId: req.FileId, IsGetSize: false}); err != nil {
+	var res *content.GetFilesByIdsResp
+	if res, err = s.CloudMindContent.GetFilesByIds(ctx, &content.GetFilesByIdsReq{FileIds: req.FileIds}); err != nil {
 		return resp, err
 	}
-	if res.File.UserId != userData.UserId {
-		return resp, consts.ErrNoAccessFile
+
+	files := make([]*content.FileParameter, len(req.FileIds))
+	for i, file := range res.Files {
+		if file.UserId != userData.UserId {
+			return resp, consts.ErrNoAccessFile
+		}
+		files[i] = &content.FileParameter{
+			FileId:    file.FileId,
+			Path:      file.Path,
+			SpaceSize: file.SpaceSize,
+		}
 	}
-	if _, err = s.CloudMindContent.CompletelyRemoveFile(ctx, &content.CompletelyRemoveFileReq{FileId: req.FileId, SpaceSize: res.File.SpaceSize, Path: res.File.Path}); err != nil {
+	if _, err = s.CloudMindContent.CompletelyRemoveFile(ctx, &content.CompletelyRemoveFileReq{Files: files}); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -742,7 +756,7 @@ func (s *FileService) AddFileToPublicSpace(ctx context.Context, req *core_api.Ad
 		}})
 		return err2
 	}, func() error {
-		if _, err = s.CloudMindContent.CreateHot(ctx, &content.CreateHotReq{HotId: file.File.UserId}); err != nil {
+		if _, err = s.CloudMindContent.CreateHot(ctx, &content.CreateHotReq{HotId: file.File.FileId}); err != nil {
 			return err
 		}
 		return nil

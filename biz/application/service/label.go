@@ -76,9 +76,7 @@ func (s *LabelService) GetLabelsInBatch(ctx context.Context, req *core_api.GetLa
 	if res, err = s.PlatformComment.GetLabelsInBatch(ctx, &comment.GetLabelsInBatchReq{LabelIds: req.LabelIds}); err != nil {
 		return resp, err
 	}
-	resp.Labels = lo.Map(res.Labels, func(item string, _ int) string {
-		return item
-	})
+	resp.Labels = res.Labels
 	return resp, nil
 }
 
@@ -97,10 +95,10 @@ func (s *LabelService) UpdateLabel(ctx context.Context, req *core_api.UpdateLabe
 func (s *LabelService) GetLabels(ctx context.Context, req *core_api.GetLabelsReq) (resp *core_api.GetLabelsResp, err error) {
 	resp = new(core_api.GetLabelsResp)
 	var res *comment.GetLabelsResp
-	//p := convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward)
-	//if res, err = s.PlatformComment.GetLabels(ctx, &comment.GetLabelsReq{Key: req.Key, Pagination: p}); err != nil {
-	//	return resp, err
-	//}
+	p := convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward)
+	if res, err = s.PlatformComment.GetLabels(ctx, &comment.GetLabelsReq{FilterOptions: &comment.LabelFilterOptions{Key: req.Key, Zone: req.Zone, SubZone: req.SubZone}, Pagination: p}); err != nil {
+		return resp, err
+	}
 	resp.Labels = lo.Map(res.Labels, func(item *comment.Label, _ int) *core_api.Label {
 		return convertor.LabelToCoreLabel(item)
 	})

@@ -227,7 +227,6 @@ func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.Crea
 	userId := ""
 	toName := ""
 	var reqs *content.IncrHotValueReq
-
 	switch req.ToType {
 	case core_api.TargetType_UserType:
 		reqs = &content.IncrHotValueReq{
@@ -255,6 +254,7 @@ func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.Crea
 	if req.ToId == user.GetUserId() {
 		return resp, nil
 	}
+<<<<<<< HEAD
 
 	switch req.ToType {
 	case core_api.TargetType_UserType:
@@ -281,6 +281,8 @@ func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.Crea
 		userId = getPostResp.UserId
 	}
 
+=======
+>>>>>>> 9caf2e178b07c3b9b7d518563ccf8a1070da6b6e
 	userinfo, err := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{
 		UserId: user.UserId,
 	})

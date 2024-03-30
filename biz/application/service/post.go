@@ -238,6 +238,10 @@ func (s *PostService) DeletePost(ctx context.Context, req *core_api.DeletePostRe
 
 func (s *PostService) GetPost(ctx context.Context, req *core_api.GetPostReq) (resp *core_api.GetPostResp, err error) {
 	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil {
+		return resp, consts.ErrNotAuthentication
+
+	}
 	var res *content.GetPostResp
 	if res, err = s.CloudMindContent.GetPost(ctx, &content.GetPostReq{
 		PostId: req.PostId,
