@@ -13,6 +13,7 @@ import (
 )
 
 type IUserDomainService interface {
+	LoadFollowedCount(ctx context.Context, followedCount *int64, userId string)
 	LoadFollowCount(ctx context.Context, followCount *int64, userId string)
 	LoadLabel(ctx context.Context, labels []string)
 	LoadFollowed(ctx context.Context, followed *bool, fromUserId string, toUserId string)
@@ -50,7 +51,24 @@ func (s *UserDomainService) LoadLabel(ctx context.Context, labels []string) {
 		})
 	}
 }
+
 func (s *UserDomainService) LoadFollowCount(ctx context.Context, followCount *int64, userId string) {
+	getRelationCountResp, err := s.PlatFormRelation.GetRelationCount(ctx, &relation.GetRelationCountReq{
+		RelationFilterOptions: &relation.GetRelationCountReq_FromFilterOptions{
+			FromFilterOptions: &relation.FromFilterOptions{
+				ToType:   int64(core_api.TargetType_UserType),
+				FromId:   userId,
+				FromType: int64(core_api.TargetType_UserType),
+			},
+		},
+		RelationType: int64(core_api.RelationType_FollowType),
+	})
+	if err == nil {
+		*followCount = getRelationCountResp.Total
+	}
+}
+
+func (s *UserDomainService) LoadFollowedCount(ctx context.Context, followedCount *int64, userId string) {
 	getRelationCountResp, err := s.PlatFormRelation.GetRelationCount(ctx, &relation.GetRelationCountReq{
 		RelationFilterOptions: &relation.GetRelationCountReq_ToFilterOptions{
 			ToFilterOptions: &relation.ToFilterOptions{
@@ -62,6 +80,6 @@ func (s *UserDomainService) LoadFollowCount(ctx context.Context, followCount *in
 		RelationType: int64(core_api.RelationType_FollowType),
 	})
 	if err == nil {
-		*followCount = getRelationCountResp.Total
+		*followedCount = getRelationCountResp.Total
 	}
 }

@@ -254,6 +254,32 @@ func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.Crea
 	if req.ToId == user.GetUserId() {
 		return resp, nil
 	}
+
+	switch req.ToType {
+	case core_api.TargetType_UserType:
+		userId = req.ToId
+	case core_api.TargetType_FileType:
+		getFileResp, err := s.CloudMindContent.GetFile(ctx, &content.GetFileReq{
+			FileId: req.ToId,
+		})
+		if err != nil {
+			return resp, err
+		}
+
+		toName = getFileResp.File.Name
+		userId = getFileResp.File.UserId
+
+	case core_api.TargetType_PostType:
+		getPostResp, err := s.CloudMindContent.GetPost(ctx, &content.GetPostReq{
+			PostId: req.ToId,
+		})
+		if err != nil {
+			return resp, err
+		}
+		toName = getPostResp.Title
+		userId = getPostResp.UserId
+	}
+
 	userinfo, err := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{
 		UserId: user.UserId,
 	})

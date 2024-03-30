@@ -83,18 +83,42 @@ func (s *UserService) FiltetContet(ctx context.Context, IsSure bool, contents []
 }
 
 func (s *UserService) GetUser(ctx context.Context, req *core_api.GetUserReq) (resp *core_api.GetUserResp, err error) {
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil {
+		return resp, consts.ErrNotAuthentication
+	}
 	getUserResp, err := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{UserId: req.UserId})
 	if err != nil {
 		return resp, err
 	}
-	s.UserDomainService.LoadLabel(ctx, getUserResp.Labels)
+	resp = &core_api.GetUserResp{
+		UserId:      req.UserId,
+		Name:        getUserResp.Name,
+		Url:         getUserResp.Url,
+		Description: getUserResp.Description,
+		Sex:         getUserResp.Sex,
+		CreateTime:  getUserResp.CreateTime,
+	}
+	if err = mr.Finish(func() error {
+		s.UserDomainService.LoadLabel(ctx, getUserResp.Labels)
+		resp.Tags = getUserResp.Labels
+		return nil
+	}, func() error {
+		if userData.GetUserId() != req.UserId {
+			s.UserDomainService.LoadFollowed(ctx, &resp.Followed, userData.GetUserId(), req.UserId)
+		}
+		return nil
+	}, func() error {
+		s.UserDomainService.LoadFollowCount(ctx, &resp.FollowCount, req.UserId)
+		return nil
+	}, func() error {
+		s.UserDomainService.LoadFollowedCount(ctx, &resp.FollowedCount, req.UserId)
+		return nil
+	}); err != nil {
+		return resp, err
+	}
 
-	return &core_api.GetUserResp{
-		UserId: req.UserId,
-		Name:   getUserResp.Name,
-		Url:    getUserResp.Url,
-		Tags:   getUserResp.Labels,
-	}, nil
+	return resp, nil
 }
 
 func (s *UserService) UpdateUser(ctx context.Context, req *core_api.UpdateUserReq) (resp *core_api.UpdateUserResp, err error) {
@@ -178,7 +202,8 @@ func (s *UserService) GetUserDetail(ctx context.Context, _ *core_api.GetUserDeta
 		Flow:        getBalanceResp.Flow,
 		Momery:      getBalanceResp.Memory,
 		Point:       getBalanceResp.Point,
-		Labels:      getUserResp.Labels,
+		Tags:        getUserResp.Labels,
+		CreateTime:  getUserResp.CreateTime,
 	}, nil
 }
 
