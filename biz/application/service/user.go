@@ -199,7 +199,7 @@ func (s *UserService) GetUserDetail(ctx context.Context, _ *core_api.GetUserDeta
 		Flow:        getBalanceResp.Flow,
 		Momery:      getBalanceResp.Memory,
 		Point:       getBalanceResp.Point,
-		Labels:      getUserResp.Labels,
+		Tags:        getUserResp.Labels,
 		CreateTime:  getUserResp.CreateTime,
 	}, nil
 }
