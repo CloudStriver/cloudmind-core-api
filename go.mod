@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/CloudStriver/go-pkg v0.0.0-20240329084540-20ca37a52fea
-	github.com/CloudStriver/service-idl-gen-go v0.0.0-20240330085052-dce6d1369b83
+	github.com/CloudStriver/service-idl-gen-go v0.0.0-20240331132549-840abd6c662c
 	github.com/bytedance/sonic v1.10.2
 	github.com/cloudwego/hertz v0.7.3
 	github.com/golang-jwt/jwt/v4 v4.5.0
