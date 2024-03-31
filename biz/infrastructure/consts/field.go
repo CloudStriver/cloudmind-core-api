@@ -27,4 +27,5 @@ const (
 	UserRankKey         = "cache:rank:user"
 	FileRankKey         = "cache:rank:file"
 	PostRankKey         = "cache:rank:post"
+	BloomRelationKey    = "cache:bloom:relation"
 )

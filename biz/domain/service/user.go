@@ -35,7 +35,7 @@ func (s *UserDomainService) LoadFollowed(ctx context.Context, followed *bool, fr
 		FromId:       fromUserId,
 		ToType:       int64(core_api.TargetType_UserType),
 		ToId:         toUserId,
-		RelationType: int64(core_api.RelationType_FollowType),
+		RelationType: int64(core_api.RelationType_FollowRelationType),
 	})
 	if err == nil {
 		*followed = getRelationResp.Ok
@@ -61,7 +61,7 @@ func (s *UserDomainService) LoadFollowCount(ctx context.Context, followCount *in
 				FromType: int64(core_api.TargetType_UserType),
 			},
 		},
-		RelationType: int64(core_api.RelationType_FollowType),
+		RelationType: int64(core_api.RelationType_FollowRelationType),
 	})
 	if err == nil {
 		*followCount = getRelationCountResp.Total
@@ -77,7 +77,7 @@ func (s *UserDomainService) LoadFollowedCount(ctx context.Context, followedCount
 				FromType: int64(core_api.TargetType_UserType),
 			},
 		},
-		RelationType: int64(core_api.RelationType_FollowType),
+		RelationType: int64(core_api.RelationType_FollowRelationType),
 	})
 	if err == nil {
 		*followedCount = getRelationCountResp.Total

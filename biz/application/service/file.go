@@ -51,11 +51,12 @@ var FileServiceSet = wire.NewSet(
 )
 
 type FileService struct {
-	Config            *config.Config
-	PlatformSts       cloudmind_sts.ICloudMindSts
-	CloudMindContent  cloudmind_content.ICloudMindContent
-	FileDomainService service.IFileDomainService
-	PlatformComment   platform_comment.IPlatFormComment
+	Config                *config.Config
+	PlatformSts           cloudmind_sts.ICloudMindSts
+	RelationDomainService service.IRelationDomainService
+	CloudMindContent      cloudmind_content.ICloudMindContent
+	FileDomainService     service.IFileDomainService
+	PlatformComment       platform_comment.IPlatFormComment
 }
 
 func (s *FileService) AskDownloadFile(ctx context.Context, req *core_api.AskDownloadFileReq) (resp *core_api.AskDownloadFileResp, err error) {
@@ -690,22 +691,42 @@ func (s *FileService) SaveFileToPrivateSpace(ctx context.Context, req *core_api.
 		return resp, consts.ErrNoAccessFile
 	}
 
-	var res *content.SaveFileToPrivateSpaceResp
-	if res, err = s.CloudMindContent.SaveFileToPrivateSpace(ctx, &content.SaveFileToPrivateSpaceReq{
-		FileId:       files.Files[0].FileId,
-		UserId:       userData.UserId,
-		NewPath:      files.Files[1].Path,
-		FatherId:     req.FatherId,
-		Name:         files.Files[0].Name,
-		Type:         files.Files[0].Type,
-		FileMd5:      files.Files[0].Md5,
-		SpaceSize:    files.Files[0].SpaceSize,
-		DocumentType: int64(req.DocumentType),
+	if err = mr.Finish(func() error {
+		var (
+			res  *content.SaveFileToPrivateSpaceResp
+			err1 error
+		)
+		if res, err1 = s.CloudMindContent.SaveFileToPrivateSpace(ctx, &content.SaveFileToPrivateSpaceReq{
+			FileId:       files.Files[0].FileId,
+			UserId:       userData.UserId,
+			NewPath:      files.Files[1].Path,
+			FatherId:     req.FatherId,
+			Name:         files.Files[0].Name,
+			Type:         files.Files[0].Type,
+			FileMd5:      files.Files[0].Md5,
+			SpaceSize:    files.Files[0].SpaceSize,
+			DocumentType: int64(req.DocumentType),
+		}); err1 != nil {
+			return err1
+		}
+		resp.FileId = res.FileId
+		resp.Name = res.Name
+		return nil
+	}, func() error {
+		if err2 := s.RelationDomainService.CreateRelation(ctx, &core_api.Relation{
+			FromType:     core_api.TargetType_UserType,
+			FromId:       userData.UserId,
+			ToType:       core_api.TargetType_FileType,
+			ToId:         req.FileId,
+			RelationType: core_api.RelationType_DownLoadRelationType,
+		}); err2 != nil {
+			return err2
+		}
+		return nil
 	}); err != nil {
 		return resp, err
 	}
-	resp.FileId = res.FileId
-	resp.Name = res.Name
+
 	return resp, nil
 }
 
@@ -758,8 +779,19 @@ func (s *FileService) AddFileToPublicSpace(ctx context.Context, req *core_api.Ad
 		}})
 		return err2
 	}, func() error {
-		if _, err = s.CloudMindContent.CreateHot(ctx, &content.CreateHotReq{HotId: file.File.FileId}); err != nil {
+		if _, err3 := s.CloudMindContent.CreateHot(ctx, &content.CreateHotReq{HotId: file.File.FileId}); err3 != nil {
 			return err
+		}
+		return nil
+	}, func() error {
+		if err4 := s.RelationDomainService.CreateRelation(ctx, &core_api.Relation{
+			FromType:     core_api.TargetType_UserType,
+			FromId:       userData.UserId,
+			ToType:       core_api.TargetType_FileType,
+			ToId:         req.FileId,
+			RelationType: core_api.RelationType_UploadRelationType,
+		}); err4 != nil {
+			return err4
 		}
 		return nil
 	})

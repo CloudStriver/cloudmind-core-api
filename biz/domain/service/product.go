@@ -75,7 +75,7 @@ func (s *ProductDomainService) LoadLikeCount(ctx context.Context, likeCount *int
 	//			FromType: int64(core_api.TargetType_UserType),
 	//		},
 	//	},
-	//	RelationType: int64(core_api.RelationType_LikeType),
+	//	RelationType: int64(core_api.RelationType_LikeRelationType),
 	//})
 	//if err == nil {
 	//	*likeCount = getRelationCountResp.Total
@@ -91,7 +91,7 @@ func (s *ProductDomainService) LoadViewCount(ctx context.Context, viewCount *int
 	//			FromType: int64(core_api.TargetType_UserType),
 	//		},
 	//	},
-	//	RelationType: int64(core_api.RelationType_ViewType),
+	//	RelationType: int64(core_api.RelationType_ViewRelationType),
 	//})
 	//if err == nil {
 	//	*viewCount = getRelationCountResp.Total
@@ -107,7 +107,7 @@ func (s *ProductDomainService) LoadCollectCount(ctx context.Context, collectCoun
 	//			FromType: int64(core_api.TargetType_UserType),
 	//		},
 	//	},
-	//	RelationType: int64(core_api.RelationType_CollectType),
+	//	RelationType: int64(core_api.RelationType_CollectRelationType),
 	//})
 	//if err == nil {
 	//	*collectCount = getRelationCountResp.Total
@@ -120,7 +120,7 @@ func (s *ProductDomainService) LoadLiked(ctx context.Context, liked *bool, userI
 	//	FromId:       userId,
 	//	ToType:       int64(core_api.TargetType_ProductType),
 	//	ToId:         productId,
-	//	RelationType: int64(core_api.RelationType_LikeType),
+	//	RelationType: int64(core_api.RelationType_LikeRelationType),
 	//})
 	//if err == nil {
 	//	*liked = getRelationResp.Ok
@@ -133,7 +133,7 @@ func (s *ProductDomainService) LoadCollected(ctx context.Context, collected *boo
 	//	FromId:       userId,
 	//	ToType:       int64(core_api.TargetType_ProductType),
 	//	ToId:         productId,
-	//	RelationType: int64(core_api.RelationType_CollectType),
+	//	RelationType: int64(core_api.RelationType_CollectRelationType),
 	//})
 	//if err == nil {
 	//	*collected = getRelationResp.Ok

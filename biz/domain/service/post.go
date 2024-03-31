@@ -64,7 +64,7 @@ func (s *PostDomainService) LoadLikeCount(ctx context.Context, likeCount *int64,
 				FromType: int64(core_api.TargetType_UserType),
 			},
 		},
-		RelationType: int64(core_api.RelationType_LikeType),
+		RelationType: int64(core_api.RelationType_LikeRelationType),
 	})
 	if err == nil {
 		*likeCount = getRelationCountResp.Total
@@ -80,7 +80,7 @@ func (s *PostDomainService) LoadViewCount(ctx context.Context, viewCount *int64,
 				FromType: int64(core_api.TargetType_UserType),
 			},
 		},
-		RelationType: int64(core_api.RelationType_ViewType),
+		RelationType: int64(core_api.RelationType_ViewRelationType),
 	})
 	if err == nil {
 		*viewCount = getRelationCountResp.Total
@@ -96,7 +96,7 @@ func (s *PostDomainService) LoadCollectCount(ctx context.Context, collectCount *
 				FromType: int64(core_api.TargetType_UserType),
 			},
 		},
-		RelationType: int64(core_api.RelationType_CollectType),
+		RelationType: int64(core_api.RelationType_CollectRelationType),
 	})
 	if err == nil {
 		*collectCount = getRelationCountResp.Total
@@ -109,7 +109,7 @@ func (s *PostDomainService) LoadLiked(ctx context.Context, liked *bool, userId, 
 		FromId:       userId,
 		ToType:       int64(core_api.TargetType_PostType),
 		ToId:         postId,
-		RelationType: int64(core_api.RelationType_LikeType),
+		RelationType: int64(core_api.RelationType_LikeRelationType),
 	})
 	if err == nil {
 		*liked = getRelationResp.Ok
@@ -122,7 +122,7 @@ func (s *PostDomainService) LoadCollected(ctx context.Context, collected *bool, 
 		FromId:       userId,
 		ToType:       int64(core_api.TargetType_PostType),
 		ToId:         postId,
-		RelationType: int64(core_api.RelationType_CollectType),
+		RelationType: int64(core_api.RelationType_CollectRelationType),
 	})
 	if err == nil {
 		*collected = getRelationResp.Ok

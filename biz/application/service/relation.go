@@ -2,20 +2,19 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"github.com/CloudStriver/cloudmind-core-api/biz/adaptor"
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/CloudStriver/cloudmind-core-api/biz/domain/service"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_comment"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
-	"github.com/CloudStriver/cloudmind-mq/app/util/message"
-	"github.com/CloudStriver/go-pkg/utils/pconvertor"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/basic"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
+	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/comment"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/relation"
-	"github.com/bytedance/sonic"
 	"github.com/google/wire"
 	"github.com/samber/lo"
 	"github.com/zeromicro/go-zero/core/mr"
@@ -35,16 +34,21 @@ var RelationServiceSet = wire.NewSet(
 )
 
 type RelationService struct {
-	Config               *config.Config
-	PlatFormRelation     platform_relation.IPlatFormRelation
-	CloudMindContent     cloudmind_content.ICloudMindContent
-	PostDomainService    service.IPostDomainService
-	CreateNotificationKq *kq.CreateNotificationsKq
-	CreateFeedBackKq     *kq.CreateFeedBackKq
+	Config                *config.Config
+	PlatFormRelation      platform_relation.IPlatFormRelation
+	CloudMindContent      cloudmind_content.ICloudMindContent
+	PlatFormComment       platform_comment.IPlatFormComment
+	UserDomainService     service.IUserDomainService
+	PostDomainService     service.IPostDomainService
+	RelationDomainService service.RelationDomainService
 }
 
 func (s *RelationService) GetFromRelations(ctx context.Context, req *core_api.GetFromRelationsReq) (resp *core_api.GetFromRelationsResp, err error) {
 	resp = new(core_api.GetFromRelationsResp)
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil {
+		return resp, consts.ErrNotAuthentication
+	}
 	getFromRelationsResp, err := s.PlatFormRelation.GetRelations(ctx, &relation.GetRelationsReq{
 		RelationFilterOptions: &relation.GetRelationsReq_FromFilterOptions{
 			FromFilterOptions: &relation.FromFilterOptions{
@@ -62,23 +66,38 @@ func (s *RelationService) GetFromRelations(ctx context.Context, req *core_api.Ge
 	if err != nil {
 		return resp, err
 	}
+	fmt.Println(getFromRelationsResp.Relations)
 
 	switch req.ToType {
 	case core_api.TargetType_UserType:
 		resp.Users = make([]*core_api.User, len(getFromRelationsResp.Relations))
 		err = mr.Finish(lo.Map[*relation.Relation](getFromRelationsResp.Relations, func(relation *relation.Relation, i int) func() error {
 			return func() error {
-				user, err := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{
-					UserId: relation.ToId,
-				})
-				if err != nil {
-					return err
-				}
-
 				resp.Users[i] = &core_api.User{
 					UserId: relation.ToId,
-					Name:   user.Name,
-					Url:    user.Url,
+				}
+				if err = mr.Finish(func() error {
+					user, err := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{
+						UserId: relation.ToId,
+					})
+					if err != nil {
+						return err
+					}
+					resp.Users[i].Name = user.Name
+					resp.Users[i].Url = user.Url
+					resp.Users[i].Tags = user.Labels
+					s.UserDomainService.LoadLabel(ctx, resp.Users[i].Tags)
+					return nil
+				}, func() error {
+					if userData.GetUserId() != "" && userData.UserId != resp.Users[i].UserId {
+						s.UserDomainService.LoadFollowed(ctx, &resp.Users[i].Followed, userData.UserId, resp.Users[i].UserId)
+					}
+					return nil
+				}, func() error {
+					s.UserDomainService.LoadFollowedCount(ctx, &resp.Users[i].FollowedCount, resp.Users[i].UserId)
+					return nil
+				}); err != nil {
+					return err
 				}
 				return nil
 			}
@@ -92,17 +111,46 @@ func (s *RelationService) GetFromRelations(ctx context.Context, req *core_api.Ge
 			return func() error {
 				resp.Posts[i] = &core_api.Post{}
 				if err = mr.Finish(func() error {
-					post, err := s.CloudMindContent.GetPost(ctx, &content.GetPostReq{
+					post, err1 := s.CloudMindContent.GetPost(ctx, &content.GetPostReq{
 						PostId: relation.ToId,
 					})
+					if err1 != nil {
+						return err1
+					}
 					resp.Posts[i].PostId = relation.ToId
 					resp.Posts[i].Title = post.Title
 					resp.Posts[i].Text = post.Text
 					resp.Posts[i].Url = post.Url
 					resp.Posts[i].Tags = post.Tags
-					return err
+					user, err1 := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{
+						UserId: post.UserId,
+					})
+					if err1 != nil {
+						return err1
+					}
+					resp.Posts[i].UserName = user.Name
+					return nil
 				}, func() error {
 					s.PostDomainService.LoadLikeCount(ctx, &resp.Posts[i].LikeCount, relation.ToId)
+					return nil
+				}, func() error {
+					if userData.GetUserId() != "" {
+						s.PostDomainService.LoadLiked(ctx, &resp.Posts[i].Liked, userData.UserId, relation.ToId)
+					}
+					return nil
+				}, func() error {
+					getCommentListResp, err2 := s.PlatFormComment.GetCommentList(ctx, &comment.GetCommentListReq{
+						FilterOptions: &comment.CommentFilterOptions{
+							OnlySubjectId: lo.ToPtr(relation.ToId),
+						},
+						Pagination: &basic.PaginationOptions{
+							Limit: lo.ToPtr(int64(1)),
+						},
+					})
+					if err2 != nil {
+						return err2
+					}
+					resp.Posts[i].CommentCount = getCommentListResp.Total
 					return nil
 				}); err != nil {
 					return err
@@ -120,6 +168,10 @@ func (s *RelationService) GetFromRelations(ctx context.Context, req *core_api.Ge
 
 func (s *RelationService) GetToRelations(ctx context.Context, req *core_api.GetToRelationsReq) (resp *core_api.GetToRelationsResp, err error) {
 	resp = new(core_api.GetToRelationsResp)
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil {
+		return resp, consts.ErrNotAuthentication
+	}
 	getFromRelationsResp, err := s.PlatFormRelation.GetRelations(ctx, &relation.GetRelationsReq{
 		RelationFilterOptions: &relation.GetRelationsReq_ToFilterOptions{
 			ToFilterOptions: &relation.ToFilterOptions{
@@ -143,16 +195,31 @@ func (s *RelationService) GetToRelations(ctx context.Context, req *core_api.GetT
 		resp.Users = make([]*core_api.User, len(getFromRelationsResp.Relations))
 		err = mr.Finish(lo.Map[*relation.Relation](getFromRelationsResp.Relations, func(relation *relation.Relation, i int) func() error {
 			return func() error {
-				user, err := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{
-					UserId: relation.FromId,
-				})
-				if err != nil {
-					return err
-				}
 				resp.Users[i] = &core_api.User{
 					UserId: relation.FromId,
-					Name:   user.Name,
-					Url:    user.Url,
+				}
+				if err = mr.Finish(func() error {
+					user, err := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{
+						UserId: relation.FromId,
+					})
+					if err != nil {
+						return err
+					}
+					resp.Users[i].Name = user.Name
+					resp.Users[i].Url = user.Url
+					resp.Users[i].Tags = user.Labels
+					s.UserDomainService.LoadLabel(ctx, resp.Users[i].Tags)
+					return nil
+				}, func() error {
+					if userData.GetUserId() != "" {
+						s.UserDomainService.LoadFollowed(ctx, &resp.Users[i].Followed, userData.UserId, resp.Users[i].UserId)
+					}
+					return nil
+				}, func() error {
+					s.UserDomainService.LoadFollowedCount(ctx, &resp.Users[i].FollowedCount, resp.Users[i].UserId)
+					return nil
+				}); err != nil {
+					return err
 				}
 				return nil
 			}
@@ -206,117 +273,14 @@ func (s *RelationService) CreateRelation(ctx context.Context, req *core_api.Crea
 		return resp, consts.ErrNotAuthentication
 	}
 
-	ok, err := s.PlatFormRelation.CreateRelation(ctx, &relation.CreateRelationReq{
-		FromType:     int64(core_api.TargetType_UserType),
-		FromId:       user.UserId,
-		ToType:       int64(req.ToType),
+	if err = s.RelationDomainService.CreateRelation(ctx, &core_api.Relation{
+		FromType:     core_api.TargetType_UserType,
+		FromId:       user.GetUserId(),
+		ToType:       req.ToType,
 		ToId:         req.ToId,
-		RelationType: int64(req.RelationType),
-	})
-	if err != nil {
+		RelationType: req.RelationType,
+	}); err != nil {
 		return resp, err
 	}
-
-	if !ok.Ok {
-		return resp, nil
-	}
-
-	if req.RelationType == core_api.RelationType_HateType {
-		req.RelationType = core_api.RelationType(content.Action_HateType)
-	}
-	userId := ""
-	toName := ""
-	var reqs *content.IncrHotValueReq
-	switch req.ToType {
-	case core_api.TargetType_UserType:
-		reqs = &content.IncrHotValueReq{
-			Action:     content.Action(req.RelationType),
-			HotId:      req.ToId,
-			TargetType: content.TargetType_UserType,
-		}
-	case core_api.TargetType_FileType:
-		reqs = &content.IncrHotValueReq{
-			Action:     content.Action(req.RelationType),
-			HotId:      req.ToId,
-			TargetType: content.TargetType_FileType,
-		}
-	case core_api.TargetType_PostType:
-		reqs = &content.IncrHotValueReq{
-			Action:     content.Action(req.RelationType),
-			HotId:      req.ToId,
-			TargetType: content.TargetType_PostType,
-		}
-	}
-	if _, err = s.CloudMindContent.IncrHotValue(ctx, reqs); err != nil {
-		return resp, err
-	}
-
-	if req.ToId == user.GetUserId() {
-		return resp, nil
-	}
-
-	switch req.ToType {
-	case core_api.TargetType_UserType:
-		userId = req.ToId
-	case core_api.TargetType_FileType:
-		getFileResp, err := s.CloudMindContent.GetFile(ctx, &content.GetFileReq{
-			FileId: req.ToId,
-		})
-		if err != nil {
-			return resp, err
-		}
-
-		toName = getFileResp.File.Name
-		userId = getFileResp.File.UserId
-
-	case core_api.TargetType_PostType:
-		getPostResp, err := s.CloudMindContent.GetPost(ctx, &content.GetPostReq{
-			PostId: req.ToId,
-		})
-		if err != nil {
-			return resp, err
-		}
-		toName = getPostResp.Title
-		userId = getPostResp.UserId
-	}
-
-	userinfo, err := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{
-		UserId: user.UserId,
-	})
-	if err != nil {
-		return resp, err
-	}
-
-	// 创建通知
-	msg, _ := sonic.Marshal(&Msg{
-		FromName: userinfo.Name,
-		ToName:   toName,
-	})
-	data, _ := sonic.Marshal(&message.CreateNotificationMessage{
-		TargetUserId:    userId,
-		SourceUserId:    user.UserId,
-		SourceContentId: req.ToId,
-		TargetType:      int64(req.ToType),
-		Type:            int64(req.RelationType),
-		Text:            pconvertor.Bytes2String(msg),
-	})
-	if err = s.CreateNotificationKq.Push(pconvertor.Bytes2String(data)); err != nil {
-		return resp, err
-	}
-
-	data, _ = sonic.Marshal(&message.CreateFeedBackMessage{
-		FeedbackType: core_api.RelationType_name[int32(req.RelationType)],
-		UserId:       user.UserId,
-		ItemId:       req.ToId,
-	})
-	if err = s.CreateFeedBackKq.Push(pconvertor.Bytes2String(data)); err != nil {
-		return resp, err
-	}
-
 	return resp, nil
-}
-
-type Msg struct {
-	FromName string
-	ToName   string
 }
