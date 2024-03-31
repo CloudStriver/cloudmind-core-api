@@ -54,7 +54,7 @@ func (s *CommentDomainService) LoadLikeCount(ctx context.Context, c *core_api.Co
 				FromType: int64(core_api.TargetType_UserType),
 			},
 		},
-		RelationType: int64(core_api.RelationType_LikeType),
+		RelationType: int64(core_api.RelationType_LikeRelationType),
 	})
 	if err == nil {
 		c.Like = getRelationCountResp.Total
@@ -67,7 +67,7 @@ func (s *CommentDomainService) LoadLiked(ctx context.Context, c *core_api.Commen
 		FromId:       userId,
 		ToType:       int64(core_api.TargetType_CommentContentType),
 		ToId:         c.Id,
-		RelationType: int64(core_api.RelationType_LikeType),
+		RelationType: int64(core_api.RelationType_LikeRelationType),
 	})
 	if err == nil {
 		c.CommentRelation.Liked = getRelationResp.Ok
@@ -80,7 +80,7 @@ func (s *CommentDomainService) LoadHated(ctx context.Context, c *core_api.Commen
 		FromId:       userId,
 		ToType:       int64(core_api.TargetType_CommentContentType),
 		ToId:         c.Id,
-		RelationType: int64(core_api.RelationType_HateType),
+		RelationType: int64(core_api.RelationType_HateRelationType),
 	})
 	if err == nil {
 		c.CommentRelation.Hated = getRelationResp.Ok

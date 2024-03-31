@@ -31,13 +31,22 @@ func NewProvider() (*Provider, error) {
 	cloudMindSts := &cloudmind_sts.CloudMindSts{
 		Client: client,
 	}
+	relationserviceClient := platform_relation.NewPlatFormRelation(configConfig)
+	platFormRelation := &platform_relation.PlatFormRelation{
+		Client: relationserviceClient,
+	}
 	contentserviceClient := cloudmind_content.NewCloudMindContent(configConfig)
 	cloudMindContent := &cloudmind_content.CloudMindContent{
 		Client: contentserviceClient,
 	}
-	relationserviceClient := platform_relation.NewPlatFormRelation(configConfig)
-	platFormRelation := &platform_relation.PlatFormRelation{
-		Client: relationserviceClient,
+	createNotificationsKq := kq.NewCreateNotificationsKq(configConfig)
+	createFeedBackKq := kq.NewCreateFeedBackKq(configConfig)
+	relationDomainService := &service.RelationDomainService{
+		Config:               configConfig,
+		PlatFormRelation:     platFormRelation,
+		CloudMindContent:     cloudMindContent,
+		CreateNotificationKq: createNotificationsKq,
+		CreateFeedBackKq:     createFeedBackKq,
 	}
 	commentserviceClient := platform_comment.NewPlatFormComment(configConfig)
 	platFormComment := &platform_comment.PlatFormComment{
@@ -49,11 +58,12 @@ func NewProvider() (*Provider, error) {
 		PlatformComment:  platFormComment,
 	}
 	fileService := &service2.FileService{
-		Config:            configConfig,
-		PlatformSts:       cloudMindSts,
-		CloudMindContent:  cloudMindContent,
-		FileDomainService: fileDomainService,
-		PlatformComment:   platFormComment,
+		Config:                configConfig,
+		PlatformSts:           cloudMindSts,
+		RelationDomainService: relationDomainService,
+		CloudMindContent:      cloudMindContent,
+		FileDomainService:     fileDomainService,
+		PlatformComment:       platFormComment,
 	}
 	postDomainService := &service.PostDomainService{
 		CloudMindContent: cloudMindContent,
@@ -69,16 +79,17 @@ func NewProvider() (*Provider, error) {
 	updateItemKq := kq.NewUpdateItemKq(configConfig)
 	deleteItemKq := kq.NewDeleteItemKq(configConfig)
 	postService := &service2.PostService{
-		Config:            configConfig,
-		CloudMindContent:  cloudMindContent,
-		PostDomainService: postDomainService,
-		PlatFormRelation:  platFormRelation,
-		PlatFormComment:   platFormComment,
-		CloudMindSts:      cloudMindSts,
-		UserDomainService: userDomainService,
-		CreateItemKq:      createItemKq,
-		UpdateItemKq:      updateItemKq,
-		DeleteItemKq:      deleteItemKq,
+		Config:                configConfig,
+		CloudMindContent:      cloudMindContent,
+		PostDomainService:     postDomainService,
+		PlatFormRelation:      platFormRelation,
+		PlatFormComment:       platFormComment,
+		CloudMindSts:          cloudMindSts,
+		RelationDomainService: relationDomainService,
+		UserDomainService:     userDomainService,
+		CreateItemKq:          createItemKq,
+		UpdateItemKq:          updateItemKq,
+		DeleteItemKq:          deleteItemKq,
 	}
 	tradeserviceClient := cloudmind_trade.NewCloudMindTrade(configConfig)
 	cloudMindTrade := &cloudmind_trade.CloudMindTrade{
@@ -98,15 +109,21 @@ func NewProvider() (*Provider, error) {
 		CreateItemKq:     createItemKq,
 		Redis:            redisRedis,
 	}
-	createNotificationsKq := kq.NewCreateNotificationsKq(configConfig)
-	createFeedBackKq := kq.NewCreateFeedBackKq(configConfig)
-	relationService := &service2.RelationService{
+	serviceRelationDomainService := service.RelationDomainService{
 		Config:               configConfig,
 		PlatFormRelation:     platFormRelation,
 		CloudMindContent:     cloudMindContent,
-		PostDomainService:    postDomainService,
 		CreateNotificationKq: createNotificationsKq,
 		CreateFeedBackKq:     createFeedBackKq,
+	}
+	relationService := &service2.RelationService{
+		Config:                configConfig,
+		PlatFormRelation:      platFormRelation,
+		CloudMindContent:      cloudMindContent,
+		PlatFormComment:       platFormComment,
+		UserDomainService:     userDomainService,
+		PostDomainService:     postDomainService,
+		RelationDomainService: serviceRelationDomainService,
 	}
 	userService := &service2.UserService{
 		Config:            configConfig,

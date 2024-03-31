@@ -39,7 +39,7 @@ func (s *FileDomainService) LoadCollected(ctx context.Context, file *core_api.Pu
 		FromId:       userId,
 		ToType:       int64(core_api.TargetType_FileType),
 		ToId:         file.FileId,
-		RelationType: int64(core_api.RelationType_CollectType),
+		RelationType: int64(core_api.RelationType_CollectRelationType),
 	})
 	if err == nil {
 		file.FileRelation.Collected = getRelationResp.Ok
@@ -55,7 +55,7 @@ func (s *FileDomainService) LoadViewCount(ctx context.Context, file *core_api.Pu
 				FromType: int64(core_api.TargetType_UserType),
 			},
 		},
-		RelationType: int64(core_api.RelationType_ViewType),
+		RelationType: int64(core_api.RelationType_ViewRelationType),
 	})
 	if err == nil {
 		file.FileCount.ViewCount = getRelationCountResp.Total
@@ -87,7 +87,7 @@ func (s *FileDomainService) LoadLikeCount(ctx context.Context, file *core_api.Pu
 				FromType: int64(core_api.TargetType_UserType),
 			},
 		},
-		RelationType: int64(core_api.RelationType_LikeType),
+		RelationType: int64(core_api.RelationType_LikeRelationType),
 	})
 	if err == nil {
 		file.FileCount.LikeCount = getRelationCountResp.Total
@@ -103,7 +103,7 @@ func (s *FileDomainService) LoadLiked(ctx context.Context, file *core_api.Public
 		FromId:       userId,
 		ToType:       int64(core_api.TargetType_FileType),
 		ToId:         file.FileId,
-		RelationType: int64(core_api.RelationType_LikeType),
+		RelationType: int64(core_api.RelationType_LikeRelationType),
 	})
 	if err == nil {
 		file.FileRelation.Liked = getRelationResp.Ok
@@ -122,7 +122,7 @@ func (s *FileDomainService) LoadCollectCount(ctx context.Context, file *core_api
 				FromType: int64(core_api.TargetType_UserType),
 			},
 		},
-		RelationType: int64(core_api.RelationType_CollectType),
+		RelationType: int64(core_api.RelationType_CollectRelationType),
 	})
 	if err == nil {
 		file.FileCount.CollectCount = getRelationCountResp.Total

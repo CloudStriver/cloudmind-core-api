@@ -14,7 +14,6 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
 	"github.com/CloudStriver/cloudmind-mq/app/util/message"
 	"github.com/CloudStriver/go-pkg/utils/pconvertor"
-	"github.com/CloudStriver/go-pkg/utils/util/log"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/basic"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/sts"
@@ -40,16 +39,17 @@ var PostServiceSet = wire.NewSet(
 )
 
 type PostService struct {
-	Config            *config.Config
-	CloudMindContent  cloudmind_content.ICloudMindContent
-	PostDomainService service.IPostDomainService
-	PlatFormRelation  platform_relation.IPlatFormRelation
-	PlatFormComment   platform_comment.IPlatFormComment
-	CloudMindSts      cloudmind_sts.ICloudMindSts
-	UserDomainService service.IUserDomainService
-	CreateItemKq      *kq.CreateItemKq
-	UpdateItemKq      *kq.UpdateItemKq
-	DeleteItemKq      *kq.DeleteItemKq
+	Config                *config.Config
+	CloudMindContent      cloudmind_content.ICloudMindContent
+	PostDomainService     service.IPostDomainService
+	PlatFormRelation      platform_relation.IPlatFormRelation
+	PlatFormComment       platform_comment.IPlatFormComment
+	CloudMindSts          cloudmind_sts.ICloudMindSts
+	RelationDomainService service.IRelationDomainService
+	UserDomainService     service.IUserDomainService
+	CreateItemKq          *kq.CreateItemKq
+	UpdateItemKq          *kq.UpdateItemKq
+	DeleteItemKq          *kq.DeleteItemKq
 }
 
 func (s *PostService) FiltetContet(ctx context.Context, IsSure bool, contents []*string) ([]*core_api.Keywords, error) {
@@ -118,37 +118,57 @@ func (s *PostService) CreatePost(ctx context.Context, req *core_api.CreatePostRe
 	if err != nil {
 		return resp, err
 	}
-
-	if _, err = s.PlatFormComment.CreateCommentSubject(ctx, &comment.CreateCommentSubjectReq{
-		Subject: &comment.Subject{
-			Id:        createPostResp.PostId,
-			UserId:    userData.UserId,
-			RootCount: lo.ToPtr(int64(0)),
-			AllCount:  lo.ToPtr(int64(0)),
-			State:     int64(comment.State_Normal),
-			Attrs:     int64(comment.Attrs_None),
-		},
-	}); err != nil {
-		return resp, err
-	}
-
-	if _, err = s.CloudMindContent.CreateHot(ctx, &content.CreateHotReq{
-		HotId: createPostResp.PostId,
-	}); err != nil {
-		return resp, err
-	}
-
-	data, _ := sonic.Marshal(&message.CreateItemMessage{
-		ItemId:   createPostResp.PostId,
-		IsHidden: req.Status == int64(core_api.PostStatus_DraftPostStatus),
-		Labels:   req.Tags,
-		Category: core_api.Category_name[int32(core_api.Category_PostCategory)],
-	})
-	if err = s.CreateItemKq.Push(pconvertor.Bytes2String(data)); err != nil {
-		return resp, err
-	}
-
 	resp.PostId = createPostResp.PostId
+
+	if err = mr.Finish(func() error {
+		if _, err1 := s.PlatFormComment.CreateCommentSubject(ctx, &comment.CreateCommentSubjectReq{
+			Subject: &comment.Subject{
+				Id:        createPostResp.PostId,
+				UserId:    userData.UserId,
+				RootCount: lo.ToPtr(int64(0)),
+				AllCount:  lo.ToPtr(int64(0)),
+				State:     int64(comment.State_Normal),
+				Attrs:     int64(comment.Attrs_None),
+			},
+		}); err1 != nil {
+			return err1
+		}
+		return nil
+	}, func() error {
+		if _, err2 := s.CloudMindContent.CreateHot(ctx, &content.CreateHotReq{
+			HotId: createPostResp.PostId,
+		}); err2 != nil {
+			return err2
+		}
+		return nil
+	}, func() error {
+		data, _ := sonic.Marshal(&message.CreateItemMessage{
+			ItemId:   createPostResp.PostId,
+			IsHidden: req.Status == int64(core_api.PostStatus_DraftPostStatus),
+			Labels:   req.Tags,
+			Category: core_api.Category_name[int32(core_api.Category_PostCategory)],
+		})
+		if err3 := s.CreateItemKq.Push(pconvertor.Bytes2String(data)); err != nil {
+			return err3
+		}
+		return nil
+	}, func() error {
+		if req.Status == int64(core_api.PostStatus_PublicPostStatus) {
+			if err4 := s.RelationDomainService.CreateRelation(ctx, &core_api.Relation{
+				FromType:     core_api.TargetType_UserType,
+				FromId:       userData.UserId,
+				ToType:       core_api.TargetType_PostType,
+				ToId:         createPostResp.PostId,
+				RelationType: core_api.RelationType_PublishRelationType,
+			}); err4 != nil {
+				return err4
+			}
+		}
+		return nil
+	}); err != nil {
+		return resp, err
+	}
+
 	return resp, nil
 }
 
@@ -189,18 +209,29 @@ func (s *PostService) UpdatePost(ctx context.Context, req *core_api.UpdatePostRe
 		return resp, err
 	}
 
-	if req.Status != 0 || req.Tags != nil {
-		var isHidden *bool
-		if req.Status != 0 {
-			isHidden = lo.ToPtr(req.Status != int64(core_api.PostStatus_PublicPostStatus))
-		}
-
-		data, _ := sonic.Marshal(&message.UpdateItemMessage{
-			ItemId:   req.PostId,
-			IsHidden: isHidden,
-			Labels:   req.Tags,
-		})
-		if err = s.UpdateItemKq.Push(pconvertor.Bytes2String(data)); err != nil {
+	if req.Status != 0 {
+		if err = mr.Finish(func() error {
+			data, _ := sonic.Marshal(&message.UpdateItemMessage{
+				ItemId:   req.PostId,
+				IsHidden: lo.ToPtr(req.Status != int64(core_api.PostStatus_PublicPostStatus)),
+				Labels:   req.Tags,
+			})
+			if err1 := s.UpdateItemKq.Push(pconvertor.Bytes2String(data)); err != nil {
+				return err1
+			}
+			return nil
+		}, func() error {
+			if err2 := s.RelationDomainService.CreateRelation(ctx, &core_api.Relation{
+				FromType:     core_api.TargetType_UserType,
+				FromId:       userData.UserId,
+				ToType:       core_api.TargetType_PostType,
+				ToId:         req.PostId,
+				RelationType: core_api.RelationType_PublishRelationType,
+			}); err2 != nil {
+				return err2
+			}
+			return nil
+		}); err != nil {
 			return resp, err
 		}
 	}
@@ -222,16 +253,34 @@ func (s *PostService) DeletePost(ctx context.Context, req *core_api.DeletePostRe
 	}); err != nil {
 		return resp, err
 	}
-
-	for i := range req.PostIds {
-		go func(i int) {
-			data, _ := sonic.Marshal(&message.DeleteItemMessage{
-				ItemId: req.PostIds[i],
-			})
-			if err = s.DeleteItemKq.Push(pconvertor.Bytes2String(data)); err != nil {
-				log.CtxError(ctx, "DeleteItemKq.Push", err)
+	if err = mr.Finish(lo.Map(req.PostIds, func(item string, index int) func() (err error) {
+		return func() (err error) {
+			if err = mr.Finish(func() error {
+				data, _ := sonic.Marshal(&message.DeleteItemMessage{
+					ItemId: item,
+				})
+				if err1 := s.DeleteItemKq.Push(pconvertor.Bytes2String(data)); err != nil {
+					return err1
+				}
+				return nil
+			}, func() error {
+				if _, err2 := s.PlatFormRelation.DeleteRelation(ctx, &relation.DeleteRelationReq{
+					FromType:     int64(core_api.TargetType_UserType),
+					FromId:       userData.UserId,
+					ToType:       int64(core_api.TargetType_PostType),
+					ToId:         item,
+					RelationType: int64(core_api.RelationType_PublishRelationType),
+				}); err2 != nil {
+					return err2
+				}
+				return nil
+			}); err != nil {
+				return err
 			}
-		}(i)
+			return nil
+		}
+	})...); err != nil {
+		return resp, err
 	}
 	return resp, nil
 }
@@ -288,7 +337,7 @@ func (s *PostService) GetPost(ctx context.Context, req *core_api.GetPostReq) (re
 				FromId:       userData.UserId,
 				ToType:       int64(core_api.TargetType_PostType),
 				ToId:         req.PostId,
-				RelationType: int64(core_api.RelationType_ViewType),
+				RelationType: int64(core_api.RelationType_ViewRelationType),
 			})
 		}
 		return nil
