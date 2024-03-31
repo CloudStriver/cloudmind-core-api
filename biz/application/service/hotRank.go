@@ -2,7 +2,9 @@ package service
 
 import (
 	"context"
+	"github.com/CloudStriver/cloudmind-core-api/biz/adaptor"
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
+	"github.com/CloudStriver/cloudmind-core-api/biz/domain/service"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
@@ -11,7 +13,6 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_trade"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_comment"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
-	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/comment"
 	"github.com/google/wire"
 	"github.com/samber/lo"
 	"github.com/zeromicro/go-zero/core/mr"
@@ -28,17 +29,22 @@ var HotRankServiceSet = wire.NewSet(
 )
 
 type HotRankService struct {
-	Config           *config.Config
-	CloudMindContent cloudmind_content.ICloudMindContent
-	CloudMindSts     cloudmind_sts.ICloudMindSts
-	CloudMindTrade   cloudmind_trade.ICloudMindTrade
-	CloudMindSystem  cloudmind_system.ICloudMindSystem
-	PlatFormComment  platform_comment.IPlatFormComment
-	Redis            *redis.Redis
+	Config            *config.Config
+	CloudMindContent  cloudmind_content.ICloudMindContent
+	CloudMindSts      cloudmind_sts.ICloudMindSts
+	CloudMindTrade    cloudmind_trade.ICloudMindTrade
+	CloudMindSystem   cloudmind_system.ICloudMindSystem
+	PlatFormComment   platform_comment.IPlatFormComment
+	UserDomainService service.IUserDomainService
+	Redis             *redis.Redis
 }
 
 func (s *HotRankService) GetHotRanks(ctx context.Context, req *core_api.GetHotRanksReq) (resp *core_api.GetHotRanksResp, err error) {
 	resp = new(core_api.GetHotRanksResp)
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil {
+		return resp, consts.ErrNotAuthentication
+	}
 	key := ""
 	switch req.TargetType {
 	case core_api.TargetType_UserType:
@@ -49,10 +55,11 @@ func (s *HotRankService) GetHotRanks(ctx context.Context, req *core_api.GetHotRa
 		key = consts.PostRankKey
 	}
 
-	values, err := s.Redis.ZrangeCtx(ctx, key, 0, -1)
+	values, err := s.Redis.ZrangeCtx(ctx, key, req.Offset, req.Offset+req.Limit)
 	if err != nil {
 		return resp, err
 	}
+
 	switch req.TargetType {
 	case core_api.TargetType_UserType:
 		users, err := s.CloudMindContent.GetUsersByUserIds(ctx, &content.GetUsersByUserIdsReq{
@@ -69,23 +76,9 @@ func (s *HotRankService) GetHotRanks(ctx context.Context, req *core_api.GetHotRa
 					Name:   item.Name,
 					Url:    item.Url,
 				}
-				if err = mr.Finish(func() error {
-					hotValue, _ := s.CloudMindContent.GetHotValue(ctx, &content.GetHotValueReq{
-						HotId: item.UserId,
-					})
-
-					resp.Users[i].HotValue = hotValue.HotValue
-					return nil
-				}, func() error {
-					tags, _ := s.PlatFormComment.GetLabelsInBatch(ctx, &comment.GetLabelsInBatchReq{
-						LabelIds: item.Labels,
-					})
-					resp.Users[i].Tags = tags.Labels
-					return nil
-				}); err != nil {
-					return err
+				if userData.GetUserId() != "" || userData.UserId == item.UserId {
+					s.UserDomainService.LoadFollowed(ctx, &resp.Users[i].Followed, userData.UserId, item.UserId)
 				}
-
 				return nil
 			}
 		})...); err != nil {
@@ -106,10 +99,7 @@ func (s *HotRankService) GetHotRanks(ctx context.Context, req *core_api.GetHotRa
 					Name:   item.Name,
 					Type:   item.Type,
 				}
-				hotValue, _ := s.CloudMindContent.GetHotValue(ctx, &content.GetHotValueReq{
-					HotId: item.UserId,
-				})
-				resp.Files[i].HotValue = hotValue.HotValue
+
 				return nil
 			}
 		})...); err != nil {
@@ -126,29 +116,8 @@ func (s *HotRankService) GetHotRanks(ctx context.Context, req *core_api.GetHotRa
 		if err = mr.Finish(lo.Map(posts.Posts, func(item *content.Post, i int) func() error {
 			return func() error {
 				resp.Posts[i] = &core_api.HotPost{
-					PostId:   item.PostId,
-					Title:    item.Title,
-					Url:      item.Url,
-					UserName: item.UserId,
-				}
-				if err = mr.Finish(func() error {
-					hotValue, err := s.CloudMindContent.GetHotValue(ctx, &content.GetHotValueReq{
-						HotId: item.UserId,
-					})
-					if err == nil {
-						resp.Posts[i].HotValue = hotValue.HotValue
-					}
-					return nil
-				}, func() error {
-					user, err := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{
-						UserId: item.UserId,
-					})
-					if err == nil {
-						resp.Posts[i].UserName = user.Name
-					}
-					return nil
-				}); err != nil {
-					return err
+					PostId: item.PostId,
+					Title:  item.Title,
 				}
 				return nil
 			}
