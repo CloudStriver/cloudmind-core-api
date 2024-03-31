@@ -55,11 +55,13 @@ func (s *HotRankService) GetHotRanks(ctx context.Context, req *core_api.GetHotRa
 		key = consts.PostRankKey
 	}
 
-	values, err := s.Redis.ZrangeCtx(ctx, key, req.Offset, req.Offset+req.Limit)
+	values, err := s.Redis.ZrangeCtx(ctx, key, req.Offset, req.Offset+req.Limit-1)
 	if err != nil {
 		return resp, err
 	}
-
+	if len(values) == 0 {
+		return resp, nil
+	}
 	switch req.TargetType {
 	case core_api.TargetType_UserType:
 		users, err := s.CloudMindContent.GetUsersByUserIds(ctx, &content.GetUsersByUserIdsReq{
