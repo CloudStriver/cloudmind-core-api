@@ -2,8 +2,10 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
@@ -13,6 +15,8 @@ import (
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/relation"
 	"github.com/bytedance/sonic"
 	"github.com/google/wire"
+	"github.com/segmentio/fasthash/fnv1a"
+	"github.com/zeromicro/go-zero/core/stores/redis"
 )
 
 type IRelationDomainService interface {
@@ -24,6 +28,7 @@ type RelationDomainService struct {
 	CloudMindContent     cloudmind_content.ICloudMindContent
 	CreateNotificationKq *kq.CreateNotificationsKq
 	CreateFeedBackKq     *kq.CreateFeedBackKq
+	Redis                *redis.Redis
 }
 
 var RelationDomainServiceSet = wire.NewSet(
@@ -45,6 +50,19 @@ func (s *RelationDomainService) CreateRelation(ctx context.Context, r *core_api.
 
 	if !ok.Ok {
 		return nil
+	}
+
+	hs := int64(fnv1a.HashString32(r.ToId))
+	val, err := s.Redis.GetBitCtx(ctx, fmt.Sprintf("%s:%s:%s", consts.BloomRelationKey, r.ToId, r.RelationType), hs)
+	if err != nil {
+		return err
+	}
+	if val == 1 {
+		return nil
+	}
+
+	if _, err = s.Redis.SetBitCtx(ctx, fmt.Sprintf("%s:%s:%s", consts.BloomRelationKey, r.ToId, r.RelationType), hs, 1); err != nil {
+		return err
 	}
 
 	act := r.RelationType
