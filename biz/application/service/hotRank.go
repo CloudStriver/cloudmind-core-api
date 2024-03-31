@@ -72,9 +72,10 @@ func (s *HotRankService) GetHotRanks(ctx context.Context, req *core_api.GetHotRa
 		if err = mr.Finish(lo.Map(users.Users, func(item *content.User, i int) func() error {
 			return func() error {
 				resp.Users[i] = &core_api.HotUser{
-					UserId: item.UserId,
-					Name:   item.Name,
-					Url:    item.Url,
+					UserId:      item.UserId,
+					Name:        item.Name,
+					Url:         item.Url,
+					Description: item.Description,
 				}
 				if userData.GetUserId() != "" || userData.UserId == item.UserId {
 					s.UserDomainService.LoadFollowed(ctx, &resp.Users[i].Followed, userData.UserId, item.UserId)

@@ -185,13 +185,14 @@ func NewProvider() (*Provider, error) {
 		PLatFromRelation: platFormRelation,
 	}
 	hotRankService := service2.HotRankService{
-		Config:           configConfig,
-		CloudMindContent: cloudMindContent,
-		CloudMindSts:     cloudMindSts,
-		CloudMindTrade:   cloudMindTrade,
-		CloudMindSystem:  cloudMindSystem,
-		PlatFormComment:  platFormComment,
-		Redis:            redisRedis,
+		Config:            configConfig,
+		CloudMindContent:  cloudMindContent,
+		CloudMindSts:      cloudMindSts,
+		CloudMindTrade:    cloudMindTrade,
+		CloudMindSystem:   cloudMindSystem,
+		PlatFormComment:   platFormComment,
+		UserDomainService: userDomainService,
+		Redis:             redisRedis,
 	}
 	providerProvider := &Provider{
 		Config:              configConfig,
