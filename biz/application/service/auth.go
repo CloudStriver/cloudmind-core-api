@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/CloudStriver/cloudmind-core-api/biz/adaptor"
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
@@ -24,6 +25,7 @@ import (
 	"github.com/google/wire"
 	"github.com/samber/lo"
 	"github.com/zeromicro/go-zero/core/stores/redis"
+	"net/http"
 	"strconv"
 	"time"
 )
@@ -39,6 +41,10 @@ type IAuthService interface {
 	GiteeLogin(ctx context.Context, req *core_api.GiteeLoginReq) (resp *core_api.GiteeLoginResp, err error)
 	CheckEmail(ctx context.Context, c *core_api.CheckEmailReq) (resp *core_api.CheckEmailResp, err error)
 	AskUploadAvatar(ctx context.Context, req *core_api.AskUploadAvatarReq) (resp *core_api.AskUploadAvatarResp, err error)
+	WeixinLogin(ctx context.Context, req *core_api.WeixinLoginReq) (resp *core_api.WeixinLoginResp, err error)
+	WeixinCallBack(ctx context.Context, req *core_api.WeixinCallBackReq) (resp *core_api.WeixinCallBackResp, err error)
+	WeixinIsLogin(ctx context.Context, req *core_api.WeixinIsLoginReq) (resp *core_api.WeixinIsLoginResp, err error)
+	QQLogin(ctx context.Context, req *core_api.QQLoginReq) (resp *core_api.QQLoginResp, err error)
 }
 
 var AuthServiceSet = wire.NewSet(
@@ -56,6 +62,106 @@ type AuthService struct {
 	Redis            *redis.Redis
 }
 
+func (s *AuthService) QQLogin(ctx context.Context, req *core_api.QQLoginReq) (resp *core_api.QQLoginResp, err error) {
+	resp = new(core_api.QQLoginResp)
+	if resp.ShortToken, resp.LongToken, resp.UserId, err = s.ThirdLogin(ctx, req.Code, sts.AuthType_qq, "", "", "", consts.SexMan); err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (s *AuthService) WeixinLogin(ctx context.Context, req *core_api.WeixinLoginReq) (resp *core_api.WeixinLoginResp, err error) {
+	url := fmt.Sprintf("https://yd.jylt.cc/api/wxLogin/tempUserId?secret=%s", s.Config.WechatConf.Secret)
+	var (
+		reqs       *http.Request
+		res        *http.Response
+		httpClient http.Client
+		WechatInfo oauth.WechatInfo
+	)
+	if reqs, err = http.NewRequest(http.MethodGet, url, nil); err != nil {
+		return resp, err
+	}
+	reqs.Header.Set("accept", "application/json")
+	if res, err = httpClient.Do(reqs); err != nil {
+		return resp, err
+	}
+	if err = json.NewDecoder(res.Body).Decode(&WechatInfo); err != nil {
+		return resp, err
+	}
+	if WechatInfo.Code != 0 {
+		return resp, err
+	}
+
+	if err = s.Redis.SetexCtx(ctx, fmt.Sprintf("%s:%s", consts.WechatLoginKey, WechatInfo.Data.TempUserId), "Login", 300); err != nil {
+		return resp, err
+	}
+
+	return &core_api.WeixinLoginResp{
+		QrUrl:      WechatInfo.Data.QrUrl,
+		TempUserId: WechatInfo.Data.TempUserId,
+	}, nil
+}
+
+func (s *AuthService) WeixinCallBack(ctx context.Context, req *core_api.WeixinCallBackReq) (resp *core_api.WeixinCallBackResp, err error) {
+	val, err := s.Redis.GetCtx(ctx, fmt.Sprintf("%s:%s", consts.WechatLoginKey, req.TempUserId))
+	if err != nil {
+		return resp, err
+	}
+
+	if val != "Login" {
+		return resp, consts.ErrThirdLogin
+	}
+
+	if req.ScanSuccess {
+		if err = s.Redis.SetexCtx(ctx, fmt.Sprintf("%s:%s", consts.WechatLoginKey, req.TempUserId), "ScanSuccess", 300); err != nil {
+			return resp, err
+		}
+	}
+	if req.CancelLogin {
+		if err = s.Redis.SetexCtx(ctx, fmt.Sprintf("%s:%s", consts.WechatLoginKey, req.TempUserId), "CancelLogin", 300); err != nil {
+			return resp, err
+		}
+		return resp, nil
+	}
+	if err = s.Redis.SetexCtx(ctx, fmt.Sprintf("%s:%s", consts.WechatLoginKey, req.TempUserId), "LoginSuccess", 300); err != nil {
+		return resp, err
+	}
+
+	if err = s.UserInit(ctx, req.WxMaUserInfo.OpenId, req.WxMaUserInfo.NickName, req.WxMaUserInfo.Gender, req.WxMaUserInfo.AvatarUrl); err != nil {
+		return resp, err
+	}
+
+	if err = s.Redis.SetexCtx(ctx, fmt.Sprintf("%s:%s:temp", consts.WechatLoginKey, req.TempUserId), req.WxMaUserInfo.OpenId, 300); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
+
+func (s *AuthService) WeixinIsLogin(ctx context.Context, req *core_api.WeixinIsLoginReq) (resp *core_api.WeixinIsLoginResp, err error) {
+	resp = new(core_api.WeixinIsLoginResp)
+	val, err := s.Redis.GetCtx(ctx, fmt.Sprintf("%s:%s", consts.WechatLoginKey, req.TempUserId))
+	if err != nil {
+		return resp, err
+	}
+
+	if val == "LoginSuccess" {
+		val, err = s.Redis.GetCtx(ctx, fmt.Sprintf("%s:%s:temp", consts.WechatLoginKey, req.TempUserId))
+		if err != nil {
+			return resp, err
+		}
+		resp.ShortToken, resp.LongToken, err = generateShortLongToken(s.Config.Auth.SecretKey, val, s.Config.Auth.ShortTokenExpire, s.Config.Auth.LongTokenExpire)
+		if err != nil {
+			return resp, err
+		}
+		resp.UserId = val
+		return resp, nil
+	} else {
+		resp.Status = val
+		return resp, nil
+	}
+}
+
 func (s *AuthService) CheckEmail(ctx context.Context, req *core_api.CheckEmailReq) (resp *core_api.CheckEmailResp, err error) {
 	resp = new(core_api.CheckEmailResp)
 	checkEmailResp, err := s.CloudMindSts.CheckEmail(ctx, &sts.CheckEmailReq{
@@ -71,7 +177,7 @@ func (s *AuthService) CheckEmail(ctx context.Context, req *core_api.CheckEmailRe
 
 func (s *AuthService) GiteeLogin(ctx context.Context, req *core_api.GiteeLoginReq) (resp *core_api.GiteeLoginResp, err error) {
 	resp = new(core_api.GiteeLoginResp)
-	if resp.ShortToken, resp.LongToken, resp.UserId, err = s.ThirdLogin(ctx, req.Code, sts.AuthType_gitee); err != nil {
+	if resp.ShortToken, resp.LongToken, resp.UserId, err = s.ThirdLogin(ctx, req.Code, sts.AuthType_gitee, "", "", "", consts.SexMan); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -101,36 +207,53 @@ func (s *AuthService) EmailLogin(ctx context.Context, req *core_api.EmailLoginRe
 
 func (s *AuthService) GithubLogin(ctx context.Context, req *core_api.GithubLoginReq) (resp *core_api.GithubLoginResp, err error) {
 	resp = new(core_api.GithubLoginResp)
-	if resp.ShortToken, resp.LongToken, resp.UserId, err = s.ThirdLogin(ctx, req.Code, sts.AuthType_github); err != nil {
+	if resp.ShortToken, resp.LongToken, resp.UserId, err = s.ThirdLogin(ctx, req.Code, sts.AuthType_github, "", "", "", consts.SexMan); err != nil {
 		return resp, err
 	}
 	return resp, nil
 }
 
-func (s *AuthService) ThirdLogin(ctx context.Context, code string, authType sts.AuthType) (shortToken string, longToken string, userId string, err error) {
+func (s *AuthService) ThirdLogin(ctx context.Context, code string, authType sts.AuthType, appId string, name string, url string, sex int64) (shortToken string, longToken string, userId string, err error) {
 	// 第三方登录
-	data, err := oauth.OauthLogin(s.Config.GiteeConf, authType, code)
-	if err != nil {
-		return "", "", "", consts.ErrThirdLogin
+	conf := config.OauthConf{}
+	switch authType {
+	case sts.AuthType_qq:
+		data, err := oauth.QQLogin(conf, code)
+		if err != nil {
+			return "", "", "", consts.ErrThirdLogin
+		}
+		appId = data.OpenId
+		name = data.Nickname
+		url = data.FigureurlQq1
+		if data.Gender != "男" {
+			sex = consts.SexWoman
+		}
+	case sts.AuthType_gitee:
+		data, err := oauth.GiteeLogin(conf, code)
+		if err != nil {
+			return "", "", "", consts.ErrThirdLogin
+		}
+		appId = strconv.Itoa(int(data.Id))
+		name = data.Name
+		url = data.AvatarUrl
 	}
 
 	// 登录到系统
 	var loginResp *sts.LoginResp
 	if loginResp, err = s.CloudMindSts.Login(ctx, &sts.LoginReq{
 		Auth: &sts.AuthInfo{
-			AuthType: sts.AuthType_github,
-			AppId:    strconv.FormatInt(data.Id, 10),
+			AuthType: authType,
+			AppId:    appId,
 		},
 	}); err != nil {
 		return "", "", "", err
-
 	}
 	if loginResp.UserId == "" {
 		// 第一次登录
 		createAuthResp, err := s.CloudMindSts.CreateAuth(ctx, &sts.CreateAuthReq{
 			AuthInfo: &sts.AuthInfo{
-				AuthType: sts.AuthType_github,
-				AppId:    strconv.FormatInt(data.Id, 10),
+				AuthType: authType,
+				AppId:    appId,
 			},
 			UserInfo: &sts.UserInfo{
 				Role: sts.Role_user,
@@ -139,7 +262,7 @@ func (s *AuthService) ThirdLogin(ctx context.Context, code string, authType sts.
 		if err != nil {
 			return "", "", "", err
 		}
-		if err = s.UserInit(ctx, createAuthResp.UserId, data.Name); err != nil {
+		if err = s.UserInit(ctx, createAuthResp.UserId, name, sex, url); err != nil {
 			return "", "", "", err
 		}
 		userId = createAuthResp.UserId
@@ -254,7 +377,7 @@ func (s *AuthService) Register(ctx context.Context, req *core_api.RegisterReq) (
 		return resp, err
 	}
 	userId := createAuthResp.UserId
-	if err = s.UserInit(ctx, createAuthResp.UserId, req.Name); err != nil {
+	if err = s.UserInit(ctx, createAuthResp.UserId, req.Name, consts.SexMan, ""); err != nil {
 		return resp, err
 	}
 	resp.ShortToken, resp.LongToken, err = generateShortLongToken(s.Config.Auth.SecretKey, userId, s.Config.Auth.ShortTokenExpire, s.Config.Auth.LongTokenExpire)
@@ -265,10 +388,12 @@ func (s *AuthService) Register(ctx context.Context, req *core_api.RegisterReq) (
 	return resp, nil
 }
 
-func (s *AuthService) UserInit(ctx context.Context, UserId, Name string) error {
+func (s *AuthService) UserInit(ctx context.Context, UserId, Name string, Sex int64, Url string) error {
 	if _, err := s.CloudMindContent.CreateUser(ctx, &content.CreateUserReq{
 		UserId: UserId,
 		Name:   Name,
+		Sex:    Sex,
+		Url:    Url,
 	}); err != nil {
 		return err
 	}

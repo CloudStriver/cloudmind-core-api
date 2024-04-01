@@ -28,4 +28,7 @@ const (
 	FileRankKey         = "cache:rank:file"
 	PostRankKey         = "cache:rank:post"
 	BloomRelationKey    = "cache:bloom:relation"
+	SexMan              = 1
+	SexWoman            = 2
+	WechatLoginKey      = "cache:wechat"
 )

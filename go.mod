@@ -21,7 +21,7 @@ require (
 	google.golang.org/protobuf v1.32.0
 )
 
-//replace github.com/CloudStriver/service-idl-gen-go => ../service-idl-gen-go
+replace github.com/CloudStriver/service-idl-gen-go => ../service-idl-gen-go
 
 require (
 	github.com/CloudStriver/cloudmind-mq v1.0.12-0.20240322023843-0aabf057d153 // indirect

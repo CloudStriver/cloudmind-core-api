@@ -41,12 +41,14 @@ func NewProvider() (*Provider, error) {
 	}
 	createNotificationsKq := kq.NewCreateNotificationsKq(configConfig)
 	createFeedBackKq := kq.NewCreateFeedBackKq(configConfig)
+	redisRedis := redis.NewRedis(configConfig)
 	relationDomainService := &service.RelationDomainService{
 		Config:               configConfig,
 		PlatFormRelation:     platFormRelation,
 		CloudMindContent:     cloudMindContent,
 		CreateNotificationKq: createNotificationsKq,
 		CreateFeedBackKq:     createFeedBackKq,
+		Redis:                redisRedis,
 	}
 	commentserviceClient := platform_comment.NewPlatFormComment(configConfig)
 	platFormComment := &platform_comment.PlatFormComment{
@@ -99,7 +101,6 @@ func NewProvider() (*Provider, error) {
 	cloudMindSystem := &cloudmind_system.CloudMindSystem{
 		Client: systemserviceClient,
 	}
-	redisRedis := redis.NewRedis(configConfig)
 	authService := &service2.AuthService{
 		Config:           configConfig,
 		CloudMindContent: cloudMindContent,
@@ -115,6 +116,7 @@ func NewProvider() (*Provider, error) {
 		CloudMindContent:     cloudMindContent,
 		CreateNotificationKq: createNotificationsKq,
 		CreateFeedBackKq:     createFeedBackKq,
+		Redis:                redisRedis,
 	}
 	relationService := &service2.RelationService{
 		Config:                configConfig,

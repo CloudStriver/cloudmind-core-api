@@ -175,3 +175,71 @@ func AskUploadAvatar(ctx context.Context, c *app.RequestContext) {
 	resp, err = p.AuthService.AskUploadAvatar(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
+
+// WeixinLogin .
+// @router /auth/weixinLogin [GET]
+func WeixinLogin(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.WeixinLoginReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.WeixinLoginResp)
+	p := provider.Get()
+	resp, err = p.AuthService.WeixinLogin(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
+}
+
+// WeixinCallBack .
+// @router /auth/weixinCallback [POST]
+func WeixinCallBack(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.WeixinCallBackReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.WeixinCallBackResp)
+	p := provider.Get()
+	resp, err = p.AuthService.WeixinCallBack(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
+}
+
+// WeixinIsLogin .
+// @router /auth/weixinIsLogin [POST]
+func WeixinIsLogin(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.WeixinIsLoginReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.WeixinIsLoginResp)
+	p := provider.Get()
+	resp, err = p.AuthService.WeixinIsLogin(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
+}
+
+// QQLogin .
+// @router /auth/qqLogin [GET]
+func QQLogin(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.QQLoginReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.QQLoginResp)
+	p := provider.Get()
+	resp, err = p.AuthService.QQLogin(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
+}

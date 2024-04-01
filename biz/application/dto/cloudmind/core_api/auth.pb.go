@@ -556,6 +556,524 @@ func (x *GiteeLoginResp) GetUserId() string {
 	return ""
 }
 
+type WxMaUserInfo struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	OpenId    string `protobuf:"bytes,1,opt,name=openId,proto3" json:"openId" form:"openId" query:"openId"`
+	NickName  string `protobuf:"bytes,2,opt,name=nickName,proto3" json:"nickName" form:"nickName" query:"nickName"`
+	Gender    int64  `protobuf:"varint,3,opt,name=gender,proto3" json:"gender" form:"gender" query:"gender"`
+	AvatarUrl string `protobuf:"bytes,4,opt,name=avatarUrl,proto3" json:"avatarUrl" form:"avatarUrl" query:"avatarUrl"`
+}
+
+func (x *WxMaUserInfo) Reset() {
+	*x = WxMaUserInfo{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_auth_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *WxMaUserInfo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*WxMaUserInfo) ProtoMessage() {}
+
+func (x *WxMaUserInfo) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_auth_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use WxMaUserInfo.ProtoReflect.Descriptor instead.
+func (*WxMaUserInfo) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *WxMaUserInfo) GetOpenId() string {
+	if x != nil {
+		return x.OpenId
+	}
+	return ""
+}
+
+func (x *WxMaUserInfo) GetNickName() string {
+	if x != nil {
+		return x.NickName
+	}
+	return ""
+}
+
+func (x *WxMaUserInfo) GetGender() int64 {
+	if x != nil {
+		return x.Gender
+	}
+	return 0
+}
+
+func (x *WxMaUserInfo) GetAvatarUrl() string {
+	if x != nil {
+		return x.AvatarUrl
+	}
+	return ""
+}
+
+type WeixinCallBackReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ScanSuccess  bool          `protobuf:"varint,1,opt,name=scanSuccess,proto3" json:"scanSuccess" form:"scanSuccess" query:"scanSuccess"`
+	CancelLogin  bool          `protobuf:"varint,2,opt,name=cancelLogin,proto3" json:"cancelLogin" form:"cancelLogin" query:"cancelLogin"`
+	TempUserId   string        `protobuf:"bytes,3,opt,name=tempUserId,proto3" json:"tempUserId" form:"tempUserId" query:"tempUserId"`
+	WxMaUserInfo *WxMaUserInfo `protobuf:"bytes,4,opt,name=wxMaUserInfo,proto3" json:"wxMaUserInfo" form:"wxMaUserInfo" query:"wxMaUserInfo"`
+}
+
+func (x *WeixinCallBackReq) Reset() {
+	*x = WeixinCallBackReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_auth_proto_msgTypes[9]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *WeixinCallBackReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*WeixinCallBackReq) ProtoMessage() {}
+
+func (x *WeixinCallBackReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_auth_proto_msgTypes[9]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use WeixinCallBackReq.ProtoReflect.Descriptor instead.
+func (*WeixinCallBackReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *WeixinCallBackReq) GetScanSuccess() bool {
+	if x != nil {
+		return x.ScanSuccess
+	}
+	return false
+}
+
+func (x *WeixinCallBackReq) GetCancelLogin() bool {
+	if x != nil {
+		return x.CancelLogin
+	}
+	return false
+}
+
+func (x *WeixinCallBackReq) GetTempUserId() string {
+	if x != nil {
+		return x.TempUserId
+	}
+	return ""
+}
+
+func (x *WeixinCallBackReq) GetWxMaUserInfo() *WxMaUserInfo {
+	if x != nil {
+		return x.WxMaUserInfo
+	}
+	return nil
+}
+
+type WeixinCallBackResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Code int64  `protobuf:"varint,1,opt,name=code,proto3" json:"code" form:"code" query:"code"`
+	Msg  string `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg" form:"msg" query:"msg"`
+}
+
+func (x *WeixinCallBackResp) Reset() {
+	*x = WeixinCallBackResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_auth_proto_msgTypes[10]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *WeixinCallBackResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*WeixinCallBackResp) ProtoMessage() {}
+
+func (x *WeixinCallBackResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_auth_proto_msgTypes[10]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use WeixinCallBackResp.ProtoReflect.Descriptor instead.
+func (*WeixinCallBackResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *WeixinCallBackResp) GetCode() int64 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *WeixinCallBackResp) GetMsg() string {
+	if x != nil {
+		return x.Msg
+	}
+	return ""
+}
+
+type WeixinLoginReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *WeixinLoginReq) Reset() {
+	*x = WeixinLoginReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_auth_proto_msgTypes[11]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *WeixinLoginReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*WeixinLoginReq) ProtoMessage() {}
+
+func (x *WeixinLoginReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_auth_proto_msgTypes[11]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use WeixinLoginReq.ProtoReflect.Descriptor instead.
+func (*WeixinLoginReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{11}
+}
+
+type WeixinLoginResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	QrUrl      string `protobuf:"bytes,1,opt,name=qrUrl,proto3" json:"qrUrl" form:"qrUrl" query:"qrUrl"`
+	TempUserId string `protobuf:"bytes,2,opt,name=tempUserId,proto3" json:"tempUserId" form:"tempUserId" query:"tempUserId"`
+}
+
+func (x *WeixinLoginResp) Reset() {
+	*x = WeixinLoginResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_auth_proto_msgTypes[12]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *WeixinLoginResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*WeixinLoginResp) ProtoMessage() {}
+
+func (x *WeixinLoginResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_auth_proto_msgTypes[12]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use WeixinLoginResp.ProtoReflect.Descriptor instead.
+func (*WeixinLoginResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *WeixinLoginResp) GetQrUrl() string {
+	if x != nil {
+		return x.QrUrl
+	}
+	return ""
+}
+
+func (x *WeixinLoginResp) GetTempUserId() string {
+	if x != nil {
+		return x.TempUserId
+	}
+	return ""
+}
+
+type WeixinIsLoginReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	TempUserId string `protobuf:"bytes,1,opt,name=tempUserId,proto3" json:"tempUserId" form:"tempUserId" query:"tempUserId"`
+}
+
+func (x *WeixinIsLoginReq) Reset() {
+	*x = WeixinIsLoginReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_auth_proto_msgTypes[13]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *WeixinIsLoginReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*WeixinIsLoginReq) ProtoMessage() {}
+
+func (x *WeixinIsLoginReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_auth_proto_msgTypes[13]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use WeixinIsLoginReq.ProtoReflect.Descriptor instead.
+func (*WeixinIsLoginReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *WeixinIsLoginReq) GetTempUserId() string {
+	if x != nil {
+		return x.TempUserId
+	}
+	return ""
+}
+
+type WeixinIsLoginResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ShortToken string `protobuf:"bytes,1,opt,name=shortToken,proto3" json:"shortToken" form:"shortToken" query:"shortToken"`
+	LongToken  string `protobuf:"bytes,2,opt,name=longToken,proto3" json:"longToken" form:"longToken" query:"longToken"`
+	UserId     string `protobuf:"bytes,3,opt,name=userId,proto3" json:"userId" form:"userId" query:"userId"`
+	Status     string `protobuf:"bytes,4,opt,name=status,proto3" json:"status" form:"status" query:"status"`
+}
+
+func (x *WeixinIsLoginResp) Reset() {
+	*x = WeixinIsLoginResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_auth_proto_msgTypes[14]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *WeixinIsLoginResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*WeixinIsLoginResp) ProtoMessage() {}
+
+func (x *WeixinIsLoginResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_auth_proto_msgTypes[14]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use WeixinIsLoginResp.ProtoReflect.Descriptor instead.
+func (*WeixinIsLoginResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *WeixinIsLoginResp) GetShortToken() string {
+	if x != nil {
+		return x.ShortToken
+	}
+	return ""
+}
+
+func (x *WeixinIsLoginResp) GetLongToken() string {
+	if x != nil {
+		return x.LongToken
+	}
+	return ""
+}
+
+func (x *WeixinIsLoginResp) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *WeixinIsLoginResp) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+type QQLoginReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Code string `protobuf:"bytes,1,opt,name=code,proto3" json:"code" form:"code" query:"code"`
+}
+
+func (x *QQLoginReq) Reset() {
+	*x = QQLoginReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_auth_proto_msgTypes[15]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QQLoginReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QQLoginReq) ProtoMessage() {}
+
+func (x *QQLoginReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_auth_proto_msgTypes[15]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use QQLoginReq.ProtoReflect.Descriptor instead.
+func (*QQLoginReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *QQLoginReq) GetCode() string {
+	if x != nil {
+		return x.Code
+	}
+	return ""
+}
+
+type QQLoginResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ShortToken string `protobuf:"bytes,1,opt,name=shortToken,proto3" json:"shortToken" form:"shortToken" query:"shortToken"`
+	LongToken  string `protobuf:"bytes,2,opt,name=longToken,proto3" json:"longToken" form:"longToken" query:"longToken"`
+	UserId     string `protobuf:"bytes,3,opt,name=userId,proto3" json:"userId" form:"userId" query:"userId"`
+}
+
+func (x *QQLoginResp) Reset() {
+	*x = QQLoginResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_auth_proto_msgTypes[16]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QQLoginResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QQLoginResp) ProtoMessage() {}
+
+func (x *QQLoginResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_auth_proto_msgTypes[16]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use QQLoginResp.ProtoReflect.Descriptor instead.
+func (*QQLoginResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *QQLoginResp) GetShortToken() string {
+	if x != nil {
+		return x.ShortToken
+	}
+	return ""
+}
+
+func (x *QQLoginResp) GetLongToken() string {
+	if x != nil {
+		return x.LongToken
+	}
+	return ""
+}
+
+func (x *QQLoginResp) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
 type RefreshTokenReq struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -567,7 +1085,7 @@ type RefreshTokenReq struct {
 func (x *RefreshTokenReq) Reset() {
 	*x = RefreshTokenReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cloudmind_core_api_auth_proto_msgTypes[8]
+		mi := &file_cloudmind_core_api_auth_proto_msgTypes[17]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -580,7 +1098,7 @@ func (x *RefreshTokenReq) String() string {
 func (*RefreshTokenReq) ProtoMessage() {}
 
 func (x *RefreshTokenReq) ProtoReflect() protoreflect.Message {
-	mi := &file_cloudmind_core_api_auth_proto_msgTypes[8]
+	mi := &file_cloudmind_core_api_auth_proto_msgTypes[17]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -593,7 +1111,7 @@ func (x *RefreshTokenReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RefreshTokenReq.ProtoReflect.Descriptor instead.
 func (*RefreshTokenReq) Descriptor() ([]byte, []int) {
-	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{8}
+	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *RefreshTokenReq) GetLongToken() string {
@@ -615,7 +1133,7 @@ type RefreshTokenResp struct {
 func (x *RefreshTokenResp) Reset() {
 	*x = RefreshTokenResp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cloudmind_core_api_auth_proto_msgTypes[9]
+		mi := &file_cloudmind_core_api_auth_proto_msgTypes[18]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -628,7 +1146,7 @@ func (x *RefreshTokenResp) String() string {
 func (*RefreshTokenResp) ProtoMessage() {}
 
 func (x *RefreshTokenResp) ProtoReflect() protoreflect.Message {
-	mi := &file_cloudmind_core_api_auth_proto_msgTypes[9]
+	mi := &file_cloudmind_core_api_auth_proto_msgTypes[18]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -641,7 +1159,7 @@ func (x *RefreshTokenResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RefreshTokenResp.ProtoReflect.Descriptor instead.
 func (*RefreshTokenResp) Descriptor() ([]byte, []int) {
-	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{9}
+	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *RefreshTokenResp) GetShortToken() string {
@@ -670,7 +1188,7 @@ type SendEmailReq struct {
 func (x *SendEmailReq) Reset() {
 	*x = SendEmailReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cloudmind_core_api_auth_proto_msgTypes[10]
+		mi := &file_cloudmind_core_api_auth_proto_msgTypes[19]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -683,7 +1201,7 @@ func (x *SendEmailReq) String() string {
 func (*SendEmailReq) ProtoMessage() {}
 
 func (x *SendEmailReq) ProtoReflect() protoreflect.Message {
-	mi := &file_cloudmind_core_api_auth_proto_msgTypes[10]
+	mi := &file_cloudmind_core_api_auth_proto_msgTypes[19]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -696,7 +1214,7 @@ func (x *SendEmailReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SendEmailReq.ProtoReflect.Descriptor instead.
 func (*SendEmailReq) Descriptor() ([]byte, []int) {
-	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{10}
+	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *SendEmailReq) GetEmail() string {
@@ -722,7 +1240,7 @@ type SendEmailResp struct {
 func (x *SendEmailResp) Reset() {
 	*x = SendEmailResp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cloudmind_core_api_auth_proto_msgTypes[11]
+		mi := &file_cloudmind_core_api_auth_proto_msgTypes[20]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -735,7 +1253,7 @@ func (x *SendEmailResp) String() string {
 func (*SendEmailResp) ProtoMessage() {}
 
 func (x *SendEmailResp) ProtoReflect() protoreflect.Message {
-	mi := &file_cloudmind_core_api_auth_proto_msgTypes[11]
+	mi := &file_cloudmind_core_api_auth_proto_msgTypes[20]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -748,7 +1266,7 @@ func (x *SendEmailResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SendEmailResp.ProtoReflect.Descriptor instead.
 func (*SendEmailResp) Descriptor() ([]byte, []int) {
-	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{11}
+	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{20}
 }
 
 type GetCaptchaReq struct {
@@ -760,7 +1278,7 @@ type GetCaptchaReq struct {
 func (x *GetCaptchaReq) Reset() {
 	*x = GetCaptchaReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cloudmind_core_api_auth_proto_msgTypes[12]
+		mi := &file_cloudmind_core_api_auth_proto_msgTypes[21]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -773,7 +1291,7 @@ func (x *GetCaptchaReq) String() string {
 func (*GetCaptchaReq) ProtoMessage() {}
 
 func (x *GetCaptchaReq) ProtoReflect() protoreflect.Message {
-	mi := &file_cloudmind_core_api_auth_proto_msgTypes[12]
+	mi := &file_cloudmind_core_api_auth_proto_msgTypes[21]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -786,7 +1304,7 @@ func (x *GetCaptchaReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetCaptchaReq.ProtoReflect.Descriptor instead.
 func (*GetCaptchaReq) Descriptor() ([]byte, []int) {
-	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{12}
+	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{21}
 }
 
 type GetCaptchaResp struct {
@@ -802,7 +1320,7 @@ type GetCaptchaResp struct {
 func (x *GetCaptchaResp) Reset() {
 	*x = GetCaptchaResp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cloudmind_core_api_auth_proto_msgTypes[13]
+		mi := &file_cloudmind_core_api_auth_proto_msgTypes[22]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -815,7 +1333,7 @@ func (x *GetCaptchaResp) String() string {
 func (*GetCaptchaResp) ProtoMessage() {}
 
 func (x *GetCaptchaResp) ProtoReflect() protoreflect.Message {
-	mi := &file_cloudmind_core_api_auth_proto_msgTypes[13]
+	mi := &file_cloudmind_core_api_auth_proto_msgTypes[22]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -828,7 +1346,7 @@ func (x *GetCaptchaResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetCaptchaResp.ProtoReflect.Descriptor instead.
 func (*GetCaptchaResp) Descriptor() ([]byte, []int) {
-	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{13}
+	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *GetCaptchaResp) GetOriginalImageBase64() string {
@@ -864,7 +1382,7 @@ type SetPasswordByEmailReq struct {
 func (x *SetPasswordByEmailReq) Reset() {
 	*x = SetPasswordByEmailReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cloudmind_core_api_auth_proto_msgTypes[14]
+		mi := &file_cloudmind_core_api_auth_proto_msgTypes[23]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -877,7 +1395,7 @@ func (x *SetPasswordByEmailReq) String() string {
 func (*SetPasswordByEmailReq) ProtoMessage() {}
 
 func (x *SetPasswordByEmailReq) ProtoReflect() protoreflect.Message {
-	mi := &file_cloudmind_core_api_auth_proto_msgTypes[14]
+	mi := &file_cloudmind_core_api_auth_proto_msgTypes[23]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -890,7 +1408,7 @@ func (x *SetPasswordByEmailReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SetPasswordByEmailReq.ProtoReflect.Descriptor instead.
 func (*SetPasswordByEmailReq) Descriptor() ([]byte, []int) {
-	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{14}
+	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *SetPasswordByEmailReq) GetEmail() string {
@@ -916,7 +1434,7 @@ type SetPasswordByEmailResp struct {
 func (x *SetPasswordByEmailResp) Reset() {
 	*x = SetPasswordByEmailResp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cloudmind_core_api_auth_proto_msgTypes[15]
+		mi := &file_cloudmind_core_api_auth_proto_msgTypes[24]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -929,7 +1447,7 @@ func (x *SetPasswordByEmailResp) String() string {
 func (*SetPasswordByEmailResp) ProtoMessage() {}
 
 func (x *SetPasswordByEmailResp) ProtoReflect() protoreflect.Message {
-	mi := &file_cloudmind_core_api_auth_proto_msgTypes[15]
+	mi := &file_cloudmind_core_api_auth_proto_msgTypes[24]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -942,7 +1460,7 @@ func (x *SetPasswordByEmailResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SetPasswordByEmailResp.ProtoReflect.Descriptor instead.
 func (*SetPasswordByEmailResp) Descriptor() ([]byte, []int) {
-	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{15}
+	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{24}
 }
 
 type SetPasswordByPasswordReq struct {
@@ -957,7 +1475,7 @@ type SetPasswordByPasswordReq struct {
 func (x *SetPasswordByPasswordReq) Reset() {
 	*x = SetPasswordByPasswordReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cloudmind_core_api_auth_proto_msgTypes[16]
+		mi := &file_cloudmind_core_api_auth_proto_msgTypes[25]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -970,7 +1488,7 @@ func (x *SetPasswordByPasswordReq) String() string {
 func (*SetPasswordByPasswordReq) ProtoMessage() {}
 
 func (x *SetPasswordByPasswordReq) ProtoReflect() protoreflect.Message {
-	mi := &file_cloudmind_core_api_auth_proto_msgTypes[16]
+	mi := &file_cloudmind_core_api_auth_proto_msgTypes[25]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -983,7 +1501,7 @@ func (x *SetPasswordByPasswordReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SetPasswordByPasswordReq.ProtoReflect.Descriptor instead.
 func (*SetPasswordByPasswordReq) Descriptor() ([]byte, []int) {
-	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{16}
+	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *SetPasswordByPasswordReq) GetOldPassword() string {
@@ -1009,7 +1527,7 @@ type SetPasswordByPasswordResp struct {
 func (x *SetPasswordByPasswordResp) Reset() {
 	*x = SetPasswordByPasswordResp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cloudmind_core_api_auth_proto_msgTypes[17]
+		mi := &file_cloudmind_core_api_auth_proto_msgTypes[26]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1022,7 +1540,7 @@ func (x *SetPasswordByPasswordResp) String() string {
 func (*SetPasswordByPasswordResp) ProtoMessage() {}
 
 func (x *SetPasswordByPasswordResp) ProtoReflect() protoreflect.Message {
-	mi := &file_cloudmind_core_api_auth_proto_msgTypes[17]
+	mi := &file_cloudmind_core_api_auth_proto_msgTypes[26]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1035,7 +1553,7 @@ func (x *SetPasswordByPasswordResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SetPasswordByPasswordResp.ProtoReflect.Descriptor instead.
 func (*SetPasswordByPasswordResp) Descriptor() ([]byte, []int) {
-	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{17}
+	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{26}
 }
 
 type CheckEmailReq struct {
@@ -1050,7 +1568,7 @@ type CheckEmailReq struct {
 func (x *CheckEmailReq) Reset() {
 	*x = CheckEmailReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cloudmind_core_api_auth_proto_msgTypes[18]
+		mi := &file_cloudmind_core_api_auth_proto_msgTypes[27]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1063,7 +1581,7 @@ func (x *CheckEmailReq) String() string {
 func (*CheckEmailReq) ProtoMessage() {}
 
 func (x *CheckEmailReq) ProtoReflect() protoreflect.Message {
-	mi := &file_cloudmind_core_api_auth_proto_msgTypes[18]
+	mi := &file_cloudmind_core_api_auth_proto_msgTypes[27]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1076,7 +1594,7 @@ func (x *CheckEmailReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CheckEmailReq.ProtoReflect.Descriptor instead.
 func (*CheckEmailReq) Descriptor() ([]byte, []int) {
-	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{18}
+	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{27}
 }
 
 func (x *CheckEmailReq) GetEmail() string {
@@ -1104,7 +1622,7 @@ type CheckEmailResp struct {
 func (x *CheckEmailResp) Reset() {
 	*x = CheckEmailResp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cloudmind_core_api_auth_proto_msgTypes[19]
+		mi := &file_cloudmind_core_api_auth_proto_msgTypes[28]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1117,7 +1635,7 @@ func (x *CheckEmailResp) String() string {
 func (*CheckEmailResp) ProtoMessage() {}
 
 func (x *CheckEmailResp) ProtoReflect() protoreflect.Message {
-	mi := &file_cloudmind_core_api_auth_proto_msgTypes[19]
+	mi := &file_cloudmind_core_api_auth_proto_msgTypes[28]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1130,7 +1648,7 @@ func (x *CheckEmailResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CheckEmailResp.ProtoReflect.Descriptor instead.
 func (*CheckEmailResp) Descriptor() ([]byte, []int) {
-	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{19}
+	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *CheckEmailResp) GetOk() bool {
@@ -1152,7 +1670,7 @@ type AskUploadAvatarReq struct {
 func (x *AskUploadAvatarReq) Reset() {
 	*x = AskUploadAvatarReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cloudmind_core_api_auth_proto_msgTypes[20]
+		mi := &file_cloudmind_core_api_auth_proto_msgTypes[29]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1165,7 +1683,7 @@ func (x *AskUploadAvatarReq) String() string {
 func (*AskUploadAvatarReq) ProtoMessage() {}
 
 func (x *AskUploadAvatarReq) ProtoReflect() protoreflect.Message {
-	mi := &file_cloudmind_core_api_auth_proto_msgTypes[20]
+	mi := &file_cloudmind_core_api_auth_proto_msgTypes[29]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1178,7 +1696,7 @@ func (x *AskUploadAvatarReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AskUploadAvatarReq.ProtoReflect.Descriptor instead.
 func (*AskUploadAvatarReq) Descriptor() ([]byte, []int) {
-	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{20}
+	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{29}
 }
 
 func (x *AskUploadAvatarReq) GetName() string {
@@ -1210,7 +1728,7 @@ type AskUploadAvatarResp struct {
 func (x *AskUploadAvatarResp) Reset() {
 	*x = AskUploadAvatarResp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cloudmind_core_api_auth_proto_msgTypes[21]
+		mi := &file_cloudmind_core_api_auth_proto_msgTypes[30]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1223,7 +1741,7 @@ func (x *AskUploadAvatarResp) String() string {
 func (*AskUploadAvatarResp) ProtoMessage() {}
 
 func (x *AskUploadAvatarResp) ProtoReflect() protoreflect.Message {
-	mi := &file_cloudmind_core_api_auth_proto_msgTypes[21]
+	mi := &file_cloudmind_core_api_auth_proto_msgTypes[30]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1236,7 +1754,7 @@ func (x *AskUploadAvatarResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AskUploadAvatarResp.ProtoReflect.Descriptor instead.
 func (*AskUploadAvatarResp) Descriptor() ([]byte, []int) {
-	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{21}
+	return file_cloudmind_core_api_auth_proto_rawDescGZIP(), []int{30}
 }
 
 func (x *AskUploadAvatarResp) GetTmpSecretId() string {
@@ -1337,6 +1855,55 @@ var file_cloudmind_core_api_auth_proto_rawDesc = []byte{
 	0x72, 0x74, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x12, 0x1c, 0x0a, 0x09, 0x6c, 0x6f, 0x6e, 0x67, 0x54,
 	0x6f, 0x6b, 0x65, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x6c, 0x6f, 0x6e, 0x67,
 	0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x12, 0x16, 0x0a, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x18,
+	0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x22, 0x78, 0x0a,
+	0x0c, 0x57, 0x78, 0x4d, 0x61, 0x55, 0x73, 0x65, 0x72, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x16, 0x0a,
+	0x06, 0x6f, 0x70, 0x65, 0x6e, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x6f,
+	0x70, 0x65, 0x6e, 0x49, 0x64, 0x12, 0x1a, 0x0a, 0x08, 0x6e, 0x69, 0x63, 0x6b, 0x4e, 0x61, 0x6d,
+	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x6e, 0x69, 0x63, 0x6b, 0x4e, 0x61, 0x6d,
+	0x65, 0x12, 0x16, 0x0a, 0x06, 0x67, 0x65, 0x6e, 0x64, 0x65, 0x72, 0x18, 0x03, 0x20, 0x01, 0x28,
+	0x03, 0x52, 0x06, 0x67, 0x65, 0x6e, 0x64, 0x65, 0x72, 0x12, 0x1c, 0x0a, 0x09, 0x61, 0x76, 0x61,
+	0x74, 0x61, 0x72, 0x55, 0x72, 0x6c, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x61, 0x76,
+	0x61, 0x74, 0x61, 0x72, 0x55, 0x72, 0x6c, 0x22, 0xbd, 0x01, 0x0a, 0x11, 0x57, 0x65, 0x69, 0x78,
+	0x69, 0x6e, 0x43, 0x61, 0x6c, 0x6c, 0x42, 0x61, 0x63, 0x6b, 0x52, 0x65, 0x71, 0x12, 0x20, 0x0a,
+	0x0b, 0x73, 0x63, 0x61, 0x6e, 0x53, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x08, 0x52, 0x0b, 0x73, 0x63, 0x61, 0x6e, 0x53, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x12,
+	0x20, 0x0a, 0x0b, 0x63, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x08, 0x52, 0x0b, 0x63, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x4c, 0x6f, 0x67, 0x69,
+	0x6e, 0x12, 0x1e, 0x0a, 0x0a, 0x74, 0x65, 0x6d, 0x70, 0x55, 0x73, 0x65, 0x72, 0x49, 0x64, 0x18,
+	0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x74, 0x65, 0x6d, 0x70, 0x55, 0x73, 0x65, 0x72, 0x49,
+	0x64, 0x12, 0x44, 0x0a, 0x0c, 0x77, 0x78, 0x4d, 0x61, 0x55, 0x73, 0x65, 0x72, 0x49, 0x6e, 0x66,
+	0x6f, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x20, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d,
+	0x69, 0x6e, 0x64, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x57, 0x78, 0x4d,
+	0x61, 0x55, 0x73, 0x65, 0x72, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x0c, 0x77, 0x78, 0x4d, 0x61, 0x55,
+	0x73, 0x65, 0x72, 0x49, 0x6e, 0x66, 0x6f, 0x22, 0x3a, 0x0a, 0x12, 0x57, 0x65, 0x69, 0x78, 0x69,
+	0x6e, 0x43, 0x61, 0x6c, 0x6c, 0x42, 0x61, 0x63, 0x6b, 0x52, 0x65, 0x73, 0x70, 0x12, 0x12, 0x0a,
+	0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x04, 0x63, 0x6f, 0x64,
+	0x65, 0x12, 0x10, 0x0a, 0x03, 0x6d, 0x73, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03,
+	0x6d, 0x73, 0x67, 0x22, 0x10, 0x0a, 0x0e, 0x57, 0x65, 0x69, 0x78, 0x69, 0x6e, 0x4c, 0x6f, 0x67,
+	0x69, 0x6e, 0x52, 0x65, 0x71, 0x22, 0x47, 0x0a, 0x0f, 0x57, 0x65, 0x69, 0x78, 0x69, 0x6e, 0x4c,
+	0x6f, 0x67, 0x69, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x12, 0x14, 0x0a, 0x05, 0x71, 0x72, 0x55, 0x72,
+	0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x71, 0x72, 0x55, 0x72, 0x6c, 0x12, 0x1e,
+	0x0a, 0x0a, 0x74, 0x65, 0x6d, 0x70, 0x55, 0x73, 0x65, 0x72, 0x49, 0x64, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x0a, 0x74, 0x65, 0x6d, 0x70, 0x55, 0x73, 0x65, 0x72, 0x49, 0x64, 0x22, 0x32,
+	0x0a, 0x10, 0x57, 0x65, 0x69, 0x78, 0x69, 0x6e, 0x49, 0x73, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x52,
+	0x65, 0x71, 0x12, 0x1e, 0x0a, 0x0a, 0x74, 0x65, 0x6d, 0x70, 0x55, 0x73, 0x65, 0x72, 0x49, 0x64,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x74, 0x65, 0x6d, 0x70, 0x55, 0x73, 0x65, 0x72,
+	0x49, 0x64, 0x22, 0x81, 0x01, 0x0a, 0x11, 0x57, 0x65, 0x69, 0x78, 0x69, 0x6e, 0x49, 0x73, 0x4c,
+	0x6f, 0x67, 0x69, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x12, 0x1e, 0x0a, 0x0a, 0x73, 0x68, 0x6f, 0x72,
+	0x74, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x73, 0x68,
+	0x6f, 0x72, 0x74, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x12, 0x1c, 0x0a, 0x09, 0x6c, 0x6f, 0x6e, 0x67,
+	0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x6c, 0x6f, 0x6e,
+	0x67, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x12, 0x16, 0x0a, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64,
+	0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x12, 0x16,
+	0x0a, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06,
+	0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x22, 0x20, 0x0a, 0x0a, 0x51, 0x51, 0x4c, 0x6f, 0x67, 0x69,
+	0x6e, 0x52, 0x65, 0x71, 0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x22, 0x63, 0x0a, 0x0b, 0x51, 0x51, 0x4c, 0x6f,
+	0x67, 0x69, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x12, 0x1e, 0x0a, 0x0a, 0x73, 0x68, 0x6f, 0x72, 0x74,
+	0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x73, 0x68, 0x6f,
+	0x72, 0x74, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x12, 0x1c, 0x0a, 0x09, 0x6c, 0x6f, 0x6e, 0x67, 0x54,
+	0x6f, 0x6b, 0x65, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x6c, 0x6f, 0x6e, 0x67,
+	0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x12, 0x16, 0x0a, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x18,
 	0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x22, 0x2f, 0x0a,
 	0x0f, 0x52, 0x65, 0x66, 0x72, 0x65, 0x73, 0x68, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x52, 0x65, 0x71,
 	0x12, 0x1c, 0x0a, 0x09, 0x6c, 0x6f, 0x6e, 0x67, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x18, 0x01, 0x20,
@@ -1428,7 +1995,7 @@ func file_cloudmind_core_api_auth_proto_rawDescGZIP() []byte {
 }
 
 var file_cloudmind_core_api_auth_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_cloudmind_core_api_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 22)
+var file_cloudmind_core_api_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 31)
 var file_cloudmind_core_api_auth_proto_goTypes = []interface{}{
 	(UploadType)(0),                   // 0: cloudmind.core_api.UploadType
 	(*RegisterReq)(nil),               // 1: cloudmind.core_api.RegisterReq
@@ -1439,29 +2006,39 @@ var file_cloudmind_core_api_auth_proto_goTypes = []interface{}{
 	(*GithubLoginResp)(nil),           // 6: cloudmind.core_api.GithubLoginResp
 	(*GiteeLoginReq)(nil),             // 7: cloudmind.core_api.GiteeLoginReq
 	(*GiteeLoginResp)(nil),            // 8: cloudmind.core_api.GiteeLoginResp
-	(*RefreshTokenReq)(nil),           // 9: cloudmind.core_api.RefreshTokenReq
-	(*RefreshTokenResp)(nil),          // 10: cloudmind.core_api.RefreshTokenResp
-	(*SendEmailReq)(nil),              // 11: cloudmind.core_api.SendEmailReq
-	(*SendEmailResp)(nil),             // 12: cloudmind.core_api.SendEmailResp
-	(*GetCaptchaReq)(nil),             // 13: cloudmind.core_api.GetCaptchaReq
-	(*GetCaptchaResp)(nil),            // 14: cloudmind.core_api.GetCaptchaResp
-	(*SetPasswordByEmailReq)(nil),     // 15: cloudmind.core_api.SetPasswordByEmailReq
-	(*SetPasswordByEmailResp)(nil),    // 16: cloudmind.core_api.SetPasswordByEmailResp
-	(*SetPasswordByPasswordReq)(nil),  // 17: cloudmind.core_api.SetPasswordByPasswordReq
-	(*SetPasswordByPasswordResp)(nil), // 18: cloudmind.core_api.SetPasswordByPasswordResp
-	(*CheckEmailReq)(nil),             // 19: cloudmind.core_api.CheckEmailReq
-	(*CheckEmailResp)(nil),            // 20: cloudmind.core_api.CheckEmailResp
-	(*AskUploadAvatarReq)(nil),        // 21: cloudmind.core_api.AskUploadAvatarReq
-	(*AskUploadAvatarResp)(nil),       // 22: cloudmind.core_api.AskUploadAvatarResp
-	(*Keywords)(nil),                  // 23: cloudmind.core_api.Keywords
+	(*WxMaUserInfo)(nil),              // 9: cloudmind.core_api.WxMaUserInfo
+	(*WeixinCallBackReq)(nil),         // 10: cloudmind.core_api.WeixinCallBackReq
+	(*WeixinCallBackResp)(nil),        // 11: cloudmind.core_api.WeixinCallBackResp
+	(*WeixinLoginReq)(nil),            // 12: cloudmind.core_api.WeixinLoginReq
+	(*WeixinLoginResp)(nil),           // 13: cloudmind.core_api.WeixinLoginResp
+	(*WeixinIsLoginReq)(nil),          // 14: cloudmind.core_api.WeixinIsLoginReq
+	(*WeixinIsLoginResp)(nil),         // 15: cloudmind.core_api.WeixinIsLoginResp
+	(*QQLoginReq)(nil),                // 16: cloudmind.core_api.QQLoginReq
+	(*QQLoginResp)(nil),               // 17: cloudmind.core_api.QQLoginResp
+	(*RefreshTokenReq)(nil),           // 18: cloudmind.core_api.RefreshTokenReq
+	(*RefreshTokenResp)(nil),          // 19: cloudmind.core_api.RefreshTokenResp
+	(*SendEmailReq)(nil),              // 20: cloudmind.core_api.SendEmailReq
+	(*SendEmailResp)(nil),             // 21: cloudmind.core_api.SendEmailResp
+	(*GetCaptchaReq)(nil),             // 22: cloudmind.core_api.GetCaptchaReq
+	(*GetCaptchaResp)(nil),            // 23: cloudmind.core_api.GetCaptchaResp
+	(*SetPasswordByEmailReq)(nil),     // 24: cloudmind.core_api.SetPasswordByEmailReq
+	(*SetPasswordByEmailResp)(nil),    // 25: cloudmind.core_api.SetPasswordByEmailResp
+	(*SetPasswordByPasswordReq)(nil),  // 26: cloudmind.core_api.SetPasswordByPasswordReq
+	(*SetPasswordByPasswordResp)(nil), // 27: cloudmind.core_api.SetPasswordByPasswordResp
+	(*CheckEmailReq)(nil),             // 28: cloudmind.core_api.CheckEmailReq
+	(*CheckEmailResp)(nil),            // 29: cloudmind.core_api.CheckEmailResp
+	(*AskUploadAvatarReq)(nil),        // 30: cloudmind.core_api.AskUploadAvatarReq
+	(*AskUploadAvatarResp)(nil),       // 31: cloudmind.core_api.AskUploadAvatarResp
+	(*Keywords)(nil),                  // 32: cloudmind.core_api.Keywords
 }
 var file_cloudmind_core_api_auth_proto_depIdxs = []int32{
-	23, // 0: cloudmind.core_api.RegisterResp.keywords:type_name -> cloudmind.core_api.Keywords
-	1,  // [1:1] is the sub-list for method output_type
-	1,  // [1:1] is the sub-list for method input_type
-	1,  // [1:1] is the sub-list for extension type_name
-	1,  // [1:1] is the sub-list for extension extendee
-	0,  // [0:1] is the sub-list for field type_name
+	32, // 0: cloudmind.core_api.RegisterResp.keywords:type_name -> cloudmind.core_api.Keywords
+	9,  // 1: cloudmind.core_api.WeixinCallBackReq.wxMaUserInfo:type_name -> cloudmind.core_api.WxMaUserInfo
+	2,  // [2:2] is the sub-list for method output_type
+	2,  // [2:2] is the sub-list for method input_type
+	2,  // [2:2] is the sub-list for extension type_name
+	2,  // [2:2] is the sub-list for extension extendee
+	0,  // [0:2] is the sub-list for field type_name
 }
 
 
@@ -1568,7 +2145,7 @@ func file_cloudmind_core_api_auth_proto_init() {
 			}
 		}
 		file_cloudmind_core_api_auth_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*RefreshTokenReq); i {
+			switch v := v.(*WxMaUserInfo); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1580,7 +2157,7 @@ func file_cloudmind_core_api_auth_proto_init() {
 			}
 		}
 		file_cloudmind_core_api_auth_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*RefreshTokenResp); i {
+			switch v := v.(*WeixinCallBackReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1592,7 +2169,7 @@ func file_cloudmind_core_api_auth_proto_init() {
 			}
 		}
 		file_cloudmind_core_api_auth_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SendEmailReq); i {
+			switch v := v.(*WeixinCallBackResp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1604,7 +2181,7 @@ func file_cloudmind_core_api_auth_proto_init() {
 			}
 		}
 		file_cloudmind_core_api_auth_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SendEmailResp); i {
+			switch v := v.(*WeixinLoginReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1616,7 +2193,7 @@ func file_cloudmind_core_api_auth_proto_init() {
 			}
 		}
 		file_cloudmind_core_api_auth_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetCaptchaReq); i {
+			switch v := v.(*WeixinLoginResp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1628,7 +2205,7 @@ func file_cloudmind_core_api_auth_proto_init() {
 			}
 		}
 		file_cloudmind_core_api_auth_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetCaptchaResp); i {
+			switch v := v.(*WeixinIsLoginReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1640,7 +2217,7 @@ func file_cloudmind_core_api_auth_proto_init() {
 			}
 		}
 		file_cloudmind_core_api_auth_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SetPasswordByEmailReq); i {
+			switch v := v.(*WeixinIsLoginResp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1652,7 +2229,7 @@ func file_cloudmind_core_api_auth_proto_init() {
 			}
 		}
 		file_cloudmind_core_api_auth_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SetPasswordByEmailResp); i {
+			switch v := v.(*QQLoginReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1664,7 +2241,7 @@ func file_cloudmind_core_api_auth_proto_init() {
 			}
 		}
 		file_cloudmind_core_api_auth_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SetPasswordByPasswordReq); i {
+			switch v := v.(*QQLoginResp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1676,7 +2253,7 @@ func file_cloudmind_core_api_auth_proto_init() {
 			}
 		}
 		file_cloudmind_core_api_auth_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SetPasswordByPasswordResp); i {
+			switch v := v.(*RefreshTokenReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1688,7 +2265,7 @@ func file_cloudmind_core_api_auth_proto_init() {
 			}
 		}
 		file_cloudmind_core_api_auth_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CheckEmailReq); i {
+			switch v := v.(*RefreshTokenResp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1700,7 +2277,7 @@ func file_cloudmind_core_api_auth_proto_init() {
 			}
 		}
 		file_cloudmind_core_api_auth_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CheckEmailResp); i {
+			switch v := v.(*SendEmailReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1712,7 +2289,7 @@ func file_cloudmind_core_api_auth_proto_init() {
 			}
 		}
 		file_cloudmind_core_api_auth_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AskUploadAvatarReq); i {
+			switch v := v.(*SendEmailResp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1724,6 +2301,114 @@ func file_cloudmind_core_api_auth_proto_init() {
 			}
 		}
 		file_cloudmind_core_api_auth_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetCaptchaReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_auth_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetCaptchaResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_auth_proto_msgTypes[23].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SetPasswordByEmailReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_auth_proto_msgTypes[24].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SetPasswordByEmailResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_auth_proto_msgTypes[25].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SetPasswordByPasswordReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_auth_proto_msgTypes[26].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SetPasswordByPasswordResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_auth_proto_msgTypes[27].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CheckEmailReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_auth_proto_msgTypes[28].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CheckEmailResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_auth_proto_msgTypes[29].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AskUploadAvatarReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_auth_proto_msgTypes[30].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*AskUploadAvatarResp); i {
 			case 0:
 				return &v.state
@@ -1742,7 +2427,7 @@ func file_cloudmind_core_api_auth_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_cloudmind_core_api_auth_proto_rawDesc,
 			NumEnums:      1,
-			NumMessages:   22,
+			NumMessages:   31,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
