@@ -35,6 +35,8 @@ type Config struct {
 	Auth                  Auth
 	GithubConf            OauthConf
 	GiteeConf             OauthConf
+	QQConf                OauthConf
+	WechatConf            OauthConf
 	Redis                 redis.RedisConf
 	CreateNotificationsKq KqConfig
 	UpdateNotificationsKq KqConfig

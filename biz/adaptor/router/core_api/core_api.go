@@ -24,11 +24,15 @@ func Register(r *server.Hertz) {
 		_auth.POST("/emailLogin", append(_emailloginMw(), core_api.EmailLogin)...)
 		_auth.GET("/giteeLogin", append(_giteeloginMw(), core_api.GiteeLogin)...)
 		_auth.GET("/githubLogin", append(_githubloginMw(), core_api.GithubLogin)...)
+		_auth.GET("/qqLogin", append(_qqloginMw(), core_api.QQLogin)...)
 		_auth.POST("/refreshToken", append(_refreshtokenMw(), core_api.RefreshToken)...)
 		_auth.POST("/register", append(_registerMw(), core_api.Register)...)
 		_auth.POST("/sendEmail", append(_sendemailMw(), core_api.SendEmail)...)
 		_auth.POST("/setPasswordByEmail", append(_setpasswordbyemailMw(), core_api.SetPasswordByEmail)...)
 		_auth.POST("/setPasswordByPassword", append(_setpasswordbypasswordMw(), core_api.SetPasswordByPassword)...)
+		_auth.POST("/weixinCallback", append(_weixincallbackMw(), core_api.WeixinCallBack)...)
+		_auth.POST("/weixinIsLogin", append(_weixinisloginMw(), core_api.WeixinIsLogin)...)
+		_auth.GET("/weixinLogin", append(_weixinloginMw(), core_api.WeixinLogin)...)
 	}
 	{
 		_comment := root.Group("/comment", _commentMw()...)

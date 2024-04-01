@@ -670,3 +670,23 @@ func _gethotranksMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _qqloginMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _weixincallbackMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _weixinisloginMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _weixinloginMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
