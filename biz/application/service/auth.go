@@ -92,7 +92,7 @@ func (s *AuthService) WeixinLogin(ctx context.Context, req *core_api.WeixinLogin
 		return resp, err
 	}
 
-	if err = s.Redis.SetexCtx(ctx, fmt.Sprintf("%s:%s", consts.WechatLoginKey, WechatInfo.Data.TempUserId), "Login", 300); err != nil {
+	if err = s.Redis.SetexCtx(ctx, fmt.Sprintf("%s:%s", consts.WechatLoginKey, WechatInfo.Data.TempUserId), "Login", 3000); err != nil {
 		return resp, err
 	}
 
@@ -113,17 +113,17 @@ func (s *AuthService) WeixinCallBack(ctx context.Context, req *core_api.WeixinCa
 	}
 
 	if req.ScanSuccess {
-		if err = s.Redis.SetexCtx(ctx, fmt.Sprintf("%s:%s", consts.WechatLoginKey, req.TempUserId), "ScanSuccess", 300); err != nil {
+		if err = s.Redis.SetexCtx(ctx, fmt.Sprintf("%s:%s", consts.WechatLoginKey, req.TempUserId), "ScanSuccess", 3000); err != nil {
 			return resp, err
 		}
 	}
 	if req.CancelLogin {
-		if err = s.Redis.SetexCtx(ctx, fmt.Sprintf("%s:%s", consts.WechatLoginKey, req.TempUserId), "CancelLogin", 300); err != nil {
+		if err = s.Redis.SetexCtx(ctx, fmt.Sprintf("%s:%s", consts.WechatLoginKey, req.TempUserId), "CancelLogin", 3000); err != nil {
 			return resp, err
 		}
 		return resp, nil
 	}
-	if err = s.Redis.SetexCtx(ctx, fmt.Sprintf("%s:%s", consts.WechatLoginKey, req.TempUserId), "LoginSuccess", 300); err != nil {
+	if err = s.Redis.SetexCtx(ctx, fmt.Sprintf("%s:%s", consts.WechatLoginKey, req.TempUserId), "LoginSuccess", 3000); err != nil {
 		return resp, err
 	}
 
@@ -131,9 +131,12 @@ func (s *AuthService) WeixinCallBack(ctx context.Context, req *core_api.WeixinCa
 		return resp, err
 	}
 
-	if err = s.Redis.SetexCtx(ctx, fmt.Sprintf("%s:%s:temp", consts.WechatLoginKey, req.TempUserId), req.WxMaUserInfo.OpenId, 300); err != nil {
+	if err = s.Redis.SetexCtx(ctx, fmt.Sprintf("%s:%s:temp", consts.WechatLoginKey, req.TempUserId), req.WxMaUserInfo.OpenId, 3000); err != nil {
 		return resp, err
 	}
+
+	resp.Code = 0
+	resp.Msg = "登陆成功"
 
 	return resp, nil
 }
