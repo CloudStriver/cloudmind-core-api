@@ -456,7 +456,7 @@ func (s *FileService) MoveFile(ctx context.Context, req *core_api.MoveFileReq) (
 		OldPath:   res.Files[0].Path,
 		SpaceSize: res.Files[0].SpaceSize,
 		Name:      res.Files[0].Name,
-		IsDel:     res.Files[0].IsDel,
+		//IsDel:     res.Files[0].IsDel,
 	}); err != nil {
 		return resp, err
 	}
