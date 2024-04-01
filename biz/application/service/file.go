@@ -501,13 +501,32 @@ func (s *FileService) DeleteFile(ctx context.Context, req *core_api.DeleteFileRe
 		}
 	}
 
-	if _, err = s.CloudMindContent.DeleteFile(ctx, &content.DeleteFileReq{
-		DeleteType:     int64(req.DeleteType),
-		ClearCommunity: req.ClearCommunity,
-		Files:          files,
+	if err = mr.Finish(func() error {
+		if _, err1 := s.CloudMindContent.DeleteFile(ctx, &content.DeleteFileReq{
+			DeleteType:     int64(req.DeleteType),
+			ClearCommunity: req.ClearCommunity,
+			Files:          files,
+		}); err1 != nil {
+			return err1
+		}
+		return nil
+	}, func() error {
+		if req.DeleteType == core_api.IsDel_Is_hard || req.ClearCommunity {
+			data, _ := sonic.Marshal(&message.DeleteFileRelationsMessage{
+				FromType: int64(core_api.TargetType_UserType),
+				FromId:   userData.UserId,
+				ToType:   int64(core_api.TargetType_FileType),
+				Files:    files,
+			})
+			if err2 := s.DeleteFileRelationKq.Push(pconvertor.Bytes2String(data)); err2 != nil {
+				return err2
+			}
+		}
+		return nil
 	}); err != nil {
 		return resp, err
 	}
+
 	return resp, nil
 }
 
@@ -548,7 +567,7 @@ func (s *FileService) CompletelyRemoveFile(ctx context.Context, req *core_api.Co
 		}
 	}
 
-	err = mr.Finish(func() error {
+	if err = mr.Finish(func() error {
 		if _, err1 := s.CloudMindContent.CompletelyRemoveFile(ctx, &content.CompletelyRemoveFileReq{Files: files}); err1 != nil {
 			return err1
 		}
@@ -564,7 +583,9 @@ func (s *FileService) CompletelyRemoveFile(ctx context.Context, req *core_api.Co
 			return err2
 		}
 		return nil
-	})
+	}); err != nil {
+		return resp, err
+	}
 
 	return resp, nil
 }
