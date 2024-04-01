@@ -573,16 +573,16 @@ func (s *FileService) CompletelyRemoveFile(ctx context.Context, req *core_api.Co
 		}
 		return nil
 	}, func() error {
-		data, _ := sonic.Marshal(&message.DeleteFileRelationsMessage{
-			FromType: int64(core_api.TargetType_UserType),
-			FromId:   userData.UserId,
-			ToType:   int64(core_api.TargetType_FileType),
-			Files:    files,
-		})
-		if err2 := s.DeleteFileRelationKq.Push(pconvertor.Bytes2String(data)); err2 != nil {
-			return err2
-		}
-		return nil
+		//data, _ := sonic.Marshal(&message.DeleteFileRelationsMessage{
+		//	FromType: int64(core_api.TargetType_UserType),
+		//	FromId:   userData.UserId,
+		//	ToType:   int64(core_api.TargetType_FileType),
+		//	Files:    files,
+		//})
+		//if err2 := s.DeleteFileRelationKq.Push(pconvertor.Bytes2String(data)); err2 != nil {
+		//	return err2
+		//}
+		//return nil
 	}); err != nil {
 		return resp, err
 	}
