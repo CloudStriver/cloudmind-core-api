@@ -28,6 +28,10 @@ type DeleteNotificationsKq struct {
 	*kq.Pusher
 }
 
+type DeleteFileRelationKq struct {
+	*kq.Pusher
+}
+
 func NewCreateNotificationsKq(c *config.Config) *CreateNotificationsKq {
 	pusher := kq.NewPusher(c.CreateNotificationsKq.Brokers, c.CreateNotificationsKq.Topic)
 	return &CreateNotificationsKq{
@@ -66,6 +70,13 @@ func NewUpdateItemKq(c *config.Config) *UpdateItemKq {
 func NewDeleteItemKq(c *config.Config) *DeleteItemKq {
 	pusher := kq.NewPusher(c.DeleteItemKq.Brokers, c.DeleteItemKq.Topic)
 	return &DeleteItemKq{
+		Pusher: pusher,
+	}
+}
+
+func NewDeleteFileRelationKq(c *config.Config) *DeleteFileRelationKq {
+	pusher := kq.NewPusher(c.DeleteFileRelationKq.Brokers, c.DeleteFileRelationKq.Topic)
+	return &DeleteFileRelationKq{
 		Pusher: pusher,
 	}
 }

@@ -8,13 +8,17 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/convertor"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_comment"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/utils"
+	"github.com/CloudStriver/cloudmind-mq/app/util/message"
+	"github.com/CloudStriver/go-pkg/utils/pconvertor"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/sts"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/comment"
+	"github.com/bytedance/sonic"
 	"github.com/google/wire"
 	"github.com/samber/lo"
 	"github.com/zeromicro/go-zero/core/mr"
@@ -57,6 +61,7 @@ type FileService struct {
 	CloudMindContent      cloudmind_content.ICloudMindContent
 	FileDomainService     service.IFileDomainService
 	PlatformComment       platform_comment.IPlatFormComment
+	DeleteFileRelationKq  *kq.DeleteFileRelationKq
 }
 
 func (s *FileService) AskDownloadFile(ctx context.Context, req *core_api.AskDownloadFileReq) (resp *core_api.AskDownloadFileResp, err error) {
@@ -456,7 +461,7 @@ func (s *FileService) MoveFile(ctx context.Context, req *core_api.MoveFileReq) (
 		OldPath:   res.Files[0].Path,
 		SpaceSize: res.Files[0].SpaceSize,
 		Name:      res.Files[0].Name,
-		//IsDel:     res.Files[0].IsDel,
+		IsDel:     res.Files[0].IsDel,
 	}); err != nil {
 		return resp, err
 	}
@@ -496,13 +501,32 @@ func (s *FileService) DeleteFile(ctx context.Context, req *core_api.DeleteFileRe
 		}
 	}
 
-	if _, err = s.CloudMindContent.DeleteFile(ctx, &content.DeleteFileReq{
-		DeleteType:     int64(req.DeleteType),
-		ClearCommunity: req.ClearCommunity,
-		Files:          files,
+	if err = mr.Finish(func() error {
+		if _, err1 := s.CloudMindContent.DeleteFile(ctx, &content.DeleteFileReq{
+			DeleteType:     int64(req.DeleteType),
+			ClearCommunity: req.ClearCommunity,
+			Files:          files,
+		}); err1 != nil {
+			return err1
+		}
+		return nil
+	}, func() error {
+		if req.DeleteType == core_api.IsDel_Is_hard || req.ClearCommunity {
+			data, _ := sonic.Marshal(&message.DeleteFileRelationsMessage{
+				FromType: int64(core_api.TargetType_UserType),
+				FromId:   userData.UserId,
+				ToType:   int64(core_api.TargetType_FileType),
+				Files:    files,
+			})
+			if err2 := s.DeleteFileRelationKq.Push(pconvertor.Bytes2String(data)); err2 != nil {
+				return err2
+			}
+		}
+		return nil
 	}); err != nil {
 		return resp, err
 	}
+
 	return resp, nil
 }
 
@@ -542,9 +566,27 @@ func (s *FileService) CompletelyRemoveFile(ctx context.Context, req *core_api.Co
 			SpaceSize: file.SpaceSize,
 		}
 	}
-	if _, err = s.CloudMindContent.CompletelyRemoveFile(ctx, &content.CompletelyRemoveFileReq{Files: files}); err != nil {
+
+	if err = mr.Finish(func() error {
+		if _, err1 := s.CloudMindContent.CompletelyRemoveFile(ctx, &content.CompletelyRemoveFileReq{Files: files}); err1 != nil {
+			return err1
+		}
+		return nil
+	}, func() error {
+		data, _ := sonic.Marshal(&message.DeleteFileRelationsMessage{
+			FromType: int64(core_api.TargetType_UserType),
+			FromId:   userData.UserId,
+			ToType:   int64(core_api.TargetType_FileType),
+			Files:    files,
+		})
+		if err2 := s.DeleteFileRelationKq.Push(pconvertor.Bytes2String(data)); err2 != nil {
+			return err2
+		}
+		return nil
+	}); err != nil {
 		return resp, err
 	}
+
 	return resp, nil
 }
 

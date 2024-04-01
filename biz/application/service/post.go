@@ -216,7 +216,7 @@ func (s *PostService) UpdatePost(ctx context.Context, req *core_api.UpdatePostRe
 				IsHidden: lo.ToPtr(req.Status != int64(core_api.PostStatus_PublicPostStatus)),
 				Labels:   req.Tags,
 			})
-			if err1 := s.UpdateItemKq.Push(pconvertor.Bytes2String(data)); err != nil {
+			if err1 := s.UpdateItemKq.Push(pconvertor.Bytes2String(data)); err1 != nil {
 				return err1
 			}
 			return nil
@@ -384,9 +384,9 @@ func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (
 	}
 
 	filter := &content.PostFilterOptions{
-		OnlyUserId:      req.OnlyUserId,
-		OnlyTags:        req.OnlyTags,
-		OnlySetRelation: req.OnlySetRelation,
+		OnlyUserId: req.OnlyUserId,
+		//OnlyTags:        req.OnlyTags,
+		//OnlySetRelation: req.OnlySetRelation,
 	}
 
 	// 查看所有人的，或者查看的不是自己的
