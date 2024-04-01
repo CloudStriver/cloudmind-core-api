@@ -209,12 +209,21 @@ func (s *RecommendService) GetItemByItemId(ctx context.Context, userId string, c
 		recommends.Posts = make([]*core_api.Post, len(getPostsResp.Posts))
 		if err = mr.Finish(lo.Map(getPostsResp.Posts, func(post *content.Post, i int) func() error {
 			return func() error {
+				tags := lo.Map[*content.Tag, *core_api.TagInfo](post.Tags, func(item *content.Tag, index int) *core_api.TagInfo {
+					return &core_api.TagInfo{
+						TagId:  item.TagId,
+						ZoneId: item.ZoneId,
+					}
+				})
+				tagsId := lo.Map[*content.Tag, string](post.Tags, func(item *content.Tag, index int) string {
+					return item.TagId
+				})
 				recommends.Posts[i] = &core_api.Post{
 					PostId: post.PostId,
 					Title:  post.Title,
 					Text:   post.Text,
 					Url:    post.Url,
-					Tags:   post.Tags,
+					Tags:   tags,
 				}
 				author := &core_api.User{}
 				if err = mr.Finish(func() error {
@@ -229,6 +238,12 @@ func (s *RecommendService) GetItemByItemId(ctx context.Context, userId string, c
 				}, func() error {
 					s.PostDomainService.LoadAuthor(ctx, author, post.UserId)
 					recommends.Posts[i].UserName = author.Name
+					return nil
+				}, func() error {
+					s.PostDomainService.LoadLabels(ctx, tagsId)
+					for i := range tags {
+						tags[i].Value = tagsId[i]
+					}
 					return nil
 				}); err != nil {
 					return err

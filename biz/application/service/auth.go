@@ -130,7 +130,7 @@ func (s *AuthService) WeixinCallBack(ctx context.Context, req *core_api.WeixinCa
 	}
 
 	fmt.Println(req.WxMaUserInfo.OpenId, req.WxMaUserInfo.NickName, req.WxMaUserInfo.AvatarUrl)
-	if err = s.UserInit(ctx, req.WxMaUserInfo.OpenId, req.WxMaUserInfo.NickName, req.WxMaUserInfo.Gender, req.WxMaUserInfo.AvatarUrl); err != nil {
+	if err = s.UserInit(ctx, req.WxMaUserInfo.OpenId, req.WxMaUserInfo.NickName, consts.SexMan, req.WxMaUserInfo.AvatarUrl); err != nil {
 		return resp, err
 	}
 

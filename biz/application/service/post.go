@@ -107,11 +107,21 @@ func (s *PostService) CreatePost(ctx context.Context, req *core_api.CreatePostRe
 		}
 	}
 
+	tags := lo.Map[*core_api.Tag, *content.Tag](req.Tags, func(item *core_api.Tag, index int) *content.Tag {
+		return &content.Tag{
+			TagId:  item.TagId,
+			ZoneId: item.ZoneId,
+		}
+	})
+	tagIds := lo.Map[*core_api.Tag, string](req.Tags, func(item *core_api.Tag, index int) string {
+		return item.TagId
+	})
+
 	createPostResp, err := s.CloudMindContent.CreatePost(ctx, &content.CreatePostReq{
 		UserId: userData.UserId,
 		Title:  req.Title,
 		Text:   req.Text,
-		Tags:   req.Tags,
+		Tags:   tags,
 		Status: req.Status,
 		Url:    req.Url,
 	})
@@ -145,7 +155,7 @@ func (s *PostService) CreatePost(ctx context.Context, req *core_api.CreatePostRe
 		data, _ := sonic.Marshal(&message.CreateItemMessage{
 			ItemId:   createPostResp.PostId,
 			IsHidden: req.Status == int64(core_api.PostStatus_DraftPostStatus),
-			Labels:   req.Tags,
+			Labels:   tagIds,
 			Category: core_api.Category_name[int32(core_api.Category_PostCategory)],
 		})
 		if err3 := s.CreateItemKq.Push(pconvertor.Bytes2String(data)); err != nil {
@@ -198,11 +208,22 @@ func (s *PostService) UpdatePost(ctx context.Context, req *core_api.UpdatePostRe
 			return resp, nil
 		}
 	}
+
+	tags := lo.Map[*core_api.Tag, *content.Tag](req.Tags, func(item *core_api.Tag, index int) *content.Tag {
+		return &content.Tag{
+			TagId:  item.TagId,
+			ZoneId: item.ZoneId,
+		}
+	})
+	tagIds := lo.Map[*core_api.Tag, string](req.Tags, func(item *core_api.Tag, index int) string {
+		return item.TagId
+	})
+
 	if _, err = s.CloudMindContent.UpdatePost(ctx, &content.UpdatePostReq{
 		PostId: req.PostId,
 		Title:  req.Title,
 		Text:   req.Text,
-		Tags:   req.Tags,
+		Tags:   tags,
 		Status: req.Status,
 		Url:    req.Url,
 	}); err != nil {
@@ -214,7 +235,7 @@ func (s *PostService) UpdatePost(ctx context.Context, req *core_api.UpdatePostRe
 			data, _ := sonic.Marshal(&message.UpdateItemMessage{
 				ItemId:   req.PostId,
 				IsHidden: lo.ToPtr(req.Status != int64(core_api.PostStatus_PublicPostStatus)),
-				Labels:   req.Tags,
+				Labels:   tagIds,
 			})
 			if err1 := s.UpdateItemKq.Push(pconvertor.Bytes2String(data)); err != nil {
 				return err1
@@ -303,15 +324,26 @@ func (s *PostService) GetPost(ctx context.Context, req *core_api.GetPostReq) (re
 		return resp, consts.ErrForbidden
 	}
 
+	tags := lo.Map[*content.Tag, *core_api.TagInfo](res.Tags, func(item *content.Tag, index int) *core_api.TagInfo {
+		return &core_api.TagInfo{
+			TagId:  item.TagId,
+			ZoneId: item.ZoneId,
+		}
+	})
+	tagIds := lo.Map[*content.Tag, string](res.Tags, func(item *content.Tag, index int) string {
+		return item.TagId
+	})
+
 	resp = &core_api.GetPostResp{
 		Title:      res.Title,
 		Text:       res.Text,
 		Url:        res.Url,
-		Tags:       res.Tags,
+		Tags:       tags,
 		CreateTime: res.CreateTime,
 		UpdateTime: res.UpdateTime,
 		Author:     &core_api.User{},
 	}
+
 	if err = mr.Finish(func() error {
 		s.PostDomainService.LoadAuthor(ctx, resp.Author, res.UserId) // 作者
 		return nil
@@ -342,7 +374,10 @@ func (s *PostService) GetPost(ctx context.Context, req *core_api.GetPostReq) (re
 		}
 		return nil
 	}, func() error {
-		s.PostDomainService.LoadLabels(ctx, resp.Tags)
+		s.PostDomainService.LoadLabels(ctx, tagIds)
+		for i := range resp.Tags {
+			resp.Tags[i].Value = tagIds[i]
+		}
 		return nil
 	}, func() error {
 		s.UserDomainService.LoadFollowed(ctx, &resp.Author.Followed, userData.GetUserId(), res.UserId)
@@ -384,9 +419,9 @@ func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (
 	}
 
 	filter := &content.PostFilterOptions{
-		OnlyUserId:      req.OnlyUserId,
-		OnlyTags:        req.OnlyTags,
-		OnlySetRelation: req.OnlySetRelation,
+		OnlyUserId: req.OnlyUserId,
+		OnlyTag:    req.OnlyTag,
+		OnlyZoneId: req.OnlyZoneId,
 	}
 
 	// 查看所有人的，或者查看的不是自己的
@@ -415,12 +450,21 @@ func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (
 	resp.Posts = make([]*core_api.Post, len(getPostsResp.Posts))
 	if err = mr.Finish(lo.Map(getPostsResp.Posts, func(item *content.Post, i int) func() error {
 		return func() error {
+			tags := lo.Map[*content.Tag, *core_api.TagInfo](item.Tags, func(item *content.Tag, index int) *core_api.TagInfo {
+				return &core_api.TagInfo{
+					TagId:  item.TagId,
+					ZoneId: item.ZoneId,
+				}
+			})
+			tagsId := lo.Map[*content.Tag, string](item.Tags, func(item *content.Tag, index int) string {
+				return item.TagId
+			})
 			resp.Posts[i] = &core_api.Post{
 				PostId: item.PostId,
 				Title:  item.Title,
 				Text:   item.Text,
 				Url:    item.Url,
-				Tags:   item.Tags,
+				Tags:   tags,
 			}
 			author := &core_api.User{}
 			if err = mr.Finish(func() error {
@@ -439,7 +483,10 @@ func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (
 				resp.Posts[i].UserName = author.Name
 				return nil
 			}, func() error {
-				s.PostDomainService.LoadLabels(ctx, resp.Posts[i].Tags)
+				s.PostDomainService.LoadLabels(ctx, tagsId)
+				for i := range tags {
+					tags[i].Value = tagsId[i]
+				}
 				return nil
 			}); err != nil {
 				return err
