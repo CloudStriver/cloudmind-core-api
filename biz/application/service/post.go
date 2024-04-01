@@ -384,9 +384,9 @@ func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (
 	}
 
 	filter := &content.PostFilterOptions{
-		OnlyUserId:      req.OnlyUserId,
-		OnlyTags:        req.OnlyTags,
-		OnlySetRelation: req.OnlySetRelation,
+		OnlyUserId: req.OnlyUserId,
+		//OnlyTags:        req.OnlyTags,
+		//OnlySetRelation: req.OnlySetRelation,
 	}
 
 	// 查看所有人的，或者查看的不是自己的

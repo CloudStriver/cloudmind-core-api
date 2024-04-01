@@ -129,10 +129,10 @@ func (s *AuthService) WeixinCallBack(ctx context.Context, req *core_api.WeixinCa
 		return resp, err
 	}
 
-	fmt.Println(req.WxMaUserInfo.OpenId, req.WxMaUserInfo.NickName, req.WxMaUserInfo.AvatarUrl)
-	if err = s.UserInit(ctx, req.WxMaUserInfo.OpenId, req.WxMaUserInfo.NickName, req.WxMaUserInfo.Gender, req.WxMaUserInfo.AvatarUrl); err != nil {
-		return resp, err
-	}
+	//fmt.Println(req.WxMaUserInfo.OpenId, req.WxMaUserInfo.NickName, req.WxMaUserInfo.AvatarUrl)
+	//if err = s.UserInit(ctx, req.WxMaUserInfo.OpenId, req.WxMaUserInfo.NickName, req.WxMaUserInfo.Gender, req.WxMaUserInfo.AvatarUrl); err != nil {
+	//	return resp, err
+	//}
 
 	if err = s.Redis.SetexCtx(ctx, fmt.Sprintf("%s:%s:temp", consts.WechatLoginKey, req.TempUserId), req.WxMaUserInfo.OpenId, 3000); err != nil {
 		return resp, err

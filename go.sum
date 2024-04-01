@@ -377,6 +377,8 @@ github.com/CloudStriver/cloudmind-mq v1.0.11 h1:IeLbEMc8BjfDPh+hWfydOPM3niMHK3NL
 github.com/CloudStriver/cloudmind-mq v1.0.11/go.mod h1:c5YuPS/PQq2hVnzGXvT/XO4I5GkkkUJFFzkkCwSdQjs=
 github.com/CloudStriver/cloudmind-mq v1.0.12-0.20240322023843-0aabf057d153 h1:+sfKooXdl4paQCybvbGrqyowV0vEow3OBnvpDalIj14=
 github.com/CloudStriver/cloudmind-mq v1.0.12-0.20240322023843-0aabf057d153/go.mod h1:27iatJiOPboohqXgYguco4ODiOuPWkslTdzhHoBlt+k=
+github.com/CloudStriver/cloudmind-mq v1.0.12-0.20240401060147-a003b51ad6b3 h1:RTjSneAq8oNROMLGG1Iw7r+hztPxwvFtXnRUnkSKlgw=
+github.com/CloudStriver/cloudmind-mq v1.0.12-0.20240401060147-a003b51ad6b3/go.mod h1:27iatJiOPboohqXgYguco4ODiOuPWkslTdzhHoBlt+k=
 github.com/CloudStriver/go-pkg v0.0.0-20240206060942-84060a3dd273 h1:lWVL1fCa0QJg9gvE926r1YJZR8DoxupPpbZr3TunJDM=
 github.com/CloudStriver/go-pkg v0.0.0-20240206060942-84060a3dd273/go.mod h1:SsAxWs5EIcaDE/0e5buoFOWsM4lTvFZhySkV68+RT3g=
 github.com/CloudStriver/go-pkg v0.0.0-20240329084540-20ca37a52fea h1:f+wmV1f8yaOsv9ei83oKG6kr4rbdtv3p0nPMKDZ8hUs=
