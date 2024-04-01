@@ -136,7 +136,7 @@ func (s *AuthService) WeixinCallBack(ctx context.Context, req *core_api.WeixinCa
 		return resp, err
 	}
 
-	resp.Code = 0
+	resp.Code = "0"
 	resp.Msg = "登陆成功"
 
 	return resp, nil
