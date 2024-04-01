@@ -103,13 +103,12 @@ func (s *AuthService) WeixinLogin(ctx context.Context, req *core_api.WeixinLogin
 }
 
 func (s *AuthService) WeixinCallBack(ctx context.Context, req *core_api.WeixinCallBackReq) (resp *core_api.WeixinCallBackResp, err error) {
-	fmt.Println(req)
 	val, err := s.Redis.GetCtx(ctx, fmt.Sprintf("%s:%s", consts.WechatLoginKey, req.TempUserId))
 	if err != nil {
 		return resp, err
 	}
 
-	if val != "Login" {
+	if val == "" {
 		return resp, consts.ErrThirdLogin
 	}
 
@@ -117,6 +116,7 @@ func (s *AuthService) WeixinCallBack(ctx context.Context, req *core_api.WeixinCa
 		if err = s.Redis.SetexCtx(ctx, fmt.Sprintf("%s:%s", consts.WechatLoginKey, req.TempUserId), "ScanSuccess", 3000); err != nil {
 			return resp, err
 		}
+		return resp, nil
 	}
 	if req.CancelLogin {
 		if err = s.Redis.SetexCtx(ctx, fmt.Sprintf("%s:%s", consts.WechatLoginKey, req.TempUserId), "CancelLogin", 3000); err != nil {
@@ -136,7 +136,7 @@ func (s *AuthService) WeixinCallBack(ctx context.Context, req *core_api.WeixinCa
 		return resp, err
 	}
 
-	resp.Code = "0"
+	resp.Code = 0
 	resp.Msg = "登陆成功"
 
 	return resp, nil
