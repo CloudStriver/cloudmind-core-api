@@ -103,6 +103,7 @@ func (s *AuthService) WeixinLogin(ctx context.Context, req *core_api.WeixinLogin
 }
 
 func (s *AuthService) WeixinCallBack(ctx context.Context, req *core_api.WeixinCallBackReq) (resp *core_api.WeixinCallBackResp, err error) {
+	fmt.Println(req)
 	val, err := s.Redis.GetCtx(ctx, fmt.Sprintf("%s:%s", consts.WechatLoginKey, req.TempUserId))
 	if err != nil {
 		return resp, err
