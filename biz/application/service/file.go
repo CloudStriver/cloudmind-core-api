@@ -8,13 +8,17 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/convertor"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_comment"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/utils"
+	"github.com/CloudStriver/cloudmind-mq/app/util/message"
+	"github.com/CloudStriver/go-pkg/utils/pconvertor"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/sts"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/comment"
+	"github.com/bytedance/sonic"
 	"github.com/google/wire"
 	"github.com/samber/lo"
 	"github.com/zeromicro/go-zero/core/mr"
@@ -57,6 +61,7 @@ type FileService struct {
 	CloudMindContent      cloudmind_content.ICloudMindContent
 	FileDomainService     service.IFileDomainService
 	PlatformComment       platform_comment.IPlatFormComment
+	DeleteFileRelationKq  *kq.DeleteFileRelationKq
 }
 
 func (s *FileService) AskDownloadFile(ctx context.Context, req *core_api.AskDownloadFileReq) (resp *core_api.AskDownloadFileResp, err error) {
@@ -542,9 +547,25 @@ func (s *FileService) CompletelyRemoveFile(ctx context.Context, req *core_api.Co
 			SpaceSize: file.SpaceSize,
 		}
 	}
-	if _, err = s.CloudMindContent.CompletelyRemoveFile(ctx, &content.CompletelyRemoveFileReq{Files: files}); err != nil {
-		return resp, err
-	}
+
+	err = mr.Finish(func() error {
+		if _, err1 := s.CloudMindContent.CompletelyRemoveFile(ctx, &content.CompletelyRemoveFileReq{Files: files}); err1 != nil {
+			return err1
+		}
+		return nil
+	}, func() error {
+		data, _ := sonic.Marshal(&message.DeleteFileRelationsMessage{
+			FromType: int64(core_api.TargetType_UserType),
+			FromId:   userData.UserId,
+			ToType:   int64(core_api.TargetType_FileType),
+			Files:    files,
+		})
+		if err2 := s.DeleteFileRelationKq.Push(pconvertor.Bytes2String(data)); err2 != nil {
+			return err2
+		}
+		return nil
+	})
+
 	return resp, nil
 }
 

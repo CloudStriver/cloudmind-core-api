@@ -90,6 +90,7 @@ var InfrastructureSet = wire.NewSet(
 	kq.NewDeleteItemKq,
 	kq.NewUpdateItemKq,
 	kq.NewDeleteNotificationsKq,
+	kq.NewDeleteFileRelationKq,
 	RPCSet,
 )
 
