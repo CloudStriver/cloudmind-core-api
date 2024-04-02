@@ -47,6 +47,7 @@ type IFileService interface {
 	AddFileToPublicSpace(ctx context.Context, req *core_api.AddFileToPublicSpaceReq) (resp *core_api.AddFileToPublicSpaceResp, err error)
 	AskUploadFile(ctx context.Context, req *core_api.AskUploadFileReq) (resp *core_api.AskUploadFileResp, err error)
 	AskDownloadFile(ctx context.Context, req *core_api.AskDownloadFileReq) (resp *core_api.AskDownloadFileResp, err error)
+	MakeFilePrivate(ctx context.Context, req *core_api.MakeFilePrivateReq) (resp *core_api.MakeFilePrivateResp, err error)
 }
 
 var FileServiceSet = wire.NewSet(
@@ -62,6 +63,29 @@ type FileService struct {
 	FileDomainService     service.IFileDomainService
 	PlatformComment       platform_comment.IPlatFormComment
 	DeleteFileRelationKq  *kq.DeleteFileRelationKq
+}
+
+func (s *FileService) MakeFilePrivate(ctx context.Context, req *core_api.MakeFilePrivateReq) (resp *core_api.MakeFilePrivateResp, err error) {
+	resp = new(core_api.MakeFilePrivateResp)
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
+		return resp, consts.ErrNotAuthentication
+	}
+
+	var res *content.GetFileResp
+	if res, err = s.CloudMindContent.GetFile(ctx, &content.GetFileReq{FileId: req.FileId}); err != nil {
+		return resp, err
+	}
+
+	if res.File.UserId != userData.UserId {
+		return resp, consts.ErrNoAccessFile
+	}
+
+	if _, err = s.CloudMindContent.MakeFilePrivate(ctx, &content.MakeFilePrivateReq{FileId: req.FileId}); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
 }
 
 func (s *FileService) AskDownloadFile(ctx context.Context, req *core_api.AskDownloadFileReq) (resp *core_api.AskDownloadFileResp, err error) {
@@ -511,12 +535,15 @@ func (s *FileService) DeleteFile(ctx context.Context, req *core_api.DeleteFileRe
 		}
 		return nil
 	}, func() error {
+		ids := lo.Map(files, func(item *content.FileParameter, _ int) string {
+			return item.FileId
+		})
 		if req.DeleteType == core_api.IsDel_Is_hard || req.ClearCommunity {
 			data, _ := sonic.Marshal(&message.DeleteFileRelationsMessage{
 				FromType: int64(core_api.TargetType_UserType),
 				FromId:   userData.UserId,
 				ToType:   int64(core_api.TargetType_FileType),
-				Files:    files,
+				Files:    ids,
 			})
 			if err2 := s.DeleteFileRelationKq.Push(pconvertor.Bytes2String(data)); err2 != nil {
 				return err2
@@ -573,16 +600,19 @@ func (s *FileService) CompletelyRemoveFile(ctx context.Context, req *core_api.Co
 		}
 		return nil
 	}, func() error {
-		//data, _ := sonic.Marshal(&message.DeleteFileRelationsMessage{
-		//	FromType: int64(core_api.TargetType_UserType),
-		//	FromId:   userData.UserId,
-		//	ToType:   int64(core_api.TargetType_FileType),
-		//	Files:    files,
-		//})
-		//if err2 := s.DeleteFileRelationKq.Push(pconvertor.Bytes2String(data)); err2 != nil {
-		//	return err2
-		//}
-		//return nil
+		ids := lo.Map(files, func(item *content.FileParameter, _ int) string {
+			return item.FileId
+		})
+		data, _ := sonic.Marshal(&message.DeleteFileRelationsMessage{
+			FromType: int64(core_api.TargetType_UserType),
+			FromId:   userData.UserId,
+			ToType:   int64(core_api.TargetType_FileType),
+			Files:    ids,
+		})
+		if err2 := s.DeleteFileRelationKq.Push(pconvertor.Bytes2String(data)); err2 != nil {
+			return err2
+		}
+		return nil
 	}); err != nil {
 		return resp, err
 	}
