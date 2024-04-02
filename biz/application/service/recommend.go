@@ -214,7 +214,7 @@ func (s *RecommendService) GetItemByItemId(ctx context.Context, userId string, c
 					Title:  post.Title,
 					Text:   post.Text,
 					Url:    post.Url,
-					Tags:   post.Tags,
+					//Tags:   post.Tags,
 				}
 				author := &core_api.User{}
 				if err = mr.Finish(func() error {

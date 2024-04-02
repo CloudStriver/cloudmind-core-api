@@ -121,7 +121,7 @@ func (s *RelationService) GetFromRelations(ctx context.Context, req *core_api.Ge
 					resp.Posts[i].Title = post.Title
 					resp.Posts[i].Text = post.Text
 					resp.Posts[i].Url = post.Url
-					resp.Posts[i].Tags = post.Tags
+					//resp.Posts[i].Tags = post.Tags
 					user, err1 := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{
 						UserId: post.UserId,
 					})

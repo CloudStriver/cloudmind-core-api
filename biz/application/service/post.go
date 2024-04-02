@@ -111,7 +111,7 @@ func (s *PostService) CreatePost(ctx context.Context, req *core_api.CreatePostRe
 		UserId: userData.UserId,
 		Title:  req.Title,
 		Text:   req.Text,
-		Tags:   req.Tags,
+		//Tags:   req.Tags,
 		Status: req.Status,
 		Url:    req.Url,
 	})
@@ -145,7 +145,7 @@ func (s *PostService) CreatePost(ctx context.Context, req *core_api.CreatePostRe
 		data, _ := sonic.Marshal(&message.CreateItemMessage{
 			ItemId:   createPostResp.PostId,
 			IsHidden: req.Status == int64(core_api.PostStatus_DraftPostStatus),
-			Labels:   req.Tags,
+			//Labels:   req.Tags,
 			Category: core_api.Category_name[int32(core_api.Category_PostCategory)],
 		})
 		if err3 := s.CreateItemKq.Push(pconvertor.Bytes2String(data)); err != nil {
@@ -202,7 +202,7 @@ func (s *PostService) UpdatePost(ctx context.Context, req *core_api.UpdatePostRe
 		PostId: req.PostId,
 		Title:  req.Title,
 		Text:   req.Text,
-		Tags:   req.Tags,
+		//Tags:   req.Tags,
 		Status: req.Status,
 		Url:    req.Url,
 	}); err != nil {
@@ -214,7 +214,7 @@ func (s *PostService) UpdatePost(ctx context.Context, req *core_api.UpdatePostRe
 			data, _ := sonic.Marshal(&message.UpdateItemMessage{
 				ItemId:   req.PostId,
 				IsHidden: lo.ToPtr(req.Status != int64(core_api.PostStatus_PublicPostStatus)),
-				Labels:   req.Tags,
+				//Labels:   req.Tags,
 			})
 			if err1 := s.UpdateItemKq.Push(pconvertor.Bytes2String(data)); err1 != nil {
 				return err1
@@ -304,10 +304,10 @@ func (s *PostService) GetPost(ctx context.Context, req *core_api.GetPostReq) (re
 	}
 
 	resp = &core_api.GetPostResp{
-		Title:      res.Title,
-		Text:       res.Text,
-		Url:        res.Url,
-		Tags:       res.Tags,
+		Title: res.Title,
+		Text:  res.Text,
+		Url:   res.Url,
+		//Tags:       res.Tags,
 		CreateTime: res.CreateTime,
 		UpdateTime: res.UpdateTime,
 		Author:     &core_api.User{},
@@ -342,7 +342,7 @@ func (s *PostService) GetPost(ctx context.Context, req *core_api.GetPostReq) (re
 		}
 		return nil
 	}, func() error {
-		s.PostDomainService.LoadLabels(ctx, resp.Tags)
+		//s.PostDomainService.LoadLabels(ctx, resp.Tags)
 		return nil
 	}, func() error {
 		s.UserDomainService.LoadFollowed(ctx, &resp.Author.Followed, userData.GetUserId(), res.UserId)
@@ -420,7 +420,7 @@ func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (
 				Title:  item.Title,
 				Text:   item.Text,
 				Url:    item.Url,
-				Tags:   item.Tags,
+				//Tags:   item.Tags,
 			}
 			author := &core_api.User{}
 			if err = mr.Finish(func() error {
@@ -439,7 +439,7 @@ func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (
 				resp.Posts[i].UserName = author.Name
 				return nil
 			}, func() error {
-				s.PostDomainService.LoadLabels(ctx, resp.Posts[i].Tags)
+				//s.PostDomainService.LoadLabels(ctx, resp.Posts[i].Tags)
 				return nil
 			}); err != nil {
 				return err
