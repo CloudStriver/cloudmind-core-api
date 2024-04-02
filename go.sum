@@ -379,6 +379,8 @@ github.com/CloudStriver/cloudmind-mq v1.0.12-0.20240322023843-0aabf057d153 h1:+s
 github.com/CloudStriver/cloudmind-mq v1.0.12-0.20240322023843-0aabf057d153/go.mod h1:27iatJiOPboohqXgYguco4ODiOuPWkslTdzhHoBlt+k=
 github.com/CloudStriver/cloudmind-mq v1.0.12-0.20240401060147-a003b51ad6b3 h1:RTjSneAq8oNROMLGG1Iw7r+hztPxwvFtXnRUnkSKlgw=
 github.com/CloudStriver/cloudmind-mq v1.0.12-0.20240401060147-a003b51ad6b3/go.mod h1:27iatJiOPboohqXgYguco4ODiOuPWkslTdzhHoBlt+k=
+github.com/CloudStriver/cloudmind-mq v1.0.12-0.20240402110201-7972a2140b4d h1:N+UV4VVMZklgme44hJ+FJzlpbBKpcu4ZHfwcjw6IWkg=
+github.com/CloudStriver/cloudmind-mq v1.0.12-0.20240402110201-7972a2140b4d/go.mod h1:LnePS+4Vpxp1WzSzXupv2MKdqwwzUEhhWq8gj01VfHI=
 github.com/CloudStriver/go-pkg v0.0.0-20240206060942-84060a3dd273 h1:lWVL1fCa0QJg9gvE926r1YJZR8DoxupPpbZr3TunJDM=
 github.com/CloudStriver/go-pkg v0.0.0-20240206060942-84060a3dd273/go.mod h1:SsAxWs5EIcaDE/0e5buoFOWsM4lTvFZhySkV68+RT3g=
 github.com/CloudStriver/go-pkg v0.0.0-20240329084540-20ca37a52fea h1:f+wmV1f8yaOsv9ei83oKG6kr4rbdtv3p0nPMKDZ8hUs=
@@ -395,6 +397,8 @@ github.com/CloudStriver/service-idl-gen-go v0.0.0-20240331132549-840abd6c662c h1
 github.com/CloudStriver/service-idl-gen-go v0.0.0-20240331132549-840abd6c662c/go.mod h1:chtR82RvfrjUujTGWROSCNAwF9Lh/U959k34bXIDvBI=
 github.com/CloudStriver/service-idl-gen-go v0.0.0-20240401055235-cec09bb1e203 h1:ecALVjXjmANPDrArXsAho91tCJ9BnTd1wtt0OlRxioU=
 github.com/CloudStriver/service-idl-gen-go v0.0.0-20240401055235-cec09bb1e203/go.mod h1:chtR82RvfrjUujTGWROSCNAwF9Lh/U959k34bXIDvBI=
+github.com/CloudStriver/service-idl-gen-go v0.0.0-20240402021409-326abc356747 h1:+wHcqO0Mfk7UBKBXl0eD5ctjHTN08WpB71g0F9arBYQ=
+github.com/CloudStriver/service-idl-gen-go v0.0.0-20240402021409-326abc356747/go.mod h1:chtR82RvfrjUujTGWROSCNAwF9Lh/U959k34bXIDvBI=
 github.com/DATA-DOG/go-sqlmock v1.5.0/go.mod h1:f/Ixk793poVmq4qj/V1dPUg2JEAKC73Q5eFN3EC/SaM=
 github.com/NYTimes/gziphandler v0.0.0-20170623195520-56545f4a5d46/go.mod h1:3wb06e3pkSAbeQ52E9H9iFoQsEEwGN64994WTCIhntQ=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
