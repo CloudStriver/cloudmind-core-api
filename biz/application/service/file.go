@@ -522,32 +522,12 @@ func (s *FileService) DeleteFile(ctx context.Context, req *core_api.DeleteFileRe
 		}
 	}
 
-	if err = mr.Finish(func() error {
-		if _, err1 := s.CloudMindContent.DeleteFile(ctx, &content.DeleteFileReq{
-			DeleteType:     int64(req.DeleteType),
-			ClearCommunity: req.ClearCommunity,
-			Files:          files,
-		}); err1 != nil {
-			return err1
-		}
-		return nil
-	}, func() error {
-		ids := lo.Map(files, func(item *content.FileParameter, _ int) string {
-			return item.FileId
-		})
-		if req.DeleteType == core_api.IsDel_Is_hard || req.ClearCommunity {
-			data, _ := sonic.Marshal(&message.DeleteFileRelationsMessage{
-				FromType: int64(core_api.TargetType_UserType),
-				FromId:   userData.UserId,
-				ToType:   int64(core_api.TargetType_FileType),
-				Files:    ids,
-			})
-			if err2 := s.DeleteFileRelationKq.Push(pconvertor.Bytes2String(data)); err2 != nil {
-				return err2
-			}
-		}
-		return nil
-	}); err != nil {
+	if _, err1 := s.CloudMindContent.DeleteFile(ctx, &content.DeleteFileReq{
+		DeleteType:     int64(req.DeleteType),
+		ClearCommunity: req.ClearCommunity,
+		Files:          files,
+		UserId:         userData.UserId,
+	}); err1 != nil {
 		return resp, err
 	}
 
@@ -591,27 +571,8 @@ func (s *FileService) CompletelyRemoveFile(ctx context.Context, req *core_api.Co
 		}
 	}
 
-	if err = mr.Finish(func() error {
-		if _, err1 := s.CloudMindContent.CompletelyRemoveFile(ctx, &content.CompletelyRemoveFileReq{Files: files}); err1 != nil {
-			return err1
-		}
-		return nil
-	}, func() error {
-		ids := lo.Map(files, func(item *content.FileParameter, _ int) string {
-			return item.FileId
-		})
-		data, _ := sonic.Marshal(&message.DeleteFileRelationsMessage{
-			FromType: int64(core_api.TargetType_UserType),
-			FromId:   userData.UserId,
-			ToType:   int64(core_api.TargetType_FileType),
-			Files:    ids,
-		})
-		if err2 := s.DeleteFileRelationKq.Push(pconvertor.Bytes2String(data)); err2 != nil {
-			return err2
-		}
-		return nil
-	}); err != nil {
-		return resp, err
+	if _, err1 := s.CloudMindContent.CompletelyRemoveFile(ctx, &content.CompletelyRemoveFileReq{Files: files, UserId: userData.UserId}); err1 != nil {
+		return resp, err1
 	}
 
 	return resp, nil
