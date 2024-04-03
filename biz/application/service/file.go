@@ -8,6 +8,7 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/convertor"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_comment"
@@ -43,6 +44,7 @@ type IFileService interface {
 	AddFileToPublicSpace(ctx context.Context, req *core_api.AddFileToPublicSpaceReq) (resp *core_api.AddFileToPublicSpaceResp, err error)
 	AskUploadFile(ctx context.Context, req *core_api.AskUploadFileReq) (resp *core_api.AskUploadFileResp, err error)
 	AskDownloadFile(ctx context.Context, req *core_api.AskDownloadFileReq) (resp *core_api.AskDownloadFileResp, err error)
+	MakeFilePrivate(ctx context.Context, req *core_api.MakeFilePrivateReq) (resp *core_api.MakeFilePrivateResp, err error)
 }
 
 var FileServiceSet = wire.NewSet(
@@ -57,6 +59,30 @@ type FileService struct {
 	CloudMindContent      cloudmind_content.ICloudMindContent
 	FileDomainService     service.IFileDomainService
 	PlatformComment       platform_comment.IPlatFormComment
+	DeleteFileRelationKq  *kq.DeleteFileRelationKq
+}
+
+func (s *FileService) MakeFilePrivate(ctx context.Context, req *core_api.MakeFilePrivateReq) (resp *core_api.MakeFilePrivateResp, err error) {
+	resp = new(core_api.MakeFilePrivateResp)
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
+		return resp, consts.ErrNotAuthentication
+	}
+
+	var res *content.GetFileResp
+	if res, err = s.CloudMindContent.GetFile(ctx, &content.GetFileReq{FileId: req.FileId}); err != nil {
+		return resp, err
+	}
+
+	if res.File.UserId != userData.UserId {
+		return resp, consts.ErrNoAccessFile
+	}
+
+	if _, err = s.CloudMindContent.MakeFilePrivate(ctx, &content.MakeFilePrivateReq{FileId: req.FileId}); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
 }
 
 func (s *FileService) AskDownloadFile(ctx context.Context, req *core_api.AskDownloadFileReq) (resp *core_api.AskDownloadFileResp, err error) {
@@ -456,7 +482,7 @@ func (s *FileService) MoveFile(ctx context.Context, req *core_api.MoveFileReq) (
 		OldPath:   res.Files[0].Path,
 		SpaceSize: res.Files[0].SpaceSize,
 		Name:      res.Files[0].Name,
-		//IsDel:     res.Files[0].IsDel,
+		IsDel:     res.Files[0].IsDel,
 	}); err != nil {
 		return resp, err
 	}
@@ -496,13 +522,15 @@ func (s *FileService) DeleteFile(ctx context.Context, req *core_api.DeleteFileRe
 		}
 	}
 
-	if _, err = s.CloudMindContent.DeleteFile(ctx, &content.DeleteFileReq{
+	if _, err1 := s.CloudMindContent.DeleteFile(ctx, &content.DeleteFileReq{
 		DeleteType:     int64(req.DeleteType),
 		ClearCommunity: req.ClearCommunity,
 		Files:          files,
-	}); err != nil {
+		UserId:         userData.UserId,
+	}); err1 != nil {
 		return resp, err
 	}
+
 	return resp, nil
 }
 
@@ -542,9 +570,11 @@ func (s *FileService) CompletelyRemoveFile(ctx context.Context, req *core_api.Co
 			SpaceSize: file.SpaceSize,
 		}
 	}
-	if _, err = s.CloudMindContent.CompletelyRemoveFile(ctx, &content.CompletelyRemoveFileReq{Files: files}); err != nil {
-		return resp, err
+
+	if _, err1 := s.CloudMindContent.CompletelyRemoveFile(ctx, &content.CompletelyRemoveFileReq{Files: files, UserId: userData.UserId}); err1 != nil {
+		return resp, err1
 	}
+
 	return resp, nil
 }
 

@@ -6279,6 +6279,91 @@ func (x *GetHotRanksResp) GetFiles() []*HotFile {
 	return nil
 }
 
+type MakeFilePrivateReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	FileId string `protobuf:"bytes,1,opt,name=fileId,proto3" json:"fileId" form:"fileId" query:"fileId"`
+}
+
+func (x *MakeFilePrivateReq) Reset() {
+	*x = MakeFilePrivateReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[100]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *MakeFilePrivateReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MakeFilePrivateReq) ProtoMessage() {}
+
+func (x *MakeFilePrivateReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[100]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MakeFilePrivateReq.ProtoReflect.Descriptor instead.
+func (*MakeFilePrivateReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{100}
+}
+
+func (x *MakeFilePrivateReq) GetFileId() string {
+	if x != nil {
+		return x.FileId
+	}
+	return ""
+}
+
+type MakeFilePrivateResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *MakeFilePrivateResp) Reset() {
+	*x = MakeFilePrivateResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_content_proto_msgTypes[101]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *MakeFilePrivateResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MakeFilePrivateResp) ProtoMessage() {}
+
+func (x *MakeFilePrivateResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_content_proto_msgTypes[101]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MakeFilePrivateResp.ProtoReflect.Descriptor instead.
+func (*MakeFilePrivateResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_content_proto_rawDescGZIP(), []int{101}
+}
+
 var File_cloudmind_core_api_content_proto protoreflect.FileDescriptor
 
 var file_cloudmind_core_api_content_proto_rawDesc = []byte{
@@ -7084,13 +7169,17 @@ var file_cloudmind_core_api_content_proto_rawDesc = []byte{
 	0x65, 0x72, 0x73, 0x12, 0x31, 0x0a, 0x05, 0x66, 0x69, 0x6c, 0x65, 0x73, 0x18, 0x03, 0x20, 0x03,
 	0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2e, 0x63,
 	0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x48, 0x6f, 0x74, 0x46, 0x69, 0x6c, 0x65, 0x52,
-	0x05, 0x66, 0x69, 0x6c, 0x65, 0x73, 0x42, 0x53, 0x5a, 0x51, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62,
-	0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x43, 0x6c, 0x6f, 0x75, 0x64, 0x53, 0x74, 0x72, 0x69, 0x76, 0x65,
-	0x72, 0x2f, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2d, 0x63, 0x6f, 0x72, 0x65,
-	0x2d, 0x61, 0x70, 0x69, 0x2f, 0x62, 0x69, 0x7a, 0x2f, 0x61, 0x70, 0x70, 0x6c, 0x69, 0x63, 0x61,
-	0x74, 0x69, 0x6f, 0x6e, 0x2f, 0x64, 0x74, 0x6f, 0x2f, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69,
-	0x6e, 0x64, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x62, 0x06, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x33,
+	0x05, 0x66, 0x69, 0x6c, 0x65, 0x73, 0x22, 0x2c, 0x0a, 0x12, 0x4d, 0x61, 0x6b, 0x65, 0x46, 0x69,
+	0x6c, 0x65, 0x50, 0x72, 0x69, 0x76, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71, 0x12, 0x16, 0x0a, 0x06,
+	0x66, 0x69, 0x6c, 0x65, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x66, 0x69,
+	0x6c, 0x65, 0x49, 0x64, 0x22, 0x15, 0x0a, 0x13, 0x4d, 0x61, 0x6b, 0x65, 0x46, 0x69, 0x6c, 0x65,
+	0x50, 0x72, 0x69, 0x76, 0x61, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x42, 0x53, 0x5a, 0x51, 0x67,
+	0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x43, 0x6c, 0x6f, 0x75, 0x64, 0x53,
+	0x74, 0x72, 0x69, 0x76, 0x65, 0x72, 0x2f, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64,
+	0x2d, 0x63, 0x6f, 0x72, 0x65, 0x2d, 0x61, 0x70, 0x69, 0x2f, 0x62, 0x69, 0x7a, 0x2f, 0x61, 0x70,
+	0x70, 0x6c, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2f, 0x64, 0x74, 0x6f, 0x2f, 0x63, 0x6c,
+	0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69,
+	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -7105,7 +7194,7 @@ func file_cloudmind_core_api_content_proto_rawDescGZIP() []byte {
 	return file_cloudmind_core_api_content_proto_rawDescData
 }
 
-var file_cloudmind_core_api_content_proto_msgTypes = make([]protoimpl.MessageInfo, 100)
+var file_cloudmind_core_api_content_proto_msgTypes = make([]protoimpl.MessageInfo, 102)
 var file_cloudmind_core_api_content_proto_goTypes = []interface{}{
 	(*UpdateUserReq)(nil),              // 0: cloudmind.core_api.UpdateUserReq
 	(*UpdateUserResp)(nil),             // 1: cloudmind.core_api.UpdateUserResp
@@ -7207,63 +7296,65 @@ var file_cloudmind_core_api_content_proto_goTypes = []interface{}{
 	(*GetProductsResp)(nil),            // 97: cloudmind.core_api.GetProductsResp
 	(*GetHotRanksReq)(nil),             // 98: cloudmind.core_api.GetHotRanksReq
 	(*GetHotRanksResp)(nil),            // 99: cloudmind.core_api.GetHotRanksResp
-	(*User)(nil),                       // 100: cloudmind.core_api.User
-	(*PrivateFile)(nil),                // 101: cloudmind.core_api.PrivateFile
-	(*PublicFile)(nil),                 // 102: cloudmind.core_api.PublicFile
-	(DocumentType)(0),                  // 103: cloudmind.core_api.DocumentType
-	(IsDel)(0),                         // 104: cloudmind.core_api.IsDel
-	(*Zone)(nil),                       // 105: cloudmind.core_api.Zone
-	(*ShareCode)(nil),                  // 106: cloudmind.core_api.ShareCode
-	(*ShareFile)(nil),                  // 107: cloudmind.core_api.ShareFile
-	(*TagInfo)(nil),                    // 108: cloudmind.core_api.TagInfo
-	(*Post)(nil),                       // 109: cloudmind.core_api.Post
-	(Category)(0),                      // 110: cloudmind.core_api.Category
-	(*Recommends)(nil),                 // 111: cloudmind.core_api.Recommends
-	(Product_Type)(0),                  // 112: cloudmind.core_api.Product_Type
-	(*Product)(nil),                    // 113: cloudmind.core_api.Product
-	(TargetType)(0),                    // 114: cloudmind.core_api.TargetType
-	(*HotPost)(nil),                    // 115: cloudmind.core_api.HotPost
-	(*HotUser)(nil),                    // 116: cloudmind.core_api.HotUser
-	(*HotFile)(nil),                    // 117: cloudmind.core_api.HotFile
+	(*MakeFilePrivateReq)(nil),         // 100: cloudmind.core_api.MakeFilePrivateReq
+	(*MakeFilePrivateResp)(nil),        // 101: cloudmind.core_api.MakeFilePrivateResp
+	(*User)(nil),                       // 102: cloudmind.core_api.User
+	(*PrivateFile)(nil),                // 103: cloudmind.core_api.PrivateFile
+	(*PublicFile)(nil),                 // 104: cloudmind.core_api.PublicFile
+	(DocumentType)(0),                  // 105: cloudmind.core_api.DocumentType
+	(IsDel)(0),                         // 106: cloudmind.core_api.IsDel
+	(*Zone)(nil),                       // 107: cloudmind.core_api.Zone
+	(*ShareCode)(nil),                  // 108: cloudmind.core_api.ShareCode
+	(*ShareFile)(nil),                  // 109: cloudmind.core_api.ShareFile
+	(*TagInfo)(nil),                    // 110: cloudmind.core_api.TagInfo
+	(*Post)(nil),                       // 111: cloudmind.core_api.Post
+	(Category)(0),                      // 112: cloudmind.core_api.Category
+	(*Recommends)(nil),                 // 113: cloudmind.core_api.Recommends
+	(Product_Type)(0),                  // 114: cloudmind.core_api.Product_Type
+	(*Product)(nil),                    // 115: cloudmind.core_api.Product
+	(TargetType)(0),                    // 116: cloudmind.core_api.TargetType
+	(*HotPost)(nil),                    // 117: cloudmind.core_api.HotPost
+	(*HotUser)(nil),                    // 118: cloudmind.core_api.HotUser
+	(*HotFile)(nil),                    // 119: cloudmind.core_api.HotFile
 }
 var file_cloudmind_core_api_content_proto_depIdxs = []int32{
 	69,  // 0: cloudmind.core_api.UpdateUserResp.keywords:type_name -> cloudmind.core_api.Keywords
-	100, // 1: cloudmind.core_api.SearchUserResp.users:type_name -> cloudmind.core_api.User
-	101, // 2: cloudmind.core_api.GetPrivateFileResp.file:type_name -> cloudmind.core_api.PrivateFile
-	102, // 3: cloudmind.core_api.GetPublicFileResp.file:type_name -> cloudmind.core_api.PublicFile
-	101, // 4: cloudmind.core_api.GetPrivateFilesResp.files:type_name -> cloudmind.core_api.PrivateFile
-	102, // 5: cloudmind.core_api.GetPublicFilesResp.files:type_name -> cloudmind.core_api.PublicFile
-	101, // 6: cloudmind.core_api.GetRecycleBinFilesResp.files:type_name -> cloudmind.core_api.PrivateFile
-	101, // 7: cloudmind.core_api.GetFileBySharingCodeResp.files:type_name -> cloudmind.core_api.PrivateFile
-	103, // 8: cloudmind.core_api.SaveFileToPrivateSpaceReq.documentType:type_name -> cloudmind.core_api.DocumentType
-	104, // 9: cloudmind.core_api.DeleteFileReq.deleteType:type_name -> cloudmind.core_api.IsDel
-	105, // 10: cloudmind.core_api.GetZoneResp.zone:type_name -> cloudmind.core_api.Zone
-	105, // 11: cloudmind.core_api.GetZonesResp.zones:type_name -> cloudmind.core_api.Zone
-	105, // 12: cloudmind.core_api.UpdateZoneReq.zone:type_name -> cloudmind.core_api.Zone
-	106, // 13: cloudmind.core_api.GetShareListResp.shareCodes:type_name -> cloudmind.core_api.ShareCode
-	107, // 14: cloudmind.core_api.ParsingShareCodeResp.shareFile:type_name -> cloudmind.core_api.ShareFile
+	102, // 1: cloudmind.core_api.SearchUserResp.users:type_name -> cloudmind.core_api.User
+	103, // 2: cloudmind.core_api.GetPrivateFileResp.file:type_name -> cloudmind.core_api.PrivateFile
+	104, // 3: cloudmind.core_api.GetPublicFileResp.file:type_name -> cloudmind.core_api.PublicFile
+	103, // 4: cloudmind.core_api.GetPrivateFilesResp.files:type_name -> cloudmind.core_api.PrivateFile
+	104, // 5: cloudmind.core_api.GetPublicFilesResp.files:type_name -> cloudmind.core_api.PublicFile
+	103, // 6: cloudmind.core_api.GetRecycleBinFilesResp.files:type_name -> cloudmind.core_api.PrivateFile
+	103, // 7: cloudmind.core_api.GetFileBySharingCodeResp.files:type_name -> cloudmind.core_api.PrivateFile
+	105, // 8: cloudmind.core_api.SaveFileToPrivateSpaceReq.documentType:type_name -> cloudmind.core_api.DocumentType
+	106, // 9: cloudmind.core_api.DeleteFileReq.deleteType:type_name -> cloudmind.core_api.IsDel
+	107, // 10: cloudmind.core_api.GetZoneResp.zone:type_name -> cloudmind.core_api.Zone
+	107, // 11: cloudmind.core_api.GetZonesResp.zones:type_name -> cloudmind.core_api.Zone
+	107, // 12: cloudmind.core_api.UpdateZoneReq.zone:type_name -> cloudmind.core_api.Zone
+	108, // 13: cloudmind.core_api.GetShareListResp.shareCodes:type_name -> cloudmind.core_api.ShareCode
+	109, // 14: cloudmind.core_api.ParsingShareCodeResp.shareFile:type_name -> cloudmind.core_api.ShareFile
 	66,  // 15: cloudmind.core_api.CreatePostReq.tags:type_name -> cloudmind.core_api.Tag
 	69,  // 16: cloudmind.core_api.CreatePostResp.keywords:type_name -> cloudmind.core_api.Keywords
 	66,  // 17: cloudmind.core_api.UpdatePostReq.tags:type_name -> cloudmind.core_api.Tag
 	69,  // 18: cloudmind.core_api.UpdatePostResp.keywords:type_name -> cloudmind.core_api.Keywords
-	100, // 19: cloudmind.core_api.GetPostResp.author:type_name -> cloudmind.core_api.User
-	108, // 20: cloudmind.core_api.GetPostResp.tags:type_name -> cloudmind.core_api.TagInfo
-	109, // 21: cloudmind.core_api.GetPostsResp.posts:type_name -> cloudmind.core_api.Post
-	110, // 22: cloudmind.core_api.GetPopularRecommendReq.category:type_name -> cloudmind.core_api.Category
-	111, // 23: cloudmind.core_api.GetPopularRecommendResp.recommends:type_name -> cloudmind.core_api.Recommends
-	110, // 24: cloudmind.core_api.GetLatestRecommendReq.category:type_name -> cloudmind.core_api.Category
-	111, // 25: cloudmind.core_api.GetLatestRecommendResp.recommends:type_name -> cloudmind.core_api.Recommends
-	110, // 26: cloudmind.core_api.GetRecommendByItemReq.category:type_name -> cloudmind.core_api.Category
-	111, // 27: cloudmind.core_api.GetRecommendByItemResp.recommends:type_name -> cloudmind.core_api.Recommends
-	110, // 28: cloudmind.core_api.GetRecommendByUserReq.category:type_name -> cloudmind.core_api.Category
-	111, // 29: cloudmind.core_api.GetRecommendByUserResp.recommends:type_name -> cloudmind.core_api.Recommends
-	112, // 30: cloudmind.core_api.CreateProductReq.type:type_name -> cloudmind.core_api.Product_Type
-	100, // 31: cloudmind.core_api.GetProductResp.user:type_name -> cloudmind.core_api.User
-	113, // 32: cloudmind.core_api.GetProductsResp.products:type_name -> cloudmind.core_api.Product
-	114, // 33: cloudmind.core_api.GetHotRanksReq.targetType:type_name -> cloudmind.core_api.TargetType
-	115, // 34: cloudmind.core_api.GetHotRanksResp.posts:type_name -> cloudmind.core_api.HotPost
-	116, // 35: cloudmind.core_api.GetHotRanksResp.users:type_name -> cloudmind.core_api.HotUser
-	117, // 36: cloudmind.core_api.GetHotRanksResp.files:type_name -> cloudmind.core_api.HotFile
+	102, // 19: cloudmind.core_api.GetPostResp.author:type_name -> cloudmind.core_api.User
+	110, // 20: cloudmind.core_api.GetPostResp.tags:type_name -> cloudmind.core_api.TagInfo
+	111, // 21: cloudmind.core_api.GetPostsResp.posts:type_name -> cloudmind.core_api.Post
+	112, // 22: cloudmind.core_api.GetPopularRecommendReq.category:type_name -> cloudmind.core_api.Category
+	113, // 23: cloudmind.core_api.GetPopularRecommendResp.recommends:type_name -> cloudmind.core_api.Recommends
+	112, // 24: cloudmind.core_api.GetLatestRecommendReq.category:type_name -> cloudmind.core_api.Category
+	113, // 25: cloudmind.core_api.GetLatestRecommendResp.recommends:type_name -> cloudmind.core_api.Recommends
+	112, // 26: cloudmind.core_api.GetRecommendByItemReq.category:type_name -> cloudmind.core_api.Category
+	113, // 27: cloudmind.core_api.GetRecommendByItemResp.recommends:type_name -> cloudmind.core_api.Recommends
+	112, // 28: cloudmind.core_api.GetRecommendByUserReq.category:type_name -> cloudmind.core_api.Category
+	113, // 29: cloudmind.core_api.GetRecommendByUserResp.recommends:type_name -> cloudmind.core_api.Recommends
+	114, // 30: cloudmind.core_api.CreateProductReq.type:type_name -> cloudmind.core_api.Product_Type
+	102, // 31: cloudmind.core_api.GetProductResp.user:type_name -> cloudmind.core_api.User
+	115, // 32: cloudmind.core_api.GetProductsResp.products:type_name -> cloudmind.core_api.Product
+	116, // 33: cloudmind.core_api.GetHotRanksReq.targetType:type_name -> cloudmind.core_api.TargetType
+	117, // 34: cloudmind.core_api.GetHotRanksResp.posts:type_name -> cloudmind.core_api.HotPost
+	118, // 35: cloudmind.core_api.GetHotRanksResp.users:type_name -> cloudmind.core_api.HotUser
+	119, // 36: cloudmind.core_api.GetHotRanksResp.files:type_name -> cloudmind.core_api.HotFile
 	37,  // [37:37] is the sub-list for method output_type
 	37,  // [37:37] is the sub-list for method input_type
 	37,  // [37:37] is the sub-list for extension type_name
@@ -8478,6 +8569,30 @@ func file_cloudmind_core_api_content_proto_init() {
 				return nil
 			}
 		}
+		file_cloudmind_core_api_content_proto_msgTypes[100].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*MakeFilePrivateReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_content_proto_msgTypes[101].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*MakeFilePrivateResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	file_cloudmind_core_api_content_proto_msgTypes[2].OneofWrappers = []interface{}{}
 	file_cloudmind_core_api_content_proto_msgTypes[8].OneofWrappers = []interface{}{}
@@ -8500,7 +8615,7 @@ func file_cloudmind_core_api_content_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_cloudmind_core_api_content_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   100,
+			NumMessages:   102,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

@@ -45,6 +45,7 @@ type Config struct {
 	CreateFeedBackKq      KqConfig
 	UpdateItemKq          KqConfig
 	DeleteItemKq          KqConfig
+	DeleteFileRelationKq  KqConfig
 	BaseUrl               string
 }
 
