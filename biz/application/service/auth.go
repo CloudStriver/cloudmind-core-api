@@ -112,7 +112,6 @@ func (s *AuthService) WeixinCallBack(ctx context.Context, req *core_api.WeixinCa
 		return resp, consts.ErrThirdLogin
 	}
 
-	fmt.Println(req.CancelLogin, req.TempUserId, req.ScanSuccess)
 	if req.ScanSuccess {
 		if err = s.Redis.SetexCtx(ctx, fmt.Sprintf("%s:%s", consts.WechatLoginKey, req.TempUserId), "ScanSuccess", 3000); err != nil {
 			return resp, err
@@ -129,18 +128,21 @@ func (s *AuthService) WeixinCallBack(ctx context.Context, req *core_api.WeixinCa
 		return resp, err
 	}
 
-	//fmt.Println(req.WxMaUserInfo.OpenId, req.WxMaUserInfo.NickName, req.WxMaUserInfo.AvatarUrl)
-	//if err = s.UserInit(ctx, req.WxMaUserInfo.OpenId, req.WxMaUserInfo.NickName, req.WxMaUserInfo.Gender, req.WxMaUserInfo.AvatarUrl); err != nil {
-	//	return resp, err
-	//}
+	var (
+		userId string
+	)
 
-	if err = s.Redis.SetexCtx(ctx, fmt.Sprintf("%s:%s:temp", consts.WechatLoginKey, req.TempUserId), req.WxMaUserInfo.OpenId, 3000); err != nil {
+	if _, _, userId, err = s.ThirdLogin(ctx, "", sts.AuthType_wechat, req.WxMaUserInfo.OpenId, req.WxMaUserInfo.NickName, req.WxMaUserInfo.AvatarUrl, consts.SexMan); err != nil {
+		return resp, err
+	}
+
+	if err = s.Redis.SetexCtx(ctx, fmt.Sprintf("%s:%s:temp", consts.WechatLoginKey, req.TempUserId), userId, 3000); err != nil {
 		return resp, err
 	}
 
 	return &core_api.WeixinCallBackResp{
 		Code: 0,
-		Msg:  "登陆成功",
+		Msg:  "登录成功",
 	}, nil
 }
 
