@@ -26,7 +26,6 @@ import (
 	"github.com/samber/lo"
 	"github.com/zeromicro/go-zero/core/stores/redis"
 	"net/http"
-	"strconv"
 	"time"
 )
 
@@ -37,8 +36,6 @@ type IAuthService interface {
 	SetPasswordByEmail(ctx context.Context, req *core_api.SetPasswordByEmailReq) (resp *core_api.SetPasswordByEmailResp, err error)
 	SetPasswordByPassword(ctx context.Context, req *core_api.SetPasswordByPasswordReq) (resp *core_api.SetPasswordByPasswordResp, err error)
 	EmailLogin(ctx context.Context, req *core_api.EmailLoginReq) (resp *core_api.EmailLoginResp, err error)
-	GithubLogin(ctx context.Context, req *core_api.GithubLoginReq) (resp *core_api.GithubLoginResp, err error)
-	GiteeLogin(ctx context.Context, req *core_api.GiteeLoginReq) (resp *core_api.GiteeLoginResp, err error)
 	CheckEmail(ctx context.Context, c *core_api.CheckEmailReq) (resp *core_api.CheckEmailResp, err error)
 	AskUploadAvatar(ctx context.Context, req *core_api.AskUploadAvatarReq) (resp *core_api.AskUploadAvatarResp, err error)
 	WeixinLogin(ctx context.Context, req *core_api.WeixinLoginReq) (resp *core_api.WeixinLoginResp, err error)
@@ -183,14 +180,6 @@ func (s *AuthService) CheckEmail(ctx context.Context, req *core_api.CheckEmailRe
 	return resp, nil
 }
 
-func (s *AuthService) GiteeLogin(ctx context.Context, req *core_api.GiteeLoginReq) (resp *core_api.GiteeLoginResp, err error) {
-	resp = new(core_api.GiteeLoginResp)
-	if resp.ShortToken, resp.LongToken, resp.UserId, err = s.ThirdLogin(ctx, req.Code, sts.AuthType_gitee, "", "", "", consts.SexMan); err != nil {
-		return resp, err
-	}
-	return resp, nil
-}
-
 func (s *AuthService) EmailLogin(ctx context.Context, req *core_api.EmailLoginReq) (resp *core_api.EmailLoginResp, err error) {
 	resp = new(core_api.EmailLoginResp)
 	loginResp, err := s.CloudMindSts.Login(ctx, &sts.LoginReq{
@@ -213,20 +202,14 @@ func (s *AuthService) EmailLogin(ctx context.Context, req *core_api.EmailLoginRe
 	return resp, nil
 }
 
-func (s *AuthService) GithubLogin(ctx context.Context, req *core_api.GithubLoginReq) (resp *core_api.GithubLoginResp, err error) {
-	resp = new(core_api.GithubLoginResp)
-	if resp.ShortToken, resp.LongToken, resp.UserId, err = s.ThirdLogin(ctx, req.Code, sts.AuthType_github, "", "", "", consts.SexMan); err != nil {
-		return resp, err
-	}
-	return resp, nil
-}
-
 func (s *AuthService) ThirdLogin(ctx context.Context, code string, authType sts.AuthType, appId string, name string, url string, sex int64) (shortToken string, longToken string, userId string, err error) {
 	// 第三方登录
 	conf := config.OauthConf{}
 	switch authType {
 	case sts.AuthType_qq:
+		conf = s.Config.QQConf
 		data, err := oauth.QQLogin(conf, code)
+		fmt.Println(data)
 		if err != nil {
 			return "", "", "", consts.ErrThirdLogin
 		}
@@ -236,14 +219,6 @@ func (s *AuthService) ThirdLogin(ctx context.Context, code string, authType sts.
 		if data.Gender != "男" {
 			sex = consts.SexWoman
 		}
-	case sts.AuthType_gitee:
-		data, err := oauth.GiteeLogin(conf, code)
-		if err != nil {
-			return "", "", "", consts.ErrThirdLogin
-		}
-		appId = strconv.Itoa(int(data.Id))
-		name = data.Name
-		url = data.AvatarUrl
 	}
 
 	// 登录到系统

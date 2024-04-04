@@ -22,8 +22,6 @@ func Register(r *server.Hertz) {
 		_auth.POST("/askUploadAvatar", append(_askuploadavatarMw(), core_api.AskUploadAvatar)...)
 		_auth.GET("/checkEmail", append(_checkemailMw(), core_api.CheckEmail)...)
 		_auth.POST("/emailLogin", append(_emailloginMw(), core_api.EmailLogin)...)
-		_auth.GET("/giteeLogin", append(_giteeloginMw(), core_api.GiteeLogin)...)
-		_auth.GET("/githubLogin", append(_githubloginMw(), core_api.GithubLogin)...)
 		_auth.GET("/qqLogin", append(_qqloginMw(), core_api.QQLogin)...)
 		_auth.POST("/refreshToken", append(_refreshtokenMw(), core_api.RefreshToken)...)
 		_auth.POST("/register", append(_registerMw(), core_api.Register)...)
