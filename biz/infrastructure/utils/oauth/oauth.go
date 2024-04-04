@@ -10,9 +10,9 @@ import (
 )
 
 type Token struct {
-	AccessToken string `json:"access_token"`
-	TokenType   string `json:"token_type"` // 这个字段没用到
-	Scope       string `json:"scope"`      // 这个字段也没用到
+	AccessToken string `json:"Access_Token"`
+	//TokenType   string `json:"token_type"` // 这个字段没用到
+	//Scope       string `json:"scope"`      // 这个字段也没用到
 }
 
 type GiteeInfo struct {
@@ -53,11 +53,13 @@ func QQLogin(conf config.OauthConf, code string) (*QQInfo, error) {
 	if res, err = httpClient.Do(req); err != nil {
 		return nil, err
 	}
+
+	fmt.Println(res.Body)
 	if err = json.NewDecoder(res.Body).Decode(&token); err != nil {
 		return nil, err
 	}
 
-	url = fmt.Sprintf("https://graph.qq.com/oauth2.0/me?access_token=%s", token.AccessToken)
+	url = fmt.Sprintf("https://graph.qq.com/oauth2.0/me?access_token=%s&fmt=json", token.AccessToken)
 	if req, err = http.NewRequest(http.MethodGet, url, nil); err != nil {
 		return nil, err
 	}
@@ -73,7 +75,7 @@ func QQLogin(conf config.OauthConf, code string) (*QQInfo, error) {
 		return nil, err
 	}
 
-	url = fmt.Sprintf("https://graph.qq.com/user/get_user_info?access_token=%s&oauth_consumer_key=%s&openid=%s", token.AccessToken, conf.ClientId, userInfo.OpenId)
+	url = fmt.Sprintf("https://graph.qq.com/user/get_user_info?access_token=%s&oauth_consumer_key=%s&openid=%s&fmt=json", token.AccessToken, conf.ClientId, userInfo.OpenId)
 	if req, err = http.NewRequest(http.MethodGet, url, nil); err != nil {
 		return nil, err
 	}
@@ -137,7 +139,7 @@ func getTokenUrl(conf config.OauthConf, authType sts.AuthType, code string) stri
 	case sts.AuthType_gitee:
 		return fmt.Sprintf("https://gitee.com/oauth/token?grant_type=authorization_code&code=%s&client_id=%s&redirect_uri=%s&client_secret=%s", code, conf.ClientId, conf.Redirect, conf.Secret)
 	case sts.AuthType_qq:
-		return fmt.Sprintf("https://graph.qq.com/oauth2.0/token?grant_type=authorization_code&client_id=%s&client_secret=%s&code=%s&redirect_uri=%s", conf.ClientId, conf.Secret, code, conf.Redirect)
+		return fmt.Sprintf("https://graph.qq.com/oauth2.0/token?grant_type=authorization_code&client_id=%s&client_secret=%s&code=%s&redirect_uri=%s&fmt=json", conf.ClientId, conf.Secret, code, conf.Redirect)
 	default:
 		return ""
 	}
