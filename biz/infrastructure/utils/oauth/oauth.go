@@ -59,6 +59,10 @@ func QQLogin(conf config.OauthConf, code string) (*QQInfo, error) {
 		return nil, err
 	}
 	fmt.Println(token.AccessToken)
+	if err = json.NewDecoder(res.Body).Decode(&token); err != nil {
+		return nil, err
+	}
+
 	url = fmt.Sprintf("https://graph.qq.com/oauth2.0/me?access_token=%s&fmt=json", token.AccessToken)
 	if req, err = http.NewRequest(http.MethodGet, url, nil); err != nil {
 		return nil, err
@@ -74,7 +78,6 @@ func QQLogin(conf config.OauthConf, code string) (*QQInfo, error) {
 	if err = json.NewDecoder(res.Body).Decode(&userInfo); err != nil {
 		return nil, err
 	}
-	fmt.Println(userInfo, res.Status)
 	url = fmt.Sprintf("https://graph.qq.com/user/get_user_info?access_token=%s&oauth_consumer_key=%s&openid=%s&fmt=json", token.AccessToken, conf.ClientId, userInfo.OpenId)
 	if req, err = http.NewRequest(http.MethodGet, url, nil); err != nil {
 		return nil, err
