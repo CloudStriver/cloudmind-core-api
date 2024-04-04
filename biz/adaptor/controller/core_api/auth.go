@@ -44,23 +44,6 @@ func EmailLogin(ctx context.Context, c *app.RequestContext) {
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
-// GithubLogin .
-// @router /auth/login/github [POST]
-func GithubLogin(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.GithubLoginReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(core_api.GithubLoginResp)
-	p := provider.Get()
-	resp, err = p.AuthService.GithubLogin(ctx, &req)
-	adaptor.PostProcess(ctx, c, &req, resp, err)
-}
-
 // RefreshToken .
 // @router /auth/refresh [POST]
 func RefreshToken(ctx context.Context, c *app.RequestContext) {
@@ -123,22 +106,6 @@ func SetPasswordByPassword(ctx context.Context, c *app.RequestContext) {
 	resp := new(core_api.SetPasswordByPasswordResp)
 	p := provider.Get()
 	resp, err = p.AuthService.SetPasswordByPassword(ctx, &req)
-	adaptor.PostProcess(ctx, c, &req, resp, err)
-}
-
-// GiteeLogin .
-// @router /auth/login/gitee [GET]
-func GiteeLogin(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.GiteeLoginReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-	resp := new(core_api.GiteeLoginResp)
-	p := provider.Get()
-	resp, err = p.AuthService.GiteeLogin(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 

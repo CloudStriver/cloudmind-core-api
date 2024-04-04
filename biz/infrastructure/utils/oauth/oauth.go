@@ -10,7 +10,7 @@ import (
 )
 
 type Token struct {
-	AccessToken string `json:"Access_Token"`
+	AccessToken string `json:"access_token"`
 	//TokenType   string `json:"token_type"` // 这个字段没用到
 	//Scope       string `json:"scope"`      // 这个字段也没用到
 }
@@ -39,6 +39,7 @@ type WechatInfo struct {
 
 func QQLogin(conf config.OauthConf, code string) (*QQInfo, error) {
 	url := getTokenUrl(conf, sts.AuthType_qq, code)
+	fmt.Println(url)
 	var (
 		req        *http.Request
 		err        error
@@ -54,7 +55,10 @@ func QQLogin(conf config.OauthConf, code string) (*QQInfo, error) {
 		return nil, err
 	}
 
-	fmt.Println(res.Body)
+	if err = json.NewDecoder(res.Body).Decode(&token); err != nil {
+		return nil, err
+	}
+	fmt.Println(token.AccessToken)
 	if err = json.NewDecoder(res.Body).Decode(&token); err != nil {
 		return nil, err
 	}
@@ -74,7 +78,6 @@ func QQLogin(conf config.OauthConf, code string) (*QQInfo, error) {
 	if err = json.NewDecoder(res.Body).Decode(&userInfo); err != nil {
 		return nil, err
 	}
-
 	url = fmt.Sprintf("https://graph.qq.com/user/get_user_info?access_token=%s&oauth_consumer_key=%s&openid=%s&fmt=json", token.AccessToken, conf.ClientId, userInfo.OpenId)
 	if req, err = http.NewRequest(http.MethodGet, url, nil); err != nil {
 		return nil, err
