@@ -803,6 +803,7 @@ func CheckFile(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.CheckFileResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.FileService.CheckFile(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }

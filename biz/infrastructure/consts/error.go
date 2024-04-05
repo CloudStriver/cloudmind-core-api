@@ -28,4 +28,5 @@ var (
 	ErrIllegalOperation  = status.Error(30004, "非法操作")
 	ErrShareFileKey      = status.Error(10110, "分享文件提取码错误")
 	ErrShareCodeNotExist = status.Error(10111, "分享文件链接已失效")
+	ErrNoAuditStatus     = status.Error(30002, "该文件无需审核")
 )

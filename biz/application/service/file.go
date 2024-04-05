@@ -45,6 +45,7 @@ type IFileService interface {
 	AskUploadFile(ctx context.Context, req *core_api.AskUploadFileReq) (resp *core_api.AskUploadFileResp, err error)
 	AskDownloadFile(ctx context.Context, req *core_api.AskDownloadFileReq) (resp *core_api.AskDownloadFileResp, err error)
 	MakeFilePrivate(ctx context.Context, req *core_api.MakeFilePrivateReq) (resp *core_api.MakeFilePrivateResp, err error)
+	CheckFile(ctx context.Context, req *core_api.CheckFileReq) (resp *core_api.CheckFileResp, err error)
 }
 
 var FileServiceSet = wire.NewSet(
@@ -60,6 +61,82 @@ type FileService struct {
 	FileDomainService     service.IFileDomainService
 	PlatformComment       platform_comment.IPlatFormComment
 	DeleteFileRelationKq  *kq.DeleteFileRelationKq
+}
+
+func (s *FileService) FilterContent(ctx context.Context, IsSure bool, contents []*string) ([]*core_api.Keywords, error) {
+	cts := lo.Map[*string, string](contents, func(item *string, index int) string {
+		return *item
+	})
+	if IsSure {
+		keywords := make([]*core_api.Keywords, 0)
+		replaceContentResp, err := s.PlatformSts.ReplaceContent(ctx, &sts.ReplaceContentReq{
+			Contents: cts,
+		})
+		if err != nil {
+			return nil, err
+		}
+		for i, val := range replaceContentResp.Content {
+			*contents[i] = val
+		}
+		return keywords, nil
+	} else {
+		// 内容检测
+		findAllContentResp, err := s.PlatformSts.FindAllContent(ctx, &sts.FindAllContentReq{
+			Contents: cts,
+		})
+		if err != nil {
+			return nil, err
+		}
+		keywords := make([]*core_api.Keywords, 0, len(findAllContentResp.Keywords))
+		for _, keyword := range findAllContentResp.Keywords {
+			if len(keyword.Keywords) != 0 {
+				keywords = append(keywords, &core_api.Keywords{
+					Keywords: keyword.Keywords,
+				})
+			}
+		}
+		if len(keywords) != 0 {
+			return keywords, nil
+		}
+		return keywords, nil
+	}
+}
+
+func (s *FileService) CheckFile(ctx context.Context, req *core_api.CheckFileReq) (resp *core_api.CheckFileResp, err error) {
+	resp = new(core_api.CheckFileResp)
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
+		return resp, consts.ErrNotAuthentication
+	}
+
+	var res *content.GetFileResp
+	if res, err = s.CloudMindContent.GetFile(ctx, &content.GetFileReq{FileId: req.FileId}); err != nil {
+		return resp, err
+	}
+
+	switch {
+	case res.File.Zone == "" || res.File.SubZone == "":
+		return resp, consts.ErrNoAuditStatus
+	}
+
+	resp.Keywords, err = s.FilterContent(ctx, false, []*string{&res.File.Name, &res.File.Description})
+	if err != nil {
+		return resp, err
+	}
+
+	var data *content.File
+	if resp.Keywords == nil || len(resp.Keywords) == 0 {
+		data = &content.File{FileId: req.FileId, AuditStatus: int64(content.AuditStatus_AuditStatus_pass)}
+	} else {
+		data = &content.File{FileId: req.FileId, AuditStatus: int64(content.AuditStatus_AuditStatus_notPass)}
+	}
+
+	_, err = s.CloudMindContent.UpdateFile(ctx, &content.UpdateFileReq{File: data})
+	if err != nil {
+		return resp, err
+	}
+
+	return resp, nil
 }
 
 func (s *FileService) MakeFilePrivate(ctx context.Context, req *core_api.MakeFilePrivateReq) (resp *core_api.MakeFilePrivateResp, err error) {
