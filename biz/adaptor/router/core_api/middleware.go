@@ -695,3 +695,8 @@ func _makefileprivateMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _checkfileMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
