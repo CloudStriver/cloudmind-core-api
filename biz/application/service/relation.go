@@ -117,11 +117,26 @@ func (s *RelationService) GetFromRelations(ctx context.Context, req *core_api.Ge
 					if err1 != nil {
 						return err1
 					}
+
+					tags := lo.Map[*content.Tag, *core_api.TagInfo](post.Tags, func(item *content.Tag, index int) *core_api.TagInfo {
+						return &core_api.TagInfo{
+							TagId:  item.TagId,
+							ZoneId: item.ZoneId,
+						}
+					})
+					tagsId := lo.Map[*content.Tag, string](post.Tags, func(item *content.Tag, index int) string {
+						return item.TagId
+					})
+
 					resp.Posts[i].PostId = relation.ToId
 					resp.Posts[i].Title = post.Title
 					resp.Posts[i].Text = post.Text
 					resp.Posts[i].Url = post.Url
-					//resp.Posts[i].Tags = post.Tags
+					resp.Posts[i].Tags = tags
+					s.PostDomainService.LoadLabels(ctx, tagsId)
+					for i := range tags {
+						tags[i].Value = tagsId[i]
+					}
 					user, err1 := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{
 						UserId: post.UserId,
 					})
