@@ -790,3 +790,20 @@ func MakeFilePrivate(ctx context.Context, c *app.RequestContext) {
 	resp, err = p.FileService.MakeFilePrivate(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
+
+// CheckFile .
+// @router /content/checkFile [GET]
+func CheckFile(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.CheckFileReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.CheckFileResp)
+	p := provider.Get()
+	resp, err = p.FileService.CheckFile(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
+}
