@@ -204,10 +204,9 @@ func (s *AuthService) EmailLogin(ctx context.Context, req *core_api.EmailLoginRe
 
 func (s *AuthService) ThirdLogin(ctx context.Context, code string, authType sts.AuthType, appId string, name string, url string, sex int64) (shortToken string, longToken string, userId string, err error) {
 	// 第三方登录
-	conf := config.OauthConf{}
 	switch authType {
 	case sts.AuthType_qq:
-		conf = s.Config.QQConf
+		conf := s.Config.QQConf
 		data, err := oauth.QQLogin(conf, code)
 		fmt.Println(data)
 		if err != nil {
