@@ -713,6 +713,132 @@ func (*DeleteRelationResp) Descriptor() ([]byte, []int) {
 	return file_cloudmind_core_api_relation_proto_rawDescGZIP(), []int{10}
 }
 
+type GetRelationPathsReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	RelationType RelationType `protobuf:"varint,1,opt,name=relationType,proto3,enum=cloudmind.core_api.RelationType" json:"relationType" form:"relationType" query:"relationType" vd:"$ >= 1 && $ <= 10"`
+	Limit        *int64       `protobuf:"varint,2,opt,name=limit,proto3,oneof" json:"limit" form:"limit" query:"limit"`
+	Offset       *int64       `protobuf:"varint,3,opt,name=offset,proto3,oneof" json:"offset" form:"offset" query:"offset"`
+}
+
+func (x *GetRelationPathsReq) Reset() {
+	*x = GetRelationPathsReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_relation_proto_msgTypes[11]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetRelationPathsReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetRelationPathsReq) ProtoMessage() {}
+
+func (x *GetRelationPathsReq) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_relation_proto_msgTypes[11]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetRelationPathsReq.ProtoReflect.Descriptor instead.
+func (*GetRelationPathsReq) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_relation_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *GetRelationPathsReq) GetRelationType() RelationType {
+	if x != nil {
+		return x.RelationType
+	}
+	return RelationType_UnKnowRelationType
+}
+
+func (x *GetRelationPathsReq) GetLimit() int64 {
+	if x != nil && x.Limit != nil {
+		return *x.Limit
+	}
+	return 0
+}
+
+func (x *GetRelationPathsReq) GetOffset() int64 {
+	if x != nil && x.Offset != nil {
+		return *x.Offset
+	}
+	return 0
+}
+
+type GetRelationPathsResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Users []*User       `protobuf:"bytes,1,rep,name=users,proto3" json:"users" form:"users" query:"users"`
+	Files []*PublicFile `protobuf:"bytes,2,rep,name=files,proto3" json:"files" form:"files" query:"files"`
+	Posts []*Post       `protobuf:"bytes,3,rep,name=posts,proto3" json:"posts" form:"posts" query:"posts"`
+}
+
+func (x *GetRelationPathsResp) Reset() {
+	*x = GetRelationPathsResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cloudmind_core_api_relation_proto_msgTypes[12]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetRelationPathsResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetRelationPathsResp) ProtoMessage() {}
+
+func (x *GetRelationPathsResp) ProtoReflect() protoreflect.Message {
+	mi := &file_cloudmind_core_api_relation_proto_msgTypes[12]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetRelationPathsResp.ProtoReflect.Descriptor instead.
+func (*GetRelationPathsResp) Descriptor() ([]byte, []int) {
+	return file_cloudmind_core_api_relation_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *GetRelationPathsResp) GetUsers() []*User {
+	if x != nil {
+		return x.Users
+	}
+	return nil
+}
+
+func (x *GetRelationPathsResp) GetFiles() []*PublicFile {
+	if x != nil {
+		return x.Files
+	}
+	return nil
+}
+
+func (x *GetRelationPathsResp) GetPosts() []*Post {
+	if x != nil {
+		return x.Posts
+	}
+	return nil
+}
+
 var File_cloudmind_core_api_relation_proto protoreflect.FileDescriptor
 
 var file_cloudmind_core_api_relation_proto_rawDesc = []byte{
@@ -833,13 +959,36 @@ var file_cloudmind_core_api_relation_proto_rawDesc = []byte{
 	0x15, 0xda, 0xbb, 0x18, 0x11, 0x24, 0x20, 0x3e, 0x3d, 0x20, 0x31, 0x20, 0x26, 0x26, 0x20, 0x24,
 	0x20, 0x3c, 0x3d, 0x20, 0x31, 0x30, 0x52, 0x0c, 0x72, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e,
 	0x54, 0x79, 0x70, 0x65, 0x22, 0x14, 0x0a, 0x12, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x52, 0x65,
-	0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x42, 0x53, 0x5a, 0x51, 0x67, 0x69,
-	0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x43, 0x6c, 0x6f, 0x75, 0x64, 0x53, 0x74,
-	0x72, 0x69, 0x76, 0x65, 0x72, 0x2f, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2d,
-	0x63, 0x6f, 0x72, 0x65, 0x2d, 0x61, 0x70, 0x69, 0x2f, 0x62, 0x69, 0x7a, 0x2f, 0x61, 0x70, 0x70,
-	0x6c, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2f, 0x64, 0x74, 0x6f, 0x2f, 0x63, 0x6c, 0x6f,
-	0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x62,
-	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x22, 0xbf, 0x01, 0x0a, 0x13, 0x47,
+	0x65, 0x74, 0x52, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x50, 0x61, 0x74, 0x68, 0x73, 0x52,
+	0x65, 0x71, 0x12, 0x5b, 0x0a, 0x0c, 0x72, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x54, 0x79,
+	0x70, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x20, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64,
+	0x6d, 0x69, 0x6e, 0x64, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x52, 0x65,
+	0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x54, 0x79, 0x70, 0x65, 0x42, 0x15, 0xda, 0xbb, 0x18, 0x11,
+	0x24, 0x20, 0x3e, 0x3d, 0x20, 0x31, 0x20, 0x26, 0x26, 0x20, 0x24, 0x20, 0x3c, 0x3d, 0x20, 0x31,
+	0x30, 0x52, 0x0c, 0x72, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x54, 0x79, 0x70, 0x65, 0x12,
+	0x19, 0x0a, 0x05, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x48, 0x00,
+	0x52, 0x05, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x88, 0x01, 0x01, 0x12, 0x1b, 0x0a, 0x06, 0x6f, 0x66,
+	0x66, 0x73, 0x65, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x03, 0x48, 0x01, 0x52, 0x06, 0x6f, 0x66,
+	0x66, 0x73, 0x65, 0x74, 0x88, 0x01, 0x01, 0x42, 0x08, 0x0a, 0x06, 0x5f, 0x6c, 0x69, 0x6d, 0x69,
+	0x74, 0x42, 0x09, 0x0a, 0x07, 0x5f, 0x6f, 0x66, 0x66, 0x73, 0x65, 0x74, 0x22, 0xac, 0x01, 0x0a,
+	0x14, 0x47, 0x65, 0x74, 0x52, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x50, 0x61, 0x74, 0x68,
+	0x73, 0x52, 0x65, 0x73, 0x70, 0x12, 0x2e, 0x0a, 0x05, 0x75, 0x73, 0x65, 0x72, 0x73, 0x18, 0x01,
+	0x20, 0x03, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64,
+	0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x52, 0x05,
+	0x75, 0x73, 0x65, 0x72, 0x73, 0x12, 0x34, 0x0a, 0x05, 0x66, 0x69, 0x6c, 0x65, 0x73, 0x18, 0x02,
+	0x20, 0x03, 0x28, 0x0b, 0x32, 0x1e, 0x2e, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64,
+	0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63,
+	0x46, 0x69, 0x6c, 0x65, 0x52, 0x05, 0x66, 0x69, 0x6c, 0x65, 0x73, 0x12, 0x2e, 0x0a, 0x05, 0x70,
+	0x6f, 0x73, 0x74, 0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x63, 0x6c, 0x6f,
+	0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69, 0x2e,
+	0x50, 0x6f, 0x73, 0x74, 0x52, 0x05, 0x70, 0x6f, 0x73, 0x74, 0x73, 0x42, 0x53, 0x5a, 0x51, 0x67,
+	0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x43, 0x6c, 0x6f, 0x75, 0x64, 0x53,
+	0x74, 0x72, 0x69, 0x76, 0x65, 0x72, 0x2f, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64,
+	0x2d, 0x63, 0x6f, 0x72, 0x65, 0x2d, 0x61, 0x70, 0x69, 0x2f, 0x62, 0x69, 0x7a, 0x2f, 0x61, 0x70,
+	0x70, 0x6c, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2f, 0x64, 0x74, 0x6f, 0x2f, 0x63, 0x6c,
+	0x6f, 0x75, 0x64, 0x6d, 0x69, 0x6e, 0x64, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x61, 0x70, 0x69,
+	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -854,7 +1003,7 @@ func file_cloudmind_core_api_relation_proto_rawDescGZIP() []byte {
 	return file_cloudmind_core_api_relation_proto_rawDescData
 }
 
-var file_cloudmind_core_api_relation_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
+var file_cloudmind_core_api_relation_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_cloudmind_core_api_relation_proto_goTypes = []interface{}{
 	(*Relation)(nil),             // 0: cloudmind.core_api.Relation
 	(*CreateRelationReq)(nil),    // 1: cloudmind.core_api.CreateRelationReq
@@ -867,29 +1016,35 @@ var file_cloudmind_core_api_relation_proto_goTypes = []interface{}{
 	(*GetRelationResp)(nil),      // 8: cloudmind.core_api.GetRelationResp
 	(*DeleteRelationReq)(nil),    // 9: cloudmind.core_api.DeleteRelationReq
 	(*DeleteRelationResp)(nil),   // 10: cloudmind.core_api.DeleteRelationResp
-	(TargetType)(0),              // 11: cloudmind.core_api.TargetType
-	(RelationType)(0),            // 12: cloudmind.core_api.RelationType
-	(*User)(nil),                 // 13: cloudmind.core_api.User
-	(*PublicFile)(nil),           // 14: cloudmind.core_api.PublicFile
-	(*Post)(nil),                 // 15: cloudmind.core_api.Post
+	(*GetRelationPathsReq)(nil),  // 11: cloudmind.core_api.GetRelationPathsReq
+	(*GetRelationPathsResp)(nil), // 12: cloudmind.core_api.GetRelationPathsResp
+	(TargetType)(0),              // 13: cloudmind.core_api.TargetType
+	(RelationType)(0),            // 14: cloudmind.core_api.RelationType
+	(*User)(nil),                 // 15: cloudmind.core_api.User
+	(*PublicFile)(nil),           // 16: cloudmind.core_api.PublicFile
+	(*Post)(nil),                 // 17: cloudmind.core_api.Post
 }
 var file_cloudmind_core_api_relation_proto_depIdxs = []int32{
-	11, // 0: cloudmind.core_api.Relation.fromType:type_name -> cloudmind.core_api.TargetType
-	11, // 1: cloudmind.core_api.Relation.toType:type_name -> cloudmind.core_api.TargetType
-	12, // 2: cloudmind.core_api.Relation.relationType:type_name -> cloudmind.core_api.RelationType
-	11, // 3: cloudmind.core_api.CreateRelationReq.toType:type_name -> cloudmind.core_api.TargetType
-	12, // 4: cloudmind.core_api.CreateRelationReq.relationType:type_name -> cloudmind.core_api.RelationType
-	11, // 5: cloudmind.core_api.GetFromRelationsReq.toType:type_name -> cloudmind.core_api.TargetType
-	13, // 6: cloudmind.core_api.GetFromRelationsResp.users:type_name -> cloudmind.core_api.User
-	14, // 7: cloudmind.core_api.GetFromRelationsResp.files:type_name -> cloudmind.core_api.PublicFile
-	15, // 8: cloudmind.core_api.GetFromRelationsResp.posts:type_name -> cloudmind.core_api.Post
-	11, // 9: cloudmind.core_api.GetToRelationsReq.fromType:type_name -> cloudmind.core_api.TargetType
-	13, // 10: cloudmind.core_api.GetToRelationsResp.users:type_name -> cloudmind.core_api.User
-	11, // [11:11] is the sub-list for method output_type
-	11, // [11:11] is the sub-list for method input_type
-	11, // [11:11] is the sub-list for extension type_name
-	11, // [11:11] is the sub-list for extension extendee
-	0,  // [0:11] is the sub-list for field type_name
+	13, // 0: cloudmind.core_api.Relation.fromType:type_name -> cloudmind.core_api.TargetType
+	13, // 1: cloudmind.core_api.Relation.toType:type_name -> cloudmind.core_api.TargetType
+	14, // 2: cloudmind.core_api.Relation.relationType:type_name -> cloudmind.core_api.RelationType
+	13, // 3: cloudmind.core_api.CreateRelationReq.toType:type_name -> cloudmind.core_api.TargetType
+	14, // 4: cloudmind.core_api.CreateRelationReq.relationType:type_name -> cloudmind.core_api.RelationType
+	13, // 5: cloudmind.core_api.GetFromRelationsReq.toType:type_name -> cloudmind.core_api.TargetType
+	15, // 6: cloudmind.core_api.GetFromRelationsResp.users:type_name -> cloudmind.core_api.User
+	16, // 7: cloudmind.core_api.GetFromRelationsResp.files:type_name -> cloudmind.core_api.PublicFile
+	17, // 8: cloudmind.core_api.GetFromRelationsResp.posts:type_name -> cloudmind.core_api.Post
+	13, // 9: cloudmind.core_api.GetToRelationsReq.fromType:type_name -> cloudmind.core_api.TargetType
+	15, // 10: cloudmind.core_api.GetToRelationsResp.users:type_name -> cloudmind.core_api.User
+	14, // 11: cloudmind.core_api.GetRelationPathsReq.relationType:type_name -> cloudmind.core_api.RelationType
+	15, // 12: cloudmind.core_api.GetRelationPathsResp.users:type_name -> cloudmind.core_api.User
+	16, // 13: cloudmind.core_api.GetRelationPathsResp.files:type_name -> cloudmind.core_api.PublicFile
+	17, // 14: cloudmind.core_api.GetRelationPathsResp.posts:type_name -> cloudmind.core_api.Post
+	15, // [15:15] is the sub-list for method output_type
+	15, // [15:15] is the sub-list for method input_type
+	15, // [15:15] is the sub-list for extension type_name
+	15, // [15:15] is the sub-list for extension extendee
+	0,  // [0:15] is the sub-list for field type_name
 }
 
 
@@ -1031,16 +1186,41 @@ func file_cloudmind_core_api_relation_proto_init() {
 				return nil
 			}
 		}
+		file_cloudmind_core_api_relation_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetRelationPathsReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cloudmind_core_api_relation_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetRelationPathsResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	file_cloudmind_core_api_relation_proto_msgTypes[3].OneofWrappers = []interface{}{}
 	file_cloudmind_core_api_relation_proto_msgTypes[5].OneofWrappers = []interface{}{}
+	file_cloudmind_core_api_relation_proto_msgTypes[11].OneofWrappers = []interface{}{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_cloudmind_core_api_relation_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   11,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
