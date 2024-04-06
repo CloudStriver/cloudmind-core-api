@@ -170,7 +170,7 @@ func (s *RelationDomainService) CreateRelation(ctx context.Context, r *core_api.
 	}
 
 	hs := int64(fnv1a.HashString32(r.ToId))
-	val, err := s.Redis.GetBitCtx(ctx, fmt.Sprintf("%s:%s:%s", consts.BloomRelationKey, r.ToId, r.RelationType), hs)
+	val, err := s.Redis.GetBitCtx(ctx, fmt.Sprintf("%s:%s:%d", consts.BloomRelationKey, r.ToId, r.RelationType), hs)
 	if err != nil {
 		return err
 	}
@@ -178,7 +178,7 @@ func (s *RelationDomainService) CreateRelation(ctx context.Context, r *core_api.
 		return nil
 	}
 
-	if _, err = s.Redis.SetBitCtx(ctx, fmt.Sprintf("%s:%s:%s", consts.BloomRelationKey, r.ToId, r.RelationType), hs, 1); err != nil {
+	if _, err = s.Redis.SetBitCtx(ctx, fmt.Sprintf("%s:%s:%d", consts.BloomRelationKey, r.ToId, r.RelationType), hs, 1); err != nil {
 		return err
 	}
 
