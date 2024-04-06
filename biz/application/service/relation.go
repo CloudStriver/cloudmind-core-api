@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"github.com/CloudStriver/cloudmind-core-api/biz/adaptor"
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/CloudStriver/cloudmind-core-api/biz/domain/service"
@@ -12,12 +11,8 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_comment"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/basic"
-	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
-	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/comment"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/relation"
 	"github.com/google/wire"
-	"github.com/samber/lo"
-	"github.com/zeromicro/go-zero/core/mr"
 )
 
 type IRelationService interface {
@@ -66,112 +61,19 @@ func (s *RelationService) GetRelationPaths(ctx context.Context, req *core_api.Ge
 
 	switch req.RelationType {
 	case core_api.RelationType_FollowRelationType:
+		// 用户
 		resp.Users = make([]*core_api.User, len(relationPaths.Relations))
-		err = mr.Finish(lo.Map[*relation.Relation](relationPaths.Relations, func(r *relation.Relation, i int) func() error {
-			return func() error {
-				resp.Users[i] = &core_api.User{
-					UserId: r.ToId,
-				}
-				if err = mr.Finish(func() error {
-					user, err := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{
-						UserId: r.ToId,
-					})
-					if err != nil {
-						return err
-					}
-					resp.Users[i].Name = user.Name
-					resp.Users[i].Url = user.Url
-					resp.Users[i].Tags = user.Labels
-					s.UserDomainService.LoadLabel(ctx, resp.Users[i].Tags)
-					return nil
-				}, func() error {
-					if userData.GetUserId() != "" && userData.UserId != resp.Users[i].UserId {
-						s.UserDomainService.LoadFollowed(ctx, &resp.Users[i].Followed, userData.UserId, resp.Users[i].UserId)
-					}
-					return nil
-				}, func() error {
-					s.UserDomainService.LoadFollowedCount(ctx, &resp.Users[i].FollowedCount, resp.Users[i].UserId)
-					return nil
-				}); err != nil {
-					return err
-				}
-				return nil
-			}
-		})...)
-	// 用户
+		if err = s.RelationDomainService.GetUserByRelations(ctx, relationPaths.Relations, resp.Users, userData.GetUserId()); err != nil {
+			return resp, err
+		}
 	case core_api.RelationType_PublishRelationType:
 		// 文章
 		resp.Posts = make([]*core_api.Post, len(relationPaths.Relations))
-		if err = mr.Finish(lo.Map[*relation.Relation](relationPaths.Relations, func(relation *relation.Relation, i int) func() error {
-			return func() error {
-				resp.Posts[i] = &core_api.Post{}
-				if err = mr.Finish(func() error {
-					post, err1 := s.CloudMindContent.GetPost(ctx, &content.GetPostReq{
-						PostId: relation.ToId,
-					})
-					if err1 != nil {
-						return err1
-					}
-
-					tags := lo.Map[*content.Tag, *core_api.TagInfo](post.Tags, func(item *content.Tag, index int) *core_api.TagInfo {
-						return &core_api.TagInfo{
-							TagId:  item.TagId,
-							ZoneId: item.ZoneId,
-						}
-					})
-					tagsId := lo.Map[*content.Tag, string](post.Tags, func(item *content.Tag, index int) string {
-						return item.TagId
-					})
-
-					resp.Posts[i].PostId = relation.ToId
-					resp.Posts[i].Title = post.Title
-					resp.Posts[i].Text = post.Text
-					resp.Posts[i].Url = post.Url
-					resp.Posts[i].Tags = tags
-					s.PostDomainService.LoadLabels(ctx, tagsId)
-					for i := range tags {
-						tags[i].Value = tagsId[i]
-					}
-					user, err1 := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{
-						UserId: post.UserId,
-					})
-					if err1 != nil {
-						return err1
-					}
-					resp.Posts[i].UserName = user.Name
-					return nil
-				}, func() error {
-					s.PostDomainService.LoadLikeCount(ctx, &resp.Posts[i].LikeCount, relation.ToId)
-					return nil
-				}, func() error {
-					if userData.GetUserId() != "" {
-						s.PostDomainService.LoadLiked(ctx, &resp.Posts[i].Liked, userData.UserId, relation.ToId)
-					}
-					return nil
-				}, func() error {
-					getCommentListResp, err2 := s.PlatFormComment.GetCommentList(ctx, &comment.GetCommentListReq{
-						FilterOptions: &comment.CommentFilterOptions{
-							OnlySubjectId: lo.ToPtr(relation.ToId),
-						},
-						Pagination: &basic.PaginationOptions{
-							Limit: lo.ToPtr(int64(1)),
-						},
-					})
-					if err2 != nil {
-						return err2
-					}
-					resp.Posts[i].CommentCount = getCommentListResp.Total
-					return nil
-				}); err != nil {
-					return err
-				}
-				return nil
-			}
-		})...); err != nil {
+		if err = s.RelationDomainService.GetPostByRelations(ctx, relationPaths.Relations, resp.Posts, userData.GetUserId()); err != nil {
 			return resp, err
 		}
-	case core_api.RelationType_UploadRelationType:
-		// 文件
+	default:
+		return resp, consts.ErrNotSupportRelationType
 	}
 	return resp, nil
 }
@@ -199,117 +101,21 @@ func (s *RelationService) GetFromRelations(ctx context.Context, req *core_api.Ge
 	if err != nil {
 		return resp, err
 	}
-	fmt.Println(getFromRelationsResp.Relations)
 
 	switch req.ToType {
 	case core_api.TargetType_UserType:
 		resp.Users = make([]*core_api.User, len(getFromRelationsResp.Relations))
-		err = mr.Finish(lo.Map[*relation.Relation](getFromRelationsResp.Relations, func(relation *relation.Relation, i int) func() error {
-			return func() error {
-				resp.Users[i] = &core_api.User{
-					UserId: relation.ToId,
-				}
-				if err = mr.Finish(func() error {
-					user, err := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{
-						UserId: relation.ToId,
-					})
-					if err != nil {
-						return err
-					}
-					resp.Users[i].Name = user.Name
-					resp.Users[i].Url = user.Url
-					resp.Users[i].Tags = user.Labels
-					s.UserDomainService.LoadLabel(ctx, resp.Users[i].Tags)
-					return nil
-				}, func() error {
-					if userData.GetUserId() != "" && userData.UserId != resp.Users[i].UserId {
-						s.UserDomainService.LoadFollowed(ctx, &resp.Users[i].Followed, userData.UserId, resp.Users[i].UserId)
-					}
-					return nil
-				}, func() error {
-					s.UserDomainService.LoadFollowedCount(ctx, &resp.Users[i].FollowedCount, resp.Users[i].UserId)
-					return nil
-				}); err != nil {
-					return err
-				}
-				return nil
-			}
-		})...)
-		if err != nil {
+		if err = s.RelationDomainService.GetUserByRelations(ctx, getFromRelationsResp.Relations, resp.Users, userData.GetUserId()); err != nil {
 			return resp, err
 		}
 	case core_api.TargetType_PostType:
+		// 文章
 		resp.Posts = make([]*core_api.Post, len(getFromRelationsResp.Relations))
-		if err = mr.Finish(lo.Map[*relation.Relation](getFromRelationsResp.Relations, func(relation *relation.Relation, i int) func() error {
-			return func() error {
-				resp.Posts[i] = &core_api.Post{}
-				if err = mr.Finish(func() error {
-					post, err1 := s.CloudMindContent.GetPost(ctx, &content.GetPostReq{
-						PostId: relation.ToId,
-					})
-					if err1 != nil {
-						return err1
-					}
-
-					tags := lo.Map[*content.Tag, *core_api.TagInfo](post.Tags, func(item *content.Tag, index int) *core_api.TagInfo {
-						return &core_api.TagInfo{
-							TagId:  item.TagId,
-							ZoneId: item.ZoneId,
-						}
-					})
-					tagsId := lo.Map[*content.Tag, string](post.Tags, func(item *content.Tag, index int) string {
-						return item.TagId
-					})
-
-					resp.Posts[i].PostId = relation.ToId
-					resp.Posts[i].Title = post.Title
-					resp.Posts[i].Text = post.Text
-					resp.Posts[i].Url = post.Url
-					resp.Posts[i].Tags = tags
-					s.PostDomainService.LoadLabels(ctx, tagsId)
-					for i := range tags {
-						tags[i].Value = tagsId[i]
-					}
-					user, err1 := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{
-						UserId: post.UserId,
-					})
-					if err1 != nil {
-						return err1
-					}
-					resp.Posts[i].UserName = user.Name
-					return nil
-				}, func() error {
-					s.PostDomainService.LoadLikeCount(ctx, &resp.Posts[i].LikeCount, relation.ToId)
-					return nil
-				}, func() error {
-					if userData.GetUserId() != "" {
-						s.PostDomainService.LoadLiked(ctx, &resp.Posts[i].Liked, userData.UserId, relation.ToId)
-					}
-					return nil
-				}, func() error {
-					getCommentListResp, err2 := s.PlatFormComment.GetCommentList(ctx, &comment.GetCommentListReq{
-						FilterOptions: &comment.CommentFilterOptions{
-							OnlySubjectId: lo.ToPtr(relation.ToId),
-						},
-						Pagination: &basic.PaginationOptions{
-							Limit: lo.ToPtr(int64(1)),
-						},
-					})
-					if err2 != nil {
-						return err2
-					}
-					resp.Posts[i].CommentCount = getCommentListResp.Total
-					return nil
-				}); err != nil {
-					return err
-				}
-				return nil
-			}
-		})...); err != nil {
+		if err = s.RelationDomainService.GetPostByRelations(ctx, getFromRelationsResp.Relations, resp.Posts, userData.GetUserId()); err != nil {
 			return resp, err
 		}
 	default:
-		//return resp, consts.ErrNotSupportTargetType
+		return resp, consts.ErrNotSupportRelationType
 	}
 	return resp, nil
 }
@@ -341,42 +147,11 @@ func (s *RelationService) GetToRelations(ctx context.Context, req *core_api.GetT
 	switch req.FromType {
 	case core_api.TargetType_UserType:
 		resp.Users = make([]*core_api.User, len(getFromRelationsResp.Relations))
-		err = mr.Finish(lo.Map[*relation.Relation](getFromRelationsResp.Relations, func(relation *relation.Relation, i int) func() error {
-			return func() error {
-				resp.Users[i] = &core_api.User{
-					UserId: relation.FromId,
-				}
-				if err = mr.Finish(func() error {
-					user, err := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{
-						UserId: relation.FromId,
-					})
-					if err != nil {
-						return err
-					}
-					resp.Users[i].Name = user.Name
-					resp.Users[i].Url = user.Url
-					resp.Users[i].Tags = user.Labels
-					s.UserDomainService.LoadLabel(ctx, resp.Users[i].Tags)
-					return nil
-				}, func() error {
-					if userData.GetUserId() != "" {
-						s.UserDomainService.LoadFollowed(ctx, &resp.Users[i].Followed, userData.UserId, resp.Users[i].UserId)
-					}
-					return nil
-				}, func() error {
-					s.UserDomainService.LoadFollowedCount(ctx, &resp.Users[i].FollowedCount, resp.Users[i].UserId)
-					return nil
-				}); err != nil {
-					return err
-				}
-				return nil
-			}
-		})...)
-		if err != nil {
+		if err = s.RelationDomainService.GetUserByRelations(ctx, getFromRelationsResp.Relations, resp.Users, userData.GetUserId()); err != nil {
 			return resp, err
 		}
 	default:
-		//return resp, consts.ErrNotSupportTargetType
+		return resp, consts.ErrNotSupportRelationType
 	}
 	return resp, nil
 }
