@@ -49,7 +49,7 @@ func Register(r *server.Hertz) {
 		_content.POST("/addFileToPublicSpace", append(_addfiletopublicspaceMw(), core_api.AddFileToPublicSpace)...)
 		_content.POST("/askDownloadFile", append(_askdownloadfileMw(), core_api.AskDownloadFile)...)
 		_content.POST("/askUploadFile", append(_askuploadfileMw(), core_api.AskUploadFile)...)
-		_content.POST("/checkFile", append(_checkfileMw(), core_api.CheckFile)...)
+		_content.GET("/checkFile", append(_checkfileMw(), core_api.CheckFile)...)
 		_content.POST("/completelyRemoveFile", append(_completelyremovefileMw(), core_api.CompletelyRemoveFile)...)
 		_content.POST("/createFeedBack", append(_createfeedbackMw(), core_api.CreateFeedBack)...)
 		_content.POST("/createFile", append(_createfileMw(), core_api.CreateFile)...)

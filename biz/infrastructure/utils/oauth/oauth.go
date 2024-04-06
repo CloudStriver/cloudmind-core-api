@@ -22,10 +22,28 @@ type GiteeInfo struct {
 }
 
 type QQInfo struct {
-	OpenId       string `json:"openid"`
-	FigureurlQq1 string `json:"figureurl_Qq_1"`
-	Nickname     string `json:"nickname"`
-	Gender       string `json:"gender"`
+	Ret             int    `json:"ret"`
+	Msg             string `json:"msg"`
+	IsLost          int    `json:"is_lost"`
+	Nickname        string `json:"nickname"`
+	Gender          string `json:"gender"`
+	GenderType      int    `json:"gender_type"`
+	Province        string `json:"province"`
+	City            string `json:"city"`
+	Year            string `json:"year"`
+	Figureurl       string `json:"figureurl"`
+	Figureurl1      string `json:"figureurl_1"`
+	Figureurl2      string `json:"figureurl_2"`
+	FigureurlQq1    string `json:"figureurl_qq_1"`
+	FigureurlQq2    string `json:"figureurl_qq_2"`
+	FigureurlQq     string `json:"figureurl_qq"`
+	IsYellowVip     string `json:"is_yellow_vip"`
+	Vip             string `json:"vip"`
+	YellowVipLevel  string `json:"yellow_vip_level"`
+	Level           string `json:"level"`
+	IsYellowYearVip string `json:"is_yellow_year_vip"`
+	ClientId        string `json:"client_id"`
+	Openid          string `json:"openid"`
 }
 
 type WechatInfo struct {
@@ -39,7 +57,6 @@ type WechatInfo struct {
 
 func QQLogin(conf config.OauthConf, code string) (*QQInfo, error) {
 	url := getTokenUrl(conf, sts.AuthType_qq, code)
-	fmt.Println(url)
 	var (
 		req        *http.Request
 		err        error
@@ -58,11 +75,6 @@ func QQLogin(conf config.OauthConf, code string) (*QQInfo, error) {
 	if err = json.NewDecoder(res.Body).Decode(&token); err != nil {
 		return nil, err
 	}
-	fmt.Println(token.AccessToken)
-	if err = json.NewDecoder(res.Body).Decode(&token); err != nil {
-		return nil, err
-	}
-
 	url = fmt.Sprintf("https://graph.qq.com/oauth2.0/me?access_token=%s&fmt=json", token.AccessToken)
 	if req, err = http.NewRequest(http.MethodGet, url, nil); err != nil {
 		return nil, err
@@ -78,7 +90,7 @@ func QQLogin(conf config.OauthConf, code string) (*QQInfo, error) {
 	if err = json.NewDecoder(res.Body).Decode(&userInfo); err != nil {
 		return nil, err
 	}
-	url = fmt.Sprintf("https://graph.qq.com/user/get_user_info?access_token=%s&oauth_consumer_key=%s&openid=%s&fmt=json", token.AccessToken, conf.ClientId, userInfo.OpenId)
+	url = fmt.Sprintf("https://graph.qq.com/user/get_user_info?access_token=%s&oauth_consumer_key=%s&openid=%s&fmt=json", token.AccessToken, conf.ClientId, userInfo.Openid)
 	if req, err = http.NewRequest(http.MethodGet, url, nil); err != nil {
 		return nil, err
 	}
@@ -89,46 +101,6 @@ func QQLogin(conf config.OauthConf, code string) (*QQInfo, error) {
 	if res.StatusCode != http.StatusOK {
 		return nil, consts.ErrThirdLogin
 	}
-	if err = json.NewDecoder(res.Body).Decode(&userInfo); err != nil {
-		return nil, err
-	}
-	return userInfo, nil
-}
-
-func GiteeLogin(conf config.OauthConf, code string) (*GiteeInfo, error) {
-	url := getTokenUrl(conf, sts.AuthType_gitee, code)
-	var (
-		req        *http.Request
-		err        error
-		res        *http.Response
-		httpClient http.Client
-		token      Token
-	)
-	if req, err = http.NewRequest(http.MethodPost, url, nil); err != nil {
-		return nil, err
-	}
-	req.Header.Set("accept", "application/json")
-	if res, err = httpClient.Do(req); err != nil {
-		return nil, err
-	}
-	if err = json.NewDecoder(res.Body).Decode(&token); err != nil {
-		return nil, err
-	}
-	url = fmt.Sprintf("https://gitee.com/api/v5/user?access_token=%s", token.AccessToken)
-
-	if req, err = http.NewRequest(http.MethodGet, url, nil); err != nil {
-		return nil, err
-	}
-	req.Header.Set("accept", "application/json")
-	req.Header.Set("Authorization", fmt.Sprintf("token %s", token.AccessToken))
-
-	if res, err = httpClient.Do(req); err != nil {
-		return nil, err
-	}
-	if res.StatusCode != http.StatusOK {
-		return nil, consts.ErrThirdLogin
-	}
-	userInfo := &GiteeInfo{}
 	if err = json.NewDecoder(res.Body).Decode(&userInfo); err != nil {
 		return nil, err
 	}
@@ -137,10 +109,6 @@ func GiteeLogin(conf config.OauthConf, code string) (*GiteeInfo, error) {
 
 func getTokenUrl(conf config.OauthConf, authType sts.AuthType, code string) string {
 	switch authType {
-	case sts.AuthType_github:
-		return fmt.Sprintf("https://github.com/login/oauth/access_token?client_id=%s&client_secret=%s&code=%s", conf.ClientId, conf.Secret, code)
-	case sts.AuthType_gitee:
-		return fmt.Sprintf("https://gitee.com/oauth/token?grant_type=authorization_code&code=%s&client_id=%s&redirect_uri=%s&client_secret=%s", code, conf.ClientId, conf.Redirect, conf.Secret)
 	case sts.AuthType_qq:
 		return fmt.Sprintf("https://graph.qq.com/oauth2.0/token?grant_type=authorization_code&client_id=%s&client_secret=%s&code=%s&redirect_uri=%s&fmt=json", conf.ClientId, conf.Secret, code, conf.Redirect)
 	default:
