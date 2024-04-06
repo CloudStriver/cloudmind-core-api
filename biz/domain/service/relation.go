@@ -8,27 +8,144 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_comment"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
 	"github.com/CloudStriver/cloudmind-mq/app/util/message"
 	"github.com/CloudStriver/go-pkg/utils/pconvertor"
+	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/basic"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
+	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/comment"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/relation"
 	"github.com/bytedance/sonic"
 	"github.com/google/wire"
+	"github.com/samber/lo"
 	"github.com/segmentio/fasthash/fnv1a"
+	"github.com/zeromicro/go-zero/core/mr"
 	"github.com/zeromicro/go-zero/core/stores/redis"
 )
 
 type IRelationDomainService interface {
 	CreateRelation(ctx context.Context, r *core_api.Relation) (err error)
+	GetUserByRelations(ctx context.Context, relations []*relation.Relation, users []*core_api.User, userId string) (err error)
+	GetPostByRelations(ctx context.Context, relations []*relation.Relation, posts []*core_api.Post, userId string) (err error)
 }
 type RelationDomainService struct {
 	Config               *config.Config
 	PlatFormRelation     platform_relation.IPlatFormRelation
 	CloudMindContent     cloudmind_content.ICloudMindContent
+	PlatFormComment      platform_comment.IPlatFormComment
+	UserDomainService    IUserDomainService
+	PostDomainService    IPostDomainService
 	CreateNotificationKq *kq.CreateNotificationsKq
 	CreateFeedBackKq     *kq.CreateFeedBackKq
 	Redis                *redis.Redis
+}
+
+func (s *RelationDomainService) GetUserByRelations(ctx context.Context, relations []*relation.Relation, users []*core_api.User, userId string) (err error) {
+	err = mr.Finish(lo.Map[*relation.Relation](relations, func(r *relation.Relation, i int) func() error {
+		return func() error {
+			users[i] = &core_api.User{
+				UserId: r.ToId,
+			}
+			if err = mr.Finish(func() error {
+				user, err := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{
+					UserId: r.ToId,
+				})
+				if err != nil {
+					return err
+				}
+				users[i].Name = user.Name
+				users[i].Url = user.Url
+				users[i].Tags = user.Labels
+				s.UserDomainService.LoadLabel(ctx, users[i].Tags)
+				return nil
+			}, func() error {
+				if userId != "" && userId != users[i].UserId {
+					s.UserDomainService.LoadFollowed(ctx, &users[i].Followed, userId, users[i].UserId)
+				}
+				return nil
+			}, func() error {
+				s.UserDomainService.LoadFollowedCount(ctx, &users[i].FollowedCount, users[i].UserId)
+				return nil
+			}); err != nil {
+				return err
+			}
+			return nil
+		}
+	})...)
+	return nil
+}
+
+func (s *RelationDomainService) GetPostByRelations(ctx context.Context, relations []*relation.Relation, posts []*core_api.Post, userId string) (err error) {
+	if err = mr.Finish(lo.Map[*relation.Relation](relations, func(relation *relation.Relation, i int) func() error {
+		return func() error {
+			posts[i] = &core_api.Post{}
+			if err = mr.Finish(func() error {
+				post, err1 := s.CloudMindContent.GetPost(ctx, &content.GetPostReq{
+					PostId: relation.ToId,
+				})
+				if err1 != nil {
+					return err1
+				}
+
+				tags := lo.Map[*content.Tag, *core_api.TagInfo](post.Tags, func(item *content.Tag, index int) *core_api.TagInfo {
+					return &core_api.TagInfo{
+						TagId:  item.TagId,
+						ZoneId: item.ZoneId,
+					}
+				})
+				tagsId := lo.Map[*content.Tag, string](post.Tags, func(item *content.Tag, index int) string {
+					return item.TagId
+				})
+
+				posts[i].PostId = relation.ToId
+				posts[i].Title = post.Title
+				posts[i].Text = post.Text
+				posts[i].Url = post.Url
+				posts[i].Tags = tags
+				s.PostDomainService.LoadLabels(ctx, tagsId)
+				for i := range tags {
+					tags[i].Value = tagsId[i]
+				}
+				user, err1 := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{
+					UserId: post.UserId,
+				})
+				if err1 != nil {
+					return err1
+				}
+				posts[i].UserName = user.Name
+				return nil
+			}, func() error {
+				s.PostDomainService.LoadLikeCount(ctx, &posts[i].LikeCount, relation.ToId)
+				return nil
+			}, func() error {
+				if userId != "" {
+					s.PostDomainService.LoadLiked(ctx, &posts[i].Liked, userId, relation.ToId)
+				}
+				return nil
+			}, func() error {
+				getCommentListResp, err2 := s.PlatFormComment.GetCommentList(ctx, &comment.GetCommentListReq{
+					FilterOptions: &comment.CommentFilterOptions{
+						OnlySubjectId: lo.ToPtr(relation.ToId),
+					},
+					Pagination: &basic.PaginationOptions{
+						Limit: lo.ToPtr(int64(1)),
+					},
+				})
+				if err2 != nil {
+					return err2
+				}
+				posts[i].CommentCount = getCommentListResp.Total
+				return nil
+			}); err != nil {
+				return err
+			}
+			return nil
+		}
+	})...); err != nil {
+		return err
+	}
+	return nil
 }
 
 var RelationDomainServiceSet = wire.NewSet(

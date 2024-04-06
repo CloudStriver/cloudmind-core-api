@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"github.com/CloudStriver/cloudmind-core-api/biz/adaptor"
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
@@ -56,7 +55,6 @@ func (s *ZoneService) GetZones(ctx context.Context, req *core_api.GetZonesReq) (
 		return resp, err
 	}
 
-	fmt.Printf("[%v\n]", res.Zones)
 	resp.Zones = lo.Map(res.Zones, func(item *content.Zone, _ int) *core_api.Zone {
 		return convertor.ZoneToCoreZone(item)
 	})
