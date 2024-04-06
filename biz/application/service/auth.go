@@ -61,6 +61,7 @@ type AuthService struct {
 
 func (s *AuthService) QQLogin(ctx context.Context, req *core_api.QQLoginReq) (resp *core_api.QQLoginResp, err error) {
 	resp = new(core_api.QQLoginResp)
+	fmt.Println(req.Code)
 	if resp.ShortToken, resp.LongToken, resp.UserId, err = s.ThirdLogin(ctx, req.Code, sts.AuthType_qq, "", "", "", consts.SexMan); err != nil {
 		return resp, err
 	}
@@ -208,11 +209,10 @@ func (s *AuthService) ThirdLogin(ctx context.Context, code string, authType sts.
 	case sts.AuthType_qq:
 		conf := s.Config.QQConf
 		data, err := oauth.QQLogin(conf, code)
-		fmt.Println(data)
 		if err != nil {
 			return "", "", "", consts.ErrThirdLogin
 		}
-		appId = data.OpenId
+		appId = data.Openid
 		name = data.Nickname
 		url = data.FigureurlQq1
 		if data.Gender != "男" {
