@@ -23,9 +23,10 @@ import (
 type IRelationService interface {
 	GetRelation(ctx context.Context, req *core_api.GetRelationReq) (resp *core_api.GetRelationResp, err error)
 	CreateRelation(ctx context.Context, req *core_api.CreateRelationReq) (resp *core_api.CreateRelationResp, err error)
-	GetFromRelations(ctx context.Context, c *core_api.GetFromRelationsReq) (resp *core_api.GetFromRelationsResp, err error)
-	GetToRelations(ctx context.Context, c *core_api.GetToRelationsReq) (resp *core_api.GetToRelationsResp, err error)
-	DeleteRelation(ctx context.Context, c *core_api.DeleteRelationReq) (resp *core_api.DeleteRelationResp, err error)
+	GetFromRelations(ctx context.Context, req *core_api.GetFromRelationsReq) (resp *core_api.GetFromRelationsResp, err error)
+	GetToRelations(ctx context.Context, req *core_api.GetToRelationsReq) (resp *core_api.GetToRelationsResp, err error)
+	DeleteRelation(ctx context.Context, req *core_api.DeleteRelationReq) (resp *core_api.DeleteRelationResp, err error)
+	GetRelationPaths(ctx context.Context, req *core_api.GetRelationPathsReq) (resp *core_api.GetRelationPathsResp, err error)
 }
 
 var RelationServiceSet = wire.NewSet(
@@ -41,6 +42,138 @@ type RelationService struct {
 	UserDomainService     service.IUserDomainService
 	PostDomainService     service.IPostDomainService
 	RelationDomainService service.RelationDomainService
+}
+
+func (s *RelationService) GetRelationPaths(ctx context.Context, req *core_api.GetRelationPathsReq) (resp *core_api.GetRelationPathsResp, err error) {
+	resp = new(core_api.GetRelationPathsResp)
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
+		return resp, consts.ErrNotAuthentication
+	}
+	relationPaths, err := s.PlatFormRelation.GetRelationPaths(ctx, &relation.GetRelationPathsReq{
+		FromId:    userData.UserId,
+		FromType:  int64(core_api.TargetType_UserType),
+		EdgeType1: int64(core_api.RelationType_FollowRelationType),
+		EdgeType2: int64(req.RelationType),
+		PaginationOptions: &basic.PaginationOptions{
+			Limit:  req.Limit,
+			Offset: req.Offset,
+		},
+	})
+	if err != nil {
+		return resp, err
+	}
+
+	switch req.RelationType {
+	case core_api.RelationType_FollowRelationType:
+		resp.Users = make([]*core_api.User, len(relationPaths.Relations))
+		err = mr.Finish(lo.Map[*relation.Relation](relationPaths.Relations, func(r *relation.Relation, i int) func() error {
+			return func() error {
+				resp.Users[i] = &core_api.User{
+					UserId: r.ToId,
+				}
+				if err = mr.Finish(func() error {
+					user, err := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{
+						UserId: r.ToId,
+					})
+					if err != nil {
+						return err
+					}
+					resp.Users[i].Name = user.Name
+					resp.Users[i].Url = user.Url
+					resp.Users[i].Tags = user.Labels
+					s.UserDomainService.LoadLabel(ctx, resp.Users[i].Tags)
+					return nil
+				}, func() error {
+					if userData.GetUserId() != "" && userData.UserId != resp.Users[i].UserId {
+						s.UserDomainService.LoadFollowed(ctx, &resp.Users[i].Followed, userData.UserId, resp.Users[i].UserId)
+					}
+					return nil
+				}, func() error {
+					s.UserDomainService.LoadFollowedCount(ctx, &resp.Users[i].FollowedCount, resp.Users[i].UserId)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}
+		})...)
+	// 用户
+	case core_api.RelationType_PublishRelationType:
+		// 文章
+		resp.Posts = make([]*core_api.Post, len(relationPaths.Relations))
+		if err = mr.Finish(lo.Map[*relation.Relation](relationPaths.Relations, func(relation *relation.Relation, i int) func() error {
+			return func() error {
+				resp.Posts[i] = &core_api.Post{}
+				if err = mr.Finish(func() error {
+					post, err1 := s.CloudMindContent.GetPost(ctx, &content.GetPostReq{
+						PostId: relation.ToId,
+					})
+					if err1 != nil {
+						return err1
+					}
+
+					tags := lo.Map[*content.Tag, *core_api.TagInfo](post.Tags, func(item *content.Tag, index int) *core_api.TagInfo {
+						return &core_api.TagInfo{
+							TagId:  item.TagId,
+							ZoneId: item.ZoneId,
+						}
+					})
+					tagsId := lo.Map[*content.Tag, string](post.Tags, func(item *content.Tag, index int) string {
+						return item.TagId
+					})
+
+					resp.Posts[i].PostId = relation.ToId
+					resp.Posts[i].Title = post.Title
+					resp.Posts[i].Text = post.Text
+					resp.Posts[i].Url = post.Url
+					resp.Posts[i].Tags = tags
+					s.PostDomainService.LoadLabels(ctx, tagsId)
+					for i := range tags {
+						tags[i].Value = tagsId[i]
+					}
+					user, err1 := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{
+						UserId: post.UserId,
+					})
+					if err1 != nil {
+						return err1
+					}
+					resp.Posts[i].UserName = user.Name
+					return nil
+				}, func() error {
+					s.PostDomainService.LoadLikeCount(ctx, &resp.Posts[i].LikeCount, relation.ToId)
+					return nil
+				}, func() error {
+					if userData.GetUserId() != "" {
+						s.PostDomainService.LoadLiked(ctx, &resp.Posts[i].Liked, userData.UserId, relation.ToId)
+					}
+					return nil
+				}, func() error {
+					getCommentListResp, err2 := s.PlatFormComment.GetCommentList(ctx, &comment.GetCommentListReq{
+						FilterOptions: &comment.CommentFilterOptions{
+							OnlySubjectId: lo.ToPtr(relation.ToId),
+						},
+						Pagination: &basic.PaginationOptions{
+							Limit: lo.ToPtr(int64(1)),
+						},
+					})
+					if err2 != nil {
+						return err2
+					}
+					resp.Posts[i].CommentCount = getCommentListResp.Total
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}
+		})...); err != nil {
+			return resp, err
+		}
+	case core_api.RelationType_UploadRelationType:
+		// 文件
+	}
+	return resp, nil
 }
 
 func (s *RelationService) GetFromRelations(ctx context.Context, req *core_api.GetFromRelationsReq) (resp *core_api.GetFromRelationsResp, err error) {
