@@ -55,8 +55,8 @@ func (s *ZoneService) GetZones(ctx context.Context, req *core_api.GetZonesReq) (
 		return resp, err
 	}
 
-	resp.Zones = lo.Map(res.Zones, func(item *content.Zone, _ int) *core_api.Zone {
-		return convertor.ZoneToCoreZone(item)
+	resp.Zones = lo.Map(res.Zones, func(item *content.Zone, _ int) *core_api.ZoneInfo {
+		return convertor.ZoneToCoreZoneInfo(item)
 	})
 	resp.Token = res.Token
 	resp.Total = res.Total
