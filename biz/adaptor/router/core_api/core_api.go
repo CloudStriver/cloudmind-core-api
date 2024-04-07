@@ -113,6 +113,7 @@ func Register(r *server.Hertz) {
 		_relation.POST("/deleteRelation", append(_deleterelationMw(), core_api.DeleteRelation)...)
 		_relation.GET("/getFromRelations", append(_getfromrelationsMw(), core_api.GetFromRelations)...)
 		_relation.GET("/getRelation", append(_getrelationMw(), core_api.GetRelation)...)
+		_relation.GET("/getRelationPaths", append(_getrelationpathsMw(), core_api.GetRelationPaths)...)
 		_relation.GET("/getToRelations", append(_gettorelationsMw(), core_api.GetToRelations)...)
 	}
 	{

@@ -39,7 +39,6 @@ type WechatInfo struct {
 
 func QQLogin(conf config.OauthConf, code string) (*QQInfo, error) {
 	url := getTokenUrl(conf, sts.AuthType_qq, code)
-	fmt.Println(url)
 	var (
 		req        *http.Request
 		err        error

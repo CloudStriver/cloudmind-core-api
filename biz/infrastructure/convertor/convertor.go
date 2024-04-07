@@ -5,7 +5,7 @@ import (
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/basic"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/system"
-	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/comment"
+	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform"
 	"github.com/bytedance/sonic"
 )
 
@@ -45,7 +45,7 @@ func FileToCorePrivateFile(req *content.FileInfo) *core_api.PrivateFile {
 	}
 }
 
-func CommentInfoToCoreCommentInfo(req *comment.CommentInfo) *core_api.CommentInfo {
+func CommentInfoToCoreCommentInfo(req *platform.CommentInfo) *core_api.CommentInfo {
 	return &core_api.CommentInfo{
 		Id:              req.Id,
 		SubjectId:       req.SubjectId,
@@ -65,8 +65,8 @@ func CommentInfoToCoreCommentInfo(req *comment.CommentInfo) *core_api.CommentInf
 	}
 }
 
-func CoreCommentToComment(req *core_api.Comment) *comment.Comment {
-	return &comment.Comment{
+func CoreCommentToComment(req *core_api.Comment) *platform.Comment {
+	return &platform.Comment{
 		Id:        req.Id,
 		SubjectId: req.SubjectId,
 		RootId:    req.RootId,
@@ -82,8 +82,8 @@ func CoreCommentToComment(req *core_api.Comment) *comment.Comment {
 	}
 }
 
-func CoreLabelToLabel(req *core_api.Label) *comment.Label {
-	return &comment.Label{
+func CoreLabelToLabel(req *core_api.Label) *platform.Label {
+	return &platform.Label{
 		LabelId: req.LabelId,
 		Zone:    req.Zone,
 		SubZone: req.SubZone,
@@ -91,7 +91,7 @@ func CoreLabelToLabel(req *core_api.Label) *comment.Label {
 	}
 }
 
-func LabelToCoreLabel(req *comment.Label) *core_api.Label {
+func LabelToCoreLabel(req *platform.Label) *core_api.Label {
 	return &core_api.Label{
 		LabelId: req.LabelId,
 		Zone:    req.Zone,
@@ -100,7 +100,7 @@ func LabelToCoreLabel(req *comment.Label) *core_api.Label {
 	}
 }
 
-func SubjectDetailsToCoreSubjectDetails(req *comment.SubjectDetails) *core_api.SubjectDetails {
+func SubjectDetailsToCoreSubjectDetails(req *platform.SubjectDetails) *core_api.SubjectDetails {
 	return &core_api.SubjectDetails{
 		Id:           req.Id,
 		UserId:       req.UserId,
@@ -112,8 +112,8 @@ func SubjectDetailsToCoreSubjectDetails(req *comment.SubjectDetails) *core_api.S
 	}
 }
 
-func CoreSubjectToSubject(req *core_api.Subject) *comment.Subject {
-	return &comment.Subject{
+func CoreSubjectToSubject(req *core_api.Subject) *platform.Subject {
+	return &platform.Subject{
 		Id:           req.Id,
 		UserId:       req.UserId,
 		TopCommentId: req.TopCommentId,

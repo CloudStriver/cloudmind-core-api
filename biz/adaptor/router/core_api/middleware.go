@@ -700,3 +700,8 @@ func _checkfileMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _getrelationpathsMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}

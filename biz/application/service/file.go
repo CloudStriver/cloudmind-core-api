@@ -11,11 +11,11 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_comment"
+	platformservice "github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/utils"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/sts"
-	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/comment"
+	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform"
 	"github.com/google/wire"
 	"github.com/samber/lo"
 	"github.com/zeromicro/go-zero/core/mr"
@@ -59,7 +59,7 @@ type FileService struct {
 	RelationDomainService service.IRelationDomainService
 	CloudMindContent      cloudmind_content.ICloudMindContent
 	FileDomainService     service.IFileDomainService
-	PlatformComment       platform_comment.IPlatFormComment
+	Platform              platformservice.IPlatForm
 	DeleteFileRelationKq  *kq.DeleteFileRelationKq
 }
 
@@ -872,11 +872,11 @@ func (s *FileService) AddFileToPublicSpace(ctx context.Context, req *core_api.Ad
 		})
 		return err1
 	}, func() error {
-		subject, _ := s.PlatformComment.GetCommentSubject(ctx, &comment.GetCommentSubjectReq{Id: file.File.FileId})
+		subject, _ := s.Platform.GetCommentSubject(ctx, &platform.GetCommentSubjectReq{Id: file.File.FileId})
 		if subject.GetSubject() != nil {
 			return nil
 		}
-		_, err2 := s.PlatformComment.CreateCommentSubject(ctx, &comment.CreateCommentSubjectReq{Subject: &comment.Subject{
+		_, err2 := s.Platform.CreateCommentSubject(ctx, &platform.CreateCommentSubjectReq{Subject: &platform.Subject{
 			Id:        file.File.FileId,
 			UserId:    file.File.UserId,
 			RootCount: lo.ToPtr(consts.InitNumber),

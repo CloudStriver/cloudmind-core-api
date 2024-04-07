@@ -8,11 +8,11 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
+	platformservice "github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform"
 	"github.com/CloudStriver/cloudmind-mq/app/util/message"
 	"github.com/CloudStriver/go-pkg/utils/pconvertor"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
-	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/relation"
+	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform"
 	"github.com/bytedance/sonic"
 	"github.com/google/wire"
 	"github.com/segmentio/fasthash/fnv1a"
@@ -24,7 +24,7 @@ type IRelationDomainService interface {
 }
 type RelationDomainService struct {
 	Config               *config.Config
-	PlatFormRelation     platform_relation.IPlatFormRelation
+	Platform             platformservice.IPlatForm
 	CloudMindContent     cloudmind_content.ICloudMindContent
 	CreateNotificationKq *kq.CreateNotificationsKq
 	CreateFeedBackKq     *kq.CreateFeedBackKq
@@ -37,7 +37,7 @@ var RelationDomainServiceSet = wire.NewSet(
 )
 
 func (s *RelationDomainService) CreateRelation(ctx context.Context, r *core_api.Relation) (err error) {
-	ok, err := s.PlatFormRelation.CreateRelation(ctx, &relation.CreateRelationReq{
+	ok, err := s.Platform.CreateRelation(ctx, &platform.CreateRelationReq{
 		FromType:     int64(r.FromType),
 		FromId:       r.FromId,
 		ToType:       int64(r.ToType),
