@@ -11,7 +11,7 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_system"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_trade"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_comment"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
 	"github.com/google/wire"
 	"github.com/samber/lo"
@@ -34,7 +34,7 @@ type HotRankService struct {
 	CloudMindSts      cloudmind_sts.ICloudMindSts
 	CloudMindTrade    cloudmind_trade.ICloudMindTrade
 	CloudMindSystem   cloudmind_system.ICloudMindSystem
-	PlatFormComment   platform_comment.IPlatFormComment
+	Platform          platform.IPlatForm
 	UserDomainService service.IUserDomainService
 	Redis             *redis.Redis
 }

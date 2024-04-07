@@ -4,11 +4,9 @@ import (
 	"context"
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_comment"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
+	platformservice "github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
-	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/comment"
-	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/relation"
+	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform"
 	"github.com/google/wire"
 	"github.com/samber/lo"
 )
@@ -21,9 +19,8 @@ type ICommentDomainService interface {
 	LoadLabels(ctx context.Context, c *core_api.CommentInfo, labelIds []string)
 }
 type CommentDomainService struct {
-	CloudMindUser    cloudmind_content.ICloudMindContent
-	PlatformRelation platform_relation.IPlatFormRelation
-	PlatformComment  platform_comment.IPlatFormComment
+	CloudMindUser cloudmind_content.ICloudMindContent
+	Platform      platformservice.IPlatForm
 }
 
 var CommentDomainServiceSet = wire.NewSet(
@@ -46,9 +43,9 @@ func (s *CommentDomainService) LoadAuthor(ctx context.Context, c *core_api.Comme
 }
 
 func (s *CommentDomainService) LoadLikeCount(ctx context.Context, c *core_api.CommentInfo) {
-	getRelationCountResp, err := s.PlatformRelation.GetRelationCount(ctx, &relation.GetRelationCountReq{
-		RelationFilterOptions: &relation.GetRelationCountReq_ToFilterOptions{
-			ToFilterOptions: &relation.ToFilterOptions{
+	getRelationCountResp, err := s.Platform.GetRelationCount(ctx, &platform.GetRelationCountReq{
+		RelationFilterOptions: &platform.GetRelationCountReq_ToFilterOptions{
+			ToFilterOptions: &platform.ToFilterOptions{
 				ToType:   int64(core_api.TargetType_CommentContentType),
 				ToId:     c.Id,
 				FromType: int64(core_api.TargetType_UserType),
@@ -62,7 +59,7 @@ func (s *CommentDomainService) LoadLikeCount(ctx context.Context, c *core_api.Co
 }
 
 func (s *CommentDomainService) LoadLiked(ctx context.Context, c *core_api.CommentInfo, userId string) {
-	getRelationResp, err := s.PlatformRelation.GetRelation(ctx, &relation.GetRelationReq{
+	getRelationResp, err := s.Platform.GetRelation(ctx, &platform.GetRelationReq{
 		FromType:     int64(core_api.TargetType_UserType),
 		FromId:       userId,
 		ToType:       int64(core_api.TargetType_CommentContentType),
@@ -75,7 +72,7 @@ func (s *CommentDomainService) LoadLiked(ctx context.Context, c *core_api.Commen
 }
 
 func (s *CommentDomainService) LoadHated(ctx context.Context, c *core_api.CommentInfo, userId string) {
-	getRelationResp, err := s.PlatformRelation.GetRelation(ctx, &relation.GetRelationReq{
+	getRelationResp, err := s.Platform.GetRelation(ctx, &platform.GetRelationReq{
 		FromType:     int64(core_api.TargetType_UserType),
 		FromId:       userId,
 		ToType:       int64(core_api.TargetType_CommentContentType),
@@ -88,8 +85,8 @@ func (s *CommentDomainService) LoadHated(ctx context.Context, c *core_api.Commen
 }
 
 func (s *CommentDomainService) LoadLabels(ctx context.Context, c *core_api.CommentInfo, labelIds []string) {
-	var labels *comment.GetLabelsInBatchResp
-	labels, _ = s.PlatformComment.GetLabelsInBatch(ctx, &comment.GetLabelsInBatchReq{LabelIds: labelIds})
+	var labels *platform.GetLabelsInBatchResp
+	labels, _ = s.Platform.GetLabelsInBatch(ctx, &platform.GetLabelsInBatchReq{LabelIds: labelIds})
 	c.Labels = lo.Map(labels.Labels, func(item string, index int) *core_api.Label {
 		return &core_api.Label{LabelId: labelIds[index], Value: item}
 	})

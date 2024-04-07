@@ -4,11 +4,9 @@ import (
 	"context"
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_comment"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
+	platformservice "github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
-	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/comment"
-	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/relation"
+	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform"
 	"github.com/google/wire"
 	"github.com/samber/lo"
 )
@@ -23,9 +21,8 @@ type IFileDomainService interface {
 	LoadLabels(ctx context.Context, file *core_api.PublicFile, labelIds []string)
 }
 type FileDomainService struct {
-	CloudMindUser    cloudmind_content.ICloudMindContent
-	PlatformRelation platform_relation.IPlatFormRelation
-	PlatformComment  platform_comment.IPlatFormComment
+	CloudMindUser cloudmind_content.ICloudMindContent
+	Platform      platformservice.IPlatForm
 }
 
 var FileDomainServiceSet = wire.NewSet(
@@ -34,7 +31,7 @@ var FileDomainServiceSet = wire.NewSet(
 )
 
 func (s *FileDomainService) LoadCollected(ctx context.Context, file *core_api.PublicFile, userId string) {
-	getRelationResp, err := s.PlatformRelation.GetRelation(ctx, &relation.GetRelationReq{
+	getRelationResp, err := s.Platform.GetRelation(ctx, &platform.GetRelationReq{
 		FromType:     int64(core_api.TargetType_UserType),
 		FromId:       userId,
 		ToType:       int64(core_api.TargetType_FileType),
@@ -47,9 +44,9 @@ func (s *FileDomainService) LoadCollected(ctx context.Context, file *core_api.Pu
 }
 
 func (s *FileDomainService) LoadViewCount(ctx context.Context, file *core_api.PublicFile) {
-	getRelationCountResp, err := s.PlatformRelation.GetRelationCount(ctx, &relation.GetRelationCountReq{
-		RelationFilterOptions: &relation.GetRelationCountReq_ToFilterOptions{
-			ToFilterOptions: &relation.ToFilterOptions{
+	getRelationCountResp, err := s.Platform.GetRelationCount(ctx, &platform.GetRelationCountReq{
+		RelationFilterOptions: &platform.GetRelationCountReq_ToFilterOptions{
+			ToFilterOptions: &platform.ToFilterOptions{
 				ToType:   int64(core_api.TargetType_FileType),
 				ToId:     file.FileId,
 				FromType: int64(core_api.TargetType_UserType),
@@ -79,9 +76,9 @@ func (s *FileDomainService) LoadLikeCount(ctx context.Context, file *core_api.Pu
 	if file.Zone == "" || file.SubZone == "" {
 		return
 	}
-	getRelationCountResp, err := s.PlatformRelation.GetRelationCount(ctx, &relation.GetRelationCountReq{
-		RelationFilterOptions: &relation.GetRelationCountReq_ToFilterOptions{
-			ToFilterOptions: &relation.ToFilterOptions{
+	getRelationCountResp, err := s.Platform.GetRelationCount(ctx, &platform.GetRelationCountReq{
+		RelationFilterOptions: &platform.GetRelationCountReq_ToFilterOptions{
+			ToFilterOptions: &platform.ToFilterOptions{
 				ToType:   int64(core_api.TargetType_FileType),
 				ToId:     file.FileId,
 				FromType: int64(core_api.TargetType_UserType),
@@ -98,7 +95,7 @@ func (s *FileDomainService) LoadLiked(ctx context.Context, file *core_api.Public
 	if file.Zone == "" || file.SubZone == "" {
 		return
 	}
-	getRelationResp, err := s.PlatformRelation.GetRelation(ctx, &relation.GetRelationReq{
+	getRelationResp, err := s.Platform.GetRelation(ctx, &platform.GetRelationReq{
 		FromType:     int64(core_api.TargetType_UserType),
 		FromId:       userId,
 		ToType:       int64(core_api.TargetType_FileType),
@@ -114,9 +111,9 @@ func (s *FileDomainService) LoadCollectCount(ctx context.Context, file *core_api
 	if file.Zone == "" || file.SubZone == "" {
 		return
 	}
-	getRelationCountResp, err := s.PlatformRelation.GetRelationCount(ctx, &relation.GetRelationCountReq{
-		RelationFilterOptions: &relation.GetRelationCountReq_ToFilterOptions{
-			ToFilterOptions: &relation.ToFilterOptions{
+	getRelationCountResp, err := s.Platform.GetRelationCount(ctx, &platform.GetRelationCountReq{
+		RelationFilterOptions: &platform.GetRelationCountReq_ToFilterOptions{
+			ToFilterOptions: &platform.ToFilterOptions{
 				ToType:   int64(core_api.TargetType_FileType),
 				ToId:     file.FileId,
 				FromType: int64(core_api.TargetType_UserType),
@@ -133,8 +130,8 @@ func (s *FileDomainService) LoadLabels(ctx context.Context, file *core_api.Publi
 	if file.Zone == "" || file.SubZone == "" {
 		return
 	}
-	var labels *comment.GetLabelsInBatchResp
-	labels, _ = s.PlatformComment.GetLabelsInBatch(ctx, &comment.GetLabelsInBatchReq{LabelIds: labelIds})
+	var labels *platform.GetLabelsInBatchResp
+	labels, _ = s.Platform.GetLabelsInBatch(ctx, &platform.GetLabelsInBatchReq{LabelIds: labelIds})
 	file.Labels = lo.Map(labels.Labels, func(item string, index int) *core_api.Label {
 		return &core_api.Label{LabelId: labelIds[index], Value: item}
 	})

@@ -4,11 +4,9 @@ import (
 	"context"
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_comment"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
+	platformservice "github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
-	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/comment"
-	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/relation"
+	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform"
 	"github.com/google/wire"
 	"github.com/samber/lo"
 )
@@ -24,8 +22,7 @@ type IPostDomainService interface {
 }
 type PostDomainService struct {
 	CloudMindContent cloudmind_content.ICloudMindContent
-	PlatformRelation platform_relation.IPlatFormRelation
-	PlatFormComment  platform_comment.IPlatFormComment
+	Platform         platformservice.IPlatForm
 }
 
 var PostDomainServiceSet = wire.NewSet(
@@ -34,7 +31,7 @@ var PostDomainServiceSet = wire.NewSet(
 )
 
 func (s *PostDomainService) LoadLabels(ctx context.Context, labels []string) {
-	getLabelsInBatchResp, err := s.PlatFormComment.GetLabelsInBatch(ctx, &comment.GetLabelsInBatchReq{
+	getLabelsInBatchResp, err := s.Platform.GetLabelsInBatch(ctx, &platform.GetLabelsInBatchReq{
 		LabelIds: labels,
 	})
 	if err == nil {
@@ -56,9 +53,9 @@ func (s *PostDomainService) LoadAuthor(ctx context.Context, user *core_api.User,
 }
 
 func (s *PostDomainService) LoadLikeCount(ctx context.Context, likeCount *int64, postId string) {
-	getRelationCountResp, err := s.PlatformRelation.GetRelationCount(ctx, &relation.GetRelationCountReq{
-		RelationFilterOptions: &relation.GetRelationCountReq_ToFilterOptions{
-			ToFilterOptions: &relation.ToFilterOptions{
+	getRelationCountResp, err := s.Platform.GetRelationCount(ctx, &platform.GetRelationCountReq{
+		RelationFilterOptions: &platform.GetRelationCountReq_ToFilterOptions{
+			ToFilterOptions: &platform.ToFilterOptions{
 				ToType:   int64(core_api.TargetType_PostType),
 				ToId:     postId,
 				FromType: int64(core_api.TargetType_UserType),
@@ -72,9 +69,9 @@ func (s *PostDomainService) LoadLikeCount(ctx context.Context, likeCount *int64,
 }
 
 func (s *PostDomainService) LoadViewCount(ctx context.Context, viewCount *int64, postId string) {
-	getRelationCountResp, err := s.PlatformRelation.GetRelationCount(ctx, &relation.GetRelationCountReq{
-		RelationFilterOptions: &relation.GetRelationCountReq_ToFilterOptions{
-			ToFilterOptions: &relation.ToFilterOptions{
+	getRelationCountResp, err := s.Platform.GetRelationCount(ctx, &platform.GetRelationCountReq{
+		RelationFilterOptions: &platform.GetRelationCountReq_ToFilterOptions{
+			ToFilterOptions: &platform.ToFilterOptions{
 				ToType:   int64(core_api.TargetType_PostType),
 				ToId:     postId,
 				FromType: int64(core_api.TargetType_UserType),
@@ -88,9 +85,9 @@ func (s *PostDomainService) LoadViewCount(ctx context.Context, viewCount *int64,
 }
 
 func (s *PostDomainService) LoadCollectCount(ctx context.Context, collectCount *int64, postId string) {
-	getRelationCountResp, err := s.PlatformRelation.GetRelationCount(ctx, &relation.GetRelationCountReq{
-		RelationFilterOptions: &relation.GetRelationCountReq_ToFilterOptions{
-			ToFilterOptions: &relation.ToFilterOptions{
+	getRelationCountResp, err := s.Platform.GetRelationCount(ctx, &platform.GetRelationCountReq{
+		RelationFilterOptions: &platform.GetRelationCountReq_ToFilterOptions{
+			ToFilterOptions: &platform.ToFilterOptions{
 				ToType:   int64(core_api.TargetType_PostType),
 				ToId:     postId,
 				FromType: int64(core_api.TargetType_UserType),
@@ -104,7 +101,7 @@ func (s *PostDomainService) LoadCollectCount(ctx context.Context, collectCount *
 }
 
 func (s *PostDomainService) LoadLiked(ctx context.Context, liked *bool, userId, postId string) {
-	getRelationResp, err := s.PlatformRelation.GetRelation(ctx, &relation.GetRelationReq{
+	getRelationResp, err := s.Platform.GetRelation(ctx, &platform.GetRelationReq{
 		FromType:     int64(core_api.TargetType_UserType),
 		FromId:       userId,
 		ToType:       int64(core_api.TargetType_PostType),
@@ -117,7 +114,7 @@ func (s *PostDomainService) LoadLiked(ctx context.Context, liked *bool, userId, 
 }
 
 func (s *PostDomainService) LoadCollected(ctx context.Context, collected *bool, userId, postId string) {
-	getRelationResp, err := s.PlatformRelation.GetRelation(ctx, &relation.GetRelationReq{
+	getRelationResp, err := s.Platform.GetRelation(ctx, &platform.GetRelationReq{
 		FromType:     int64(core_api.TargetType_UserType),
 		FromId:       userId,
 		ToType:       int64(core_api.TargetType_PostType),

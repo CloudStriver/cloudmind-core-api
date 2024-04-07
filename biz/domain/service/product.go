@@ -5,7 +5,7 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_trade"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
+	platformservice "github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/trade"
 	"github.com/google/wire"
@@ -22,9 +22,9 @@ type IProductDomainService interface {
 	LoadStock(ctx context.Context, stock *int64, productId string)
 }
 type ProductDomainService struct {
-	CloudMindUser    cloudmind_content.ICloudMindContent
-	PlatformRelation platform_relation.IPlatFormRelation
-	CloudMindTrade   cloudmind_trade.ICloudMindTrade
+	CloudMindUser  cloudmind_content.ICloudMindContent
+	Platform       platformservice.IPlatForm
+	CloudMindTrade cloudmind_trade.ICloudMindTrade
 }
 
 var ProductDomainServiceSet = wire.NewSet(

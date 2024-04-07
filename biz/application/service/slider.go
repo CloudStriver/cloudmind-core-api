@@ -7,7 +7,7 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/convertor"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_system"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
+	platformservice "github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/basic"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/system"
 	"github.com/google/wire"
@@ -27,9 +27,9 @@ var SliderServiceSet = wire.NewSet(
 )
 
 type SliderService struct {
-	Config           *config.Config
-	CloudMindSystem  cloudmind_system.ICloudMindSystem
-	PLatFromRelation platform_relation.IPlatFormRelation
+	Config          *config.Config
+	CloudMindSystem cloudmind_system.ICloudMindSystem
+	Platform        platformservice.IPlatForm
 }
 
 func (s *SliderService) CreateSlider(ctx context.Context, req *core_api.CreateSliderReq) (resp *core_api.CreateSliderResp, err error) {

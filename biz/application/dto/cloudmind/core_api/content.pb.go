@@ -5588,7 +5588,7 @@ func (x *CreateProductReq) GetType() Product_Type {
 	if x != nil {
 		return x.Type
 	}
-	return Product_Type_UnknowProduct_Type
+	return Product_Type_UnknownProduct_Type
 }
 
 func (x *CreateProductReq) GetPrice() int64 {

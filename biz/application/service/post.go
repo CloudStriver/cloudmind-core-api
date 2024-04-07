@@ -10,15 +10,13 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_comment"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
+	platformservice "github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform"
 	"github.com/CloudStriver/cloudmind-mq/app/util/message"
 	"github.com/CloudStriver/go-pkg/utils/pconvertor"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/basic"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/sts"
-	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/comment"
-	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/relation"
+	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform"
 	"github.com/bytedance/sonic"
 	"github.com/google/wire"
 	"github.com/samber/lo"
@@ -42,8 +40,7 @@ type PostService struct {
 	Config                *config.Config
 	CloudMindContent      cloudmind_content.ICloudMindContent
 	PostDomainService     service.IPostDomainService
-	PlatFormRelation      platform_relation.IPlatFormRelation
-	PlatFormComment       platform_comment.IPlatFormComment
+	Platform              platformservice.IPlatForm
 	CloudMindSts          cloudmind_sts.ICloudMindSts
 	RelationDomainService service.IRelationDomainService
 	UserDomainService     service.IUserDomainService
@@ -131,14 +128,14 @@ func (s *PostService) CreatePost(ctx context.Context, req *core_api.CreatePostRe
 	resp.PostId = createPostResp.PostId
 
 	if err = mr.Finish(func() error {
-		if _, err1 := s.PlatFormComment.CreateCommentSubject(ctx, &comment.CreateCommentSubjectReq{
-			Subject: &comment.Subject{
+		if _, err1 := s.Platform.CreateCommentSubject(ctx, &platform.CreateCommentSubjectReq{
+			Subject: &platform.Subject{
 				Id:        createPostResp.PostId,
 				UserId:    userData.UserId,
 				RootCount: lo.ToPtr(int64(0)),
 				AllCount:  lo.ToPtr(int64(0)),
-				State:     int64(comment.State_Normal),
-				Attrs:     int64(comment.Attrs_None),
+				State:     int64(platform.State_Normal),
+				Attrs:     int64(platform.Attrs_None),
 			},
 		}); err1 != nil {
 			return err1
@@ -285,7 +282,7 @@ func (s *PostService) DeletePost(ctx context.Context, req *core_api.DeletePostRe
 				}
 				return nil
 			}, func() error {
-				if _, err2 := s.PlatFormRelation.DeleteRelation(ctx, &relation.DeleteRelationReq{
+				if _, err2 := s.Platform.DeleteRelation(ctx, &platform.DeleteRelationReq{
 					FromType:     int64(core_api.TargetType_UserType),
 					FromId:       userData.UserId,
 					ToType:       int64(core_api.TargetType_PostType),
@@ -364,7 +361,7 @@ func (s *PostService) GetPost(ctx context.Context, req *core_api.GetPostReq) (re
 		return nil
 	}, func() error {
 		if userData.GetUserId() != "" {
-			_, _ = s.PlatFormRelation.CreateRelation(ctx, &relation.CreateRelationReq{
+			_, _ = s.Platform.CreateRelation(ctx, &platform.CreateRelationReq{
 				FromType:     int64(core_api.TargetType_UserType),
 				FromId:       userData.UserId,
 				ToType:       int64(core_api.TargetType_PostType),

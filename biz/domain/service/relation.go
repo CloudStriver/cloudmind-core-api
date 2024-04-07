@@ -8,14 +8,12 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_comment"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
+	platformservice "github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform"
 	"github.com/CloudStriver/cloudmind-mq/app/util/message"
 	"github.com/CloudStriver/go-pkg/utils/pconvertor"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/basic"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
-	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/comment"
-	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/relation"
+	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform"
 	"github.com/bytedance/sonic"
 	"github.com/google/wire"
 	"github.com/samber/lo"
@@ -26,14 +24,13 @@ import (
 
 type IRelationDomainService interface {
 	CreateRelation(ctx context.Context, r *core_api.Relation) (err error)
-	GetUserByRelations(ctx context.Context, relations []*relation.Relation, users []*core_api.User, userId string) (err error)
-	GetPostByRelations(ctx context.Context, relations []*relation.Relation, posts []*core_api.Post, userId string) (err error)
+	GetUserByRelations(ctx context.Context, relations []*platform.Relation, users []*core_api.User, userId string) (err error)
+	GetPostByRelations(ctx context.Context, relations []*platform.Relation, posts []*core_api.Post, userId string) (err error)
 }
 type RelationDomainService struct {
 	Config               *config.Config
-	PlatFormRelation     platform_relation.IPlatFormRelation
+	Platform             platformservice.IPlatForm
 	CloudMindContent     cloudmind_content.ICloudMindContent
-	PlatFormComment      platform_comment.IPlatFormComment
 	UserDomainService    IUserDomainService
 	PostDomainService    IPostDomainService
 	CreateNotificationKq *kq.CreateNotificationsKq
@@ -41,8 +38,8 @@ type RelationDomainService struct {
 	Redis                *redis.Redis
 }
 
-func (s *RelationDomainService) GetUserByRelations(ctx context.Context, relations []*relation.Relation, users []*core_api.User, userId string) (err error) {
-	err = mr.Finish(lo.Map[*relation.Relation](relations, func(r *relation.Relation, i int) func() error {
+func (s *RelationDomainService) GetUserByRelations(ctx context.Context, relations []*platform.Relation, users []*core_api.User, userId string) (err error) {
+	err = mr.Finish(lo.Map[*platform.Relation](relations, func(r *platform.Relation, i int) func() error {
 		return func() error {
 			users[i] = &core_api.User{
 				UserId: r.ToId,
@@ -76,8 +73,8 @@ func (s *RelationDomainService) GetUserByRelations(ctx context.Context, relation
 	return nil
 }
 
-func (s *RelationDomainService) GetPostByRelations(ctx context.Context, relations []*relation.Relation, posts []*core_api.Post, userId string) (err error) {
-	if err = mr.Finish(lo.Map[*relation.Relation](relations, func(relation *relation.Relation, i int) func() error {
+func (s *RelationDomainService) GetPostByRelations(ctx context.Context, relations []*platform.Relation, posts []*core_api.Post, userId string) (err error) {
+	if err = mr.Finish(lo.Map[*platform.Relation](relations, func(relation *platform.Relation, i int) func() error {
 		return func() error {
 			posts[i] = &core_api.Post{}
 			if err = mr.Finish(func() error {
@@ -124,8 +121,8 @@ func (s *RelationDomainService) GetPostByRelations(ctx context.Context, relation
 				}
 				return nil
 			}, func() error {
-				getCommentListResp, err2 := s.PlatFormComment.GetCommentList(ctx, &comment.GetCommentListReq{
-					FilterOptions: &comment.CommentFilterOptions{
+				getCommentListResp, err2 := s.Platform.GetCommentList(ctx, &platform.GetCommentListReq{
+					FilterOptions: &platform.CommentFilterOptions{
 						OnlySubjectId: lo.ToPtr(relation.ToId),
 					},
 					Pagination: &basic.PaginationOptions{
@@ -154,7 +151,7 @@ var RelationDomainServiceSet = wire.NewSet(
 )
 
 func (s *RelationDomainService) CreateRelation(ctx context.Context, r *core_api.Relation) (err error) {
-	ok, err := s.PlatFormRelation.CreateRelation(ctx, &relation.CreateRelationReq{
+	ok, err := s.Platform.CreateRelation(ctx, &platform.CreateRelationReq{
 		FromType:     int64(r.FromType),
 		FromId:       r.FromId,
 		ToType:       int64(r.ToType),

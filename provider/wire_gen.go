@@ -15,8 +15,7 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_system"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_trade"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_comment"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/store/redis"
 )
 
@@ -31,9 +30,9 @@ func NewProvider() (*Provider, error) {
 	cloudMindSts := &cloudmind_sts.CloudMindSts{
 		Client: client,
 	}
-	relationserviceClient := platform_relation.NewPlatFormRelation(configConfig)
-	platFormRelation := &platform_relation.PlatFormRelation{
-		Client: relationserviceClient,
+	platformserviceClient := platform.NewPlatFormComment(configConfig)
+	platForm := &platform.PlatForm{
+		Client: platformserviceClient,
 	}
 	contentserviceClient := cloudmind_content.NewCloudMindContent(configConfig)
 	cloudMindContent := &cloudmind_content.CloudMindContent{
@@ -44,20 +43,15 @@ func NewProvider() (*Provider, error) {
 	redisRedis := redis.NewRedis(configConfig)
 	relationDomainService := &service.RelationDomainService{
 		Config:               configConfig,
-		PlatFormRelation:     platFormRelation,
+		Platform:             platForm,
 		CloudMindContent:     cloudMindContent,
 		CreateNotificationKq: createNotificationsKq,
 		CreateFeedBackKq:     createFeedBackKq,
 		Redis:                redisRedis,
 	}
-	commentserviceClient := platform_comment.NewPlatFormComment(configConfig)
-	platFormComment := &platform_comment.PlatFormComment{
-		Client: commentserviceClient,
-	}
 	fileDomainService := &service.FileDomainService{
-		CloudMindUser:    cloudMindContent,
-		PlatformRelation: platFormRelation,
-		PlatformComment:  platFormComment,
+		CloudMindUser: cloudMindContent,
+		Platform:      platForm,
 	}
 	deleteFileRelationKq := kq.NewDeleteFileRelationKq(configConfig)
 	fileService := &service2.FileService{
@@ -66,18 +60,16 @@ func NewProvider() (*Provider, error) {
 		RelationDomainService: relationDomainService,
 		CloudMindContent:      cloudMindContent,
 		FileDomainService:     fileDomainService,
-		PlatformComment:       platFormComment,
+		Platform:              platForm,
 		DeleteFileRelationKq:  deleteFileRelationKq,
 	}
 	postDomainService := &service.PostDomainService{
 		CloudMindContent: cloudMindContent,
-		PlatformRelation: platFormRelation,
-		PlatFormComment:  platFormComment,
+		Platform:         platForm,
 	}
 	userDomainService := &service.UserDomainService{
-		Config:           configConfig,
-		PlatFormRelation: platFormRelation,
-		PlatFormComment:  platFormComment,
+		Config:   configConfig,
+		Platform: platForm,
 	}
 	createItemKq := kq.NewCreateItemKq(configConfig)
 	updateItemKq := kq.NewUpdateItemKq(configConfig)
@@ -86,8 +78,7 @@ func NewProvider() (*Provider, error) {
 		Config:                configConfig,
 		CloudMindContent:      cloudMindContent,
 		PostDomainService:     postDomainService,
-		PlatFormRelation:      platFormRelation,
-		PlatFormComment:       platFormComment,
+		Platform:              platForm,
 		CloudMindSts:          cloudMindSts,
 		RelationDomainService: relationDomainService,
 		UserDomainService:     userDomainService,
@@ -114,7 +105,7 @@ func NewProvider() (*Provider, error) {
 	}
 	serviceRelationDomainService := service.RelationDomainService{
 		Config:               configConfig,
-		PlatFormRelation:     platFormRelation,
+		Platform:             platForm,
 		CloudMindContent:     cloudMindContent,
 		CreateNotificationKq: createNotificationsKq,
 		CreateFeedBackKq:     createFeedBackKq,
@@ -122,9 +113,8 @@ func NewProvider() (*Provider, error) {
 	}
 	relationService := &service2.RelationService{
 		Config:                configConfig,
-		PlatFormRelation:      platFormRelation,
 		CloudMindContent:      cloudMindContent,
-		PlatFormComment:       platFormComment,
+		Platform:              platForm,
 		UserDomainService:     userDomainService,
 		PostDomainService:     postDomainService,
 		RelationDomainService: serviceRelationDomainService,
@@ -149,18 +139,17 @@ func NewProvider() (*Provider, error) {
 		DeleteNotificationsKq: deleteNotificationsKq,
 	}
 	commentDomainService := &service.CommentDomainService{
-		CloudMindUser:    cloudMindContent,
-		PlatformRelation: platFormRelation,
-		PlatformComment:  platFormComment,
+		CloudMindUser: cloudMindContent,
+		Platform:      platForm,
 	}
 	commentService := &service2.CommentService{
 		Config:               configConfig,
-		PlatformComment:      platFormComment,
+		Platform:             platForm,
 		CommentDomainService: commentDomainService,
 	}
 	labelService := &service2.LabelService{
-		Config:          configConfig,
-		PlatformComment: platFormComment,
+		Config:   configConfig,
+		Platform: platForm,
 	}
 	recommendService := &service2.RecommendService{
 		Config:            configConfig,
@@ -170,9 +159,9 @@ func NewProvider() (*Provider, error) {
 		UserDomainService: userDomainService,
 	}
 	productDomainService := &service.ProductDomainService{
-		CloudMindUser:    cloudMindContent,
-		PlatformRelation: platFormRelation,
-		CloudMindTrade:   cloudMindTrade,
+		CloudMindUser:  cloudMindContent,
+		Platform:       platForm,
+		CloudMindTrade: cloudMindTrade,
 	}
 	productService := &service2.ProductService{
 		Config:               configConfig,
@@ -184,9 +173,9 @@ func NewProvider() (*Provider, error) {
 		DeleteItemKq:         deleteItemKq,
 	}
 	sliderService := &service2.SliderService{
-		Config:           configConfig,
-		CloudMindSystem:  cloudMindSystem,
-		PLatFromRelation: platFormRelation,
+		Config:          configConfig,
+		CloudMindSystem: cloudMindSystem,
+		Platform:        platForm,
 	}
 	hotRankService := service2.HotRankService{
 		Config:            configConfig,
@@ -194,7 +183,7 @@ func NewProvider() (*Provider, error) {
 		CloudMindSts:      cloudMindSts,
 		CloudMindTrade:    cloudMindTrade,
 		CloudMindSystem:   cloudMindSystem,
-		PlatFormComment:   platFormComment,
+		Platform:          platForm,
 		UserDomainService: userDomainService,
 		Redis:             redisRedis,
 	}

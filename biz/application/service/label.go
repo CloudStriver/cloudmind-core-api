@@ -7,8 +7,8 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/convertor"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_comment"
-	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/comment"
+	platformservice "github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform"
+	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform"
 	"github.com/google/wire"
 	"github.com/samber/lo"
 )
@@ -28,8 +28,8 @@ var LabelServiceSet = wire.NewSet(
 )
 
 type LabelService struct {
-	Config          *config.Config
-	PlatformComment platform_comment.IPlatFormComment
+	Config   *config.Config
+	Platform platformservice.IPlatForm
 }
 
 func (s *LabelService) CreateLabel(ctx context.Context, req *core_api.CreateLabelReq) (resp *core_api.CreateLabelResp, err error) {
@@ -38,8 +38,8 @@ func (s *LabelService) CreateLabel(ctx context.Context, req *core_api.CreateLabe
 	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
-	var res *comment.CreateLabelResp
-	if res, err = s.PlatformComment.CreateLabel(ctx, &comment.CreateLabelReq{Label: convertor.CoreLabelToLabel(req.Label)}); err != nil {
+	var res *platform.CreateLabelResp
+	if res, err = s.Platform.CreateLabel(ctx, &platform.CreateLabelReq{Label: convertor.CoreLabelToLabel(req.Label)}); err != nil {
 		return resp, err
 	}
 	resp.LabelId = res.Id
@@ -52,7 +52,7 @@ func (s *LabelService) DeleteLabel(ctx context.Context, req *core_api.DeleteLabe
 	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
-	if _, err = s.PlatformComment.DeleteLabel(ctx, &comment.DeleteLabelReq{Id: req.LabelId}); err != nil {
+	if _, err = s.Platform.DeleteLabel(ctx, &platform.DeleteLabelReq{Id: req.LabelId}); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -61,8 +61,8 @@ func (s *LabelService) DeleteLabel(ctx context.Context, req *core_api.DeleteLabe
 func (s *LabelService) GetLabel(ctx context.Context, req *core_api.GetLabelReq) (resp *core_api.GetLabelResp, err error) {
 	resp = new(core_api.GetLabelResp)
 
-	var res *comment.GetLabelResp
-	if res, err = s.PlatformComment.GetLabel(ctx, &comment.GetLabelReq{Id: req.LabelId}); err != nil {
+	var res *platform.GetLabelResp
+	if res, err = s.Platform.GetLabel(ctx, &platform.GetLabelReq{Id: req.LabelId}); err != nil {
 		return resp, err
 	}
 	resp.Label = res.Label
@@ -72,8 +72,8 @@ func (s *LabelService) GetLabel(ctx context.Context, req *core_api.GetLabelReq) 
 func (s *LabelService) GetLabelsInBatch(ctx context.Context, req *core_api.GetLabelsInBatchReq) (resp *core_api.GetLabelsInBatchResp, err error) {
 	resp = new(core_api.GetLabelsInBatchResp)
 
-	var res *comment.GetLabelsInBatchResp
-	if res, err = s.PlatformComment.GetLabelsInBatch(ctx, &comment.GetLabelsInBatchReq{LabelIds: req.LabelIds}); err != nil {
+	var res *platform.GetLabelsInBatchResp
+	if res, err = s.Platform.GetLabelsInBatch(ctx, &platform.GetLabelsInBatchReq{LabelIds: req.LabelIds}); err != nil {
 		return resp, err
 	}
 	resp.Labels = res.Labels
@@ -86,7 +86,7 @@ func (s *LabelService) UpdateLabel(ctx context.Context, req *core_api.UpdateLabe
 	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
-	if _, err = s.PlatformComment.UpdateLabel(ctx, &comment.UpdateLabelReq{Label: convertor.CoreLabelToLabel(req.Label)}); err != nil {
+	if _, err = s.Platform.UpdateLabel(ctx, &platform.UpdateLabelReq{Label: convertor.CoreLabelToLabel(req.Label)}); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -94,12 +94,12 @@ func (s *LabelService) UpdateLabel(ctx context.Context, req *core_api.UpdateLabe
 
 func (s *LabelService) GetLabels(ctx context.Context, req *core_api.GetLabelsReq) (resp *core_api.GetLabelsResp, err error) {
 	resp = new(core_api.GetLabelsResp)
-	var res *comment.GetLabelsResp
+	var res *platform.GetLabelsResp
 	p := convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward)
-	if res, err = s.PlatformComment.GetLabels(ctx, &comment.GetLabelsReq{FilterOptions: &comment.LabelFilterOptions{Key: req.Key, Zone: req.Zone, SubZone: req.SubZone}, Pagination: p}); err != nil {
+	if res, err = s.Platform.GetLabels(ctx, &platform.GetLabelsReq{FilterOptions: &platform.LabelFilterOptions{Key: req.Key, Zone: req.Zone, SubZone: req.SubZone}, Pagination: p}); err != nil {
 		return resp, err
 	}
-	resp.Labels = lo.Map(res.Labels, func(item *comment.Label, _ int) *core_api.Label {
+	resp.Labels = lo.Map(res.Labels, func(item *platform.Label, _ int) *core_api.Label {
 		return convertor.LabelToCoreLabel(item)
 	})
 	resp.Total = res.Total

@@ -8,10 +8,9 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_comment"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
+	platformservice "github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/basic"
-	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/relation"
+	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform"
 	"github.com/google/wire"
 )
 
@@ -31,9 +30,8 @@ var RelationServiceSet = wire.NewSet(
 
 type RelationService struct {
 	Config                *config.Config
-	PlatFormRelation      platform_relation.IPlatFormRelation
 	CloudMindContent      cloudmind_content.ICloudMindContent
-	PlatFormComment       platform_comment.IPlatFormComment
+	Platform              platformservice.IPlatForm
 	UserDomainService     service.IUserDomainService
 	PostDomainService     service.IPostDomainService
 	RelationDomainService service.RelationDomainService
@@ -45,7 +43,7 @@ func (s *RelationService) GetRelationPaths(ctx context.Context, req *core_api.Ge
 	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
-	relationPaths, err := s.PlatFormRelation.GetRelationPaths(ctx, &relation.GetRelationPathsReq{
+	relationPaths, err := s.Platform.GetRelationPaths(ctx, &platform.GetRelationPathsReq{
 		FromId:    userData.UserId,
 		FromType:  int64(core_api.TargetType_UserType),
 		EdgeType1: int64(core_api.RelationType_FollowRelationType),
@@ -84,9 +82,9 @@ func (s *RelationService) GetFromRelations(ctx context.Context, req *core_api.Ge
 	if err != nil {
 		return resp, consts.ErrNotAuthentication
 	}
-	getFromRelationsResp, err := s.PlatFormRelation.GetRelations(ctx, &relation.GetRelationsReq{
-		RelationFilterOptions: &relation.GetRelationsReq_FromFilterOptions{
-			FromFilterOptions: &relation.FromFilterOptions{
+	getFromRelationsResp, err := s.Platform.GetRelations(ctx, &platform.GetRelationsReq{
+		RelationFilterOptions: &platform.GetRelationsReq_FromFilterOptions{
+			FromFilterOptions: &platform.FromFilterOptions{
 				FromType: req.FromType,
 				FromId:   req.FromId,
 				ToType:   int64(req.ToType),
@@ -126,9 +124,9 @@ func (s *RelationService) GetToRelations(ctx context.Context, req *core_api.GetT
 	if err != nil {
 		return resp, consts.ErrNotAuthentication
 	}
-	getFromRelationsResp, err := s.PlatFormRelation.GetRelations(ctx, &relation.GetRelationsReq{
-		RelationFilterOptions: &relation.GetRelationsReq_ToFilterOptions{
-			ToFilterOptions: &relation.ToFilterOptions{
+	getFromRelationsResp, err := s.Platform.GetRelations(ctx, &platform.GetRelationsReq{
+		RelationFilterOptions: &platform.GetRelationsReq_ToFilterOptions{
+			ToFilterOptions: &platform.ToFilterOptions{
 				ToType:   req.ToType,
 				ToId:     req.ToId,
 				FromType: int64(req.FromType),
@@ -161,7 +159,7 @@ func (s *RelationService) DeleteRelation(ctx context.Context, req *core_api.Dele
 	if err != nil || user.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
-	if _, err = s.PlatFormRelation.DeleteRelation(ctx, &relation.DeleteRelationReq{
+	if _, err = s.Platform.DeleteRelation(ctx, &platform.DeleteRelationReq{
 		FromType:     int64(core_api.TargetType_UserType),
 		FromId:       user.UserId,
 		ToType:       req.ToType,
@@ -175,7 +173,7 @@ func (s *RelationService) DeleteRelation(ctx context.Context, req *core_api.Dele
 
 func (s *RelationService) GetRelation(ctx context.Context, req *core_api.GetRelationReq) (resp *core_api.GetRelationResp, err error) {
 	resp = new(core_api.GetRelationResp)
-	getRelationResp, err := s.PlatFormRelation.GetRelation(ctx, &relation.GetRelationReq{
+	getRelationResp, err := s.Platform.GetRelation(ctx, &platform.GetRelationReq{
 		FromType:     req.FromType,
 		FromId:       req.FromId,
 		ToType:       req.ToType,
