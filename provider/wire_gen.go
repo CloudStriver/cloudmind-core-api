@@ -30,13 +30,21 @@ func NewProvider() (*Provider, error) {
 	cloudMindSts := &cloudmind_sts.CloudMindSts{
 		Client: client,
 	}
-	platformserviceClient := platform.NewPlatFormComment(configConfig)
+	platformserviceClient := platform.NewPlatForm(configConfig)
 	platForm := &platform.PlatForm{
 		Client: platformserviceClient,
 	}
 	contentserviceClient := cloudmind_content.NewCloudMindContent(configConfig)
 	cloudMindContent := &cloudmind_content.CloudMindContent{
 		Client: contentserviceClient,
+	}
+	userDomainService := &service.UserDomainService{
+		Config:   configConfig,
+		Platform: platForm,
+	}
+	postDomainService := &service.PostDomainService{
+		CloudMindContent: cloudMindContent,
+		Platform:         platForm,
 	}
 	createNotificationsKq := kq.NewCreateNotificationsKq(configConfig)
 	createFeedBackKq := kq.NewCreateFeedBackKq(configConfig)
@@ -45,6 +53,8 @@ func NewProvider() (*Provider, error) {
 		Config:               configConfig,
 		Platform:             platForm,
 		CloudMindContent:     cloudMindContent,
+		UserDomainService:    userDomainService,
+		PostDomainService:    postDomainService,
 		CreateNotificationKq: createNotificationsKq,
 		CreateFeedBackKq:     createFeedBackKq,
 		Redis:                redisRedis,
@@ -107,6 +117,8 @@ func NewProvider() (*Provider, error) {
 		Config:               configConfig,
 		Platform:             platForm,
 		CloudMindContent:     cloudMindContent,
+		UserDomainService:    userDomainService,
+		PostDomainService:    postDomainService,
 		CreateNotificationKq: createNotificationsKq,
 		CreateFeedBackKq:     createFeedBackKq,
 		Redis:                redisRedis,

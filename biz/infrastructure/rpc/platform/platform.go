@@ -16,11 +16,11 @@ type PlatForm struct {
 }
 
 var PlatFormSet = wire.NewSet(
-	NewPlatFormComment,
+	NewPlatForm,
 	wire.Struct(new(PlatForm), "*"),
 	wire.Bind(new(IPlatForm), new(*PlatForm)),
 )
 
-func NewPlatFormComment(config *config.Config) platformservice.Client {
+func NewPlatForm(config *config.Config) platformservice.Client {
 	return client.NewClient(config.Name, "platform", platformservice.NewClient)
 }

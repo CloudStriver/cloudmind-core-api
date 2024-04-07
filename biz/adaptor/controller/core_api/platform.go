@@ -4,6 +4,8 @@ package core_api
 
 import (
 	"context"
+	"github.com/CloudStriver/cloudmind-core-api/biz/adaptor"
+	"github.com/CloudStriver/cloudmind-core-api/provider"
 
 	core_api "github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/cloudwego/hertz/pkg/app"
@@ -22,8 +24,9 @@ func CreateComment(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.CreateCommentResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.CommentService.CreateComment(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // GetComment .
@@ -38,8 +41,9 @@ func GetComment(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.GetCommentResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.CommentService.GetComment(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // GetComments .
@@ -54,8 +58,9 @@ func GetComments(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.GetCommentsResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.CommentService.GetComments(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // DeleteComment .
@@ -70,8 +75,9 @@ func DeleteComment(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.DeleteCommentResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.CommentService.DeleteComment(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // UpdateComment .
@@ -86,8 +92,9 @@ func UpdateComment(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.UpdateCommentResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.CommentService.UpdateComment(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // SetCommentAttrs .
@@ -102,8 +109,9 @@ func SetCommentAttrs(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.SetCommentAttrsResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.CommentService.SetCommentAttrs(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // GetCommentSubject .
@@ -118,8 +126,9 @@ func GetCommentSubject(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.GetCommentSubjectResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.CommentService.GetCommentSubject(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // UpdateCommentSubject .
@@ -134,8 +143,9 @@ func UpdateCommentSubject(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.UpdateCommentSubjectResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.CommentService.UpdateCommentSubject(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // DeleteCommentSubject .
@@ -150,8 +160,9 @@ func DeleteCommentSubject(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.DeleteCommentSubjectResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.CommentService.DeleteCommentSubject(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // CreateRelation .
@@ -166,8 +177,9 @@ func CreateRelation(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.CreateRelationResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.RelationService.CreateRelation(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // GetFromRelations .
@@ -182,8 +194,9 @@ func GetFromRelations(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.GetFromRelationsResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.RelationService.GetFromRelations(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // GetToRelations .
@@ -198,8 +211,9 @@ func GetToRelations(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.GetToRelationsResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.RelationService.GetToRelations(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // GetRelation .
@@ -214,8 +228,9 @@ func GetRelation(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.GetRelationResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.RelationService.GetRelation(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // DeleteRelation .
@@ -230,8 +245,9 @@ func DeleteRelation(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.DeleteRelationResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.RelationService.DeleteRelation(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
 // GetRelationPaths .
@@ -246,6 +262,7 @@ func GetRelationPaths(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.GetRelationPathsResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.RelationService.GetRelationPaths(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
