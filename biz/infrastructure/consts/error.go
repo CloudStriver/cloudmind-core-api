@@ -9,10 +9,11 @@ var ErrNotAuthentication = errors.New("not authentication")
 var ErrForbidden = errors.New("forbidden")
 
 var (
-	ErrAuthentication = status.Error(10001, "生成token失败")
-	ErrParseToken     = status.Error(10002, "解析token失败")
-	ErrNotLongToken   = status.Error(10003, "请使用长token刷新")
-	ErrThirdLogin     = status.Error(10004, "第三方登录失败")
+	ErrAuthentication         = status.Error(10001, "生成token失败")
+	ErrParseToken             = status.Error(10002, "解析token失败")
+	ErrNotLongToken           = status.Error(10003, "请使用长token刷新")
+	ErrThirdLogin             = status.Error(10004, "第三方登录失败")
+	ErrNotSupportRelationType = status.Error(10005, "不支持的参数类型")
 )
 
 var (

@@ -111,6 +111,7 @@ func GetRelationPaths(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(core_api.GetRelationPathsResp)
-
-	c.JSON(consts.StatusOK, resp)
+	p := provider.Get()
+	resp, err = p.RelationService.GetRelationPaths(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
