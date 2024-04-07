@@ -2,10 +2,8 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	platformservice "github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform"
@@ -17,7 +15,6 @@ import (
 	"github.com/bytedance/sonic"
 	"github.com/google/wire"
 	"github.com/samber/lo"
-	"github.com/segmentio/fasthash/fnv1a"
 	"github.com/zeromicro/go-zero/core/mr"
 	"github.com/zeromicro/go-zero/core/stores/redis"
 )
@@ -151,6 +148,10 @@ var RelationDomainServiceSet = wire.NewSet(
 )
 
 func (s *RelationDomainService) CreateRelation(ctx context.Context, r *core_api.Relation) (err error) {
+	if r.ToId == r.FromId && r.RelationType == core_api.RelationType_FollowRelationType {
+		return nil
+	}
+
 	ok, err := s.Platform.CreateRelation(ctx, &platform.CreateRelationReq{
 		FromType:     int64(r.FromType),
 		FromId:       r.FromId,
@@ -164,19 +165,6 @@ func (s *RelationDomainService) CreateRelation(ctx context.Context, r *core_api.
 
 	if !ok.Ok {
 		return nil
-	}
-
-	hs := int64(fnv1a.HashString32(r.ToId))
-	val, err := s.Redis.GetBitCtx(ctx, fmt.Sprintf("%s:%s:%d", consts.BloomRelationKey, r.ToId, r.RelationType), hs)
-	if err != nil {
-		return err
-	}
-	if val == 1 {
-		return nil
-	}
-
-	if _, err = s.Redis.SetBitCtx(ctx, fmt.Sprintf("%s:%s:%d", consts.BloomRelationKey, r.ToId, r.RelationType), hs, 1); err != nil {
-		return err
 	}
 
 	act := r.RelationType
@@ -211,7 +199,8 @@ func (s *RelationDomainService) CreateRelation(ctx context.Context, r *core_api.
 		return err
 	}
 
-	if r.ToId == r.FromId {
+	// 发布，上传，浏览,讨厌不需要通知
+	if r.RelationType == core_api.RelationType_PublishRelationType || r.RelationType == core_api.RelationType_HateRelationType || r.RelationType == core_api.RelationType_UploadRelationType || r.RelationType == core_api.RelationType_ViewRelationType {
 		return nil
 	}
 
