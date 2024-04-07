@@ -8,15 +8,10 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_comment"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform_relation"
+	platformservice "github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/basic"
-	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
-	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/comment"
-	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform/relation"
+	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform"
 	"github.com/google/wire"
-	"github.com/samber/lo"
-	"github.com/zeromicro/go-zero/core/mr"
 )
 
 type IRelationService interface {
@@ -48,7 +43,7 @@ func (s *RelationService) GetRelationPaths(ctx context.Context, req *core_api.Ge
 	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
-	relationPaths, err := s.PlatFormRelation.GetRelationPaths(ctx, &relation.GetRelationPathsReq{
+	relationPaths, err := s.Platform.GetRelationPaths(ctx, &platform.GetRelationPathsReq{
 		FromId:    userData.UserId,
 		FromType:  int64(core_api.TargetType_UserType),
 		EdgeType1: int64(core_api.RelationType_FollowRelationType),
