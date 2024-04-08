@@ -169,16 +169,15 @@ func (s *RecommendService) GetItemByItemId(ctx context.Context, userId string, c
 		if err != nil {
 			return err
 		}
-		recommends.Users = make([]*core_api.RecommendUser, len(getUsersResp.Users))
+		recommends.Users = make([]*core_api.User, len(getUsersResp.Users))
 		if err = mr.Finish(lo.Map(getUsersResp.Users, func(user *content.User, i int) func() error {
 			return func() error {
-				recommends.Users[i] = &core_api.RecommendUser{
+				recommends.Users[i] = &core_api.User{
 					UserId:      user.UserId,
 					Name:        user.Name,
 					Url:         user.Url,
-					Description: user.Description,
 					Labels:      user.Labels,
-					Followed:    false,
+					Description: user.Description,
 				}
 				_ = mr.Finish(func() error {
 					s.UserDomainService.LoadFollowedCount(ctx, &recommends.Users[i].FollowedCount, user.UserId)
@@ -209,41 +208,28 @@ func (s *RecommendService) GetItemByItemId(ctx context.Context, userId string, c
 		recommends.Posts = make([]*core_api.Post, len(getPostsResp.Posts))
 		if err = mr.Finish(lo.Map(getPostsResp.Posts, func(post *content.Post, i int) func() error {
 			return func() error {
-				tags := lo.Map[*content.Tag, *core_api.LabelInfo](post.Tags, func(item *content.Tag, index int) *core_api.LabelInfo {
-					return &core_api.LabelInfo{
-						TagId:  item.TagId,
-						ZoneId: item.ZoneId,
-					}
-				})
-				tagsId := lo.Map[*content.Tag, string](post.Tags, func(item *content.Tag, index int) string {
-					return item.TagId
-				})
 				recommends.Posts[i] = &core_api.Post{
-					PostId: post.PostId,
-					Title:  post.Title,
-					Text:   post.Text,
-					Url:    post.Url,
-					Tags:   tags,
+					PostId:   post.PostId,
+					Title:    post.Title,
+					Text:     post.Text,
+					Url:      post.Url,
+					LabelIds: post.LabelIds,
 				}
-				author := &core_api.PostUser{}
 				if err = mr.Finish(func() error {
 					s.PostDomainService.LoadLikeCount(ctx, &recommends.Posts[i].LikeCount, post.PostId) // 点赞量
 					return nil
 				}, func() error {
-					// 加载评论量
+					s.PostDomainService.LoadCommentCount(ctx, &recommends.Posts[i].CommentCount, post.PostId) // 评论量
 					return nil
 				}, func() error {
 					s.PostDomainService.LoadLiked(ctx, &recommends.Posts[i].Liked, userId, post.PostId)
 					return nil
 				}, func() error {
-					s.PostDomainService.LoadAuthor(ctx, author, post.UserId)
-					recommends.Posts[i].UserName = author.Name
+					getUser, _ := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{UserId: post.UserId})
+					recommends.Posts[i].UserName = getUser.Name
 					return nil
 				}, func() error {
-					s.PostDomainService.LoadLabels(ctx, tagsId)
-					for i := range tags {
-						tags[i].Value = tagsId[i]
-					}
+					s.PostDomainService.LoadLabels(ctx, post.LabelIds)
 					return nil
 				}); err != nil {
 					return err

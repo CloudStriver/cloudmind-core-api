@@ -15,7 +15,6 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/utils"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/sts"
-	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform"
 	"github.com/google/wire"
 	"github.com/samber/lo"
 	"github.com/zeromicro/go-zero/core/mr"
@@ -63,12 +62,11 @@ type FileService struct {
 	DeleteFileRelationKq  *kq.DeleteFileRelationKq
 }
 
-func (s *FileService) FilterContent(ctx context.Context, IsSure bool, contents []*string) ([]*core_api.Keywords, error) {
+func (s *FileService) FilterContent(ctx context.Context, IsSure bool, contents []*string) ([]string, error) {
 	cts := lo.Map[*string, string](contents, func(item *string, index int) string {
 		return *item
 	})
 	if IsSure {
-		keywords := make([]*core_api.Keywords, 0)
 		replaceContentResp, err := s.PlatformSts.ReplaceContent(ctx, &sts.ReplaceContentReq{
 			Contents: cts,
 		})
@@ -78,7 +76,7 @@ func (s *FileService) FilterContent(ctx context.Context, IsSure bool, contents [
 		for i, val := range replaceContentResp.Content {
 			*contents[i] = val
 		}
-		return keywords, nil
+		return nil, nil
 	} else {
 		// 内容检测
 		findAllContentResp, err := s.PlatformSts.FindAllContent(ctx, &sts.FindAllContentReq{
@@ -87,18 +85,8 @@ func (s *FileService) FilterContent(ctx context.Context, IsSure bool, contents [
 		if err != nil {
 			return nil, err
 		}
-		keywords := make([]*core_api.Keywords, 0, len(findAllContentResp.Keywords))
-		for _, keyword := range findAllContentResp.Keywords {
-			if len(keyword.Keywords) != 0 {
-				keywords = append(keywords, &core_api.Keywords{
-					Keywords: keyword.Keywords,
-				})
-			}
-		}
-		if len(keywords) != 0 {
-			return keywords, nil
-		}
-		return keywords, nil
+
+		return findAllContentResp.Keywords, nil
 	}
 }
 
@@ -872,19 +860,20 @@ func (s *FileService) AddFileToPublicSpace(ctx context.Context, req *core_api.Ad
 		})
 		return err1
 	}, func() error {
-		subject, _ := s.Platform.GetCommentSubject(ctx, &platform.GetCommentSubjectReq{Id: file.File.FileId})
-		if subject.GetSubject() != nil {
-			return nil
-		}
-		_, err2 := s.Platform.CreateCommentSubject(ctx, &platform.CreateCommentSubjectReq{Subject: &platform.Subject{
-			Id:        file.File.FileId,
-			UserId:    file.File.UserId,
-			RootCount: lo.ToPtr(consts.InitNumber),
-			AllCount:  lo.ToPtr(consts.InitNumber),
-			State:     int64(core_api.State_Normal),
-			Attrs:     int64(core_api.Attrs_None),
-		}})
-		return err2
+		//subject, _ := s.Platform.GetCommentSubject(ctx, &platform.GetCommentSubjectReq{Id: file.File.FileId})
+		//if subject.GetSubject() != nil {
+		//	return nil
+		//}
+		//_, err2 := s.Platform.CreateCommentSubject(ctx, &platform.CreateCommentSubjectReq{Subject: &platform.Subject{
+		//	Id:        file.File.FileId,
+		//	UserId:    file.File.UserId,
+		//	RootCount: lo.ToPtr(consts.InitNumber),
+		//	AllCount:  lo.ToPtr(consts.InitNumber),
+		//	State:     int64(core_api.State_Normal),
+		//	Attrs:     int64(core_api.Attrs_None),
+		//}})
+		//return err2
+		return nil
 	}, func() error {
 		if _, err3 := s.CloudMindContent.CreateHot(ctx, &content.CreateHotReq{HotId: file.File.FileId}); err3 != nil {
 			return err

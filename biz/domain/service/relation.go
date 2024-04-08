@@ -2,8 +2,10 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/kq"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	platformservice "github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform"
@@ -82,25 +84,12 @@ func (s *RelationDomainService) GetPostByRelations(ctx context.Context, relation
 					return err1
 				}
 
-				tags := lo.Map[*content.Tag, *core_api.LabelInfo](post.Tags, func(item *content.Tag, index int) *core_api.LabelInfo {
-					return &core_api.LabelInfo{
-						TagId:  item.TagId,
-						ZoneId: item.ZoneId,
-					}
-				})
-				tagsId := lo.Map[*content.Tag, string](post.Tags, func(item *content.Tag, index int) string {
-					return item.TagId
-				})
-
 				posts[i].PostId = relation.ToId
 				posts[i].Title = post.Title
 				posts[i].Text = post.Text
 				posts[i].Url = post.Url
-				posts[i].Tags = tags
-				s.PostDomainService.LoadLabels(ctx, tagsId)
-				for i := range tags {
-					tags[i].Value = tagsId[i]
-				}
+				posts[i].LabelIds = post.LabelIds
+				s.PostDomainService.LoadLabels(ctx, post.LabelIds)
 				user, err1 := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{
 					UserId: post.UserId,
 				})
@@ -130,6 +119,9 @@ func (s *RelationDomainService) GetPostByRelations(ctx context.Context, relation
 					return err2
 				}
 				posts[i].CommentCount = getCommentListResp.Total
+				return nil
+			}, func() error {
+				posts[i].ViewCount, _ = s.Redis.PfcountCtx(ctx, fmt.Sprintf("%s:%s", consts.ViewCountKey, relation.ToId))
 				return nil
 			}); err != nil {
 				return err

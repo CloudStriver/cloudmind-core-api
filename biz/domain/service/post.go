@@ -35,7 +35,7 @@ var PostDomainServiceSet = wire.NewSet(
 
 func (s *PostDomainService) LoadLabels(ctx context.Context, labels []string) {
 	getLabelsInBatchResp, err := s.Platform.GetLabelsInBatch(ctx, &platform.GetLabelsInBatchReq{
-		LabelIds: labels,
+		Ids: labels,
 	})
 	if err == nil {
 		lo.ForEach(getLabelsInBatchResp.Labels, func(label string, i int) {
@@ -47,7 +47,7 @@ func (s *PostDomainService) LoadLabels(ctx context.Context, labels []string) {
 func (s *PostDomainService) LoadCommentCount(ctx context.Context, commentCount *int64, postId string) {
 	getRelationCountResp, err := s.Platform.GetCommentSubject(ctx, &platform.GetCommentSubjectReq{Id: postId})
 	if err == nil {
-		*commentCount = getRelationCountResp.Subject.AllCount
+		*commentCount = getRelationCountResp.AllCount
 	}
 }
 
@@ -72,11 +72,10 @@ func (s *PostDomainService) LoadAuthor(ctx context.Context, user *core_api.PostU
 		return
 	}
 	_ = mr.Finish(func() error {
-		getUserResp, err := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{UserId: userId})
+		getUserResp, err := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{UserId: user.UserId})
 		if err == nil {
 			user.Name = getUserResp.Name
 			user.Url = getUserResp.Url
-			user.UserId = userId
 			user.Labels = getUserResp.Labels
 			user.Description = getUserResp.Description
 		}
@@ -110,6 +109,22 @@ func (s *PostDomainService) LoadAuthor(ctx context.Context, user *core_api.PostU
 		}
 		return nil
 	}, func() error {
+		if userId == "" {
+			return nil
+		}
+		getRelation, err := s.Platform.GetRelation(ctx, &platform.GetRelationReq{
+			FromType:     int64(core_api.TargetType_UserType),
+			FromId:       userId,
+			ToType:       int64(core_api.TargetType_UserType),
+			ToId:         user.UserId,
+			RelationType: int64(core_api.RelationType_FollowRelationType),
+		})
+		if err != nil {
+			return err
+		}
+		user.Followed = getRelation.Ok
+		return nil
+	}, func() error {
 		getRelationCountResp, err := s.Platform.GetRelationCount(ctx, &platform.GetRelationCountReq{
 			RelationFilterOptions: &platform.GetRelationCountReq_FromFilterOptions{
 				FromFilterOptions: &platform.FromFilterOptions{
@@ -125,7 +140,6 @@ func (s *PostDomainService) LoadAuthor(ctx context.Context, user *core_api.PostU
 		}
 		return nil
 	})
-
 }
 
 func (s *PostDomainService) LoadLikeCount(ctx context.Context, likeCount *int64, postId string) {

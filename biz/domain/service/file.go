@@ -87,7 +87,7 @@ func (s *FileDomainService) LoadLikeCount(ctx context.Context, file *core_api.Pu
 		RelationType: int64(core_api.RelationType_LikeRelationType),
 	})
 	if err == nil {
-		file.FileCount.LikeCount = getRelationCountResp.Total
+		file.FileCount.LikedCount = getRelationCountResp.Total
 	}
 }
 
@@ -131,7 +131,7 @@ func (s *FileDomainService) LoadLabels(ctx context.Context, file *core_api.Publi
 		return
 	}
 	var labels *platform.GetLabelsInBatchResp
-	labels, _ = s.Platform.GetLabelsInBatch(ctx, &platform.GetLabelsInBatchReq{LabelIds: labelIds})
+	labels, _ = s.Platform.GetLabelsInBatch(ctx, &platform.GetLabelsInBatchReq{Ids: labelIds})
 	file.Labels = lo.Map(labels.Labels, func(item string, index int) *core_api.Label {
 		return &core_api.Label{LabelId: labelIds[index], Value: item}
 	})

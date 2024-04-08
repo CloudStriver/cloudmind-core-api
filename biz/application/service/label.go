@@ -6,11 +6,9 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
-	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/convertor"
 	platformservice "github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform"
 	"github.com/google/wire"
-	"github.com/samber/lo"
 )
 
 type ILabelService interface {
@@ -39,9 +37,9 @@ func (s *LabelService) CreateLabel(ctx context.Context, req *core_api.CreateLabe
 		return resp, consts.ErrNotAuthentication
 	}
 	var res *platform.CreateLabelResp
-	if res, err = s.Platform.CreateLabel(ctx, &platform.CreateLabelReq{Label: convertor.CoreLabelToLabel(req.Label)}); err != nil {
-		return resp, err
-	}
+	//if res, err = s.Platform.CreateLabel(ctx, &platform.CreateLabelReq{Label: convertor.CoreLabelToLabel(req.Label)}); err != nil {
+	//	return resp, err
+	//}
 	resp.LabelId = res.Id
 	return resp, nil
 }
@@ -61,48 +59,48 @@ func (s *LabelService) DeleteLabel(ctx context.Context, req *core_api.DeleteLabe
 func (s *LabelService) GetLabel(ctx context.Context, req *core_api.GetLabelReq) (resp *core_api.GetLabelResp, err error) {
 	resp = new(core_api.GetLabelResp)
 
-	var res *platform.GetLabelResp
-	if res, err = s.Platform.GetLabel(ctx, &platform.GetLabelReq{Id: req.LabelId}); err != nil {
-		return resp, err
-	}
-	resp.Label = res.Label
+	//var res *platform.GetLabelResp
+	//if res, err = s.Platform.GetLabel(ctx, &platform.GetLabelReq{Id: req.LabelId}); err != nil {
+	//	return resp, err
+	//}
+	//resp.Label = res.Label
 	return resp, nil
 }
 
 func (s *LabelService) GetLabelsInBatch(ctx context.Context, req *core_api.GetLabelsInBatchReq) (resp *core_api.GetLabelsInBatchResp, err error) {
 	resp = new(core_api.GetLabelsInBatchResp)
 
-	var res *platform.GetLabelsInBatchResp
-	if res, err = s.Platform.GetLabelsInBatch(ctx, &platform.GetLabelsInBatchReq{LabelIds: req.LabelIds}); err != nil {
-		return resp, err
-	}
-	resp.Labels = res.Labels
+	//var res *platform.GetLabelsInBatchResp
+	//if res, err = s.Platform.GetLabelsInBatch(ctx, &platform.GetLabelsInBatchReq{LabelIds: req.LabelIds}); err != nil {
+	//	return resp, err
+	//}
+	//resp.Labels = res.Labels
 	return resp, nil
 }
 
 func (s *LabelService) UpdateLabel(ctx context.Context, req *core_api.UpdateLabelReq) (resp *core_api.UpdateLabelResp, err error) {
 	resp = new(core_api.UpdateLabelResp)
-	userData, err := adaptor.ExtractUserMeta(ctx)
-	if err != nil || userData.GetUserId() == "" {
-		return resp, consts.ErrNotAuthentication
-	}
-	if _, err = s.Platform.UpdateLabel(ctx, &platform.UpdateLabelReq{Label: convertor.CoreLabelToLabel(req.Label)}); err != nil {
-		return resp, err
-	}
+	//userData, err := adaptor.ExtractUserMeta(ctx)
+	//if err != nil || userData.GetUserId() == "" {
+	//	return resp, consts.ErrNotAuthentication
+	//}
+	//if _, err = s.Platform.UpdateLabel(ctx, &platform.UpdateLabelReq{Label: convertor.CoreLabelToLabel(req.Label)}); err != nil {
+	//	return resp, err
+	//}
 	return resp, nil
 }
 
 func (s *LabelService) GetLabels(ctx context.Context, req *core_api.GetLabelsReq) (resp *core_api.GetLabelsResp, err error) {
 	resp = new(core_api.GetLabelsResp)
-	var res *platform.GetLabelsResp
-	p := convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward)
-	if res, err = s.Platform.GetLabels(ctx, &platform.GetLabelsReq{FilterOptions: &platform.LabelFilterOptions{Key: req.Key, Zone: req.Zone, SubZone: req.SubZone}, Pagination: p}); err != nil {
-		return resp, err
-	}
-	resp.Labels = lo.Map(res.Labels, func(item *platform.Label, _ int) *core_api.Label {
-		return convertor.LabelToCoreLabel(item)
-	})
-	resp.Total = res.Total
-	resp.Token = res.Token
+	//var res *platform.GetLabelsResp
+	//p := convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward)
+	//if res, err = s.Platform.GetLabels(ctx, &platform.GetLabelsReq{FilterOptions: &platform.LabelFilterOptions{Key: req.Key, Zone: req.Zone, SubZone: req.SubZone}, Pagination: p}); err != nil {
+	//	return resp, err
+	//}
+	//resp.Labels = lo.Map(res.Labels, func(item *platform.Label, _ int) *core_api.Label {
+	//	return convertor.LabelToCoreLabel(item)
+	//})
+	//resp.Total = res.Total
+	//resp.Token = res.Token
 	return resp, nil
 }

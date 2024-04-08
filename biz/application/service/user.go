@@ -44,7 +44,7 @@ type UserService struct {
 	UpdateItemKq      *kq.UpdateItemKq
 }
 
-func (s *UserService) FiltetContet(ctx context.Context, IsSure bool, contents []*string) ([]*core_api.Keywords, error) {
+func (s *UserService) FiltetContet(ctx context.Context, IsSure bool, contents []*string) ([]string, error) {
 	cts := lo.Map[*string, string](contents, func(item *string, index int) string {
 		return *item
 	})
@@ -67,18 +67,7 @@ func (s *UserService) FiltetContet(ctx context.Context, IsSure bool, contents []
 		if err != nil {
 			return nil, err
 		}
-		keywords := make([]*core_api.Keywords, 0, len(findAllContentResp.Keywords))
-		for _, keyword := range findAllContentResp.Keywords {
-			if len(keyword.Keywords) != 0 {
-				keywords = append(keywords, &core_api.Keywords{
-					Keywords: keyword.Keywords,
-				})
-			}
-		}
-		if len(keywords) != 0 {
-			return keywords, nil
-		}
-		return nil, nil
+		return findAllContentResp.Keywords, nil
 	}
 }
 
@@ -209,28 +198,9 @@ func (s *UserService) GetUserDetail(ctx context.Context, _ *core_api.GetUserDeta
 
 func (s *UserService) SearchUser(ctx context.Context, req *core_api.SearchUserReq) (resp *core_api.SearchUserResp, err error) {
 	resp = new(core_api.SearchUserResp)
-	var searchOptions *content.SearchOptions
-
-	if req.AllFieldsKey != nil {
-		searchOptions = &content.SearchOptions{
-			Type: &content.SearchOptions_AllFieldsKey{
-				AllFieldsKey: *req.AllFieldsKey,
-			},
-		}
-	}
-	if req.Name != nil || req.Description != nil {
-		searchOptions = &content.SearchOptions{
-			Type: &content.SearchOptions_MultiFieldsKey{
-				MultiFieldsKey: &content.SearchField{
-					Name:        req.Name,
-					Description: req.Description,
-				},
-			},
-		}
-	}
 
 	users, err := s.CloudMindContent.GetUsers(ctx, &content.GetUsersReq{
-		SearchOptions:     searchOptions,
+		SearchKeyword:     req.Keyword,
 		PaginationOptions: convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward),
 	})
 	if err != nil {

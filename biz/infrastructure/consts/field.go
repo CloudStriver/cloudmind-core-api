@@ -31,4 +31,5 @@ const (
 	SexMan              = 1
 	SexWoman            = 2
 	WechatLoginKey      = "cache:wechat"
+	ViewCountKey        = "cache:view"
 )
