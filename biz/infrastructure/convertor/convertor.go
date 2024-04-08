@@ -124,6 +124,13 @@ func CoreSubjectToSubject(req *core_api.Subject) *platform.Subject {
 	}
 }
 
+func ZoneToCoreZoneInfo(req *content.Zone) *core_api.ZoneInfo {
+	return &core_api.ZoneInfo{
+		Id:    req.Id,
+		Value: req.Value,
+	}
+}
+
 func ZoneToCoreZone(req *content.Zone) *core_api.Zone {
 	return &core_api.Zone{
 		Id:       req.Id,
@@ -145,7 +152,7 @@ func UserDetailToUser(req *content.User) *core_api.User {
 		UserId: req.UserId,
 		Name:   req.Name,
 		Url:    req.Url,
-		Tags:   req.Labels,
+		Labels: req.Labels,
 	}
 }
 

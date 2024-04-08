@@ -209,8 +209,8 @@ func (s *RecommendService) GetItemByItemId(ctx context.Context, userId string, c
 		recommends.Posts = make([]*core_api.Post, len(getPostsResp.Posts))
 		if err = mr.Finish(lo.Map(getPostsResp.Posts, func(post *content.Post, i int) func() error {
 			return func() error {
-				tags := lo.Map[*content.Tag, *core_api.TagInfo](post.Tags, func(item *content.Tag, index int) *core_api.TagInfo {
-					return &core_api.TagInfo{
+				tags := lo.Map[*content.Tag, *core_api.LabelInfo](post.Tags, func(item *content.Tag, index int) *core_api.LabelInfo {
+					return &core_api.LabelInfo{
 						TagId:  item.TagId,
 						ZoneId: item.ZoneId,
 					}
@@ -225,7 +225,7 @@ func (s *RecommendService) GetItemByItemId(ctx context.Context, userId string, c
 					Url:    post.Url,
 					Tags:   tags,
 				}
-				author := &core_api.User{}
+				author := &core_api.PostUser{}
 				if err = mr.Finish(func() error {
 					s.PostDomainService.LoadLikeCount(ctx, &recommends.Posts[i].LikeCount, post.PostId) // 点赞量
 					return nil

@@ -49,7 +49,7 @@ type PostService struct {
 	DeleteItemKq          *kq.DeleteItemKq
 }
 
-func (s *PostService) FiltetContet(ctx context.Context, IsSure bool, contents []*string) ([]*core_api.Keywords, error) {
+func (s *PostService) FilterContent(ctx context.Context, IsSure bool, contents []*string) ([]*core_api.Keywords, error) {
 	cts := lo.Map[*string, string](contents, func(item *string, index int) string {
 		return *item
 	})
@@ -95,7 +95,7 @@ func (s *PostService) CreatePost(ctx context.Context, req *core_api.CreatePostRe
 	}
 
 	if req.Status == int64(core_api.PostStatus_PublicPostStatus) {
-		resp.Keywords, err = s.FiltetContet(ctx, req.IsSure, []*string{&req.Title, &req.Text})
+		resp.Keywords, err = s.FilterContent(ctx, req.IsSure, []*string{&req.Title, &req.Text})
 		if err != nil {
 			return resp, err
 		}
@@ -197,7 +197,7 @@ func (s *PostService) UpdatePost(ctx context.Context, req *core_api.UpdatePostRe
 		if req.Text == "" {
 			req.Text = post.Text
 		}
-		resp.Keywords, err = s.FiltetContet(ctx, req.IsSure, []*string{&req.Title, &req.Text})
+		resp.Keywords, err = s.FilterContent(ctx, req.IsSure, []*string{&req.Title, &req.Text})
 		if err != nil {
 			return resp, err
 		}
@@ -321,8 +321,8 @@ func (s *PostService) GetPost(ctx context.Context, req *core_api.GetPostReq) (re
 		return resp, consts.ErrForbidden
 	}
 
-	tags := lo.Map[*content.Tag, *core_api.TagInfo](res.Tags, func(item *content.Tag, index int) *core_api.TagInfo {
-		return &core_api.TagInfo{
+	tags := lo.Map[*content.Tag, *core_api.LabelInfo](res.Tags, func(item *content.Tag, index int) *core_api.LabelInfo {
+		return &core_api.LabelInfo{
 			TagId:  item.TagId,
 			ZoneId: item.ZoneId,
 		}
@@ -334,11 +334,12 @@ func (s *PostService) GetPost(ctx context.Context, req *core_api.GetPostReq) (re
 	resp = &core_api.GetPostResp{
 		Title:      res.Title,
 		Text:       res.Text,
+		Status:     res.Status,
 		Url:        res.Url,
+		Author:     &core_api.PostUser{},
 		Tags:       tags,
 		CreateTime: res.CreateTime,
 		UpdateTime: res.UpdateTime,
-		Author:     &core_api.User{},
 	}
 
 	if err = mr.Finish(func() error {
@@ -352,6 +353,12 @@ func (s *PostService) GetPost(ctx context.Context, req *core_api.GetPostReq) (re
 		return nil
 	}, func() error {
 		s.PostDomainService.LoadCollectCount(ctx, &resp.CollectCount, req.PostId) // 收藏量
+		return nil
+	}, func() error {
+		s.PostDomainService.LoadCollectCount(ctx, &resp.ShareCount, req.PostId) // 分享量
+		return nil
+	}, func() error {
+		s.PostDomainService.LoadCollectCount(ctx, &resp.ShareCount, req.PostId) // 分享量
 		return nil
 	}, func() error {
 		s.PostDomainService.LoadLiked(ctx, &resp.Liked, userData.GetUserId(), req.PostId) // 是否点赞
@@ -447,8 +454,8 @@ func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (
 	resp.Posts = make([]*core_api.Post, len(getPostsResp.Posts))
 	if err = mr.Finish(lo.Map(getPostsResp.Posts, func(item *content.Post, i int) func() error {
 		return func() error {
-			tags := lo.Map[*content.Tag, *core_api.TagInfo](item.Tags, func(item *content.Tag, index int) *core_api.TagInfo {
-				return &core_api.TagInfo{
+			tags := lo.Map[*content.Tag, *core_api.LabelInfo](item.Tags, func(item *content.Tag, index int) *core_api.LabelInfo {
+				return &core_api.LabelInfo{
 					TagId:  item.TagId,
 					ZoneId: item.ZoneId,
 				}
@@ -463,7 +470,7 @@ func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (
 				Url:    item.Url,
 				Tags:   tags,
 			}
-			author := &core_api.User{}
+			author := &core_api.PostUser{}
 			if err = mr.Finish(func() error {
 				s.PostDomainService.LoadLikeCount(ctx, &resp.Posts[i].LikeCount, item.PostId) // 点赞量
 				return nil

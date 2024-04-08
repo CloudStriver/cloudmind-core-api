@@ -50,8 +50,8 @@ func (s *RelationDomainService) GetUserByRelations(ctx context.Context, relation
 				}
 				users[i].Name = user.Name
 				users[i].Url = user.Url
-				users[i].Tags = user.Labels
-				s.UserDomainService.LoadLabel(ctx, users[i].Tags)
+				users[i].Labels = user.Labels
+				s.UserDomainService.LoadLabel(ctx, users[i].Labels)
 				return nil
 			}, func() error {
 				if userId != "" && userId != users[i].UserId {
@@ -82,8 +82,8 @@ func (s *RelationDomainService) GetPostByRelations(ctx context.Context, relation
 					return err1
 				}
 
-				tags := lo.Map[*content.Tag, *core_api.TagInfo](post.Tags, func(item *content.Tag, index int) *core_api.TagInfo {
-					return &core_api.TagInfo{
+				tags := lo.Map[*content.Tag, *core_api.LabelInfo](post.Tags, func(item *content.Tag, index int) *core_api.LabelInfo {
+					return &core_api.LabelInfo{
 						TagId:  item.TagId,
 						ZoneId: item.ZoneId,
 					}
