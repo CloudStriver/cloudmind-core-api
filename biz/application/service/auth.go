@@ -62,7 +62,7 @@ type AuthService struct {
 func (s *AuthService) QQLogin(ctx context.Context, req *core_api.QQLoginReq) (resp *core_api.QQLoginResp, err error) {
 	resp = new(core_api.QQLoginResp)
 	fmt.Println(req.Code)
-	if resp.ShortToken, resp.LongToken, resp.UserId, err = s.ThirdLogin(ctx, req.Code, sts.AuthType_qq, "", "", "", consts.SexMan); err != nil {
+	if resp.ShortToken, resp.LongToken, resp.UserId, err = s.ThirdLogin(ctx, req.Code, core_api.LoginType_QQLoginType, "", "", "", consts.SexMan); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -130,7 +130,7 @@ func (s *AuthService) WeixinCallBack(ctx context.Context, req *core_api.WeixinCa
 		userId string
 	)
 
-	if _, _, userId, err = s.ThirdLogin(ctx, "", sts.AuthType_wechat, req.WxMaUserInfo.OpenId, req.WxMaUserInfo.NickName, req.WxMaUserInfo.AvatarUrl, consts.SexMan); err != nil {
+	if _, _, userId, err = s.ThirdLogin(ctx, "", core_api.LoginType_WeixinLoginType, req.WxMaUserInfo.OpenId, req.WxMaUserInfo.NickName, req.WxMaUserInfo.AvatarUrl, consts.SexMan); err != nil {
 		return resp, err
 	}
 
@@ -184,7 +184,8 @@ func (s *AuthService) CheckEmail(ctx context.Context, req *core_api.CheckEmailRe
 func (s *AuthService) EmailLogin(ctx context.Context, req *core_api.EmailLoginReq) (resp *core_api.EmailLoginResp, err error) {
 	resp = new(core_api.EmailLoginResp)
 	loginResp, err := s.CloudMindSts.Login(ctx, &sts.LoginReq{
-		Auth:     &sts.AuthInfo{AuthType: sts.AuthType_email, AppId: req.Email},
+		AuthType: int64(core_api.LoginType_EmailLoginType),
+		AppId:    req.Email,
 		Password: req.Password,
 	})
 	if err != nil {
@@ -203,10 +204,10 @@ func (s *AuthService) EmailLogin(ctx context.Context, req *core_api.EmailLoginRe
 	return resp, nil
 }
 
-func (s *AuthService) ThirdLogin(ctx context.Context, code string, authType sts.AuthType, appId string, name string, url string, sex int64) (shortToken string, longToken string, userId string, err error) {
+func (s *AuthService) ThirdLogin(ctx context.Context, code string, authType core_api.LoginType, appId string, name string, url string, sex int64) (shortToken string, longToken string, userId string, err error) {
 	// 第三方登录
 	switch authType {
-	case sts.AuthType_qq:
+	case core_api.LoginType_QQLoginType:
 		conf := s.Config.QQConf
 		data, err := oauth.QQLogin(conf, code)
 		if err != nil {
@@ -223,23 +224,17 @@ func (s *AuthService) ThirdLogin(ctx context.Context, code string, authType sts.
 	// 登录到系统
 	var loginResp *sts.LoginResp
 	if loginResp, err = s.CloudMindSts.Login(ctx, &sts.LoginReq{
-		Auth: &sts.AuthInfo{
-			AuthType: authType,
-			AppId:    appId,
-		},
+		AuthType: int64(authType),
+		AppId:    appId,
 	}); err != nil {
 		return "", "", "", err
 	}
 	if loginResp.UserId == "" {
 		// 第一次登录
 		createAuthResp, err := s.CloudMindSts.CreateAuth(ctx, &sts.CreateAuthReq{
-			AuthInfo: &sts.AuthInfo{
-				AuthType: authType,
-				AppId:    appId,
-			},
-			UserInfo: &sts.UserInfo{
-				Role: sts.Role_user,
-			},
+			AuthType: int64(authType),
+			AppId:    appId,
+			Role:     int64(core_api.RoleType_UserRoleType),
 		})
 		if err != nil {
 			return "", "", "", err
@@ -286,7 +281,7 @@ func (s *AuthService) RefreshToken(_ context.Context, req *core_api.RefreshToken
 	return resp, nil
 }
 
-func (s *AuthService) FiltetContet(ctx context.Context, IsSure bool, contents []*string) ([]*core_api.Keywords, error) {
+func (s *AuthService) FiltetContet(ctx context.Context, IsSure bool, contents []*string) ([]string, error) {
 	cts := lo.Map[*string, string](contents, func(item *string, index int) string {
 		return *item
 	})
@@ -309,30 +304,12 @@ func (s *AuthService) FiltetContet(ctx context.Context, IsSure bool, contents []
 		if err != nil {
 			return nil, err
 		}
-		keywords := make([]*core_api.Keywords, 0, len(findAllContentResp.Keywords))
-		for _, keyword := range findAllContentResp.Keywords {
-			if len(keyword.Keywords) != 0 {
-				keywords = append(keywords, &core_api.Keywords{
-					Keywords: keyword.Keywords,
-				})
-			}
-		}
-		if len(keywords) != 0 {
-			return keywords, nil
-		}
-		return nil, nil
+		return findAllContentResp.Keywords, nil
 	}
 }
 
 func (s *AuthService) Register(ctx context.Context, req *core_api.RegisterReq) (resp *core_api.RegisterResp, err error) {
 	resp = new(core_api.RegisterResp)
-	resp.Keywords, err = s.FiltetContet(ctx, req.IsSure, []*string{&req.Name})
-	if err != nil {
-		return resp, err
-	}
-	if resp.Keywords != nil {
-		return resp, nil
-	}
 	value := ""
 	if value, err = s.Redis.GetCtx(ctx, fmt.Sprintf("%s:%s", consts.PassCheckEmail, req.Email)); err != nil {
 		return resp, err
@@ -346,14 +323,10 @@ func (s *AuthService) Register(ctx context.Context, req *core_api.RegisterReq) (
 	}
 
 	createAuthResp, err := s.CloudMindSts.CreateAuth(ctx, &sts.CreateAuthReq{
-		AuthInfo: &sts.AuthInfo{
-			AuthType: sts.AuthType_email,
-			AppId:    req.Email,
-		},
-		UserInfo: &sts.UserInfo{
-			Role:     sts.Role_user,
-			Password: lo.ToPtr(req.Password),
-		},
+		AuthType: int64(core_api.LoginType_EmailLoginType),
+		AppId:    req.Email,
+		Role:     int64(core_api.RoleType_UserRoleType),
+		Password: req.Password,
 	})
 	if err != nil {
 		return resp, err

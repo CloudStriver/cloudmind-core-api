@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"github.com/CloudStriver/cloudmind-core-api/biz/adaptor"
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/CloudStriver/cloudmind-core-api/biz/domain/service"
@@ -21,6 +22,7 @@ import (
 	"github.com/google/wire"
 	"github.com/samber/lo"
 	"github.com/zeromicro/go-zero/core/mr"
+	"github.com/zeromicro/go-zero/core/stores/redis"
 )
 
 type IPostService interface {
@@ -47,9 +49,10 @@ type PostService struct {
 	CreateItemKq          *kq.CreateItemKq
 	UpdateItemKq          *kq.UpdateItemKq
 	DeleteItemKq          *kq.DeleteItemKq
+	Redis                 *redis.Redis
 }
 
-func (s *PostService) FilterContent(ctx context.Context, IsSure bool, contents []*string) ([]*core_api.Keywords, error) {
+func (s *PostService) FilterContent(ctx context.Context, IsSure bool, contents []*string) ([]string, error) {
 	cts := lo.Map[*string, string](contents, func(item *string, index int) string {
 		return *item
 	})
@@ -72,18 +75,8 @@ func (s *PostService) FilterContent(ctx context.Context, IsSure bool, contents [
 		if err != nil {
 			return nil, err
 		}
-		keywords := make([]*core_api.Keywords, 0, len(findAllContentResp.Keywords))
-		for _, keyword := range findAllContentResp.Keywords {
-			if len(keyword.Keywords) != 0 {
-				keywords = append(keywords, &core_api.Keywords{
-					Keywords: keyword.Keywords,
-				})
-			}
-		}
-		if len(keywords) != 0 {
-			return keywords, nil
-		}
-		return nil, nil
+
+		return findAllContentResp.Keywords, nil
 	}
 }
 
@@ -104,23 +97,13 @@ func (s *PostService) CreatePost(ctx context.Context, req *core_api.CreatePostRe
 		}
 	}
 
-	tags := lo.Map[*core_api.Tag, *content.Tag](req.Tags, func(item *core_api.Tag, index int) *content.Tag {
-		return &content.Tag{
-			TagId:  item.TagId,
-			ZoneId: item.ZoneId,
-		}
-	})
-	tagIds := lo.Map[*core_api.Tag, string](req.Tags, func(item *core_api.Tag, index int) string {
-		return item.TagId
-	})
-
 	createPostResp, err := s.CloudMindContent.CreatePost(ctx, &content.CreatePostReq{
-		UserId: userData.UserId,
-		Title:  req.Title,
-		Text:   req.Text,
-		Tags:   tags,
-		Status: req.Status,
-		Url:    req.Url,
+		UserId:   userData.UserId,
+		Title:    req.Title,
+		Text:     req.Text,
+		LabelIds: req.LabelIds,
+		Status:   req.Status,
+		Url:      req.Url,
 	})
 	if err != nil {
 		return resp, err
@@ -129,14 +112,8 @@ func (s *PostService) CreatePost(ctx context.Context, req *core_api.CreatePostRe
 
 	if err = mr.Finish(func() error {
 		if _, err1 := s.Platform.CreateCommentSubject(ctx, &platform.CreateCommentSubjectReq{
-			Subject: &platform.Subject{
-				Id:        createPostResp.PostId,
-				UserId:    userData.UserId,
-				RootCount: lo.ToPtr(int64(0)),
-				AllCount:  lo.ToPtr(int64(0)),
-				State:     int64(platform.State_Normal),
-				Attrs:     int64(platform.Attrs_None),
-			},
+			Id:     createPostResp.PostId,
+			UserId: userData.UserId,
 		}); err1 != nil {
 			return err1
 		}
@@ -152,7 +129,7 @@ func (s *PostService) CreatePost(ctx context.Context, req *core_api.CreatePostRe
 		data, _ := sonic.Marshal(&message.CreateItemMessage{
 			ItemId:   createPostResp.PostId,
 			IsHidden: req.Status == int64(core_api.PostStatus_DraftPostStatus),
-			Labels:   tagIds,
+			Labels:   req.LabelIds,
 			Category: core_api.Category_name[int32(core_api.Category_PostCategory)],
 		})
 		if err3 := s.CreateItemKq.Push(pconvertor.Bytes2String(data)); err != nil {
@@ -206,23 +183,13 @@ func (s *PostService) UpdatePost(ctx context.Context, req *core_api.UpdatePostRe
 		}
 	}
 
-	tags := lo.Map[*core_api.Tag, *content.Tag](req.Tags, func(item *core_api.Tag, index int) *content.Tag {
-		return &content.Tag{
-			TagId:  item.TagId,
-			ZoneId: item.ZoneId,
-		}
-	})
-	tagIds := lo.Map[*core_api.Tag, string](req.Tags, func(item *core_api.Tag, index int) string {
-		return item.TagId
-	})
-
 	if _, err = s.CloudMindContent.UpdatePost(ctx, &content.UpdatePostReq{
-		PostId: req.PostId,
-		Title:  req.Title,
-		Text:   req.Text,
-		Tags:   tags,
-		Status: req.Status,
-		Url:    req.Url,
+		PostId:   req.PostId,
+		Title:    req.Title,
+		Text:     req.Text,
+		LabelIds: req.LabelIds,
+		Status:   req.Status,
+		Url:      req.Url,
 	}); err != nil {
 		return resp, err
 	}
@@ -232,7 +199,7 @@ func (s *PostService) UpdatePost(ctx context.Context, req *core_api.UpdatePostRe
 			data, _ := sonic.Marshal(&message.UpdateItemMessage{
 				ItemId:   req.PostId,
 				IsHidden: lo.ToPtr(req.Status != int64(core_api.PostStatus_PublicPostStatus)),
-				Labels:   tagIds,
+				Labels:   req.LabelIds,
 			})
 			if err1 := s.UpdateItemKq.Push(pconvertor.Bytes2String(data)); err != nil {
 				return err1
@@ -307,7 +274,6 @@ func (s *PostService) GetPost(ctx context.Context, req *core_api.GetPostReq) (re
 	userData, err := adaptor.ExtractUserMeta(ctx)
 	if err != nil {
 		return resp, consts.ErrNotAuthentication
-
 	}
 	var res *content.GetPostResp
 	if res, err = s.CloudMindContent.GetPost(ctx, &content.GetPostReq{
@@ -321,44 +287,33 @@ func (s *PostService) GetPost(ctx context.Context, req *core_api.GetPostReq) (re
 		return resp, consts.ErrForbidden
 	}
 
-	tags := lo.Map[*content.Tag, *core_api.LabelInfo](res.Tags, func(item *content.Tag, index int) *core_api.LabelInfo {
-		return &core_api.LabelInfo{
-			TagId:  item.TagId,
-			ZoneId: item.ZoneId,
-		}
-	})
-	tagIds := lo.Map[*content.Tag, string](res.Tags, func(item *content.Tag, index int) string {
-		return item.TagId
-	})
+	_, _ = s.Redis.Pfadd(fmt.Sprintf("%s:%s", consts.ViewCountKey, req.PostId), 1)
 
 	resp = &core_api.GetPostResp{
-		Title:      res.Title,
-		Text:       res.Text,
-		Status:     res.Status,
-		Url:        res.Url,
-		Author:     &core_api.PostUser{},
-		Tags:       tags,
+		Title:  res.Title,
+		Text:   res.Text,
+		Status: res.Status,
+		Url:    res.Url,
+
+		Author: &core_api.PostUser{
+			UserId: res.UserId,
+		},
+		LabelIds:   res.LabelIds,
 		CreateTime: res.CreateTime,
 		UpdateTime: res.UpdateTime,
 	}
 
 	if err = mr.Finish(func() error {
-		s.PostDomainService.LoadAuthor(ctx, resp.Author, res.UserId) // 作者
+		s.PostDomainService.LoadAuthor(ctx, resp.Author, userData.GetUserId()) // 作者
 		return nil
 	}, func() error {
 		s.PostDomainService.LoadLikeCount(ctx, &resp.LikeCount, req.PostId) // 点赞量
 		return nil
 	}, func() error {
-		s.PostDomainService.LoadViewCount(ctx, &resp.ViewCount, req.PostId) // 浏览量
-		return nil
-	}, func() error {
 		s.PostDomainService.LoadCollectCount(ctx, &resp.CollectCount, req.PostId) // 收藏量
 		return nil
 	}, func() error {
-		s.PostDomainService.LoadCollectCount(ctx, &resp.ShareCount, req.PostId) // 分享量
-		return nil
-	}, func() error {
-		s.PostDomainService.LoadCollectCount(ctx, &resp.ShareCount, req.PostId) // 分享量
+		s.PostDomainService.LoadShareCount(ctx, &resp.ShareCount, req.PostId) // 分享量
 		return nil
 	}, func() error {
 		s.PostDomainService.LoadLiked(ctx, &resp.Liked, userData.GetUserId(), req.PostId) // 是否点赞
@@ -367,24 +322,24 @@ func (s *PostService) GetPost(ctx context.Context, req *core_api.GetPostReq) (re
 		s.PostDomainService.LoadCollected(ctx, &resp.Collected, userData.GetUserId(), req.PostId) // 是否收藏
 		return nil
 	}, func() error {
+		s.PostDomainService.LoadCommentCount(ctx, &resp.CommentCount, req.PostId)
+		return nil
+	}, func() error {
 		if userData.GetUserId() != "" {
-			_, _ = s.Platform.CreateRelation(ctx, &platform.CreateRelationReq{
-				FromType:     int64(core_api.TargetType_UserType),
+			_ = s.RelationDomainService.CreateRelation(ctx, &core_api.Relation{
+				FromType:     core_api.TargetType_UserType,
 				FromId:       userData.UserId,
-				ToType:       int64(core_api.TargetType_PostType),
+				ToType:       core_api.TargetType_PostType,
 				ToId:         req.PostId,
-				RelationType: int64(core_api.RelationType_ViewRelationType),
+				RelationType: core_api.RelationType_ViewRelationType,
 			})
 		}
 		return nil
 	}, func() error {
-		s.PostDomainService.LoadLabels(ctx, tagIds)
-		for i := range resp.Tags {
-			resp.Tags[i].Value = tagIds[i]
-		}
+		s.PostDomainService.LoadLabels(ctx, res.LabelIds)
 		return nil
 	}, func() error {
-		s.UserDomainService.LoadFollowed(ctx, &resp.Author.Followed, userData.GetUserId(), res.UserId)
+		resp.ViewCount, _ = s.Redis.PfcountCtx(ctx, fmt.Sprintf("%s:%s", consts.ViewCountKey, req.PostId)) // 浏览量级
 		return nil
 	}); err != nil {
 		return resp, err
@@ -399,33 +354,12 @@ func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (
 		return resp, consts.ErrNotAuthentication
 	}
 	var (
-		getPostsResp  *content.GetPostsResp
-		searchOptions *content.SearchOptions
+		getPostsResp *content.GetPostsResp
 	)
 
-	if req.AllFieldsKey != nil {
-		searchOptions = &content.SearchOptions{
-			Type: &content.SearchOptions_AllFieldsKey{
-				AllFieldsKey: *req.AllFieldsKey,
-			},
-		}
-	}
-	if req.Text != nil || req.Title != nil || req.Tag != nil {
-		searchOptions = &content.SearchOptions{
-			Type: &content.SearchOptions_MultiFieldsKey{
-				MultiFieldsKey: &content.SearchField{
-					Tag:   req.Tag,
-					Text:  req.Text,
-					Title: req.Title,
-				},
-			},
-		}
-	}
-
 	filter := &content.PostFilterOptions{
-		OnlyUserId: req.OnlyUserId,
-		OnlyTag:    req.OnlyTag,
-		OnlyZoneId: req.OnlyZoneId,
+		OnlyUserId:  req.OnlyUserId,
+		OnlyLabelId: req.OnlyLabelId,
 	}
 
 	// 查看所有人的，或者查看的不是自己的
@@ -439,7 +373,7 @@ func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (
 	}
 
 	if getPostsResp, err = s.CloudMindContent.GetPosts(ctx, &content.GetPostsReq{
-		SearchOptions:     searchOptions,
+		SearchKeyword:     req.Keyword,
 		PostFilterOptions: filter,
 		PaginationOptions: &basic.PaginationOptions{
 			Limit:     req.Limit,
@@ -454,23 +388,14 @@ func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (
 	resp.Posts = make([]*core_api.Post, len(getPostsResp.Posts))
 	if err = mr.Finish(lo.Map(getPostsResp.Posts, func(item *content.Post, i int) func() error {
 		return func() error {
-			tags := lo.Map[*content.Tag, *core_api.LabelInfo](item.Tags, func(item *content.Tag, index int) *core_api.LabelInfo {
-				return &core_api.LabelInfo{
-					TagId:  item.TagId,
-					ZoneId: item.ZoneId,
-				}
-			})
-			tagsId := lo.Map[*content.Tag, string](item.Tags, func(item *content.Tag, index int) string {
-				return item.TagId
-			})
 			resp.Posts[i] = &core_api.Post{
-				PostId: item.PostId,
-				Title:  item.Title,
-				Text:   item.Text,
-				Url:    item.Url,
-				Tags:   tags,
+				PostId:   item.PostId,
+				Title:    item.Title,
+				Text:     item.Text,
+				Url:      item.Url,
+				LabelIds: item.LabelIds,
+				UserName: item.UserId,
 			}
-			author := &core_api.PostUser{}
 			if err = mr.Finish(func() error {
 				s.PostDomainService.LoadLikeCount(ctx, &resp.Posts[i].LikeCount, item.PostId) // 点赞量
 				return nil
@@ -483,14 +408,12 @@ func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (
 				}
 				return nil
 			}, func() error {
-				s.PostDomainService.LoadAuthor(ctx, author, item.UserId)
-				resp.Posts[i].UserName = author.Name
 				return nil
 			}, func() error {
-				s.PostDomainService.LoadLabels(ctx, tagsId)
-				for i := range tags {
-					tags[i].Value = tagsId[i]
-				}
+				s.PostDomainService.LoadLabels(ctx, resp.Posts[i].LabelIds)
+				return nil
+			}, func() error {
+				resp.Posts[i].ViewCount, _ = s.Redis.PfcountCtx(ctx, fmt.Sprintf("%s:%s", consts.ViewCountKey, item.PostId))
 				return nil
 			}); err != nil {
 				return err

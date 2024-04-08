@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
-	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/sts"
 	"net/http"
 )
 
@@ -56,7 +55,7 @@ type WechatInfo struct {
 }
 
 func QQLogin(conf config.OauthConf, code string) (*QQInfo, error) {
-	url := getTokenUrl(conf, sts.AuthType_qq, code)
+	url := fmt.Sprintf("https://graph.qq.com/oauth2.0/token?grant_type=authorization_code&client_id=%s&client_secret=%s&code=%s&redirect_uri=%s&fmt=json", conf.ClientId, conf.Secret, code, conf.Redirect)
 	var (
 		req        *http.Request
 		err        error
@@ -105,13 +104,4 @@ func QQLogin(conf config.OauthConf, code string) (*QQInfo, error) {
 		return nil, err
 	}
 	return userInfo, nil
-}
-
-func getTokenUrl(conf config.OauthConf, authType sts.AuthType, code string) string {
-	switch authType {
-	case sts.AuthType_qq:
-		return fmt.Sprintf("https://graph.qq.com/oauth2.0/token?grant_type=authorization_code&client_id=%s&client_secret=%s&code=%s&redirect_uri=%s&fmt=json", conf.ClientId, conf.Secret, code, conf.Redirect)
-	default:
-		return ""
-	}
 }
