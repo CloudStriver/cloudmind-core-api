@@ -362,6 +362,7 @@ func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (
 	}
 
 	// 查看所有人的，或者查看的不是自己的
+	fmt.Println(req.GetOnlyUserId(), userData.GetUserId())
 	if req.OnlyUserId == nil || req.GetOnlyUserId() != userData.GetUserId() {
 		filter.OnlyStatus = lo.ToPtr(int64(core_api.PostStatus_PublicPostStatus))
 	}
@@ -371,8 +372,16 @@ func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (
 		filter.OnlyStatus = req.OnlyStatus
 	}
 
+	var search *content.SearchOption
+	if req.SearchKeyword != nil {
+		search = &content.SearchOption{
+			SearchKeyword:  req.SearchKeyword,
+			SearchSortType: content.SearchSortType(*req.SearchType),
+		}
+	}
+	fmt.Println(filter)
 	if getPostsResp, err = s.CloudMindContent.GetPosts(ctx, &content.GetPostsReq{
-		SearchKeyword:     req.Keyword,
+		SearchOption:      search,
 		PostFilterOptions: filter,
 		PaginationOptions: &basic.PaginationOptions{
 			Limit:     req.Limit,
@@ -383,7 +392,7 @@ func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (
 	}); err != nil {
 		return resp, err
 	}
-
+	fmt.Println(getPostsResp.Posts)
 	resp.Posts = make([]*core_api.Post, len(getPostsResp.Posts))
 	if err = mr.Finish(lo.Map(getPostsResp.Posts, func(item *content.Post, i int) func() error {
 		return func() error {
