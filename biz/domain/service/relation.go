@@ -88,8 +88,7 @@ func (s *RelationDomainService) GetPostByRelations(ctx context.Context, relation
 				posts[i].Title = post.Title
 				posts[i].Text = post.Text
 				posts[i].Url = post.Url
-				posts[i].LabelIds = post.LabelIds
-				s.PostDomainService.LoadLabels(ctx, post.LabelIds)
+				s.PostDomainService.LoadLabels(ctx, &posts[i].Labels, post.LabelIds)
 				user, err1 := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{
 					UserId: post.UserId,
 				})
@@ -201,14 +200,14 @@ func (s *RelationDomainService) CreateRelation(ctx context.Context, r *core_api.
 		userId = r.ToId
 	case core_api.TargetType_FileType:
 		getFileResp, err := s.CloudMindContent.GetFile(ctx, &content.GetFileReq{
-			FileId: r.ToId,
+			Id: r.ToId,
 		})
 		if err != nil {
 			return err
 		}
 
-		toName = getFileResp.File.Name
-		userId = getFileResp.File.UserId
+		toName = getFileResp.Name
+		userId = getFileResp.UserId
 
 	case core_api.TargetType_PostType:
 		getPostResp, err := s.CloudMindContent.GetPost(ctx, &content.GetPostReq{

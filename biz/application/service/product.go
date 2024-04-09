@@ -75,12 +75,12 @@ func (s *ProductService) CreateProduct(ctx context.Context, req *core_api.Create
 		}
 	case core_api.Product_Type_File_Type:
 		getFileResp, err := s.CloudMindContent.GetFile(ctx, &content.GetFileReq{
-			FileId: req.ObjectId,
+			Id: req.ObjectId,
 		})
 		if err != nil {
 			return resp, err
 		}
-		if getFileResp.File.UserId != user.UserId {
+		if getFileResp.UserId != user.UserId {
 			return resp, consts.ErrForbidden
 		}
 	}

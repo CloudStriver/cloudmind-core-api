@@ -39,8 +39,9 @@ func NewProvider() (*Provider, error) {
 		Client: contentserviceClient,
 	}
 	userDomainService := &service.UserDomainService{
-		Config:   configConfig,
-		Platform: platForm,
+		Config:           configConfig,
+		Platform:         platForm,
+		CloudMindContent: cloudMindContent,
 	}
 	postDomainService := &service.PostDomainService{
 		CloudMindContent: cloudMindContent,
@@ -87,6 +88,7 @@ func NewProvider() (*Provider, error) {
 		CreateItemKq:          createItemKq,
 		UpdateItemKq:          updateItemKq,
 		DeleteItemKq:          deleteItemKq,
+		Redis:                 redisRedis,
 	}
 	tradeserviceClient := cloudmind_trade.NewCloudMindTrade(configConfig)
 	cloudMindTrade := &cloudmind_trade.CloudMindTrade{
@@ -130,10 +132,6 @@ func NewProvider() (*Provider, error) {
 		UserDomainService: userDomainService,
 		CloudMindSts:      cloudMindSts,
 		UpdateItemKq:      updateItemKq,
-	}
-	zoneService := &service2.ZoneService{
-		Config:           configConfig,
-		CloudMindContent: cloudMindContent,
 	}
 	deleteNotificationsKq := kq.NewDeleteNotificationsKq(configConfig)
 	notificationService := &service2.NotificationService{
@@ -198,7 +196,6 @@ func NewProvider() (*Provider, error) {
 		AuthService:         authService,
 		RelationService:     relationService,
 		UserService:         userService,
-		ZoneService:         zoneService,
 		NotificationService: notificationService,
 		CommentService:      commentService,
 		LabelService:        labelService,

@@ -417,74 +417,6 @@ func GetRecycleBinFiles(ctx context.Context, c *app.RequestContext) {
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 
-// CreateZone .
-// @router /content/createZone [POST]
-func CreateZone(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.CreateZoneReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(core_api.CreateZoneResp)
-	p := provider.Get()
-	resp, err = p.ZoneService.CreateZone(ctx, &req)
-	adaptor.PostProcess(ctx, c, &req, resp, err)
-}
-
-// UpdateZone .
-// @router /content/updateZone [POST]
-func UpdateZone(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.UpdateZoneReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(core_api.UpdateZoneResp)
-	p := provider.Get()
-	resp, err = p.ZoneService.UpdateZone(ctx, &req)
-	adaptor.PostProcess(ctx, c, &req, resp, err)
-}
-
-// GetZone .
-// @router /content/getZone [GET]
-func GetZone(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.GetZoneReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(core_api.GetZoneResp)
-	p := provider.Get()
-	resp, err = p.ZoneService.GetZone(ctx, &req)
-	adaptor.PostProcess(ctx, c, &req, resp, err)
-}
-
-// DeleteZone .
-// @router /content/deleteZone [POST]
-func DeleteZone(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.DeleteZoneReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(core_api.DeleteZoneResp)
-	p := provider.Get()
-	resp, err = p.ZoneService.DeleteZone(ctx, &req)
-	adaptor.PostProcess(ctx, c, &req, resp, err)
-}
-
 // GetPublicFile .
 // @router /content/getPublicFile [POST]
 func GetPublicFile(ctx context.Context, c *app.RequestContext) {
@@ -754,23 +686,6 @@ func EmptyRecycleBin(ctx context.Context, c *app.RequestContext) {
 	resp := new(core_api.EmptyRecycleBinResp)
 	p := provider.Get()
 	resp, err = p.FileService.EmptyRecycleBin(ctx, &req)
-	adaptor.PostProcess(ctx, c, &req, resp, err)
-}
-
-// GetZones .
-// @router /content/getZones [GET]
-func GetZones(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req core_api.GetZonesReq
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(core_api.GetZonesResp)
-	p := provider.Get()
-	resp, err = p.ZoneService.GetZones(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
 

@@ -9,14 +9,12 @@ import (
 	"github.com/bytedance/sonic"
 )
 
-func FileToCorePublicFile(req *content.FileInfo) *core_api.PublicFile {
+func FileToCorePublicFile(req *content.File) *core_api.PublicFile {
 	return &core_api.PublicFile{
-		FileId:       req.FileId,
+		Id:           req.Id,
 		UserId:       req.UserId,
 		Name:         req.Name,
 		Type:         req.Type,
-		Path:         req.Path,
-		FatherId:     req.FatherId,
 		SpaceSize:    req.SpaceSize,
 		IsDel:        req.IsDel,
 		Zone:         req.Zone,
@@ -24,15 +22,15 @@ func FileToCorePublicFile(req *content.FileInfo) *core_api.PublicFile {
 		Description:  req.Description,
 		CreateAt:     req.CreateAt,
 		UpdateAt:     req.UpdateAt,
-		Author:       &core_api.User{},
+		Author:       &core_api.FileUser{},
 		FileCount:    &core_api.FileCount{},
 		FileRelation: &core_api.FileRelation{},
 	}
 }
 
-func FileToCorePrivateFile(req *content.FileInfo) *core_api.PrivateFile {
+func FileToCorePrivateFile(req *content.File) *core_api.PrivateFile {
 	return &core_api.PrivateFile{
-		FileId:    req.FileId,
+		Id:        req.Id,
 		UserId:    req.UserId,
 		Name:      req.Name,
 		Type:      req.Type,
@@ -45,42 +43,41 @@ func FileToCorePrivateFile(req *content.FileInfo) *core_api.PrivateFile {
 	}
 }
 
-//func CommentInfoToCoreCommentInfo(req *platform.CommentInfo) *core_api.CommentInfo {
-//	return &core_api.CommentInfo{
-//		Id:              req.Id,
-//		SubjectId:       req.SubjectId,
-//		RootId:          req.RootId,
-//		FatherId:        req.FatherId,
-//		Count:           req.Count,
-//		State:           req.State,
-//		Attrs:           req.Attrs,
-//		UserId:          req.UserId,
-//		AtUserId:        req.AtUserId,
-//		Content:         req.Content,
-//		Meta:            req.Meta,
-//		CreateTime:      req.CreateTime,
-//		Like:            0,
-//		Author:          &core_api.User{},
-//		CommentRelation: &core_api.CommentRelation{},
-//	}
-//}
-
-func CoreCommentToComment(req *core_api.Comment) *platform.Comment {
-	return &platform.Comment{
-		Id:        req.Id,
-		SubjectId: req.SubjectId,
-		RootId:    req.RootId,
-		FatherId:  req.FatherId,
-		//Count:     req.Count,
-		State:    int64(req.State),
-		Attrs:    int64(req.Attrs),
-		Labels:   req.Labels,
-		UserId:   req.UserId,
-		AtUserId: req.AtUserId,
-		Content:  req.Content,
-		Meta:     req.Meta,
+func CommentToCoreComment(req *platform.Comment) *core_api.Comment {
+	return &core_api.Comment{
+		Id:              req.Id,
+		SubjectId:       req.SubjectId,
+		RootId:          req.RootId,
+		FatherId:        req.FatherId,
+		Count:           req.Count,
+		State:           req.State,
+		Attrs:           req.Attrs,
+		UserId:          req.UserId,
+		AtUserId:        req.AtUserId,
+		Content:         req.Content,
+		Meta:            req.Meta,
+		CreateTime:      req.CreateTime,
+		Author:          &core_api.SimpleUser{},
+		CommentRelation: &core_api.CommentRelation{},
 	}
 }
+
+//func CoreCommentToComment(req *core_api.Comment) *platform.Comment {
+//	return &platform.Comment{
+//		Id:        req.Id,
+//		SubjectId: req.SubjectId,
+//		RootId:    req.RootId,
+//		FatherId:  req.FatherId,
+//		//Count:     req.Count,
+//		State:    int64(req.State),
+//		Attrs:    int64(req.Attrs),
+//		Labels:   req.Labels,
+//		UserId:   req.UserId,
+//		AtUserId: req.AtUserId,
+//		Content:  req.Content,
+//		Meta:     req.Meta,
+//	}
+//}
 
 func CoreLabelToLabel(req *core_api.Label) *platform.Label {
 	return &platform.Label{
@@ -119,29 +116,6 @@ func CoreSubjectToSubject(req *core_api.Subject) *platform.Subject {
 		//AllCount:     req.AllCount,
 		State: int64(req.State),
 		Attrs: int64(req.Attrs),
-	}
-}
-
-func ZoneToCoreZoneInfo(req *content.Zone) *core_api.ZoneInfo {
-	return &core_api.ZoneInfo{
-		Id:    req.Id,
-		Value: req.Value,
-	}
-}
-
-func ZoneToCoreZone(req *content.Zone) *core_api.Zone {
-	return &core_api.Zone{
-		Id:       req.Id,
-		FatherId: req.FatherId,
-		Value:    req.Value,
-	}
-}
-
-func CoreZoneToZone(req *core_api.Zone) *content.Zone {
-	return &content.Zone{
-		Id:       req.Id,
-		FatherId: req.FatherId,
-		Value:    req.Value,
 	}
 }
 

@@ -294,11 +294,10 @@ func (s *PostService) GetPost(ctx context.Context, req *core_api.GetPostReq) (re
 		Text:   res.Text,
 		Status: res.Status,
 		Url:    res.Url,
-
 		Author: &core_api.PostUser{
 			UserId: res.UserId,
 		},
-		LabelIds:   res.LabelIds,
+		Labels:     make([]*core_api.Label, 0),
 		CreateTime: res.CreateTime,
 		UpdateTime: res.UpdateTime,
 	}
@@ -336,7 +335,7 @@ func (s *PostService) GetPost(ctx context.Context, req *core_api.GetPostReq) (re
 		}
 		return nil
 	}, func() error {
-		s.PostDomainService.LoadLabels(ctx, res.LabelIds)
+		s.PostDomainService.LoadLabels(ctx, &resp.Labels, res.LabelIds)
 		return nil
 	}, func() error {
 		resp.ViewCount, _ = s.Redis.PfcountCtx(ctx, fmt.Sprintf("%s:%s", consts.ViewCountKey, req.PostId)) // 浏览量级
@@ -393,7 +392,7 @@ func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (
 				Title:    item.Title,
 				Text:     item.Text,
 				Url:      item.Url,
-				LabelIds: item.LabelIds,
+				Labels:   make([]*core_api.Label, 0),
 				UserName: item.UserId,
 			}
 			if err = mr.Finish(func() error {
@@ -410,7 +409,7 @@ func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (
 			}, func() error {
 				return nil
 			}, func() error {
-				s.PostDomainService.LoadLabels(ctx, resp.Posts[i].LabelIds)
+				s.PostDomainService.LoadLabels(ctx, &resp.Posts[i].Labels, item.LabelIds)
 				return nil
 			}, func() error {
 				resp.Posts[i].ViewCount, _ = s.Redis.PfcountCtx(ctx, fmt.Sprintf("%s:%s", consts.ViewCountKey, item.PostId))

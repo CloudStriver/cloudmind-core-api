@@ -32,7 +32,6 @@ type Provider struct {
 	AuthService         service.IAuthService
 	RelationService     service.IRelationService
 	UserService         service.IUserService
-	ZoneService         service.IZoneService
 	NotificationService service.INotificationService
 	CommentService      service.ICommentService
 	LabelService        service.ILabelService
@@ -60,7 +59,6 @@ var ApplicationSet = wire.NewSet(
 	service.AuthServiceSet,
 	service.PostServiceSet,
 	service.UserServiceSet,
-	service.ZoneServiceSet,
 	service.NotificationServiceSet,
 	service.RecommendServiceSet,
 	service.LabelServiceSet,

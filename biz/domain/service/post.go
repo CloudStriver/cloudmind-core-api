@@ -21,7 +21,7 @@ type IPostDomainService interface {
 	LoadShareCount(ctx context.Context, shareCount *int64, postId string)
 	LoadLiked(ctx context.Context, liked *bool, userId, postId string)
 	LoadCollected(ctx context.Context, collected *bool, userId, postId string)
-	LoadLabels(ctx context.Context, labels []string)
+	LoadLabels(ctx context.Context, c *[]*core_api.Label, labels []string)
 }
 type PostDomainService struct {
 	CloudMindContent cloudmind_content.ICloudMindContent
@@ -33,13 +33,16 @@ var PostDomainServiceSet = wire.NewSet(
 	wire.Bind(new(IPostDomainService), new(*PostDomainService)),
 )
 
-func (s *PostDomainService) LoadLabels(ctx context.Context, labels []string) {
+func (s *PostDomainService) LoadLabels(ctx context.Context, c *[]*core_api.Label, labels []string) {
 	getLabelsInBatchResp, err := s.Platform.GetLabelsInBatch(ctx, &platform.GetLabelsInBatchReq{
 		Ids: labels,
 	})
 	if err == nil {
-		lo.ForEach(getLabelsInBatchResp.Labels, func(label string, i int) {
-			labels[i] = label
+		*c = lo.Map(getLabelsInBatchResp.Labels, func(value string, i int) *core_api.Label {
+			return &core_api.Label{
+				Id:    labels[i],
+				Value: value,
+			}
 		})
 	}
 }
