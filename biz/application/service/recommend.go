@@ -209,11 +209,11 @@ func (s *RecommendService) GetItemByItemId(ctx context.Context, userId string, c
 		if err = mr.Finish(lo.Map(getPostsResp.Posts, func(post *content.Post, i int) func() error {
 			return func() error {
 				recommends.Posts[i] = &core_api.Post{
-					PostId:   post.PostId,
-					Title:    post.Title,
-					Text:     post.Text,
-					Url:      post.Url,
-					LabelIds: post.LabelIds,
+					PostId: post.PostId,
+					Title:  post.Title,
+					Text:   post.Text,
+					Url:    post.Url,
+					Labels: make([]*core_api.Label, 0),
 				}
 				if err = mr.Finish(func() error {
 					s.PostDomainService.LoadLikeCount(ctx, &recommends.Posts[i].LikeCount, post.PostId) // 点赞量
@@ -229,7 +229,7 @@ func (s *RecommendService) GetItemByItemId(ctx context.Context, userId string, c
 					recommends.Posts[i].UserName = getUser.Name
 					return nil
 				}, func() error {
-					s.PostDomainService.LoadLabels(ctx, post.LabelIds)
+					s.PostDomainService.LoadLabels(ctx, &recommends.Posts[i].Labels, post.LabelIds)
 					return nil
 				}); err != nil {
 					return err

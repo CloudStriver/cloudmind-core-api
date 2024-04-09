@@ -90,7 +90,7 @@ func (s *UserService) GetUser(ctx context.Context, req *core_api.GetUserReq) (re
 	}
 	if err = mr.Finish(func() error {
 		s.UserDomainService.LoadLabel(ctx, getUserResp.Labels)
-		resp.Tags = getUserResp.Labels
+		resp.Labels = getUserResp.Labels
 		return nil
 	}, func() error {
 		if userData.GetUserId() != req.UserId {
@@ -134,15 +134,15 @@ func (s *UserService) UpdateUser(ctx context.Context, req *core_api.UpdateUserRe
 		FullName:    req.FullName,
 		IdCard:      req.IdCard,
 		Description: req.Description,
-		Labels:      req.Labels,
+		Labels:      req.LabelIds,
 		Url:         req.Url,
 	}); err != nil {
 		return resp, err
 	}
-	if len(req.Labels) != 0 {
+	if len(req.LabelIds) != 0 {
 		data, _ := sonic.Marshal(&message.UpdateItemMessage{
 			ItemId: userData.UserId,
-			Labels: req.Labels,
+			Labels: req.LabelIds,
 		})
 		if err = s.UpdateItemKq.Push(pconvertor.Bytes2String(data)); err != nil {
 			return resp, err
@@ -189,9 +189,9 @@ func (s *UserService) GetUserDetail(ctx context.Context, _ *core_api.GetUserDeta
 		Description: getUserResp.Description,
 		Url:         getUserResp.Url,
 		Flow:        getBalanceResp.Flow,
-		Momery:      getBalanceResp.Memory,
+		Memory:      getBalanceResp.Memory,
 		Point:       getBalanceResp.Point,
-		Tags:        getUserResp.Labels,
+		Labels:      getUserResp.Labels,
 		CreateTime:  getUserResp.CreateTime,
 	}, nil
 }
