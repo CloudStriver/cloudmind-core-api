@@ -53,6 +53,7 @@ func (s *RelationDomainService) GetUserByRelations(ctx context.Context, relation
 				users[i].Name = user.Name
 				users[i].Url = user.Url
 				users[i].Labels = user.Labels
+				users[i].Description = user.Description
 				s.UserDomainService.LoadLabel(ctx, users[i].Labels)
 				return nil
 			}, func() error {
