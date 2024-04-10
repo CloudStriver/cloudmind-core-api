@@ -89,6 +89,7 @@ func CoreLabelToLabel(req *core_api.Label) *platform.Label {
 
 func LabelToCoreLabel(req *platform.Label) *core_api.Label {
 	return &core_api.Label{
+		Id:    req.Id,
 		Value: req.Value,
 	}
 }

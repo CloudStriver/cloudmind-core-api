@@ -292,8 +292,8 @@ func (s *AuthService) FiltetContet(ctx context.Context, IsSure bool, contents []
 		if err != nil {
 			return nil, err
 		}
-		for i, content := range replaceContentResp.Content {
-			*contents[i] = content
+		for i, c := range replaceContentResp.Content {
+			*contents[i] = c
 		}
 		return nil, nil
 	} else {
