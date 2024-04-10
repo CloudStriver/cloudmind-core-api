@@ -92,40 +92,40 @@ func (s *FileService) FilterContent(ctx context.Context, IsSure bool, contents [
 
 func (s *FileService) CheckFile(ctx context.Context, req *core_api.CheckFileReq) (resp *core_api.CheckFileResp, err error) {
 	resp = new(core_api.CheckFileResp)
-	userData, err := adaptor.ExtractUserMeta(ctx)
-	if err != nil || userData.GetUserId() == "" {
-		return resp, consts.ErrNotAuthentication
-	}
-
-	var res *content.GetFileResp
-	if res, err = s.CloudMindContent.GetFile(ctx, &content.GetFileReq{Id: req.Id}); err != nil {
-		return resp, err
-	}
-
-	switch {
-	case res.Zone == "" || res.SubZone == "":
-		return resp, consts.ErrNoAuditStatus
-	}
-
-	resp.Keywords, err = s.FilterContent(ctx, false, []*string{&res.Name, &res.Description})
-	if err != nil {
-		return resp, err
-	}
-
-	var auditStatus int64
-	if resp.Keywords == nil || len(resp.Keywords) == 0 {
-		auditStatus = int64(content.AuditStatus_AuditStatus_pass)
-	} else {
-		auditStatus = int64(content.AuditStatus_AuditStatus_notPass)
-	}
-
-	_, err = s.CloudMindContent.UpdateFile(ctx, &content.UpdateFileReq{
-		Id:          req.Id,
-		AuditStatus: auditStatus,
-	})
-	if err != nil {
-		return resp, err
-	}
+	//userData, err := adaptor.ExtractUserMeta(ctx)
+	//if err != nil || userData.GetUserId() == "" {
+	//	return resp, consts.ErrNotAuthentication
+	//}
+	//
+	//var res *content.GetFileResp
+	//if res, err = s.CloudMindContent.GetFile(ctx, &content.GetFileReq{Id: req.Id}); err != nil {
+	//	return resp, err
+	//}
+	//
+	////switch {
+	////case res.Zone == "" || res.SubZone == "":
+	////	return resp, consts.ErrNoAuditStatus
+	////}
+	//
+	////resp.Keywords, err = s.FilterContent(ctx, false, []*string{&res.Name, &res.Description})
+	////if err != nil {
+	////	return resp, err
+	//}
+	//
+	//var auditStatus int64
+	//if resp.Keywords == nil || len(resp.Keywords) == 0 {
+	//	auditStatus = int64(content.AuditStatus_AuditStatus_pass)
+	//} else {
+	//	auditStatus = int64(content.AuditStatus_AuditStatus_notPass)
+	//}
+	//
+	//_, err = s.CloudMindContent.UpdateFile(ctx, &content.UpdateFileReq{
+	//	Id:          req.Id,
+	//	AuditStatus: auditStatus,
+	//})
+	//if err != nil {
+	//	return resp, err
+	//}
 
 	return resp, nil
 }
@@ -260,61 +260,61 @@ func (s *FileService) GetPrivateFile(ctx context.Context, req *core_api.GetPriva
 
 func (s *FileService) GetPublicFile(ctx context.Context, req *core_api.GetPublicFileReq) (resp *core_api.GetPublicFileResp, err error) {
 	resp = new(core_api.GetPublicFileResp)
-	userData, err := adaptor.ExtractUserMeta(ctx)
-	if err != nil {
-		return resp, err
-	}
-
-	var res *content.GetFileResp
-	if res, err = s.CloudMindContent.GetFile(ctx, &content.GetFileReq{Id: req.Id, IsGetSize: req.IsGetSize}); err != nil {
-		return resp, err
-	}
-	switch {
-	case res.Zone == "" || res.SubZone == "":
-		return resp, consts.ErrNoAccessFile
-	case res.IsDel == consts.HardDel:
-		return resp, consts.ErrFileNotExist
-	}
-	resp = &core_api.GetPublicFileResp{
-		UserId:       res.UserId,
-		Name:         res.Name,
-		Type:         res.Type,
-		SpaceSize:    res.SpaceSize,
-		IsDel:        res.IsDel,
-		Zone:         res.Zone,
-		SubZone:      res.SubZone,
-		Description:  res.Description,
-		CreateAt:     res.CreateAt,
-		UpdateAt:     res.UpdateAt,
-		Labels:       []*core_api.Label{},
-		Author:       &core_api.FileUser{},
-		FileCount:    &core_api.FileCount{},
-		FileRelation: &core_api.FileRelation{},
-	}
-	if err = mr.Finish(func() error {
-		s.FileDomainService.LoadLikeCount(ctx, resp.FileCount, req.Id) // 点赞量
-		return nil
-	}, func() error {
-		s.FileDomainService.LoadAuthor(ctx, resp.Author, res.UserId) // 作者
-		return nil
-	}, func() error {
-		s.FileDomainService.LoadViewCount(ctx, resp.FileCount, req.Id) // 浏览量
-		return nil
-	}, func() error {
-		s.FileDomainService.LoadLiked(ctx, resp.FileRelation, req.Id, userData.GetUserId()) // 是否点赞
-		return nil
-	}, func() error {
-		s.FileDomainService.LoadCollected(ctx, resp.FileRelation, req.Id, userData.GetUserId()) // 是否收藏
-		return nil
-	}, func() error {
-		s.FileDomainService.LoadCollectCount(ctx, resp.FileCount, req.Id) // 收藏量
-		return nil
-	}, func() error {
-		s.FileDomainService.LoadLabels(ctx, &resp.Labels, res.Labels) // 标签集
-		return nil
-	}); err != nil {
-		return resp, err
-	}
+	//userData, err := adaptor.ExtractUserMeta(ctx)
+	//if err != nil {
+	//	return resp, err
+	//}
+	//
+	//var res *content.GetFileResp
+	//if res, err = s.CloudMindContent.GetFile(ctx, &content.GetFileReq{Id: req.Id, IsGetSize: req.IsGetSize}); err != nil {
+	//	return resp, err
+	//}
+	//switch {
+	//case res.Zone == "" || res.SubZone == "":
+	//	return resp, consts.ErrNoAccessFile
+	//case res.IsDel == consts.HardDel:
+	//	return resp, consts.ErrFileNotExist
+	//}
+	//resp = &core_api.GetPublicFileResp{
+	//	UserId:       res.UserId,
+	//	Name:         res.Name,
+	//	Type:         res.Type,
+	//	SpaceSize:    res.SpaceSize,
+	//	IsDel:        res.IsDel,
+	//	Zone:         res.Zone,
+	//	SubZone:      res.SubZone,
+	//	Description:  res.Description,
+	//	CreateAt:     res.CreateAt,
+	//	UpdateAt:     res.UpdateAt,
+	//	Labels:       []*core_api.Label{},
+	//	Author:       &core_api.FileUser{},
+	//	FileCount:    &core_api.FileCount{},
+	//	FileRelation: &core_api.FileRelation{},
+	//}
+	//if err = mr.Finish(func() error {
+	//	s.FileDomainService.LoadLikeCount(ctx, resp.FileCount, req.Id) // 点赞量
+	//	return nil
+	//}, func() error {
+	//	s.FileDomainService.LoadAuthor(ctx, resp.Author, res.UserId) // 作者
+	//	return nil
+	//}, func() error {
+	//	s.FileDomainService.LoadViewCount(ctx, resp.FileCount, req.Id) // 浏览量
+	//	return nil
+	//}, func() error {
+	//	s.FileDomainService.LoadLiked(ctx, resp.FileRelation, req.Id, userData.GetUserId()) // 是否点赞
+	//	return nil
+	//}, func() error {
+	//	s.FileDomainService.LoadCollected(ctx, resp.FileRelation, req.Id, userData.GetUserId()) // 是否收藏
+	//	return nil
+	//}, func() error {
+	//	s.FileDomainService.LoadCollectCount(ctx, resp.FileCount, req.Id) // 收藏量
+	//	return nil
+	//}, func() error {
+	//	s.FileDomainService.LoadLabels(ctx, &resp.Labels, res.Labels) // 标签集
+	//	return nil
+	//}); err != nil {
+	//	return resp, err
+	//}
 	return resp, nil
 }
 
@@ -324,34 +324,34 @@ func (s *FileService) GetPrivateFiles(ctx context.Context, req *core_api.GetPriv
 	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
-	sort := lo.ToPtr(content.SortOptions_SortOptions_createAtDesc)
-	if req.SortType != nil {
-		sort = lo.ToPtr(content.SortOptions(*req.SortType))
-	}
+	//sort := lo.ToPtr(content.SortOptions_SortOptions_createAtDesc)
+	//if req.SortType != nil {
+	//	sort = lo.ToPtr(content.SortOptions(*req.SortType))
+	//}
 
 	var res *content.GetFileListResp
-	var searchOptions *content.SearchOptions
-	p := convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward)
+	//var searchOptions *content.SearchOptions
+	//p := convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward)
 
-	filter := &content.FileFilterOptions{
-		OnlyUserId:   lo.ToPtr(userData.UserId),
-		OnlyFatherId: req.OnlyFatherId,
-		OnlyIsDel:    lo.ToPtr(consts.NotDel),
-		OnlyType:     req.OnlyType,
-		OnlyCategory: req.OnlyCategory,
-	}
-	if req.AllFieldsKey != nil {
-		searchOptions = &content.SearchOptions{Type: &content.SearchOptions_AllFieldsKey{AllFieldsKey: *req.AllFieldsKey}}
-	} else if req.Name != nil || req.Id != nil {
-		searchOptions = &content.SearchOptions{Type: &content.SearchOptions_MultiFieldsKey{MultiFieldsKey: &content.SearchField{Name: req.Name, Id: req.Id}}}
-	}
+	//filter := &content.FileFilterOptions{
+	//	OnlyUserId:   lo.ToPtr(userData.UserId),
+	//	OnlyFatherId: req.OnlyFatherId,
+	//	OnlyIsDel:    lo.ToPtr(consts.NotDel),
+	//	OnlyType:     req.OnlyType,
+	//	OnlyCategory: req.OnlyCategory,
+	//}
+	//if req.AllFieldsKey != nil {
+	//	searchOptions = &content.SearchOptions{Type: &content.SearchOptions_AllFieldsKey{AllFieldsKey: *req.AllFieldsKey}}
+	//} else if req.Name != nil || req.Id != nil {
+	//	searchOptions = &content.SearchOptions{Type: &content.SearchOptions_MultiFieldsKey{MultiFieldsKey: &content.SearchField{Name: req.Name, Id: req.Id}}}
+	//}
 
-	if res, err = s.CloudMindContent.GetFileList(ctx, &content.GetFileListReq{SearchOptions: searchOptions, FilterOptions: filter, PaginationOptions: p, SortOptions: sort}); err != nil {
-		return resp, err
-	}
-	resp.Files = lo.Map[*content.File, *core_api.PrivateFile](res.Files, func(item *content.File, _ int) *core_api.PrivateFile {
-		return convertor.FileToCorePrivateFile(item)
-	})
+	//if res, err = s.CloudMindContent.GetFileList(ctx, &content.GetFileListReq{SearchOptions: searchOptions, FilterOptions: filter, PaginationOptions: p, SortOptions: sort}); err != nil {
+	//	return resp, err
+	//}
+	//resp.Files = lo.Map[*content.File, *core_api.PrivateFile](res.Files, func(item *content.File, _ int) *core_api.PrivateFile {
+	//	return convertor.FileToCorePrivateFile(item)
+	//})
 
 	resp.Token = res.Token
 	resp.Total = res.Total
@@ -362,65 +362,65 @@ func (s *FileService) GetPrivateFiles(ctx context.Context, req *core_api.GetPriv
 
 func (s *FileService) GetPublicFiles(ctx context.Context, req *core_api.GetPublicFilesReq) (resp *core_api.GetPublicFilesResp, err error) {
 	resp = new(core_api.GetPublicFilesResp)
-	userData, err := adaptor.ExtractUserMeta(ctx)
-	if err != nil {
-		return resp, consts.ErrNotAuthentication
-	}
-	var res *content.GetFileListResp
-	var searchOptions *content.SearchOptions
-
-	p := convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward)
-	filter := &content.FileFilterOptions{
-		OnlyFatherId:     req.OnlyFatherId,
-		OnlyZone:         req.OnlyZone,
-		OnlySubZone:      req.OnlySubZone,
-		OnlyIsDel:        lo.ToPtr(consts.NotDel),
-		OnlyType:         req.OnlyType,
-		OnlyCategory:     req.OnlyCategory,
-		OnlyLabelId:      req.OnlyLabelId,
-		OnlyDocumentType: lo.ToPtr(int64(core_api.DocumentType_DocumentType_public)),
-	}
-	sort := lo.ToPtr(content.SortOptions_SortOptions_createAtDesc)
-	if req.SortType != nil {
-		sort = lo.ToPtr(content.SortOptions(*req.SortType))
-	}
-
-	if req.AllFieldsKey != nil {
-		searchOptions = &content.SearchOptions{Type: &content.SearchOptions_AllFieldsKey{AllFieldsKey: *req.AllFieldsKey}}
-	} else if req.Name != nil || req.Id != nil || req.Description != nil {
-		searchOptions = &content.SearchOptions{Type: &content.SearchOptions_MultiFieldsKey{MultiFieldsKey: &content.SearchField{Name: req.Name, Id: req.Id, Description: req.Description}}}
-	}
-
-	if res, err = s.CloudMindContent.GetFileList(ctx, &content.GetFileListReq{SearchOptions: searchOptions, FilterOptions: filter, PaginationOptions: p, SortOptions: sort}); err != nil {
-		return resp, err
-	}
-	resp.Files = lo.Map[*content.File, *core_api.PublicFile](res.Files, func(item *content.File, _ int) *core_api.PublicFile {
-		file := convertor.FileToCorePublicFile(item)
-		_ = mr.Finish(func() error {
-			s.FileDomainService.LoadLikeCount(ctx, file.FileCount, item.Id) // 点赞量
-			return nil
-		}, func() error {
-			s.FileDomainService.LoadAuthor(ctx, file.Author, item.UserId) // 作者
-			return nil
-		}, func() error {
-			s.FileDomainService.LoadViewCount(ctx, file.FileCount, item.Id) // 浏览量
-			return nil
-		}, func() error {
-			s.FileDomainService.LoadLiked(ctx, file.FileRelation, item.Id, userData.GetUserId()) // 是否点赞
-			return nil
-		}, func() error {
-			s.FileDomainService.LoadCollected(ctx, file.FileRelation, item.Id, userData.GetUserId()) // 是否收藏
-			return nil
-		}, func() error {
-			s.FileDomainService.LoadCollectCount(ctx, file.FileCount, item.Id) // 收藏量
-			return nil
-		})
-		return file
-	})
-	resp.Token = res.Token
-	resp.Total = res.Total
-	resp.FatherNamePath = res.FatherNamePath
-	resp.FatherIdPath = res.FatherIdPath
+	//userData, err := adaptor.ExtractUserMeta(ctx)
+	//if err != nil {
+	//	return resp, consts.ErrNotAuthentication
+	//}
+	//var res *content.GetFileListResp
+	//var searchOptions *content.SearchOptions
+	//
+	//p := convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward)
+	//filter := &content.FileFilterOptions{
+	//	OnlyFatherId:     req.OnlyFatherId,
+	//	OnlyZone:         req.OnlyZone,
+	//	OnlySubZone:      req.OnlySubZone,
+	//	OnlyIsDel:        lo.ToPtr(consts.NotDel),
+	//	OnlyType:         req.OnlyType,
+	//	OnlyCategory:     req.OnlyCategory,
+	//	OnlyLabelId:      req.OnlyLabelId,
+	//	OnlyDocumentType: lo.ToPtr(int64(core_api.DocumentType_DocumentType_public)),
+	//}
+	//sort := lo.ToPtr(content.SortOptions_SortOptions_createAtDesc)
+	//if req.SortType != nil {
+	//	sort = lo.ToPtr(content.SortOptions(*req.SortType))
+	//}
+	//
+	//if req.AllFieldsKey != nil {
+	//	searchOptions = &content.SearchOptions{Type: &content.SearchOptions_AllFieldsKey{AllFieldsKey: *req.AllFieldsKey}}
+	//} else if req.Name != nil || req.Id != nil || req.Description != nil {
+	//	searchOptions = &content.SearchOptions{Type: &content.SearchOptions_MultiFieldsKey{MultiFieldsKey: &content.SearchField{Name: req.Name, Id: req.Id, Description: req.Description}}}
+	//}
+	//
+	//if res, err = s.CloudMindContent.GetFileList(ctx, &content.GetFileListReq{SearchOptions: searchOptions, FilterOptions: filter, PaginationOptions: p, SortOptions: sort}); err != nil {
+	//	return resp, err
+	//}
+	//resp.Files = lo.Map[*content.File, *core_api.PublicFile](res.Files, func(item *content.File, _ int) *core_api.PublicFile {
+	//	file := convertor.FileToCorePublicFile(item)
+	//	_ = mr.Finish(func() error {
+	//		s.FileDomainService.LoadLikeCount(ctx, file.FileCount, item.Id) // 点赞量
+	//		return nil
+	//	}, func() error {
+	//		s.FileDomainService.LoadAuthor(ctx, file.Author, item.UserId) // 作者
+	//		return nil
+	//	}, func() error {
+	//		s.FileDomainService.LoadViewCount(ctx, file.FileCount, item.Id) // 浏览量
+	//		return nil
+	//	}, func() error {
+	//		s.FileDomainService.LoadLiked(ctx, file.FileRelation, item.Id, userData.GetUserId()) // 是否点赞
+	//		return nil
+	//	}, func() error {
+	//		s.FileDomainService.LoadCollected(ctx, file.FileRelation, item.Id, userData.GetUserId()) // 是否收藏
+	//		return nil
+	//	}, func() error {
+	//		s.FileDomainService.LoadCollectCount(ctx, file.FileCount, item.Id) // 收藏量
+	//		return nil
+	//	})
+	//	return file
+	//})
+	//resp.Token = res.Token
+	//resp.Total = res.Total
+	//resp.FatherNamePath = res.FatherNamePath
+	//resp.FatherIdPath = res.FatherIdPath
 	return resp, nil
 }
 
@@ -616,10 +616,10 @@ func (s *FileService) DeleteFile(ctx context.Context, req *core_api.DeleteFileRe
 	}
 
 	if _, err1 := s.CloudMindContent.DeleteFile(ctx, &content.DeleteFileReq{
-		DeleteType:     int64(req.DeleteType),
-		ClearCommunity: req.ClearCommunity,
-		Files:          files,
-		UserId:         userData.UserId,
+		DeleteType: int64(req.DeleteType),
+		//ClearCommunity: req.ClearCommunity,
+		Files:  files,
+		UserId: userData.UserId,
 	}); err1 != nil {
 		return resp, err
 	}
@@ -814,14 +814,14 @@ func (s *FileService) SaveFileToPrivateSpace(ctx context.Context, req *core_api.
 		}
 	}
 
-	switch {
-	case files.Files[1].SpaceSize != consts.FolderSize:
-		return resp, consts.ErrFileIsNotDir
-	case files.Files[0].UserId == files.Files[1].UserId || userData.UserId != files.Files[1].UserId || req.Id == req.FatherId:
-		return resp, consts.ErrIllegalOperation
-	case req.DocumentType == core_api.DocumentType_DocumentType_public && (files.Files[0].Zone == "" || files.Files[0].SubZone == ""):
-		return resp, consts.ErrNoAccessFile
-	}
+	//switch {
+	//case files.Files[1].SpaceSize != consts.FolderSize:
+	//	return resp, consts.ErrFileIsNotDir
+	//case files.Files[0].UserId == files.Files[1].UserId || userData.UserId != files.Files[1].UserId || req.Id == req.FatherId:
+	//	return resp, consts.ErrIllegalOperation
+	//case req.DocumentType == core_api.DocumentType_DocumentType_public && (files.Files[0].Zone == "" || files.Files[0].SubZone == ""):
+	//	return resp, consts.ErrNoAccessFile
+	//}
 
 	if err = mr.Finish(func() error {
 		var (
@@ -883,11 +883,11 @@ func (s *FileService) AddFileToPublicSpace(ctx context.Context, req *core_api.Ad
 
 	err = mr.Finish(func() error {
 		_, err1 := s.CloudMindContent.AddFileToPublicSpace(ctx, &content.AddFileToPublicSpaceReq{
-			Id:          req.Id,
-			Path:        res.Path,
-			SpaceSize:   res.SpaceSize,
-			Zone:        req.Zone,
-			SubZone:     req.SubZone,
+			Id: req.Id,
+			//Path:        res.Path,
+			//SpaceSize:   res.SpaceSize,
+			Zone: req.Zone,
+			//SubZone:     req.SubZone,
 			Description: req.Description,
 			Labels:      req.Labels,
 		})
