@@ -887,7 +887,6 @@ func (s *FileService) AddFileToPublicSpace(ctx context.Context, req *core_api.Ad
 			Path:        res.Path,
 			SpaceSize:   res.SpaceSize,
 			Zone:        req.Zone,
-			SubZone:     req.SubZone,
 			Description: req.Description,
 			Labels:      req.Labels,
 		})
