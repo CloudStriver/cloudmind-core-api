@@ -200,7 +200,10 @@ func (s *UserService) SearchUser(ctx context.Context, req *core_api.SearchUserRe
 	resp = new(core_api.SearchUserResp)
 
 	users, err := s.CloudMindContent.GetUsers(ctx, &content.GetUsersReq{
-		SearchKeyword:     req.Keyword,
+		SearchOption: &content.SearchOption{
+			SearchKeyword:  req.Keyword,
+			SearchSortType: content.SearchSortType(req.SearchType),
+		},
 		PaginationOptions: convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward),
 	})
 	if err != nil {
