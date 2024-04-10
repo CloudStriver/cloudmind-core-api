@@ -97,13 +97,13 @@ func (s *FileService) CheckFile(ctx context.Context, req *core_api.CheckFileReq)
 		return resp, consts.ErrNotAuthentication
 	}
 
-	var res *content.GetFileResp
-	if res, err = s.CloudMindContent.GetFile(ctx, &content.GetFileReq{Id: req.Id}); err != nil {
+	var res *content.GetPublicFileResp
+	if res, err = s.CloudMindContent.GetPublicFile(ctx, &content.GetPublicFileReq{Id: req.Id}); err != nil {
 		return resp, err
 	}
 
 	switch {
-	case res.Zone == "" || res.SubZone == "":
+	case res.AuditStatus != int64(content.AuditStatus_AuditStatus_wait):
 		return resp, consts.ErrNoAuditStatus
 	}
 
@@ -119,7 +119,7 @@ func (s *FileService) CheckFile(ctx context.Context, req *core_api.CheckFileReq)
 		auditStatus = int64(content.AuditStatus_AuditStatus_notPass)
 	}
 
-	_, err = s.CloudMindContent.UpdateFile(ctx, &content.UpdateFileReq{
+	_, err = s.CloudMindContent.UpdatePublicFile(ctx, &content.UpdatePublicFileReq{
 		Id:          req.Id,
 		AuditStatus: auditStatus,
 	})
@@ -141,11 +141,9 @@ func (s *FileService) MakeFilePrivate(ctx context.Context, req *core_api.MakeFil
 	if res, err = s.CloudMindContent.GetFile(ctx, &content.GetFileReq{Id: req.Id}); err != nil {
 		return resp, err
 	}
-
 	if res.UserId != userData.UserId {
 		return resp, consts.ErrNoAccessFile
 	}
-
 	if _, err = s.CloudMindContent.MakeFilePrivate(ctx, &content.MakeFilePrivateReq{Id: req.Id}); err != nil {
 		return resp, err
 	}
@@ -265,27 +263,19 @@ func (s *FileService) GetPublicFile(ctx context.Context, req *core_api.GetPublic
 		return resp, err
 	}
 
-	var res *content.GetFileResp
-	if res, err = s.CloudMindContent.GetFile(ctx, &content.GetFileReq{Id: req.Id, IsGetSize: req.IsGetSize}); err != nil {
+	var res *content.GetPublicFileResp
+	if res, err = s.CloudMindContent.GetPublicFile(ctx, &content.GetPublicFileReq{Id: req.Id}); err != nil {
 		return resp, err
 	}
-	switch {
-	case res.Zone == "" || res.SubZone == "":
-		return resp, consts.ErrNoAccessFile
-	case res.IsDel == consts.HardDel:
-		return resp, consts.ErrFileNotExist
-	}
+
 	resp = &core_api.GetPublicFileResp{
 		UserId:       res.UserId,
 		Name:         res.Name,
 		Type:         res.Type,
 		SpaceSize:    res.SpaceSize,
-		IsDel:        res.IsDel,
 		Zone:         res.Zone,
-		SubZone:      res.SubZone,
 		Description:  res.Description,
 		CreateAt:     res.CreateAt,
-		UpdateAt:     res.UpdateAt,
 		Labels:       []*core_api.Label{},
 		Author:       &core_api.FileUser{},
 		FileCount:    &core_api.FileCount{},
@@ -330,9 +320,9 @@ func (s *FileService) GetPrivateFiles(ctx context.Context, req *core_api.GetPriv
 	}
 
 	var res *content.GetFileListResp
-	var searchOptions *content.SearchOptions
-	p := convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward)
+	var searchOption *content.SearchOption
 
+	p := convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward)
 	filter := &content.FileFilterOptions{
 		OnlyUserId:   lo.ToPtr(userData.UserId),
 		OnlyFatherId: req.OnlyFatherId,
@@ -340,13 +330,10 @@ func (s *FileService) GetPrivateFiles(ctx context.Context, req *core_api.GetPriv
 		OnlyType:     req.OnlyType,
 		OnlyCategory: req.OnlyCategory,
 	}
-	if req.AllFieldsKey != nil {
-		searchOptions = &content.SearchOptions{Type: &content.SearchOptions_AllFieldsKey{AllFieldsKey: *req.AllFieldsKey}}
-	} else if req.Name != nil || req.Id != nil {
-		searchOptions = &content.SearchOptions{Type: &content.SearchOptions_MultiFieldsKey{MultiFieldsKey: &content.SearchField{Name: req.Name, Id: req.Id}}}
-	}
 
-	if res, err = s.CloudMindContent.GetFileList(ctx, &content.GetFileListReq{SearchOptions: searchOptions, FilterOptions: filter, PaginationOptions: p, SortOptions: sort}); err != nil {
+	searchOption = &content.SearchOption{SearchKeyword: &content.SearchOptions_AllFieldsKey{AllFieldsKey: *req.AllFieldsKey}}
+
+	if res, err = s.CloudMindContent.GetFileList(ctx, &content.GetFileListReq{SearchOption: searchOption, FilterOptions: filter, PaginationOptions: p, SortOptions: sort}); err != nil {
 		return resp, err
 	}
 	resp.Files = lo.Map[*content.File, *core_api.PrivateFile](res.Files, func(item *content.File, _ int) *core_api.PrivateFile {
@@ -370,10 +357,15 @@ func (s *FileService) GetPublicFiles(ctx context.Context, req *core_api.GetPubli
 	var searchOptions *content.SearchOptions
 
 	p := convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward)
-	filter := &content.FileFilterOptions{
-		OnlyFatherId:     req.OnlyFatherId,
+	filter := &content.PublicFileFilterOptions{
+		OnlyUserId:      req.,
+		OnlyZone:        req.OnlyZone,
+		OnlyType:        nil,
+		OnlyLabelId:     nil,
+		OnlyAuditStatus: req.OnlyAuditStatus,
+	}
+	FileFilterOptions{
 		OnlyZone:         req.OnlyZone,
-		OnlySubZone:      req.OnlySubZone,
 		OnlyIsDel:        lo.ToPtr(consts.NotDel),
 		OnlyType:         req.OnlyType,
 		OnlyCategory:     req.OnlyCategory,
@@ -526,7 +518,6 @@ func (s *FileService) UpdateFile(ctx context.Context, req *core_api.UpdateFileRe
 	var res *content.UpdateFileResp
 	if res, err = s.CloudMindContent.UpdateFile(ctx, &content.UpdateFileReq{
 		Id:     req.Id,
-		UserId: userData.UserId,
 		Name:   req.Name,
 	}); err != nil {
 		return resp, err
@@ -616,10 +607,9 @@ func (s *FileService) DeleteFile(ctx context.Context, req *core_api.DeleteFileRe
 	}
 
 	if _, err1 := s.CloudMindContent.DeleteFile(ctx, &content.DeleteFileReq{
-		DeleteType:     int64(req.DeleteType),
-		ClearCommunity: req.ClearCommunity,
-		Files:          files,
-		UserId:         userData.UserId,
+		DeleteType: int64(req.DeleteType),
+		Files:      files,
+		UserId:     userData.UserId,
 	}); err1 != nil {
 		return resp, err
 	}
@@ -884,8 +874,6 @@ func (s *FileService) AddFileToPublicSpace(ctx context.Context, req *core_api.Ad
 	err = mr.Finish(func() error {
 		_, err1 := s.CloudMindContent.AddFileToPublicSpace(ctx, &content.AddFileToPublicSpaceReq{
 			Id:          req.Id,
-			Path:        res.Path,
-			SpaceSize:   res.SpaceSize,
 			Zone:        req.Zone,
 			Description: req.Description,
 			Labels:      req.Labels,
