@@ -15,6 +15,7 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/utils"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/sts"
+	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform"
 	"github.com/google/wire"
 	"github.com/samber/lo"
 	"github.com/zeromicro/go-zero/core/mr"
@@ -267,7 +268,6 @@ func (s *FileService) GetPublicFile(ctx context.Context, req *core_api.GetPublic
 	if res, err = s.CloudMindContent.GetPublicFile(ctx, &content.GetPublicFileReq{Id: req.Id}); err != nil {
 		return resp, err
 	}
-
 	resp = &core_api.GetPublicFileResp{
 		UserId:       res.UserId,
 		Name:         res.Name,
@@ -314,13 +314,23 @@ func (s *FileService) GetPrivateFiles(ctx context.Context, req *core_api.GetPriv
 	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
-	sort := lo.ToPtr(content.SortOptions_SortOptions_createAtDesc)
+
+	var (
+		res          *content.GetFileListResp
+		searchOption *content.SearchOption
+		sort         = lo.ToPtr(content.SortOptions_SortOptions_createAtDesc)
+	)
+
 	if req.SortType != nil {
 		sort = lo.ToPtr(content.SortOptions(*req.SortType))
 	}
 
-	var res *content.GetFileListResp
-	var searchOption *content.SearchOption
+	if req.SearchKeyword != nil {
+		searchOption = &content.SearchOption{
+			SearchKeyword:  req.SearchKeyword,
+			SearchSortType: content.SearchSortType(*req.SearchType),
+		}
+	}
 
 	p := convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward)
 	filter := &content.FileFilterOptions{
@@ -330,8 +340,6 @@ func (s *FileService) GetPrivateFiles(ctx context.Context, req *core_api.GetPriv
 		OnlyType:     req.OnlyType,
 		OnlyCategory: req.OnlyCategory,
 	}
-
-	searchOption = &content.SearchOption{SearchKeyword: &content.SearchOptions_AllFieldsKey{AllFieldsKey: *req.AllFieldsKey}}
 
 	if res, err = s.CloudMindContent.GetFileList(ctx, &content.GetFileListReq{SearchOption: searchOption, FilterOptions: filter, PaginationOptions: p, SortOptions: sort}); err != nil {
 		return resp, err
@@ -353,40 +361,37 @@ func (s *FileService) GetPublicFiles(ctx context.Context, req *core_api.GetPubli
 	if err != nil {
 		return resp, consts.ErrNotAuthentication
 	}
-	var res *content.GetFileListResp
-	var searchOptions *content.SearchOptions
+
+	var (
+		res          *content.GetPublicFileListResp
+		searchOption *content.SearchOption
+		sort         = lo.ToPtr(content.SortOptions_SortOptions_createAtDesc)
+	)
 
 	p := convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward)
 	filter := &content.PublicFileFilterOptions{
-		OnlyUserId:      req.,
+		OnlyUserId:      req.OnlyUserId,
 		OnlyZone:        req.OnlyZone,
-		OnlyType:        nil,
-		OnlyLabelId:     nil,
+		OnlyType:        req.OnlyType,
+		OnlyLabelId:     req.OnlyLabelId,
 		OnlyAuditStatus: req.OnlyAuditStatus,
 	}
-	FileFilterOptions{
-		OnlyZone:         req.OnlyZone,
-		OnlyIsDel:        lo.ToPtr(consts.NotDel),
-		OnlyType:         req.OnlyType,
-		OnlyCategory:     req.OnlyCategory,
-		OnlyLabelId:      req.OnlyLabelId,
-		OnlyDocumentType: lo.ToPtr(int64(core_api.DocumentType_DocumentType_public)),
-	}
-	sort := lo.ToPtr(content.SortOptions_SortOptions_createAtDesc)
+
 	if req.SortType != nil {
 		sort = lo.ToPtr(content.SortOptions(*req.SortType))
 	}
 
-	if req.AllFieldsKey != nil {
-		searchOptions = &content.SearchOptions{Type: &content.SearchOptions_AllFieldsKey{AllFieldsKey: *req.AllFieldsKey}}
-	} else if req.Name != nil || req.Id != nil || req.Description != nil {
-		searchOptions = &content.SearchOptions{Type: &content.SearchOptions_MultiFieldsKey{MultiFieldsKey: &content.SearchField{Name: req.Name, Id: req.Id, Description: req.Description}}}
+	if req.SearchKeyword != nil {
+		searchOption = &content.SearchOption{
+			SearchKeyword:  req.SearchKeyword,
+			SearchSortType: content.SearchSortType(*req.SearchType),
+		}
 	}
 
-	if res, err = s.CloudMindContent.GetFileList(ctx, &content.GetFileListReq{SearchOptions: searchOptions, FilterOptions: filter, PaginationOptions: p, SortOptions: sort}); err != nil {
+	if res, err = s.CloudMindContent.GetPublicFileList(ctx, &content.GetPublicFileListReq{SearchOption: searchOption, FilterOptions: filter, PaginationOptions: p, SortOptions: sort}); err != nil {
 		return resp, err
 	}
-	resp.Files = lo.Map[*content.File, *core_api.PublicFile](res.Files, func(item *content.File, _ int) *core_api.PublicFile {
+	resp.Files = lo.Map(res.Files, func(item *content.PublicFile, _ int) *core_api.PublicFile {
 		file := convertor.FileToCorePublicFile(item)
 		_ = mr.Finish(func() error {
 			s.FileDomainService.LoadLikeCount(ctx, file.FileCount, item.Id) // 点赞量
@@ -411,8 +416,6 @@ func (s *FileService) GetPublicFiles(ctx context.Context, req *core_api.GetPubli
 	})
 	resp.Token = res.Token
 	resp.Total = res.Total
-	resp.FatherNamePath = res.FatherNamePath
-	resp.FatherIdPath = res.FatherIdPath
 	return resp, nil
 }
 
@@ -425,7 +428,13 @@ func (s *FileService) GetRecycleBinFiles(ctx context.Context, req *core_api.GetR
 
 	var res *content.GetRecycleBinFilesResp
 	p := convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward)
-	if res, err = s.CloudMindContent.GetRecycleBinFiles(ctx, &content.GetRecycleBinFilesReq{FilterOptions: &content.FileFilterOptions{OnlyUserId: lo.ToPtr(userData.UserId), OnlyIsDel: lo.ToPtr(consts.SoftDel)}, PaginationOptions: p}); err != nil {
+	if res, err = s.CloudMindContent.GetRecycleBinFiles(ctx, &content.GetRecycleBinFilesReq{
+		FilterOptions: &content.FileFilterOptions{
+			OnlyUserId: lo.ToPtr(userData.UserId),
+			OnlyIsDel:  lo.ToPtr(consts.SoftDel),
+		},
+		PaginationOptions: p,
+	}); err != nil {
 		return resp, err
 	}
 	resp.Files = lo.Map[*content.File, *core_api.PrivateFile](res.Files, func(item *content.File, _ int) *core_api.PrivateFile {
@@ -517,8 +526,8 @@ func (s *FileService) UpdateFile(ctx context.Context, req *core_api.UpdateFileRe
 	}
 	var res *content.UpdateFileResp
 	if res, err = s.CloudMindContent.UpdateFile(ctx, &content.UpdateFileReq{
-		Id:     req.Id,
-		Name:   req.Name,
+		Id:   req.Id,
+		Name: req.Name,
 	}); err != nil {
 		return resp, err
 	}
@@ -770,83 +779,107 @@ func (s *FileService) SaveFileToPrivateSpace(ctx context.Context, req *core_api.
 		return resp, consts.ErrNotAuthentication
 	}
 
-	if req.DocumentType == core_api.DocumentType_DocumentType_personal {
-		var ok *content.CheckShareFileResp
-		var res *content.ParsingShareCodeResp
-		if res, err = s.CloudMindContent.ParsingShareCode(ctx, &content.ParsingShareCodeReq{Code: *req.Code}); err != nil {
+	if req.Id == req.FatherId { // 如果目标文件和要保存的文件是，则返回错误
+		return resp, consts.ErrIllegalOperation
+	}
+
+	if req.ShareField != nil {
+		var (
+			files *content.GetFilesByIdsResp
+			check *content.CheckShareFileResp
+			parse *content.ParsingShareCodeResp
+			save  *content.SaveShareFileToPrivateSpaceResp
+		)
+
+		if parse, err = s.CloudMindContent.ParsingShareCode(ctx, &content.ParsingShareCodeReq{Code: req.ShareField.Code}); err != nil {
 			return resp, err
 		}
-		if res.Key != *req.Key {
+
+		if parse.Key != req.ShareField.Key {
 			return resp, consts.ErrShareFileKey
 		}
-		ok, err = s.CloudMindContent.CheckShareFile(ctx, &content.CheckShareFileReq{FileIds: res.FileList, Id: req.Id})
+
+		check, err = s.CloudMindContent.CheckShareFile(ctx, &content.CheckShareFileReq{FileIds: parse.FileList, Id: req.Id})
 		switch {
 		case err != nil:
 			return resp, err
-		case !ok.Ok:
+		case !check.Ok:
 			return resp, consts.ErrNoAccessFile
 		}
-	}
 
-	if req.Id == req.FatherId {
-		return resp, consts.ErrIllegalOperation
-	} // 如果目标文件和要保存的文件是同一个用户的，则返回错误
-	var files *content.GetFilesByIdsResp
-	if files, err = s.CloudMindContent.GetFilesByIds(ctx, &content.GetFilesByIdsReq{Ids: []string{req.Id, req.FatherId}}); err != nil {
-		return resp, err
-	}
-	if req.FatherId == userData.UserId {
-		files.Files[1] = &content.File{UserId: userData.UserId, Path: userData.UserId, SpaceSize: consts.FolderSize, IsDel: consts.NotDel}
-	}
-	for _, file := range files.Files {
-		if file == nil {
-			return resp, consts.ErrFileNotExist
+		if files, err = s.CloudMindContent.GetFilesByIds(ctx, &content.GetFilesByIdsReq{Ids: []string{req.Id, req.FatherId}}); err != nil {
+			return resp, err
 		}
-	}
+		if req.FatherId == userData.UserId {
+			files.Files[1] = &content.File{Path: userData.UserId}
+		}
 
-	switch {
-	case files.Files[1].SpaceSize != consts.FolderSize:
-		return resp, consts.ErrFileIsNotDir
-	case files.Files[0].UserId == files.Files[1].UserId || userData.UserId != files.Files[1].UserId || req.Id == req.FatherId:
-		return resp, consts.ErrIllegalOperation
-	case req.DocumentType == core_api.DocumentType_DocumentType_public && (files.Files[0].Zone == "" || files.Files[0].SubZone == ""):
-		return resp, consts.ErrNoAccessFile
-	}
+		switch {
+		case files.Files[0] == nil || files.Files[1] == nil:
+			return resp, consts.ErrIllegalOperation
+		case files.Files[1].UserId != userData.UserId:
+			return resp, consts.ErrIllegalOperation
+		}
 
-	if err = mr.Finish(func() error {
+		if save, err = s.CloudMindContent.SaveShareFileToPrivateSpace(ctx, &content.SaveShareFileToPrivateSpaceReq{
+			Id:        files.Files[0].Id,
+			UserId:    userData.UserId,
+			NewPath:   files.Files[1].Path,
+			FatherId:  req.FatherId,
+			Name:      files.Files[0].Name,
+			Type:      files.Files[0].Type,
+			FileMd5:   files.Files[0].Md5,
+			SpaceSize: files.Files[0].SpaceSize,
+		}); err != nil {
+			return resp, err
+		}
+		resp.Id = save.Id
+		resp.Name = save.Name
+	} else {
 		var (
-			res  *content.SaveFileToPrivateSpaceResp
-			err1 error
+			err1, err2 error
+			publicFile *content.GetPublicFileResp
+			file       *content.GetFileResp
+			save       *content.SavePublicFileToPrivateSpaceResp
 		)
-		if res, err1 = s.CloudMindContent.SaveFileToPrivateSpace(ctx, &content.SaveFileToPrivateSpaceReq{
-			Id:           files.Files[0].Id,
-			UserId:       userData.UserId,
-			NewPath:      files.Files[1].Path,
-			FatherId:     req.FatherId,
-			Name:         files.Files[0].Name,
-			Type:         files.Files[0].Type,
-			FileMd5:      files.Files[0].Md5,
-			SpaceSize:    files.Files[0].SpaceSize,
-			DocumentType: int64(req.DocumentType),
-		}); err1 != nil {
-			return err1
+
+		if err = mr.Finish(func() error {
+			if publicFile, err1 = s.CloudMindContent.GetPublicFile(ctx, &content.GetPublicFileReq{Id: req.Id}); err1 != nil {
+				return err1
+			}
+			return nil
+		}, func() error {
+			if req.FatherId == userData.UserId {
+				file = &content.GetFileResp{Path: userData.UserId}
+			} else {
+				if file, err2 = s.CloudMindContent.GetFile(ctx, &content.GetFileReq{Id: req.FatherId}); err2 != nil {
+					return err2
+				}
+			}
+			return nil
+		}); err != nil {
+			return resp, err
 		}
-		resp.Id = res.Id
-		resp.Name = res.Name
-		return nil
-	}, func() error {
-		if err2 := s.RelationDomainService.CreateRelation(ctx, &core_api.Relation{
-			FromType:     core_api.TargetType_UserType,
-			FromId:       userData.UserId,
-			ToType:       core_api.TargetType_FileType,
-			ToId:         req.Id,
-			RelationType: core_api.RelationType_DownLoadRelationType,
-		}); err2 != nil {
-			return err2
+
+		switch {
+		case file.UserId != userData.UserId:
+			return resp, consts.ErrIllegalOperation
 		}
-		return nil
-	}); err != nil {
-		return resp, err
+
+		if save, err = s.CloudMindContent.SavePublicFileToPrivateSpace(ctx, &content.SavePublicFileToPrivateSpaceReq{
+			Id:        req.Id,
+			UserId:    userData.UserId,
+			NewPath:   file.Path,
+			FatherId:  req.FatherId,
+			Name:      publicFile.Name,
+			Type:      publicFile.Type,
+			FileMd5:   publicFile.Md5,
+			SpaceSize: publicFile.SpaceSize,
+		}); err != nil {
+			return resp, err
+		}
+		resp.Id = save.Id
+		resp.Name = save.Name
 	}
 
 	return resp, nil
@@ -880,19 +913,16 @@ func (s *FileService) AddFileToPublicSpace(ctx context.Context, req *core_api.Ad
 		})
 		return err1
 	}, func() error {
-		//subject, _ := s.Platform.GetCommentSubject(ctx, &platform.GetCommentSubjectReq{Id: file.File.FileId})
-		//if subject.GetSubject() != nil {
-		//	return nil
-		//}
-		//_, err2 := s.Platform.CreateCommentSubject(ctx, &platform.CreateCommentSubjectReq{Subject: &platform.Subject{
-		//	Id:        file.File.FileId,
-		//	UserId:    file.File.UserId,
-		//	RootCount: lo.ToPtr(consts.InitNumber),
-		//	AllCount:  lo.ToPtr(consts.InitNumber),
-		//	State:     int64(core_api.State_Normal),
-		//	Attrs:     int64(core_api.Attrs_None),
-		//}})
-		//return err2
+		subject, _ := s.Platform.GetCommentSubject(ctx, &platform.GetCommentSubjectReq{Id: req.Id})
+		if subject != nil {
+			return nil
+		}
+		if _, err2 := s.Platform.CreateCommentSubject(ctx, &platform.CreateCommentSubjectReq{
+			Id:     req.Id,
+			UserId: userData.UserId,
+		}); err2 != nil {
+			return err2
+		}
 		return nil
 	}, func() error {
 		if _, err3 := s.CloudMindContent.CreateHot(ctx, &content.CreateHotReq{HotId: req.Id}); err3 != nil {
