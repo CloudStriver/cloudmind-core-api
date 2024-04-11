@@ -329,6 +329,7 @@ func (s *FileService) GetPrivateFiles(ctx context.Context, req *core_api.GetPriv
 		searchOption = &content.SearchOption{
 			SearchKeyword:  req.SearchKeyword,
 			SearchSortType: content.SearchSortType(*req.SearchType),
+			SearchTimeType: content.SearchTimeType(*req.SearchTimerType),
 		}
 	}
 
@@ -385,6 +386,7 @@ func (s *FileService) GetPublicFiles(ctx context.Context, req *core_api.GetPubli
 		searchOption = &content.SearchOption{
 			SearchKeyword:  req.SearchKeyword,
 			SearchSortType: content.SearchSortType(*req.SearchType),
+			SearchTimeType: content.SearchTimeType(*req.SearchTimerType),
 		}
 	}
 

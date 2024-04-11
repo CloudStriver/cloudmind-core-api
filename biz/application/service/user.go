@@ -207,6 +207,7 @@ func (s *UserService) SearchUser(ctx context.Context, req *core_api.SearchUserRe
 		SearchOption: &content.SearchOption{
 			SearchKeyword:  req.Keyword,
 			SearchSortType: content.SearchSortType(req.SearchType),
+			SearchTimeType: content.SearchTimeType(req.SearchTimerType),
 		},
 		PaginationOptions: convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward),
 	})
