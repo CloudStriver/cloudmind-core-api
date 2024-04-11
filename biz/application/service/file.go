@@ -235,7 +235,7 @@ func (s *FileService) GetPrivateFile(ctx context.Context, req *core_api.GetPriva
 	}
 
 	var res *content.GetFileResp
-	if res, err = s.CloudMindContent.GetFile(ctx, &content.GetFileReq{Id: req.Id, IsGetSize: req.IsGetSize}); err != nil {
+	if res, err = s.CloudMindContent.GetFile(ctx, &content.GetFileReq{Id: req.Id, IsGetSize: true}); err != nil {
 		return resp, err
 	}
 	switch {
@@ -265,7 +265,7 @@ func (s *FileService) GetPublicFile(ctx context.Context, req *core_api.GetPublic
 	}
 
 	var res *content.GetPublicFileResp
-	if res, err = s.CloudMindContent.GetPublicFile(ctx, &content.GetPublicFileReq{Id: req.Id}); err != nil {
+	if res, err = s.CloudMindContent.GetPublicFile(ctx, &content.GetPublicFileReq{Id: req.Id, IsGetSize: true}); err != nil {
 		return resp, err
 	}
 	resp = &core_api.GetPublicFileResp{
@@ -626,7 +626,7 @@ func (s *FileService) DeleteFile(ctx context.Context, req *core_api.DeleteFileRe
 	return resp, nil
 }
 
-func (s *FileService) EmptyRecycleBin(ctx context.Context, req *core_api.EmptyRecycleBinReq) (resp *core_api.EmptyRecycleBinResp, err error) {
+func (s *FileService) EmptyRecycleBin(ctx context.Context, _ *core_api.EmptyRecycleBinReq) (resp *core_api.EmptyRecycleBinResp, err error) {
 	resp = new(core_api.EmptyRecycleBinResp)
 	userData, err := adaptor.ExtractUserMeta(ctx)
 	if err != nil || userData.GetUserId() == "" {
