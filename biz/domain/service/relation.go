@@ -228,6 +228,16 @@ func (s *RelationDomainService) CreateRelation(ctx context.Context, r *core_api.
 		return err
 	}
 
+	if r.RelationType == core_api.RelationType_LikeRelationType || r.RelationType == core_api.RelationType_CollectRelationType || r.RelationType == core_api.RelationType_CommentRelationType {
+		if _, err = s.CloudMindContent.IncrHotValue(ctx, &content.IncrHotValueReq{
+			Action:     content.Action(r.RelationType),
+			HotId:      userId,
+			TargetType: content.TargetType_UserType,
+		}); err != nil {
+			return err
+		}
+
+	}
 	// 创建通知
 	msg, _ := sonic.Marshal(Msg{
 		FromName: userinfo.Name,
