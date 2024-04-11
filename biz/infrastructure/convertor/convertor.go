@@ -119,15 +119,6 @@ func CoreSubjectToSubject(req *core_api.Subject) *platform.Subject {
 	}
 }
 
-func UserDetailToUser(req *content.User) *core_api.User {
-	return &core_api.User{
-		UserId: req.UserId,
-		Name:   req.Name,
-		Url:    req.Url,
-		Labels: req.Labels,
-	}
-}
-
 func MakePaginationOptions(limit, offset *int64, lastToken *string, backward *bool) *basic.PaginationOptions {
 	return &basic.PaginationOptions{
 		Limit:     limit,

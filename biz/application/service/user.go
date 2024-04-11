@@ -198,6 +198,10 @@ func (s *UserService) GetUserDetail(ctx context.Context, _ *core_api.GetUserDeta
 
 func (s *UserService) SearchUser(ctx context.Context, req *core_api.SearchUserReq) (resp *core_api.SearchUserResp, err error) {
 	resp = new(core_api.SearchUserResp)
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil {
+		return resp, consts.ErrNotAuthentication
+	}
 
 	users, err := s.CloudMindContent.GetUsers(ctx, &content.GetUsersReq{
 		SearchOption: &content.SearchOption{
@@ -209,9 +213,33 @@ func (s *UserService) SearchUser(ctx context.Context, req *core_api.SearchUserRe
 	if err != nil {
 		return resp, err
 	}
-	resp.Users = lo.Map[*content.User, *core_api.User](users.Users, func(user *content.User, _ int) *core_api.User {
-		return convertor.UserDetailToUser(user)
-	})
+	resp.Users = make([]*core_api.User, 0, len(users.Users))
+
+	if err = mr.Finish(lo.Map[*content.User](users.Users, func(user *content.User, i int) func() error {
+		return func() error {
+			resp.Users[i] = &core_api.User{
+				UserId:      user.UserId,
+				Name:        user.Name,
+				Url:         user.Url,
+				Labels:      user.Labels,
+				Description: user.Description,
+			}
+			if err = mr.Finish(func() error {
+				if userData.GetUserId() != user.UserId && userData.GetUserId() != "" {
+					s.UserDomainService.LoadFollowed(ctx, &resp.Users[i].Followed, userData.UserId, user.UserId)
+				}
+				return nil
+			}, func() error {
+				s.UserDomainService.LoadFollowedCount(ctx, &resp.Users[i].FollowedCount, user.UserId)
+				return nil
+			}); err != nil {
+				return err
+			}
+			return nil
+		}
+	})...); err != nil {
+		return resp, err
+	}
 	resp.LastToken = users.LastToken
 	return resp, nil
 }
