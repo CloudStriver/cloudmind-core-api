@@ -89,7 +89,6 @@ func (s *CommentService) GetComments(ctx context.Context, req *core_api.GetComme
 		FilterOptions: &platform.CommentFilterOptions{
 			OnlyUserId:    req.OnlyUserId,
 			OnlyAtUserId:  req.OnlyAtUserId,
-			OnlyCommentId: req.OnlyCommentId,
 			OnlySubjectId: req.OnlySubjectId,
 			OnlyRootId:    req.OnlyRootId,
 			OnlyFatherId:  req.OnlyFatherId,
@@ -137,7 +136,7 @@ func (s *CommentService) CreateComment(ctx context.Context, req *core_api.Create
 		RootId:    req.RootId,
 		FatherId:  req.FatherId,
 		LabelIds:  req.LabelIds,
-		UserId:    req.UserId,
+		UserId:    userData.UserId,
 		AtUserId:  req.AtUserId,
 		Content:   req.Content,
 		Meta:      req.Meta,
