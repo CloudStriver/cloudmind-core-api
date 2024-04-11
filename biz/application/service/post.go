@@ -379,7 +379,6 @@ func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (
 			SearchSortType: content.SearchSortType(*req.SearchType),
 		}
 	}
-	fmt.Println(filter)
 	if getPostsResp, err = s.CloudMindContent.GetPosts(ctx, &content.GetPostsReq{
 		SearchOption:      search,
 		PostFilterOptions: filter,
@@ -392,7 +391,6 @@ func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (
 	}); err != nil {
 		return resp, err
 	}
-	fmt.Println(getPostsResp.Posts)
 	resp.Posts = make([]*core_api.Post, len(getPostsResp.Posts))
 	if err = mr.Finish(lo.Map(getPostsResp.Posts, func(item *content.Post, i int) func() error {
 		return func() error {

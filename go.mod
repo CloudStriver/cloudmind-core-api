@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/CloudStriver/cloudmind-mq v1.0.12-0.20240406143558-b7090c0fbb80
 	github.com/CloudStriver/go-pkg v0.0.0-20240329084540-20ca37a52fea
-	github.com/CloudStriver/service-idl-gen-go v0.0.0-20240410085131-d8c155bd9da5
+	github.com/CloudStriver/service-idl-gen-go v0.0.0-20240410150450-a89e39424833
 	github.com/bytedance/sonic v1.10.2
 	github.com/cloudwego/hertz v0.7.3
 	github.com/golang-jwt/jwt/v4 v4.5.0
@@ -14,7 +14,6 @@ require (
 	github.com/hertz-contrib/monitor-prometheus v0.1.2
 	github.com/hertz-contrib/obs-opentelemetry/tracing v0.3.1
 	github.com/samber/lo v1.39.0
-	github.com/segmentio/fasthash v1.0.3
 	github.com/zeromicro/go-queue v1.1.8
 	github.com/zeromicro/go-zero v1.6.1
 	go.opentelemetry.io/contrib/propagators/b3 v1.21.1
