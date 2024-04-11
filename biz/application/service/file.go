@@ -104,7 +104,7 @@ func (s *FileService) CheckFile(ctx context.Context, req *core_api.CheckFileReq)
 	}
 
 	var res *content.GetPublicFileResp
-	if res, err = s.CloudMindContent.GetPublicFile(ctx, &content.GetPublicFileReq{Id: req.Id}); err != nil {
+	if res, err = s.CloudMindContent.GetPublicFile(ctx, &content.GetPublicFileReq{Id: req.Id, IsGetSize: false}); err != nil {
 		return resp, err
 	}
 
@@ -297,6 +297,7 @@ func (s *FileService) GetPublicFile(ctx context.Context, req *core_api.GetPublic
 		UserId:       res.UserId,
 		Name:         res.Name,
 		Type:         res.Type,
+		Path:         res.Path,
 		SpaceSize:    res.SpaceSize,
 		Zone:         res.Zone,
 		Description:  res.Description,
@@ -475,9 +476,22 @@ func (s *FileService) GetRecycleBinFiles(ctx context.Context, req *core_api.GetR
 		return resp, consts.ErrNotAuthentication
 	}
 
-	var res *content.GetRecycleBinFilesResp
+	var (
+		res          *content.GetRecycleBinFilesResp
+		searchOption *content.SearchOption
+	)
+
+	if req.SearchKeyword != nil {
+		searchOption = &content.SearchOption{
+			SearchKeyword:  req.SearchKeyword,
+			SearchSortType: content.SearchSortType(*req.SearchType),
+			SearchTimeType: content.SearchTimeType(*req.SearchTimerType),
+		}
+	}
+
 	p := convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward)
 	if res, err = s.CloudMindContent.GetRecycleBinFiles(ctx, &content.GetRecycleBinFilesReq{
+		SearchOption: searchOption,
 		FilterOptions: &content.FileFilterOptions{
 			OnlyUserId: lo.ToPtr(userData.UserId),
 			OnlyIsDel:  lo.ToPtr(consts.SoftDel),
@@ -491,6 +505,8 @@ func (s *FileService) GetRecycleBinFiles(ctx context.Context, req *core_api.GetR
 	})
 	resp.Token = res.Token
 	resp.Total = res.Total
+	resp.FatherIdPath = res.FatherIdPath
+	resp.FatherNamePath = res.FatherNamePath
 	return resp, nil
 }
 
@@ -667,7 +683,6 @@ func (s *FileService) DeleteFile(ctx context.Context, req *core_api.DeleteFileRe
 	if _, err1 := s.CloudMindContent.DeleteFile(ctx, &content.DeleteFileReq{
 		DeleteType: int64(req.DeleteType),
 		Files:      files,
-		UserId:     userData.UserId,
 	}); err1 != nil {
 		return resp, err
 	}
