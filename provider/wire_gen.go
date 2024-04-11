@@ -65,6 +65,8 @@ func NewProvider() (*Provider, error) {
 		Platform:      platForm,
 	}
 	deleteFileRelationKq := kq.NewDeleteFileRelationKq(configConfig)
+	createItemKq := kq.NewCreateItemKq(configConfig)
+	deleteItemKq := kq.NewDeleteItemKq(configConfig)
 	fileService := &service2.FileService{
 		Config:                configConfig,
 		PlatformSts:           cloudMindSts,
@@ -73,10 +75,10 @@ func NewProvider() (*Provider, error) {
 		FileDomainService:     fileDomainService,
 		Platform:              platForm,
 		DeleteFileRelationKq:  deleteFileRelationKq,
+		CreateItemKq:          createItemKq,
+		DeleteItemKq:          deleteItemKq,
 	}
-	createItemKq := kq.NewCreateItemKq(configConfig)
 	updateItemKq := kq.NewUpdateItemKq(configConfig)
-	deleteItemKq := kq.NewDeleteItemKq(configConfig)
 	postService := &service2.PostService{
 		Config:                configConfig,
 		CloudMindContent:      cloudMindContent,

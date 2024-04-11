@@ -957,12 +957,14 @@ func (s *FileService) AddFileToPublicSpace(ctx context.Context, req *core_api.Ad
 		return resp, consts.ErrFileNotExist
 	}
 
-	addRes, err = s.CloudMindContent.AddFileToPublicSpace(ctx, &content.AddFileToPublicSpaceReq{
+	if addRes, err = s.CloudMindContent.AddFileToPublicSpace(ctx, &content.AddFileToPublicSpaceReq{
 		Id:          req.Id,
 		Zone:        req.Zone,
 		Description: req.Description,
 		Labels:      req.Labels,
-	})
+	}); err != nil {
+		return resp, err
+	}
 
 	err = mr.Finish(func() error {
 		subject, _ := s.Platform.GetCommentSubject(ctx, &platform.GetCommentSubjectReq{Id: addRes.Id})
