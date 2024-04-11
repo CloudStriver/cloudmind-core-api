@@ -15,6 +15,7 @@ func FileToCorePublicFile(req *content.PublicFile) *core_api.PublicFile {
 		UserId:       req.UserId,
 		Name:         req.Name,
 		Type:         req.Type,
+		Path:         req.Path,
 		SpaceSize:    req.SpaceSize,
 		Zone:         req.Zone,
 		Description:  req.Description,
