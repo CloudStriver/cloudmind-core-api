@@ -13,9 +13,12 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
 	platformservice "github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/utils"
+	"github.com/CloudStriver/cloudmind-mq/app/util/message"
+	"github.com/CloudStriver/go-pkg/utils/pconvertor"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/sts"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform"
+	"github.com/bytedance/sonic"
 	"github.com/google/wire"
 	"github.com/samber/lo"
 	"github.com/zeromicro/go-zero/core/mr"
@@ -61,6 +64,8 @@ type FileService struct {
 	FileDomainService     service.IFileDomainService
 	Platform              platformservice.IPlatForm
 	DeleteFileRelationKq  *kq.DeleteFileRelationKq
+	CreateItemKq          *kq.CreateItemKq
+	DeleteItemKq          *kq.DeleteItemKq
 }
 
 func (s *FileService) FilterContent(ctx context.Context, IsSure bool, contents []*string) ([]string, error) {
@@ -138,15 +143,35 @@ func (s *FileService) MakeFilePrivate(ctx context.Context, req *core_api.MakeFil
 		return resp, consts.ErrNotAuthentication
 	}
 
-	var res *content.GetFileResp
-	if res, err = s.CloudMindContent.GetFile(ctx, &content.GetFileReq{Id: req.Id}); err != nil {
+	var getRes *content.GetPublicFilesByIdsResp
+	if getRes, err = s.CloudMindContent.GetPublicFilesByIds(ctx, &content.GetPublicFilesByIdsReq{Ids: req.Ids}); err != nil {
 		return resp, err
 	}
-	if res.UserId != userData.UserId {
-		return resp, consts.ErrNoAccessFile
+	for _, file := range getRes.Files {
+		if file.UserId != userData.UserId {
+			return resp, consts.ErrNoAccessFile
+		}
 	}
-	if _, err = s.CloudMindContent.MakeFilePrivate(ctx, &content.MakeFilePrivateReq{Id: req.Id}); err != nil {
+
+	files := lo.Map(getRes.Files, func(item *content.PublicFile, _ int) *content.FileParameter {
+		return &content.FileParameter{
+			Id:        item.Id,
+			Path:      item.Path,
+			SpaceSize: item.SpaceSize,
+		}
+	})
+
+	if _, err = s.CloudMindContent.MakeFilePrivate(ctx, &content.MakeFilePrivateReq{Files: files}); err != nil {
 		return resp, err
+	}
+
+	for _, file := range files {
+		data, _ := sonic.Marshal(&message.DeleteItemMessage{
+			ItemId: file.Id,
+		})
+		if err = s.DeleteItemKq.Push(pconvertor.Bytes2String(data)); err != nil {
+			return resp, err
+		}
 	}
 
 	return resp, nil
@@ -302,6 +327,17 @@ func (s *FileService) GetPublicFile(ctx context.Context, req *core_api.GetPublic
 	}, func() error {
 		s.FileDomainService.LoadLabels(ctx, &resp.Labels, res.Labels) // 标签集
 		return nil
+	}, func() error {
+		if err2 := s.RelationDomainService.CreateRelation(ctx, &core_api.Relation{
+			FromType:     core_api.TargetType_UserType,
+			FromId:       userData.UserId,
+			ToType:       core_api.TargetType_FileType,
+			ToId:         req.Id,
+			RelationType: core_api.RelationType_ViewRelationType,
+		}); err2 != nil {
+			return err2
+		}
+		return nil
 	}); err != nil {
 		return resp, err
 	}
@@ -412,6 +448,17 @@ func (s *FileService) GetPublicFiles(ctx context.Context, req *core_api.GetPubli
 			return nil
 		}, func() error {
 			s.FileDomainService.LoadCollectCount(ctx, file.FileCount, item.Id) // 收藏量
+			return nil
+		}, func() error {
+			if err2 := s.RelationDomainService.CreateRelation(ctx, &core_api.Relation{
+				FromType:     core_api.TargetType_UserType,
+				FromId:       userData.UserId,
+				ToType:       core_api.TargetType_FileType,
+				ToId:         item.Id,
+				RelationType: core_api.RelationType_ViewRelationType,
+			}); err2 != nil {
+				return err2
+			}
 			return nil
 		})
 		return file
@@ -894,52 +941,68 @@ func (s *FileService) AddFileToPublicSpace(ctx context.Context, req *core_api.Ad
 		return resp, consts.ErrNotAuthentication
 	}
 
-	var res *content.GetFileResp
-	if res, err = s.CloudMindContent.GetFile(ctx, &content.GetFileReq{Id: req.Id, IsGetSize: false}); err != nil {
+	var (
+		addRes *content.AddFileToPublicSpaceResp
+		getRes *content.GetFileResp
+	)
+
+	if getRes, err = s.CloudMindContent.GetFile(ctx, &content.GetFileReq{Id: req.Id, IsGetSize: false}); err != nil {
 		return resp, err
 	}
 
 	switch {
-	case res.UserId != userData.UserId:
+	case getRes.UserId != userData.UserId:
 		return resp, consts.ErrNoAccessFile
-	case res.IsDel != consts.NotDel:
+	case getRes.IsDel != consts.NotDel:
 		return resp, consts.ErrFileNotExist
 	}
 
+	if addRes, err = s.CloudMindContent.AddFileToPublicSpace(ctx, &content.AddFileToPublicSpaceReq{
+		Id:          req.Id,
+		Zone:        req.Zone,
+		Description: req.Description,
+		Labels:      req.Labels,
+	}); err != nil {
+		return resp, err
+	}
+
 	err = mr.Finish(func() error {
-		_, err1 := s.CloudMindContent.AddFileToPublicSpace(ctx, &content.AddFileToPublicSpaceReq{
-			Id:          req.Id,
-			Zone:        req.Zone,
-			Description: req.Description,
-			Labels:      req.Labels,
-		})
-		return err1
-	}, func() error {
-		subject, _ := s.Platform.GetCommentSubject(ctx, &platform.GetCommentSubjectReq{Id: req.Id})
+		subject, _ := s.Platform.GetCommentSubject(ctx, &platform.GetCommentSubjectReq{Id: addRes.Id})
 		if subject != nil {
 			return nil
 		}
-		if _, err2 := s.Platform.CreateCommentSubject(ctx, &platform.CreateCommentSubjectReq{
-			Id:     req.Id,
+		if _, err1 := s.Platform.CreateCommentSubject(ctx, &platform.CreateCommentSubjectReq{
+			Id:     addRes.Id,
 			UserId: userData.UserId,
-		}); err2 != nil {
-			return err2
+		}); err1 != nil {
+			return err1
 		}
 		return nil
 	}, func() error {
-		if _, err3 := s.CloudMindContent.CreateHot(ctx, &content.CreateHotReq{HotId: req.Id}); err3 != nil {
-			return err
+		if _, err1 := s.CloudMindContent.CreateHot(ctx, &content.CreateHotReq{HotId: addRes.Id}); err1 != nil {
+			return err1
 		}
 		return nil
 	}, func() error {
-		if err4 := s.RelationDomainService.CreateRelation(ctx, &core_api.Relation{
+		if err1 := s.RelationDomainService.CreateRelation(ctx, &core_api.Relation{
 			FromType:     core_api.TargetType_UserType,
 			FromId:       userData.UserId,
 			ToType:       core_api.TargetType_FileType,
 			ToId:         req.Id,
-			RelationType: core_api.RelationType_UploadRelationType,
-		}); err4 != nil {
-			return err4
+			RelationType: core_api.RelationType_PublishRelationType,
+		}); err1 != nil {
+			return err1
+		}
+		return nil
+	}, func() error {
+		data, _ := sonic.Marshal(&message.CreateItemMessage{
+			ItemId:   addRes.Id,
+			IsHidden: false,
+			Labels:   req.Labels,
+			Category: core_api.Category_name[int32(core_api.Category_PostCategory)],
+		})
+		if err1 := s.CreateItemKq.Push(pconvertor.Bytes2String(data)); err1 != nil {
+			return err1
 		}
 		return nil
 	})

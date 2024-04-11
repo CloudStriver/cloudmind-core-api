@@ -128,7 +128,7 @@ func (s *PostService) CreatePost(ctx context.Context, req *core_api.CreatePostRe
 	}, func() error {
 		data, _ := sonic.Marshal(&message.CreateItemMessage{
 			ItemId:   createPostResp.PostId,
-			IsHidden: req.Status == int64(core_api.PostStatus_DraftPostStatus),
+			IsHidden: req.Status != int64(core_api.PostStatus_PublicPostStatus),
 			Labels:   req.LabelIds,
 			Category: core_api.Category_name[int32(core_api.Category_PostCategory)],
 		})
