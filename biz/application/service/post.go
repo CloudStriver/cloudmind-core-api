@@ -362,7 +362,6 @@ func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (
 	}
 
 	// 查看所有人的，或者查看的不是自己的
-	fmt.Println(req.GetOnlyUserId(), userData.GetUserId())
 	if req.OnlyUserId == nil || req.GetOnlyUserId() != userData.GetUserId() {
 		filter.OnlyStatus = lo.ToPtr(int64(core_api.PostStatus_PublicPostStatus))
 	}
