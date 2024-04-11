@@ -14,7 +14,6 @@ require (
 	github.com/hertz-contrib/monitor-prometheus v0.1.2
 	github.com/hertz-contrib/obs-opentelemetry/tracing v0.3.1
 	github.com/samber/lo v1.39.0
-	github.com/segmentio/fasthash v1.0.3
 	github.com/zeromicro/go-queue v1.1.8
 	github.com/zeromicro/go-zero v1.6.1
 	go.opentelemetry.io/contrib/propagators/b3 v1.21.1

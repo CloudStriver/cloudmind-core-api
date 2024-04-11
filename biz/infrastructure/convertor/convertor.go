@@ -9,19 +9,17 @@ import (
 	"github.com/bytedance/sonic"
 )
 
-func FileToCorePublicFile(req *content.File) *core_api.PublicFile {
+func FileToCorePublicFile(req *content.PublicFile) *core_api.PublicFile {
 	return &core_api.PublicFile{
-		Id:        req.Id,
-		UserId:    req.UserId,
-		Name:      req.Name,
-		Type:      req.Type,
-		SpaceSize: req.SpaceSize,
-		IsDel:     req.IsDel,
-		//Zone:         req.Zone,
-		//SubZone:      req.SubZone,
-		//Description:  req.Description,
+		Id:           req.Id,
+		UserId:       req.UserId,
+		Name:         req.Name,
+		Type:         req.Type,
+		SpaceSize:    req.SpaceSize,
+		Zone:         req.Zone,
+		Description:  req.Description,
+		AuditStatus:  req.AuditStatus,
 		CreateAt:     req.CreateAt,
-		UpdateAt:     req.UpdateAt,
 		Author:       &core_api.FileUser{},
 		FileCount:    &core_api.FileCount{},
 		FileRelation: &core_api.FileRelation{},
@@ -40,6 +38,7 @@ func FileToCorePrivateFile(req *content.File) *core_api.PrivateFile {
 		IsDel:     req.IsDel,
 		CreateAt:  req.CreateAt,
 		UpdateAt:  req.UpdateAt,
+		DeleteAt:  req.DeleteAt,
 	}
 }
 
@@ -137,18 +136,6 @@ func ShareCodeToCoreShareCode(opts *content.ShareCode) *core_api.ShareCode {
 		BrowseNumber: opts.BrowseNumber,
 		CreateAt:     opts.CreateAt,
 		Key:          opts.Key,
-	}
-}
-
-func ShareFileToCoreShareFile(opts *content.ShareFile) *core_api.ShareFile {
-	return &core_api.ShareFile{
-		Code:          opts.Code,
-		UserId:        opts.UserId,
-		Name:          opts.Name,
-		EffectiveTime: opts.EffectiveTime,
-		BrowseNumber:  opts.BrowseNumber,
-		CreateAt:      opts.CreateAt,
-		FileList:      opts.FileList,
 	}
 }
 
