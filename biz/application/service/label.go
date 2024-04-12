@@ -42,7 +42,7 @@ func (s *LabelService) CreateLabel(ctx context.Context, req *core_api.CreateLabe
 	if res, err = s.Platform.CreateLabel(ctx, &platform.CreateLabelReq{FatherId: req.FatherId, Value: req.Value}); err != nil {
 		return resp, err
 	}
-	resp.Id = res.Id
+	resp.LabelId = res.LabelId
 	return resp, nil
 }
 
@@ -52,7 +52,7 @@ func (s *LabelService) DeleteLabel(ctx context.Context, req *core_api.DeleteLabe
 	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
-	if _, err = s.Platform.DeleteLabel(ctx, &platform.DeleteLabelReq{Id: req.Id}); err != nil {
+	if _, err = s.Platform.DeleteLabel(ctx, &platform.DeleteLabelReq{LabelId: req.LabelId}); err != nil {
 		return resp, err
 	}
 	return resp, nil
@@ -61,7 +61,7 @@ func (s *LabelService) DeleteLabel(ctx context.Context, req *core_api.DeleteLabe
 func (s *LabelService) GetLabel(ctx context.Context, req *core_api.GetLabelReq) (resp *core_api.GetLabelResp, err error) {
 	resp = new(core_api.GetLabelResp)
 	var res *platform.GetLabelResp
-	if res, err = s.Platform.GetLabel(ctx, &platform.GetLabelReq{Id: req.Id}); err != nil {
+	if res, err = s.Platform.GetLabel(ctx, &platform.GetLabelReq{LabelId: req.LabelId}); err != nil {
 		return resp, err
 	}
 	resp.Label = res.Value
@@ -72,7 +72,7 @@ func (s *LabelService) GetLabelsInBatch(ctx context.Context, req *core_api.GetLa
 	resp = new(core_api.GetLabelsInBatchResp)
 
 	var res *platform.GetLabelsInBatchResp
-	if res, err = s.Platform.GetLabelsInBatch(ctx, &platform.GetLabelsInBatchReq{Ids: req.Ids}); err != nil {
+	if res, err = s.Platform.GetLabelsInBatch(ctx, &platform.GetLabelsInBatchReq{LabelIds: req.Ids}); err != nil {
 		return resp, err
 	}
 	resp.Labels = res.Labels
@@ -85,7 +85,7 @@ func (s *LabelService) UpdateLabel(ctx context.Context, req *core_api.UpdateLabe
 	if err != nil || userData.GetUserId() == "" {
 		return resp, consts.ErrNotAuthentication
 	}
-	if _, err = s.Platform.UpdateLabel(ctx, &platform.UpdateLabelReq{Id: req.Id, FatherId: req.FatherId, Value: req.Value}); err != nil {
+	if _, err = s.Platform.UpdateLabel(ctx, &platform.UpdateLabelReq{LabelId: req.LabelId, FatherId: req.FatherId, Value: req.Value}); err != nil {
 		return resp, err
 	}
 	return resp, nil

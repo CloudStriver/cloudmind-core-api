@@ -83,6 +83,6 @@ func (s *CommentDomainService) LoadHated(ctx context.Context, c *core_api.Commen
 
 func (s *CommentDomainService) LoadLabels(ctx context.Context, c *[]string, labelIds []string) {
 	var labels *platform.GetLabelsInBatchResp
-	labels, _ = s.Platform.GetLabelsInBatch(ctx, &platform.GetLabelsInBatchReq{Ids: labelIds})
+	labels, _ = s.Platform.GetLabelsInBatch(ctx, &platform.GetLabelsInBatchReq{LabelIds: labelIds})
 	*c = labels.Labels
 }

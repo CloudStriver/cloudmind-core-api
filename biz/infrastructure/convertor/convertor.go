@@ -11,7 +11,7 @@ import (
 
 func FileToCorePublicFile(req *content.PublicFile) *core_api.PublicFile {
 	return &core_api.PublicFile{
-		Id:           req.Id,
+		FileId:       req.FileId,
 		UserId:       req.UserId,
 		Name:         req.Name,
 		Type:         req.Type,
@@ -29,7 +29,7 @@ func FileToCorePublicFile(req *content.PublicFile) *core_api.PublicFile {
 
 func FileToCorePrivateFile(req *content.File) *core_api.PrivateFile {
 	return &core_api.PrivateFile{
-		Id:        req.Id,
+		FileId:    req.FileId,
 		UserId:    req.UserId,
 		Name:      req.Name,
 		Type:      req.Type,
@@ -45,7 +45,7 @@ func FileToCorePrivateFile(req *content.File) *core_api.PrivateFile {
 
 func CommentToCoreComment(req *platform.Comment) *core_api.Comment {
 	return &core_api.Comment{
-		Id:              req.Id,
+		Id:              req.CommentId,
 		SubjectId:       req.SubjectId,
 		RootId:          req.RootId,
 		FatherId:        req.FatherId,
@@ -62,61 +62,10 @@ func CommentToCoreComment(req *platform.Comment) *core_api.Comment {
 	}
 }
 
-//func CoreCommentToComment(req *core_api.Comment) *platform.Comment {
-//	return &platform.Comment{
-//		Id:        req.Id,
-//		SubjectId: req.SubjectId,
-//		RootId:    req.RootId,
-//		FatherId:  req.FatherId,
-//		//Count:     req.Count,
-//		State:    int64(req.State),
-//		Attrs:    int64(req.Attrs),
-//		Labels:   req.Labels,
-//		UserId:   req.UserId,
-//		AtUserId: req.AtUserId,
-//		Content:  req.Content,
-//		Meta:     req.Meta,
-//	}
-//}
-
-func CoreLabelToLabel(req *core_api.Label) *platform.Label {
-	return &platform.Label{
-		Id:       "",
-		FatherId: "",
-		Value:    req.Value,
-	}
-}
-
 func LabelToCoreLabel(req *platform.Label) *core_api.Label {
 	return &core_api.Label{
-		Id:    req.Id,
+		Id:    req.LabelId,
 		Value: req.Value,
-	}
-}
-
-//func SubjectDetailsToCoreSubjectDetails(req *platform.SubjectDetails) *core_api.SubjectDetails {
-//	return &core_api.SubjectDetails{
-//		Id:           req.Id,
-//		UserId:       req.UserId,
-//		TopCommentId: req.TopCommentId,
-//		RootCount:    req.RootCount,
-//		AllCount:     req.AllCount,
-//		State:        req.State,
-//		Attrs:        req.Attrs,
-//	}
-//}
-
-func CoreSubjectToSubject(req *core_api.Subject) *platform.Subject {
-	return &platform.Subject{
-		Id:           req.Id,
-		UserId:       req.UserId,
-		TopCommentId: req.TopCommentId,
-		RootCount:    0,
-		AllCount:     0,
-		//RootCount:    req.RootCount,
-		//AllCount:     req.AllCount,
-		State: int64(req.State),
-		Attrs: int64(req.Attrs),
 	}
 }
 

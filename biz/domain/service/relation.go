@@ -201,7 +201,7 @@ func (s *RelationDomainService) CreateRelation(ctx context.Context, r *core_api.
 		userId = r.ToId
 	case core_api.TargetType_FileType:
 		getFileResp, err := s.CloudMindContent.GetFile(ctx, &content.GetFileReq{
-			Id: r.ToId,
+			FileId: r.ToId,
 		})
 		if err != nil {
 			return err
