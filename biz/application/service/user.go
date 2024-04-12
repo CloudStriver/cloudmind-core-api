@@ -214,7 +214,7 @@ func (s *UserService) SearchUser(ctx context.Context, req *core_api.SearchUserRe
 	if err != nil {
 		return resp, err
 	}
-	resp.Users = make([]*core_api.User, 0, len(users.Users))
+	resp.Users = make([]*core_api.User, len(users.Users))
 
 	if err = mr.Finish(lo.Map[*content.User](users.Users, func(user *content.User, i int) func() error {
 		return func() error {
