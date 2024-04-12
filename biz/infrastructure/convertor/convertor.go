@@ -45,14 +45,13 @@ func FileToCorePrivateFile(req *content.File) *core_api.PrivateFile {
 
 func CommentToCoreComment(req *platform.Comment) *core_api.Comment {
 	return &core_api.Comment{
-		Id:              req.CommentId,
+		CommentId:       req.CommentId,
 		SubjectId:       req.SubjectId,
 		RootId:          req.RootId,
 		FatherId:        req.FatherId,
 		Count:           req.Count,
 		State:           req.State,
 		Attrs:           req.Attrs,
-		UserId:          req.UserId,
 		AtUserId:        req.AtUserId,
 		Content:         req.Content,
 		Meta:            req.Meta,

@@ -11,7 +11,6 @@ import (
 	platformservice "github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform"
 	"github.com/CloudStriver/cloudmind-mq/app/util/message"
 	"github.com/CloudStriver/go-pkg/utils/pconvertor"
-	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/basic"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform"
 	"github.com/bytedance/sonic"
@@ -107,18 +106,11 @@ func (s *RelationDomainService) GetPostByRelations(ctx context.Context, relation
 				}
 				return nil
 			}, func() error {
-				getCommentListResp, err2 := s.Platform.GetCommentList(ctx, &platform.GetCommentListReq{
-					FilterOptions: &platform.CommentFilterOptions{
-						OnlySubjectId: lo.ToPtr(relation.ToId),
-					},
-					Pagination: &basic.PaginationOptions{
-						Limit: lo.ToPtr(int64(1)),
-					},
-				})
+				getCommentSubjectResp, err2 := s.Platform.GetCommentSubject(ctx, &platform.GetCommentSubjectReq{SubjectId: relation.ToId})
 				if err2 != nil {
 					return err2
 				}
-				posts[i].CommentCount = getCommentListResp.Total
+				posts[i].CommentCount = getCommentSubjectResp.AllCount
 				return nil
 			}, func() error {
 				posts[i].ViewCount, _ = s.Redis.PfcountCtx(ctx, fmt.Sprintf("%s:%s", consts.ViewCountKey, relation.ToId))

@@ -7,15 +7,18 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/domain/service"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/convertor"
 	platformservice "github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform"
 	"github.com/google/wire"
+	"github.com/samber/lo"
 	"github.com/zeromicro/go-zero/core/mr"
 )
 
 type ICommentService interface {
 	GetComment(ctx context.Context, req *core_api.GetCommentReq) (resp *core_api.GetCommentResp, err error)
 	GetComments(ctx context.Context, req *core_api.GetCommentsReq) (resp *core_api.GetCommentsResp, err error)
+	GetCommentBlocks(ctx context.Context, req *core_api.GetCommentBlocksReq) (resp *core_api.GetCommentBlocksResp, err error)
 	CreateComment(ctx context.Context, req *core_api.CreateCommentReq) (resp *core_api.CreateCommentResp, err error)
 	UpdateComment(ctx context.Context, req *core_api.UpdateCommentReq) (resp *core_api.UpdateCommentResp, err error)
 	DeleteComment(ctx context.Context, req *core_api.DeleteCommentReq) (resp *core_api.DeleteCommentResp, err error)
@@ -81,44 +84,107 @@ func (s *CommentService) GetComment(ctx context.Context, req *core_api.GetCommen
 
 func (s *CommentService) GetComments(ctx context.Context, req *core_api.GetCommentsReq) (resp *core_api.GetCommentsResp, err error) {
 	resp = new(core_api.GetCommentsResp)
-	//var res *platform.GetCommentListResp
-	//p := convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward)
-	//if res, err = s.Platform.GetCommentList(ctx, &platform.GetCommentListReq{
-	//	FilterOptions: &platform.CommentFilterOptions{
-	//		OnlyUserId:    req.OnlyUserId,
-	//		OnlyAtUserId:  req.OnlyAtUserId,
-	//		OnlySubjectId: req.OnlySubjectId,
-	//		OnlyRootId:    req.OnlyRootId,
-	//		OnlyFatherId:  req.OnlyFatherId,
-	//		OnlyState:     req.OnlyState,
-	//		OnlyAttrs:     req.OnlyAttrs,
-	//	},
-	//	Pagination: p,
-	//}); err != nil {
-	//	return resp, err
-	//}
-	//resp.CommentId = lo.Map(res.Comments, func(item *platform.Comment, _ int) *core_api.Comment {
-	//	c := convertor.CommentToCoreComment(item)
-	//	_ = mr.Finish(func() error {
-	//		s.CommentDomainService.LoadLikeCount(ctx, &c.Like, c.Id) // 点赞量
-	//		return nil
-	//	}, func() error {
-	//		s.CommentDomainService.LoadAuthor(ctx, c.Author, c.UserId) // 作者
-	//		return nil
-	//	}, func() error {
-	//		s.CommentDomainService.LoadLiked(ctx, c.CommentRelation, c.Id, c.UserId) // 是否点赞
-	//		return nil
-	//	}, func() error {
-	//		s.CommentDomainService.LoadHated(ctx, c.CommentRelation, c.Id, c.UserId) // 是否点踩
-	//		return nil
-	//	}, func() error {
-	//		s.CommentDomainService.LoadLabels(ctx, &c.Labels, item.Labels) // 标签集
-	//		return nil
-	//	})
-	//	return c
-	//})
-	//resp.Token = res.Token
-	//resp.Total = res.Total
+	var res *platform.GetCommentListResp
+	p := convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward)
+	if res, err = s.Platform.GetCommentList(ctx, &platform.GetCommentListReq{
+		FilterOptions: &platform.CommentFilterOptions{
+			OnlyUserId:   req.OnlyUserId,
+			OnlyAtUserId: req.OnlyAtUserId,
+			OnlyState:    req.OnlyState,
+			OnlyAttrs:    req.OnlyAttrs,
+		},
+		Pagination: p,
+	}); err != nil {
+		return resp, err
+	}
+	resp.Comments = lo.Map(res.Comments, func(item *platform.Comment, _ int) *core_api.Comment {
+		c := convertor.CommentToCoreComment(item)
+		_ = mr.Finish(func() error {
+			s.CommentDomainService.LoadLikeCount(ctx, &c.Like, c.CommentId) // 点赞量
+			return nil
+		}, func() error {
+			s.CommentDomainService.LoadAuthor(ctx, c.Author, item.UserId) // 作者
+			return nil
+		}, func() error {
+			s.CommentDomainService.LoadLiked(ctx, c.CommentRelation, c.CommentId, item.UserId) // 是否点赞
+			return nil
+		}, func() error {
+			s.CommentDomainService.LoadHated(ctx, c.CommentRelation, c.CommentId, item.UserId) // 是否点踩
+			return nil
+		}, func() error {
+			s.CommentDomainService.LoadLabels(ctx, &c.Labels, item.Labels) // 标签集
+			return nil
+		})
+		return c
+	})
+	resp.Token = res.Token
+	resp.Total = res.Total
+	return resp, nil
+}
+
+func (s *CommentService) GetCommentBlocks(ctx context.Context, req *core_api.GetCommentBlocksReq) (resp *core_api.GetCommentBlocksResp, err error) {
+	resp = new(core_api.GetCommentBlocksResp)
+	var res *platform.GetCommentBlocksResp
+	p := convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward)
+	if res, err = s.Platform.GetCommentBlocks(ctx, &platform.GetCommentBlocksReq{
+		SubjectId:  req.SubjectId,
+		FatherId:   req.FatherId,
+		Pagination: p,
+	}); err != nil {
+		return resp, err
+	}
+
+	resp.CommentBlocks = lo.Map(res.CommentBlocks, func(item *platform.CommentBlock, _ int) *core_api.CommentBlock {
+		rootComment := convertor.CommentToCoreComment(item.RootComment)
+		_ = mr.Finish(func() error {
+			s.CommentDomainService.LoadLikeCount(ctx, &rootComment.Like, rootComment.CommentId) // 点赞量
+			return nil
+		}, func() error {
+			s.CommentDomainService.LoadAuthor(ctx, rootComment.Author, item.RootComment.UserId) // 作者
+			return nil
+		}, func() error {
+			s.CommentDomainService.LoadLiked(ctx, rootComment.CommentRelation, rootComment.CommentId, item.RootComment.UserId) // 是否点赞
+			return nil
+		}, func() error {
+			s.CommentDomainService.LoadHated(ctx, rootComment.CommentRelation, rootComment.CommentId, item.RootComment.UserId) // 是否点踩
+			return nil
+		}, func() error {
+			s.CommentDomainService.LoadLabels(ctx, &rootComment.Labels, item.RootComment.Labels) // 标签集
+			return nil
+		})
+
+		comments := lo.Map(item.ReplyList.Comments, func(comment *platform.Comment, _ int) *core_api.Comment {
+			c := convertor.CommentToCoreComment(comment)
+			_ = mr.Finish(func() error {
+				s.CommentDomainService.LoadLikeCount(ctx, &c.Like, c.CommentId) // 点赞量
+				return nil
+			}, func() error {
+				s.CommentDomainService.LoadAuthor(ctx, c.Author, comment.UserId) // 作者
+				return nil
+			}, func() error {
+				s.CommentDomainService.LoadLiked(ctx, c.CommentRelation, c.CommentId, comment.UserId) // 是否点赞
+				return nil
+			}, func() error {
+				s.CommentDomainService.LoadHated(ctx, c.CommentRelation, c.CommentId, comment.UserId) // 是否点踩
+				return nil
+			}, func() error {
+				s.CommentDomainService.LoadLabels(ctx, &c.Labels, comment.Labels) // 标签集
+				return nil
+			})
+			return c
+		})
+
+		return &core_api.CommentBlock{
+			RootComment: rootComment,
+			ReplyList: &core_api.ReplyList{
+				Comments: comments,
+				Total:    item.ReplyList.Total,
+				Token:    item.ReplyList.Token,
+			},
+		}
+	})
+	resp.Token = res.Token
+	resp.Total = res.Total
 	return resp, nil
 }
 

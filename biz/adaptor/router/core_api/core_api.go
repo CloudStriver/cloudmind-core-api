@@ -38,6 +38,7 @@ func Register(r *server.Hertz) {
 		_comment.POST("/deleteComment", append(_deletecommentMw(), core_api.DeleteComment)...)
 		_comment.POST("/deleteCommentSubject", append(_deletecommentsubjectMw(), core_api.DeleteCommentSubject)...)
 		_comment.GET("/getComment", append(_getcommentMw(), core_api.GetComment)...)
+		_comment.GET("/getCommentBlocks", append(_getcommentblocksMw(), core_api.GetCommentBlocks)...)
 		_comment.GET("/getCommentSubject", append(_getcommentsubjectMw(), core_api.GetCommentSubject)...)
 		_comment.GET("/getComments", append(_getcommentsMw(), core_api.GetComments)...)
 		_comment.POST("/setCommentAttrs", append(_setcommentattrsMw(), core_api.SetCommentAttrs)...)
