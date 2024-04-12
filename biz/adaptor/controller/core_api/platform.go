@@ -266,3 +266,20 @@ func GetRelationPaths(ctx context.Context, c *app.RequestContext) {
 	resp, err = p.RelationService.GetRelationPaths(ctx, &req)
 	adaptor.PostProcess(ctx, c, &req, resp, err)
 }
+
+// GetCommentBlocks .
+// @router /comment/getCommentBlocks [GET]
+func GetCommentBlocks(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req core_api.GetCommentBlocksReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(core_api.GetCommentBlocksResp)
+	p := provider.Get()
+	resp, err = p.CommentService.GetCommentBlocks(ctx, &req)
+	adaptor.PostProcess(ctx, c, &req, resp, err)
+}

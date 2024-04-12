@@ -705,3 +705,8 @@ func _getrelationpathsMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _getcommentblocksMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
