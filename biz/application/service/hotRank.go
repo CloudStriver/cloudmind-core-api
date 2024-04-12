@@ -89,7 +89,7 @@ func (s *HotRankService) GetHotRanks(ctx context.Context, req *core_api.GetHotRa
 		}
 	case core_api.TargetType_FileType:
 		files, err := s.CloudMindContent.GetFilesByIds(ctx, &content.GetFilesByIdsReq{
-			Ids: values,
+			FileIds: values,
 		})
 		if err != nil {
 			return resp, err
@@ -98,7 +98,7 @@ func (s *HotRankService) GetHotRanks(ctx context.Context, req *core_api.GetHotRa
 		if err = mr.Finish(lo.Map(files.Files, func(item *content.File, i int) func() error {
 			return func() error {
 				resp.Files[i] = &core_api.HotFile{
-					FileId: item.Id,
+					FileId: item.FileId,
 					Name:   item.Name,
 					Type:   item.Type,
 				}

@@ -118,7 +118,7 @@ func (s *FileDomainService) LoadCollectCount(ctx context.Context, c *core_api.Fi
 
 func (s *FileDomainService) LoadLabels(ctx context.Context, c *[]*core_api.Label, labelIds []string) {
 	var labels *platform.GetLabelsInBatchResp
-	labels, _ = s.Platform.GetLabelsInBatch(ctx, &platform.GetLabelsInBatchReq{Ids: labelIds})
+	labels, _ = s.Platform.GetLabelsInBatch(ctx, &platform.GetLabelsInBatchReq{LabelIds: labelIds})
 	*c = lo.Map(labels.Labels, func(item string, index int) *core_api.Label {
 		return &core_api.Label{Id: labelIds[index], Value: item}
 	})

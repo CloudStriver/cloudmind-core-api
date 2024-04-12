@@ -92,7 +92,7 @@ func (s *UserDomainService) LoadFollowed(ctx context.Context, followed *bool, fr
 }
 func (s *UserDomainService) LoadLabel(ctx context.Context, labels []string) {
 	getLabelsResp, err := s.Platform.GetLabelsInBatch(ctx, &platform.GetLabelsInBatchReq{
-		Ids: labels,
+		LabelIds: labels,
 	})
 	if err == nil {
 		lo.ForEach(getLabelsResp.Labels, func(label string, i int) {

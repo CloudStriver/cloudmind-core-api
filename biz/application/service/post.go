@@ -112,8 +112,8 @@ func (s *PostService) CreatePost(ctx context.Context, req *core_api.CreatePostRe
 
 	if err = mr.Finish(func() error {
 		if _, err1 := s.Platform.CreateCommentSubject(ctx, &platform.CreateCommentSubjectReq{
-			Id:     createPostResp.PostId,
-			UserId: userData.UserId,
+			SubjectId: createPostResp.PostId,
+			UserId:    userData.UserId,
 		}); err1 != nil {
 			return err1
 		}

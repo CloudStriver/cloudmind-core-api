@@ -35,7 +35,7 @@ var PostDomainServiceSet = wire.NewSet(
 
 func (s *PostDomainService) LoadLabels(ctx context.Context, c *[]*core_api.Label, labels []string) {
 	getLabelsInBatchResp, err := s.Platform.GetLabelsInBatch(ctx, &platform.GetLabelsInBatchReq{
-		Ids: labels,
+		LabelIds: labels,
 	})
 	if err == nil {
 		*c = lo.Map(getLabelsInBatchResp.Labels, func(value string, i int) *core_api.Label {
@@ -48,7 +48,7 @@ func (s *PostDomainService) LoadLabels(ctx context.Context, c *[]*core_api.Label
 }
 
 func (s *PostDomainService) LoadCommentCount(ctx context.Context, commentCount *int64, postId string) {
-	getRelationCountResp, err := s.Platform.GetCommentSubject(ctx, &platform.GetCommentSubjectReq{Id: postId})
+	getRelationCountResp, err := s.Platform.GetCommentSubject(ctx, &platform.GetCommentSubjectReq{SubjectId: postId})
 	if err == nil {
 		*commentCount = getRelationCountResp.AllCount
 	}
