@@ -128,7 +128,7 @@ func (s *CommentService) GetCommentBlocks(ctx context.Context, req *core_api.Get
 	p := convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward)
 	if res, err = s.Platform.GetCommentBlocks(ctx, &platform.GetCommentBlocksReq{
 		SubjectId:  req.SubjectId,
-		FatherId:   req.FatherId,
+		RootId:     req.FatherId,
 		Pagination: p,
 	}); err != nil {
 		return resp, err
