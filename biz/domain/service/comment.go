@@ -12,6 +12,8 @@ import (
 
 type ICommentDomainService interface {
 	LoadAuthor(ctx context.Context, c *core_api.SimpleUser, userId string)
+	LoadFile(ctx context.Context, description, userId *string, id string)
+	LoadPost(ctx context.Context, title, userId *string, id string)
 	LoadLikeCount(ctx context.Context, c *int64, id string)
 	LoadHateCount(ctx context.Context, c *int64, id string)
 	LoadLiked(ctx context.Context, c *core_api.CommentRelation, id, userId string)
@@ -37,6 +39,22 @@ func (s *CommentDomainService) LoadAuthor(ctx context.Context, c *core_api.Simpl
 	if err == nil {
 		c.Name = getUserResp.Name
 		c.Url = getUserResp.Url
+	}
+}
+
+func (s *CommentDomainService) LoadFile(ctx context.Context, description, userId *string, id string) {
+	getRes, err := s.CloudMindUser.GetPublicFile(ctx, &content.GetPublicFileReq{FileId: id})
+	if err == nil {
+		*description = getRes.Description
+		*userId = getRes.UserId
+	}
+}
+
+func (s *CommentDomainService) LoadPost(ctx context.Context, title, userId *string, id string) {
+	getRes, err := s.CloudMindUser.GetPost(ctx, &content.GetPostReq{PostId: id})
+	if err == nil {
+		*title = getRes.Title
+		*userId = getRes.UserId
 	}
 }
 
