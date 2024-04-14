@@ -55,7 +55,7 @@ func (s *HotRankService) GetHotRanks(ctx context.Context, req *core_api.GetHotRa
 		key = consts.PostRankKey
 	}
 
-	values, err := s.Redis.ZrangeCtx(ctx, key, req.Offset, req.Offset+req.Limit-1)
+	values, err := s.Redis.ZrevrangeCtx(ctx, key, req.Offset, req.Offset+req.Limit)
 	if err != nil {
 		return resp, err
 	}
