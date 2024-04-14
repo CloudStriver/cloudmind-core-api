@@ -179,12 +179,13 @@ func (s *RelationDomainService) CreateRelation(ctx context.Context, r *core_api.
 			TargetType: content.TargetType_PostType,
 		}
 	}
-	if _, err = s.CloudMindContent.IncrHotValue(ctx, reqs); err != nil {
-		return err
+	if r.ToType != core_api.TargetType_CommentContentType {
+		if _, err = s.CloudMindContent.IncrHotValue(ctx, reqs); err != nil {
+			return err
+		}
 	}
-
-	// 发布，上传，浏览,讨厌不需要通知
-	if r.RelationType == core_api.RelationType_PublishRelationType || r.RelationType == core_api.RelationType_HateRelationType || r.RelationType == core_api.RelationType_UploadRelationType || r.RelationType == core_api.RelationType_ViewRelationType {
+	// 发布，上传，浏览不需要通知
+	if r.RelationType == core_api.RelationType_PublishRelationType || r.RelationType == core_api.RelationType_UploadRelationType || r.RelationType == core_api.RelationType_ViewRelationType {
 		return nil
 	}
 
@@ -211,6 +212,16 @@ func (s *RelationDomainService) CreateRelation(ctx context.Context, r *core_api.
 		}
 		toName = getPostResp.Title
 		userId = getPostResp.UserId
+
+	case core_api.TargetType_CommentContentType:
+		getCommentResp, err := s.Platform.GetComment(ctx, &platform.GetCommentReq{
+			CommentId: r.ToId,
+		})
+		if err != nil {
+			return err
+		}
+		toName = getCommentResp.Content
+		userId = getCommentResp.UserId
 	}
 
 	userinfo, err := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{
@@ -228,7 +239,9 @@ func (s *RelationDomainService) CreateRelation(ctx context.Context, r *core_api.
 		}); err != nil {
 			return err
 		}
-
+	}
+	if r.ToType == core_api.TargetType_CommentContentType {
+		return nil
 	}
 	// 创建通知
 	msg, _ := sonic.Marshal(Msg{
