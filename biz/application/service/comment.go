@@ -61,6 +61,7 @@ func (s *CommentService) GetComment(ctx context.Context, req *core_api.GetCommen
 		CreateAt:        res.CreateTime,
 		Author:          &core_api.SimpleUser{},
 		CommentRelation: &core_api.CommentRelation{},
+		ItemType:        core_api.TargetType(res.Type),
 	}
 
 	_ = mr.Finish(func() error {
@@ -87,6 +88,11 @@ func (s *CommentService) GetComment(ctx context.Context, req *core_api.GetCommen
 
 func (s *CommentService) GetComments(ctx context.Context, req *core_api.GetCommentsReq) (resp *core_api.GetCommentsResp, err error) {
 	resp = new(core_api.GetCommentsResp)
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil || userData.GetUserId() == "" {
+		return resp, consts.ErrNotAuthentication
+	}
+
 	var res *platform.GetCommentListResp
 	p := convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward)
 	if res, err = s.Platform.GetCommentList(ctx, &platform.GetCommentListReq{
@@ -120,6 +126,14 @@ func (s *CommentService) GetComments(ctx context.Context, req *core_api.GetComme
 		}, func() error {
 			s.CommentDomainService.LoadLabels(ctx, &c.Labels, item.Labels) // 标签集
 			return nil
+		}, func() error {
+			switch item.Type {
+			case int64(core_api.TargetType_FileType):
+				s.CommentDomainService.LoadFile(ctx, &c.ItemTitle, &c.ItemUserId, item.SubjectId)
+			case int64(core_api.TargetType_PostType):
+				s.CommentDomainService.LoadPost(ctx, &c.ItemTitle, &c.ItemUserId, item.SubjectId)
+			}
+			return nil
 		})
 		return c
 	})
@@ -141,9 +155,9 @@ func (s *CommentService) GetCommentBlocks(ctx context.Context, req *core_api.Get
 	}
 
 	resp.CommentBlocks = lo.Map(res.CommentBlocks, func(item *platform.CommentBlock, _ int) *core_api.CommentBlock {
-		var rootComment *core_api.Comment
+		var rootComment *core_api.CommentNode
 		if item.RootComment != nil {
-			rootComment = convertor.CommentToCoreComment(item.RootComment)
+			rootComment = convertor.CommentToCoreCommentNode(item.RootComment)
 			_ = mr.Finish(func() error {
 				s.CommentDomainService.LoadLikeCount(ctx, &rootComment.Like, rootComment.CommentId) // 点赞量
 				return nil
@@ -161,8 +175,8 @@ func (s *CommentService) GetCommentBlocks(ctx context.Context, req *core_api.Get
 				return nil
 			})
 		}
-		comments := lo.Map(item.ReplyList.Comments, func(comment *platform.Comment, _ int) *core_api.Comment {
-			c := convertor.CommentToCoreComment(comment)
+		comments := lo.Map(item.ReplyList.Comments, func(comment *platform.Comment, _ int) *core_api.CommentNode {
+			c := convertor.CommentToCoreCommentNode(comment)
 			_ = mr.Finish(func() error {
 				s.CommentDomainService.LoadLikeCount(ctx, &c.Like, c.CommentId) // 点赞量
 				return nil
@@ -215,6 +229,7 @@ func (s *CommentService) CreateComment(ctx context.Context, req *core_api.Create
 		AtUserId:  req.AtUserId,
 		Content:   req.Content,
 		Meta:      req.Meta,
+		Type:      int64(req.ItemType),
 	}); err != nil {
 		return resp, err
 	}
