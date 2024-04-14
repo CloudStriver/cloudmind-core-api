@@ -67,6 +67,9 @@ func (s *CommentService) GetComment(ctx context.Context, req *core_api.GetCommen
 		s.CommentDomainService.LoadLikeCount(ctx, &resp.LikedCount, req.CommentId) // 点赞量
 		return nil
 	}, func() error {
+		s.CommentDomainService.LoadHateCount(ctx, &resp.HatedCount, req.CommentId) // 点赞量
+		return nil
+	}, func() error {
 		s.CommentDomainService.LoadAuthor(ctx, resp.Author, resp.UserId) // 作者
 		return nil
 	}, func() error {
@@ -103,6 +106,9 @@ func (s *CommentService) GetComments(ctx context.Context, req *core_api.GetComme
 			s.CommentDomainService.LoadLikeCount(ctx, &c.Like, c.CommentId) // 点赞量
 			return nil
 		}, func() error {
+			s.CommentDomainService.LoadLikeCount(ctx, &c.Hate, c.CommentId) // 点赞量
+			return nil
+		}, func() error {
 			s.CommentDomainService.LoadAuthor(ctx, c.Author, item.UserId) // 作者
 			return nil
 		}, func() error {
@@ -135,28 +141,33 @@ func (s *CommentService) GetCommentBlocks(ctx context.Context, req *core_api.Get
 	}
 
 	resp.CommentBlocks = lo.Map(res.CommentBlocks, func(item *platform.CommentBlock, _ int) *core_api.CommentBlock {
-		rootComment := convertor.CommentToCoreComment(item.RootComment)
-		_ = mr.Finish(func() error {
-			s.CommentDomainService.LoadLikeCount(ctx, &rootComment.Like, rootComment.CommentId) // 点赞量
-			return nil
-		}, func() error {
-			s.CommentDomainService.LoadAuthor(ctx, rootComment.Author, item.RootComment.UserId) // 作者
-			return nil
-		}, func() error {
-			s.CommentDomainService.LoadLiked(ctx, rootComment.CommentRelation, rootComment.CommentId, item.RootComment.UserId) // 是否点赞
-			return nil
-		}, func() error {
-			s.CommentDomainService.LoadHated(ctx, rootComment.CommentRelation, rootComment.CommentId, item.RootComment.UserId) // 是否点踩
-			return nil
-		}, func() error {
-			s.CommentDomainService.LoadLabels(ctx, &rootComment.Labels, item.RootComment.Labels) // 标签集
-			return nil
-		})
-
+		var rootComment *core_api.Comment
+		if item.RootComment != nil {
+			rootComment = convertor.CommentToCoreComment(item.RootComment)
+			_ = mr.Finish(func() error {
+				s.CommentDomainService.LoadLikeCount(ctx, &rootComment.Like, rootComment.CommentId) // 点赞量
+				return nil
+			}, func() error {
+				s.CommentDomainService.LoadAuthor(ctx, rootComment.Author, item.RootComment.UserId) // 作者
+				return nil
+			}, func() error {
+				s.CommentDomainService.LoadLiked(ctx, rootComment.CommentRelation, rootComment.CommentId, item.RootComment.UserId) // 是否点赞
+				return nil
+			}, func() error {
+				s.CommentDomainService.LoadHated(ctx, rootComment.CommentRelation, rootComment.CommentId, item.RootComment.UserId) // 是否点踩
+				return nil
+			}, func() error {
+				s.CommentDomainService.LoadLabels(ctx, &rootComment.Labels, item.RootComment.Labels) // 标签集
+				return nil
+			})
+		}
 		comments := lo.Map(item.ReplyList.Comments, func(comment *platform.Comment, _ int) *core_api.Comment {
 			c := convertor.CommentToCoreComment(comment)
 			_ = mr.Finish(func() error {
 				s.CommentDomainService.LoadLikeCount(ctx, &c.Like, c.CommentId) // 点赞量
+				return nil
+			}, func() error {
+				s.CommentDomainService.LoadHateCount(ctx, &c.Hate, c.CommentId) // 点赞量
 				return nil
 			}, func() error {
 				s.CommentDomainService.LoadAuthor(ctx, c.Author, comment.UserId) // 作者

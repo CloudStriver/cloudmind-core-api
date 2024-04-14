@@ -13,6 +13,7 @@ import (
 type ICommentDomainService interface {
 	LoadAuthor(ctx context.Context, c *core_api.SimpleUser, userId string)
 	LoadLikeCount(ctx context.Context, c *int64, id string)
+	LoadHateCount(ctx context.Context, c *int64, id string)
 	LoadLiked(ctx context.Context, c *core_api.CommentRelation, id, userId string)
 	LoadHated(ctx context.Context, c *core_api.CommentRelation, id, userId string)
 	LoadLabels(ctx context.Context, c *[]string, labelIds []string)
@@ -49,6 +50,22 @@ func (s *CommentDomainService) LoadLikeCount(ctx context.Context, c *int64, id s
 			},
 		},
 		RelationType: int64(core_api.RelationType_LikeRelationType),
+	})
+	if err == nil {
+		*c = getRelationCountResp.Total
+	}
+}
+
+func (s *CommentDomainService) LoadHateCount(ctx context.Context, c *int64, id string) {
+	getRelationCountResp, err := s.Platform.GetRelationCount(ctx, &platform.GetRelationCountReq{
+		RelationFilterOptions: &platform.GetRelationCountReq_ToFilterOptions{
+			ToFilterOptions: &platform.ToFilterOptions{
+				ToType:   int64(core_api.TargetType_CommentContentType),
+				ToId:     id,
+				FromType: int64(core_api.TargetType_UserType),
+			},
+		},
+		RelationType: int64(core_api.RelationType_HateRelationType),
 	})
 	if err == nil {
 		*c = getRelationCountResp.Total
