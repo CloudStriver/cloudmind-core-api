@@ -58,6 +58,25 @@ func CommentToCoreComment(req *platform.Comment) *core_api.Comment {
 		CreateTime:      req.CreateTime,
 		Author:          &core_api.SimpleUser{},
 		CommentRelation: &core_api.CommentRelation{},
+		ItemType:        core_api.TargetType(req.Type),
+	}
+}
+
+func CommentToCoreCommentNode(req *platform.Comment) *core_api.CommentNode {
+	return &core_api.CommentNode{
+		CommentId:       req.CommentId,
+		SubjectId:       req.SubjectId,
+		RootId:          req.RootId,
+		FatherId:        req.FatherId,
+		Count:           req.Count,
+		State:           req.State,
+		Attrs:           req.Attrs,
+		AtUserId:        req.AtUserId,
+		Content:         req.Content,
+		Meta:            req.Meta,
+		CreateTime:      req.CreateTime,
+		Author:          &core_api.SimpleUser{},
+		CommentRelation: &core_api.CommentRelation{},
 	}
 }
 
