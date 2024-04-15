@@ -59,6 +59,7 @@ func CommentToCoreComment(req *platform.Comment) *core_api.Comment {
 		Author:          &core_api.SimpleUser{},
 		CommentRelation: &core_api.CommentRelation{},
 		ItemType:        core_api.TargetType(req.Type),
+		AtUser:          &core_api.SimpleUser{},
 	}
 }
 
