@@ -178,6 +178,12 @@ func (s *RelationDomainService) CreateRelation(ctx context.Context, r *core_api.
 			HotId:      r.ToId,
 			TargetType: content.TargetType_PostType,
 		}
+	case core_api.TargetType_CommentContentType:
+		reqs = &content.IncrHotValueReq{
+			Action:     content.Action(act),
+			HotId:      r.ToId,
+			TargetType: content.TargetType_CommentContentType,
+		}
 	}
 
 	if _, err = s.CloudMindContent.IncrHotValue(ctx, reqs); err != nil {
@@ -243,7 +249,7 @@ func (s *RelationDomainService) CreateRelation(ctx context.Context, r *core_api.
 			if _, err = s.CloudMindContent.IncrHotValue(ctx, &content.IncrHotValueReq{
 				Action:     content.Action(r.RelationType),
 				HotId:      subjectId,
-				TargetType: content.TargetType_UserType,
+				TargetType: content.TargetType_PostType,
 			}); err != nil {
 				return err
 			}
