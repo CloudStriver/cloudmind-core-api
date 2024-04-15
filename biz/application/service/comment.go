@@ -174,6 +174,9 @@ func (s *CommentService) GetCommentBlocks(ctx context.Context, req *core_api.Get
 			}, func() error {
 				s.CommentDomainService.LoadLabels(ctx, &rootComment.Labels, item.RootComment.Labels) // 标签集
 				return nil
+			}, func() error {
+				s.CommentDomainService.LoadAuthor(ctx, rootComment.AtUser, rootComment.AtUserId) // 回复者
+				return nil
 			})
 		}
 		comments := lo.Map(item.ReplyList.Comments, func(comment *platform.Comment, _ int) *core_api.CommentNode {
@@ -195,6 +198,9 @@ func (s *CommentService) GetCommentBlocks(ctx context.Context, req *core_api.Get
 				return nil
 			}, func() error {
 				s.CommentDomainService.LoadLabels(ctx, &c.Labels, comment.Labels) // 标签集
+				return nil
+			}, func() error {
+				s.CommentDomainService.LoadAuthor(ctx, c.AtUser, comment.AtUserId) // 回复者
 				return nil
 			})
 			return c
