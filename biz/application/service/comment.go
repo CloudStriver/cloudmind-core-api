@@ -138,6 +138,9 @@ func (s *CommentService) GetComments(ctx context.Context, req *core_api.GetComme
 			s.CommentDomainService.LoadPost(ctx, &c.ItemTitle, &c.ItemUserId, item.SubjectId)
 			//}
 			return nil
+		}, func() error {
+			s.CommentDomainService.LoadAuthor(ctx, c.AtUser, item.AtUserId) // 回复者
+			return nil
 		})
 		return c
 	})
