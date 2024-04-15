@@ -77,6 +77,7 @@ func CommentToCoreCommentNode(req *platform.Comment) *core_api.CommentNode {
 		CreateTime:      req.CreateTime,
 		Author:          &core_api.SimpleUser{},
 		CommentRelation: &core_api.CommentRelation{},
+		AtUser:          &core_api.SimpleUser{},
 	}
 }
 
