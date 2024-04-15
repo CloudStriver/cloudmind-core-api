@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"github.com/CloudStriver/cloudmind-core-api/biz/adaptor"
 	"github.com/CloudStriver/cloudmind-core-api/biz/application/dto/cloudmind/core_api"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
@@ -88,6 +89,7 @@ func (s *NotificationService) GetNotificationCount(ctx context.Context, req *cor
 		return resp, consts.ErrNotAuthentication
 	}
 	if user.GetUserId() != "" {
+		fmt.Println(user.UserId)
 		getNotificationCountResp, err := s.CloudMindSystem.GetNotificationCount(ctx, &system.GetNotificationCountReq{
 			UserId: user.UserId,
 		})

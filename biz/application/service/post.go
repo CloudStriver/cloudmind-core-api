@@ -404,6 +404,7 @@ func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (
 				return nil
 			}, func() error {
 				// 加载评论量
+				s.PostDomainService.LoadCommentCount(ctx, &resp.Posts[i].CommentCount, item.PostId)
 				return nil
 			}, func() error {
 				if userData.GetUserId() != "" {
