@@ -34,9 +34,10 @@ var CommentServiceSet = wire.NewSet(
 )
 
 type CommentService struct {
-	Config               *config.Config
-	Platform             platformservice.IPlatForm
-	CommentDomainService service.ICommentDomainService
+	Config                *config.Config
+	Platform              platformservice.IPlatForm
+	CommentDomainService  service.ICommentDomainService
+	RelationDomainService service.RelationDomainService
 }
 
 func (s *CommentService) GetComment(ctx context.Context, req *core_api.GetCommentReq) (resp *core_api.GetCommentResp, err error) {
@@ -234,6 +235,7 @@ func (s *CommentService) CreateComment(ctx context.Context, req *core_api.Create
 		return resp, err
 	}
 	resp.CommentId = res.CommentId
+
 	return resp, nil
 }
 

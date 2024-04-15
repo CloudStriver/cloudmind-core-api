@@ -450,17 +450,6 @@ func (s *FileService) GetPublicFiles(ctx context.Context, req *core_api.GetPubli
 		}, func() error {
 			s.FileDomainService.LoadCollectCount(ctx, file.FileCount, item.FileId) // 收藏量
 			return nil
-		}, func() error {
-			if err2 := s.RelationDomainService.CreateRelation(ctx, &core_api.Relation{
-				FromType:     core_api.TargetType_UserType,
-				FromId:       userData.UserId,
-				ToType:       core_api.TargetType_FileType,
-				ToId:         item.FileId,
-				RelationType: core_api.RelationType_ViewRelationType,
-			}); err2 != nil {
-				return err2
-			}
-			return nil
 		})
 		return file
 	})
