@@ -8,7 +8,9 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/config"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/consts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/convertor"
+	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_content"
 	platformservice "github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform"
+	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform"
 	"github.com/google/wire"
 	"github.com/samber/lo"
@@ -36,6 +38,7 @@ var CommentServiceSet = wire.NewSet(
 type CommentService struct {
 	Config                *config.Config
 	Platform              platformservice.IPlatForm
+	CloudMindContent      cloudmind_content.ICloudMindContent
 	CommentDomainService  service.ICommentDomainService
 	RelationDomainService service.RelationDomainService
 }
@@ -128,12 +131,12 @@ func (s *CommentService) GetComments(ctx context.Context, req *core_api.GetComme
 			s.CommentDomainService.LoadLabels(ctx, &c.Labels, item.Labels) // 标签集
 			return nil
 		}, func() error {
-			switch item.Type {
-			case int64(core_api.TargetType_FileType):
-				s.CommentDomainService.LoadFile(ctx, &c.ItemTitle, &c.ItemUserId, item.SubjectId)
-			case int64(core_api.TargetType_PostType):
-				s.CommentDomainService.LoadPost(ctx, &c.ItemTitle, &c.ItemUserId, item.SubjectId)
-			}
+			//switch item.Type {
+			//case int64(core_api.TargetType_FileType):
+			//	s.CommentDomainService.LoadFile(ctx, &c.ItemTitle, &c.ItemUserId, item.SubjectId)
+			//case int64(core_api.TargetType_PostType):
+			s.CommentDomainService.LoadPost(ctx, &c.ItemTitle, &c.ItemUserId, item.SubjectId)
+			//}
 			return nil
 		})
 		return c
@@ -241,6 +244,24 @@ func (s *CommentService) CreateComment(ctx context.Context, req *core_api.Create
 		return resp, err
 	}
 	resp.CommentId = res.CommentId
+
+	_, err = s.CloudMindContent.CreateHot(ctx, &content.CreateHotReq{
+		HotId: res.CommentId,
+	})
+	if err != nil {
+		return resp, err
+	}
+
+	err = s.RelationDomainService.CreateRelation(ctx, &core_api.Relation{
+		FromType:     core_api.TargetType_UserType,
+		FromId:       userData.UserId,
+		ToType:       core_api.TargetType_CommentContentType,
+		ToId:         res.CommentId,
+		RelationType: core_api.RelationType_CommentRelationType,
+	})
+	if err != nil {
+		return nil, err
+	}
 
 	return resp, nil
 }

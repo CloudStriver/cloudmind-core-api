@@ -147,9 +147,11 @@ func NewProvider() (*Provider, error) {
 		Platform:      platForm,
 	}
 	commentService := &service2.CommentService{
-		Config:               configConfig,
-		Platform:             platForm,
-		CommentDomainService: commentDomainService,
+		Config:                configConfig,
+		Platform:              platForm,
+		CloudMindContent:      cloudMindContent,
+		CommentDomainService:  commentDomainService,
+		RelationDomainService: serviceRelationDomainService,
 	}
 	labelService := &service2.LabelService{
 		Config:   configConfig,

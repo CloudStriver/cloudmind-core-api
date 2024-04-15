@@ -157,6 +157,7 @@ func (s *RelationDomainService) CreateRelation(ctx context.Context, r *core_api.
 
 	userId := ""
 	toName := ""
+	subjectId := ""
 	var reqs *content.IncrHotValueReq
 	switch r.ToType {
 	case core_api.TargetType_UserType:
@@ -178,10 +179,9 @@ func (s *RelationDomainService) CreateRelation(ctx context.Context, r *core_api.
 			TargetType: content.TargetType_PostType,
 		}
 	}
-	if r.ToType != core_api.TargetType_CommentContentType {
-		if _, err = s.CloudMindContent.IncrHotValue(ctx, reqs); err != nil {
-			return err
-		}
+
+	if _, err = s.CloudMindContent.IncrHotValue(ctx, reqs); err != nil {
+		return err
 	}
 	// 发布，上传，浏览不需要通知
 	if r.RelationType == core_api.RelationType_PublishRelationType || r.RelationType == core_api.RelationType_UploadRelationType || r.RelationType == core_api.RelationType_ViewRelationType {
@@ -219,8 +219,9 @@ func (s *RelationDomainService) CreateRelation(ctx context.Context, r *core_api.
 		if err != nil {
 			return err
 		}
+		subjectId = getCommentResp.SubjectId
 		toName = getCommentResp.Content
-		userId = getCommentResp.UserId
+		userId = getCommentResp.AtUserId
 	}
 
 	userinfo, err := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{
@@ -237,6 +238,15 @@ func (s *RelationDomainService) CreateRelation(ctx context.Context, r *core_api.
 			TargetType: content.TargetType_UserType,
 		}); err != nil {
 			return err
+		}
+		if r.RelationType == core_api.RelationType_CommentRelationType {
+			if _, err = s.CloudMindContent.IncrHotValue(ctx, &content.IncrHotValueReq{
+				Action:     content.Action(r.RelationType),
+				HotId:      subjectId,
+				TargetType: content.TargetType_UserType,
+			}); err != nil {
+				return err
+			}
 		}
 	}
 	if r.ToType == core_api.TargetType_CommentContentType && r.RelationType == core_api.RelationType_LikeRelationType {
