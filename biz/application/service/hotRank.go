@@ -11,7 +11,7 @@ import (
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_sts"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_system"
 	"github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/cloudmind_trade"
-	rplatform "github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform"
+	platformservice "github.com/CloudStriver/cloudmind-core-api/biz/infrastructure/rpc/platform"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/basic"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/cloudmind/content"
 	"github.com/CloudStriver/service-idl-gen-go/kitex_gen/platform"
@@ -36,7 +36,7 @@ type HotRankService struct {
 	CloudMindSts      cloudmind_sts.ICloudMindSts
 	CloudMindTrade    cloudmind_trade.ICloudMindTrade
 	CloudMindSystem   cloudmind_system.ICloudMindSystem
-	Platform          rplatform.IPlatForm
+	Platform          platformservice.IPlatForm
 	UserDomainService service.IUserDomainService
 	Redis             *redis.Redis
 }
@@ -138,8 +138,7 @@ func (s *HotRankService) GetHotRanks(ctx context.Context, req *core_api.GetHotRa
 			},
 			Pagination: &basic.PaginationOptions{
 				Limit: lo.ToPtr(int64(1000)),
-			},
-		})
+			}})
 		if err != nil {
 			return resp, err
 		}
