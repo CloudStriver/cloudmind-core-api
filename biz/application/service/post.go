@@ -249,12 +249,9 @@ func (s *PostService) DeletePost(ctx context.Context, req *core_api.DeletePostRe
 				}
 				return nil
 			}, func() error {
-				if _, err2 := s.Platform.DeleteRelation(ctx, &platform.DeleteRelationReq{
-					FromType:     int64(core_api.TargetType_UserType),
-					FromId:       userData.UserId,
-					ToType:       int64(core_api.TargetType_PostType),
-					ToId:         item,
-					RelationType: int64(core_api.RelationType_PublishRelationType),
+				if _, err2 := s.Platform.DeleteNode(ctx, &platform.DeleteNodeReq{
+					NodeType: int64(core_api.TargetType_PostType),
+					NodeId:   item,
 				}); err2 != nil {
 					return err2
 				}
