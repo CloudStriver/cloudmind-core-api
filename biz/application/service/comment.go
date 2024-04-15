@@ -128,12 +128,12 @@ func (s *CommentService) GetComments(ctx context.Context, req *core_api.GetComme
 			s.CommentDomainService.LoadLabels(ctx, &c.Labels, item.Labels) // 标签集
 			return nil
 		}, func() error {
-			switch item.Type {
-			case int64(core_api.TargetType_FileType):
-				s.CommentDomainService.LoadFile(ctx, &c.ItemTitle, &c.ItemUserId, item.SubjectId)
-			case int64(core_api.TargetType_PostType):
-				s.CommentDomainService.LoadPost(ctx, &c.ItemTitle, &c.ItemUserId, item.SubjectId)
-			}
+			//switch item.Type {
+			//case int64(core_api.TargetType_FileType):
+			//	s.CommentDomainService.LoadFile(ctx, &c.ItemTitle, &c.ItemUserId, item.SubjectId)
+			//case int64(core_api.TargetType_PostType):
+			s.CommentDomainService.LoadPost(ctx, &c.ItemTitle, &c.ItemUserId, item.SubjectId)
+			//}
 			return nil
 		})
 		return c
