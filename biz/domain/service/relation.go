@@ -239,7 +239,7 @@ func (s *RelationDomainService) CreateRelation(ctx context.Context, r *core_api.
 			return err
 		}
 	}
-	if r.ToType == core_api.TargetType_CommentContentType {
+	if r.ToType == core_api.TargetType_CommentContentType && r.RelationType == core_api.RelationType_LikeRelationType {
 		return nil
 	}
 	// 创建通知
