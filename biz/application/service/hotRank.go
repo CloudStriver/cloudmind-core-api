@@ -152,6 +152,13 @@ func (s *HotRankService) GetHotRanks(ctx context.Context, req *core_api.GetHotRa
 					ItemId:     item.SubjectId,
 					CreateTime: item.CreateTime,
 				}
+				user, err := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{
+					UserId: item.UserId,
+				})
+				if err != nil {
+					return err
+				}
+				resp.Comments[i].UserName = user.Name
 				return nil
 			}
 		})...); err != nil {
