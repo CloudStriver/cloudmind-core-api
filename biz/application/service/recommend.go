@@ -195,6 +195,7 @@ func (s *RecommendService) GetItemByItemId(ctx context.Context, userId string, c
 			return err
 		}
 	case core_api.Category_FileCategory:
+
 	case core_api.Category_PostCategory:
 		getPostsResp, err := s.CloudMindContent.GetPostsByPostIds(ctx, &content.GetPostsByPostIdsReq{
 			PostIds: itemIds,
@@ -220,6 +221,9 @@ func (s *RecommendService) GetItemByItemId(ctx context.Context, userId string, c
 					return nil
 				}, func() error {
 					s.PostDomainService.LoadCommentCount(ctx, &recommends.Posts[i].CommentCount, post.PostId) // 评论量
+					return nil
+				}, func() error {
+					s.PostDomainService.LoadViewCount(ctx, &recommends.Posts[i].ViewCount, post.PostId) // 浏览量
 					return nil
 				}, func() error {
 					s.PostDomainService.LoadLiked(ctx, &recommends.Posts[i].Liked, userId, post.PostId)

@@ -146,7 +146,6 @@ func (s *RelationDomainService) CreateRelation(ctx context.Context, r *core_api.
 	if err != nil {
 		return err
 	}
-
 	if !ok.Ok {
 		return nil
 	}

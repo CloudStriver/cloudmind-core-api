@@ -81,12 +81,13 @@ func (s *UserService) GetUser(ctx context.Context, req *core_api.GetUserReq) (re
 		return resp, err
 	}
 	resp = &core_api.GetUserResp{
-		UserId:      req.UserId,
-		Name:        getUserResp.Name,
-		Url:         getUserResp.Url,
-		Description: getUserResp.Description,
-		Sex:         getUserResp.Sex,
-		CreateTime:  getUserResp.CreateTime,
+		UserId:        req.UserId,
+		Name:          getUserResp.Name,
+		Url:           getUserResp.Url,
+		Description:   getUserResp.Description,
+		Sex:           getUserResp.Sex,
+		CreateTime:    getUserResp.CreateTime,
+		BackgroundUrl: getUserResp.BackgroundUrl,
 	}
 	if err = mr.Finish(func() error {
 		s.UserDomainService.LoadLabel(ctx, getUserResp.Labels)
@@ -128,14 +129,15 @@ func (s *UserService) UpdateUser(ctx context.Context, req *core_api.UpdateUserRe
 	}
 
 	if _, err = s.CloudMindContent.UpdateUser(ctx, &content.UpdateUserReq{
-		UserId:      userData.UserId,
-		Name:        req.Name,
-		Sex:         req.Sex,
-		FullName:    req.FullName,
-		IdCard:      req.IdCard,
-		Description: req.Description,
-		Labels:      req.LabelIds,
-		Url:         req.Url,
+		UserId:        userData.UserId,
+		Name:          req.Name,
+		Sex:           req.Sex,
+		FullName:      req.FullName,
+		IdCard:        req.IdCard,
+		Description:   req.Description,
+		Labels:        req.LabelIds,
+		Url:           req.Url,
+		BackgroundUrl: req.BackgroundUrl,
 	}); err != nil {
 		return resp, err
 	}
