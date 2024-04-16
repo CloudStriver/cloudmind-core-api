@@ -256,6 +256,9 @@ func (s *PostService) DeletePost(ctx context.Context, req *core_api.DeletePostRe
 					return err2
 				}
 				return nil
+			}, func() error {
+				_, _ = s.Redis.ZremCtx(ctx, consts.PostRankKey, item)
+				return nil
 			}); err != nil {
 				return err
 			}
