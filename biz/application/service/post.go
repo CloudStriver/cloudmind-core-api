@@ -305,7 +305,7 @@ func (s *PostService) GetPost(ctx context.Context, req *core_api.GetPostReq) (re
 	}
 
 	if err = mr.Finish(func() error {
-		s.PostDomainService.LoadAuthor(ctx, resp.Author, userData.GetUserId()) // 作者
+		s.PostDomainService.LoadAuthor(ctx, resp.Author, res.UserId) // 作者
 		return nil
 	}, func() error {
 		s.PostDomainService.LoadLikeCount(ctx, &resp.LikeCount, req.PostId) // 点赞量
@@ -334,7 +334,6 @@ func (s *PostService) GetPost(ctx context.Context, req *core_api.GetPostReq) (re
 				ToId:         req.PostId,
 				RelationType: core_api.RelationType_ViewRelationType,
 			})
-			fmt.Println(err)
 		}
 		return nil
 	}, func() error {
