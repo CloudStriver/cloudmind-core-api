@@ -88,7 +88,7 @@ func (s *PostDomainService) LoadAuthor(ctx context.Context, user *core_api.PostU
 			RelationFilterOptions: &platform.GetRelationCountReq_ToFilterOptions{
 				ToFilterOptions: &platform.ToFilterOptions{
 					ToType:   int64(core_api.TargetType_UserType),
-					ToId:     userId,
+					ToId:     user.UserId,
 					FromType: int64(core_api.TargetType_UserType),
 				},
 			},
@@ -101,7 +101,7 @@ func (s *PostDomainService) LoadAuthor(ctx context.Context, user *core_api.PostU
 	}, func() error {
 		getRelationPathsCountResp, err := s.Platform.GetRelationPathsCount(ctx, &platform.GetRelationPathsCountReq{
 			FromType1: int64(core_api.TargetType_UserType),
-			FromId1:   userId,
+			FromId1:   user.UserId,
 			FromType2: int64(core_api.TargetType_UserType),
 			EdgeType1: int64(core_api.RelationType_PublishRelationType),
 			EdgeType2: int64(core_api.RelationType_LikeRelationType),
@@ -132,7 +132,7 @@ func (s *PostDomainService) LoadAuthor(ctx context.Context, user *core_api.PostU
 			RelationFilterOptions: &platform.GetRelationCountReq_FromFilterOptions{
 				FromFilterOptions: &platform.FromFilterOptions{
 					ToType:   int64(core_api.TargetType_PostType),
-					FromId:   userId,
+					FromId:   user.UserId,
 					FromType: int64(core_api.TargetType_UserType),
 				},
 			},
