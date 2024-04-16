@@ -398,12 +398,11 @@ func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (
 	if err = mr.Finish(lo.Map(getPostsResp.Posts, func(item *content.Post, i int) func() error {
 		return func() error {
 			resp.Posts[i] = &core_api.Post{
-				PostId:   item.PostId,
-				Title:    item.Title,
-				Text:     item.Text,
-				Url:      item.Url,
-				Labels:   make([]*core_api.Label, 0),
-				UserName: item.UserId,
+				PostId: item.PostId,
+				Title:  item.Title,
+				Text:   item.Text,
+				Url:    item.Url,
+				Labels: make([]*core_api.Label, 0),
 			}
 			if err = mr.Finish(func() error {
 				s.PostDomainService.LoadLikeCount(ctx, &resp.Posts[i].LikeCount, item.PostId) // 点赞量
@@ -418,6 +417,10 @@ func (s *PostService) GetPosts(ctx context.Context, req *core_api.GetPostsReq) (
 				}
 				return nil
 			}, func() error {
+				user, _ := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{
+					UserId: item.UserId,
+				})
+				resp.Posts[i].UserName = user.Name
 				return nil
 			}, func() error {
 				s.PostDomainService.LoadLabels(ctx, &resp.Posts[i].Labels, item.LabelIds)

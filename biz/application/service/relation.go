@@ -124,7 +124,7 @@ func (s *RelationService) GetToRelations(ctx context.Context, req *core_api.GetT
 	if err != nil {
 		return resp, consts.ErrNotAuthentication
 	}
-	getFromRelationsResp, err := s.Platform.GetRelations(ctx, &platform.GetRelationsReq{
+	getToRelationsResp, err := s.Platform.GetRelations(ctx, &platform.GetRelationsReq{
 		RelationFilterOptions: &platform.GetRelationsReq_ToFilterOptions{
 			ToFilterOptions: &platform.ToFilterOptions{
 				ToType:   req.ToType,
@@ -144,8 +144,8 @@ func (s *RelationService) GetToRelations(ctx context.Context, req *core_api.GetT
 
 	switch req.FromType {
 	case core_api.TargetType_UserType:
-		resp.Users = make([]*core_api.User, len(getFromRelationsResp.Relations))
-		if err = s.RelationDomainService.GetUserByRelations(ctx, getFromRelationsResp.Relations, resp.Users, userData.GetUserId()); err != nil {
+		resp.Users = make([]*core_api.User, len(getToRelationsResp.Relations))
+		if err = s.RelationDomainService.GetUserByRelations(ctx, getToRelationsResp.Relations, resp.Users, userData.GetUserId()); err != nil {
 			return resp, err
 		}
 	default:

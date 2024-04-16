@@ -40,11 +40,14 @@ func (s *RelationDomainService) GetUserByRelations(ctx context.Context, relation
 	err = mr.Finish(lo.Map[*platform.Relation](relations, func(r *platform.Relation, i int) func() error {
 		return func() error {
 			users[i] = &core_api.User{
-				UserId: r.ToId,
+				UserId: r.FromId,
+			}
+			if users[i].UserId == userId {
+				users[i].UserId = r.ToId
 			}
 			if err = mr.Finish(func() error {
 				user, err := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{
-					UserId: r.ToId,
+					UserId: users[i].UserId,
 				})
 				if err != nil {
 					return err
