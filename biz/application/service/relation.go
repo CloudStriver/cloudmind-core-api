@@ -61,7 +61,7 @@ func (s *RelationService) GetRelationPaths(ctx context.Context, req *core_api.Ge
 	case core_api.RelationType_FollowRelationType:
 		// 用户
 		resp.Users = make([]*core_api.User, len(relationPaths.Relations))
-		if err = s.RelationDomainService.GetUserByRelations(ctx, relationPaths.Relations, resp.Users, userData.GetUserId()); err != nil {
+		if err = s.RelationDomainService.GetUserByRelations(ctx, relationPaths.Relations, resp.Users, userData.GetUserId(), "from"); err != nil {
 			return resp, err
 		}
 	case core_api.RelationType_PublishRelationType:
@@ -103,7 +103,7 @@ func (s *RelationService) GetFromRelations(ctx context.Context, req *core_api.Ge
 	switch req.ToType {
 	case core_api.TargetType_UserType:
 		resp.Users = make([]*core_api.User, len(getFromRelationsResp.Relations))
-		if err = s.RelationDomainService.GetUserByRelations(ctx, getFromRelationsResp.Relations, resp.Users, userData.GetUserId()); err != nil {
+		if err = s.RelationDomainService.GetUserByRelations(ctx, getFromRelationsResp.Relations, resp.Users, userData.GetUserId(), "from"); err != nil {
 			return resp, err
 		}
 	case core_api.TargetType_PostType:
@@ -145,7 +145,7 @@ func (s *RelationService) GetToRelations(ctx context.Context, req *core_api.GetT
 	switch req.FromType {
 	case core_api.TargetType_UserType:
 		resp.Users = make([]*core_api.User, len(getToRelationsResp.Relations))
-		if err = s.RelationDomainService.GetUserByRelations(ctx, getToRelationsResp.Relations, resp.Users, userData.GetUserId()); err != nil {
+		if err = s.RelationDomainService.GetUserByRelations(ctx, getToRelationsResp.Relations, resp.Users, userData.GetUserId(), "to"); err != nil {
 			return resp, err
 		}
 	default:

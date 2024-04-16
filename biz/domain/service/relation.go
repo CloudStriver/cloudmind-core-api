@@ -22,7 +22,7 @@ import (
 
 type IRelationDomainService interface {
 	CreateRelation(ctx context.Context, r *core_api.Relation) (err error)
-	GetUserByRelations(ctx context.Context, relations []*platform.Relation, users []*core_api.User, userId string) (err error)
+	GetUserByRelations(ctx context.Context, relations []*platform.Relation, users []*core_api.User, userId string, query string) (err error)
 	GetPostByRelations(ctx context.Context, relations []*platform.Relation, posts []*core_api.Post, userId string) (err error)
 }
 type RelationDomainService struct {
@@ -36,14 +36,14 @@ type RelationDomainService struct {
 	Redis                *redis.Redis
 }
 
-func (s *RelationDomainService) GetUserByRelations(ctx context.Context, relations []*platform.Relation, users []*core_api.User, userId string) (err error) {
+func (s *RelationDomainService) GetUserByRelations(ctx context.Context, relations []*platform.Relation, users []*core_api.User, userId string, query string) (err error) {
 	err = mr.Finish(lo.Map[*platform.Relation](relations, func(r *platform.Relation, i int) func() error {
 		return func() error {
-			users[i] = &core_api.User{
-				UserId: r.FromId,
-			}
-			if users[i].UserId == userId {
+			users[i] = &core_api.User{}
+			if query == "from" {
 				users[i].UserId = r.ToId
+			} else {
+				users[i].UserId = r.FromId
 			}
 			if err = mr.Finish(func() error {
 				user, err := s.CloudMindContent.GetUser(ctx, &content.GetUserReq{
