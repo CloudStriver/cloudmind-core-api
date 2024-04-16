@@ -284,8 +284,10 @@ func (s *PostService) GetPost(ctx context.Context, req *core_api.GetPostReq) (re
 		return resp, consts.ErrForbidden
 	}
 
-	_, _ = s.Redis.Pfadd(fmt.Sprintf("%s:%s", consts.ViewCountKey, req.PostId), 1)
-
+	_, err = s.Redis.Pfadd(fmt.Sprintf("%s:%s", consts.ViewCountKey, req.PostId), fmt.Sprintf("%s:%s", userData.GetUserId(), req.PostId))
+	if err != nil {
+		return resp, err
+	}
 	resp = &core_api.GetPostResp{
 		Title:  res.Title,
 		Text:   res.Text,
@@ -322,13 +324,14 @@ func (s *PostService) GetPost(ctx context.Context, req *core_api.GetPostReq) (re
 		return nil
 	}, func() error {
 		if userData.GetUserId() != "" {
-			_ = s.RelationDomainService.CreateRelation(ctx, &core_api.Relation{
+			err = s.RelationDomainService.CreateRelation(ctx, &core_api.Relation{
 				FromType:     core_api.TargetType_UserType,
 				FromId:       userData.UserId,
 				ToType:       core_api.TargetType_PostType,
 				ToId:         req.PostId,
 				RelationType: core_api.RelationType_ViewRelationType,
 			})
+			fmt.Println(err)
 		}
 		return nil
 	}, func() error {
