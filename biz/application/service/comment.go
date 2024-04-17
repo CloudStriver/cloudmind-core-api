@@ -151,6 +151,11 @@ func (s *CommentService) GetComments(ctx context.Context, req *core_api.GetComme
 
 func (s *CommentService) GetCommentBlocks(ctx context.Context, req *core_api.GetCommentBlocksReq) (resp *core_api.GetCommentBlocksResp, err error) {
 	resp = new(core_api.GetCommentBlocksResp)
+	userData, err := adaptor.ExtractUserMeta(ctx)
+	if err != nil {
+		return resp, consts.ErrNotAuthentication
+	}
+
 	var res *platform.GetCommentBlocksResp
 	p := convertor.MakePaginationOptions(req.Limit, req.Offset, req.LastToken, req.Backward)
 	if res, err = s.Platform.GetCommentBlocks(ctx, &platform.GetCommentBlocksReq{
@@ -172,10 +177,14 @@ func (s *CommentService) GetCommentBlocks(ctx context.Context, req *core_api.Get
 				s.CommentDomainService.LoadAuthor(ctx, rootComment.Author, item.RootComment.UserId) // 作者
 				return nil
 			}, func() error {
-				s.CommentDomainService.LoadLiked(ctx, rootComment.CommentRelation, rootComment.CommentId, item.RootComment.UserId) // 是否点赞
+				if userData.GetUserId() != "" {
+					s.CommentDomainService.LoadLiked(ctx, rootComment.CommentRelation, rootComment.CommentId, userData.UserId) // 是否点赞
+				}
 				return nil
 			}, func() error {
-				s.CommentDomainService.LoadHated(ctx, rootComment.CommentRelation, rootComment.CommentId, item.RootComment.UserId) // 是否点踩
+				if userData.GetUserId() != "" {
+					s.CommentDomainService.LoadHated(ctx, rootComment.CommentRelation, rootComment.CommentId, userData.UserId) // 是否点踩
+				}
 				return nil
 			}, func() error {
 				s.CommentDomainService.LoadLabels(ctx, &rootComment.Labels, item.RootComment.Labels) // 标签集
@@ -197,10 +206,14 @@ func (s *CommentService) GetCommentBlocks(ctx context.Context, req *core_api.Get
 				s.CommentDomainService.LoadAuthor(ctx, c.Author, comment.UserId) // 作者
 				return nil
 			}, func() error {
-				s.CommentDomainService.LoadLiked(ctx, c.CommentRelation, c.CommentId, comment.UserId) // 是否点赞
+				if userData.GetUserId() != "" {
+					s.CommentDomainService.LoadLiked(ctx, c.CommentRelation, c.CommentId, userData.UserId) // 是否点赞
+				}
 				return nil
 			}, func() error {
-				s.CommentDomainService.LoadHated(ctx, c.CommentRelation, c.CommentId, comment.UserId) // 是否点踩
+				if userData.GetUserId() != "" {
+					s.CommentDomainService.LoadHated(ctx, c.CommentRelation, c.CommentId, userData.UserId) // 是否点踩
+				}
 				return nil
 			}, func() error {
 				s.CommentDomainService.LoadLabels(ctx, &c.Labels, comment.Labels) // 标签集
